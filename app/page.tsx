@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Menu, X, Check, ArrowRight, ChevronDown } from 'lucide-react';
+
+// SSR-safe useLayoutEffect
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 // --- КОНСТАНТИ ТА ДАНІ ---
 
@@ -102,8 +105,16 @@ const LanguageSelector = ({ mobileView = false }) => {
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Блокування скролу при відкритому меню (простіший метод без fixed)
+  // Позначаємо що компонент замонтовано (для уникнення hydration mismatch)
+  useIsomorphicLayoutEffect(() => {
+    setMounted(true);
+    // Одразу перевіряємо позицію скролу при монтуванні (синхронно, до paint)
+    setScrolled(window.scrollY > 20);
+  }, []);
+
+  // Блокування скролу при відкритому меню
   useEffect(() => {
     if (isOpen) {
       document.documentElement.style.overflow = 'hidden';
@@ -115,22 +126,17 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
+  // Слухач скролу
   useEffect(() => {
-    let ticking = false;
+    if (!mounted) return;
+    
     const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
-      }
+      setScrolled(window.scrollY > 20);
     };
-    // Перевіряємо початкову позицію
-    handleScroll();
+    
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [mounted]);
 
   return (
     <>
