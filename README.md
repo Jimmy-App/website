@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Marketing Website Scaffold (Next.js + Sanity)
 
-## Getting Started
+Production-ready scaffold for a SaaS marketing/corporate site using Next.js App Router, TypeScript, and an embedded Sanity Studio at `/studio`.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router)
+- TypeScript
+- Sanity Studio v3 (embedded)
+- next-sanity + GROQ
+
+## Locale Routing
+
+Supported locales: `en` (default), `fr`, `es`.
+
+- English has no prefix: `/`, `/blog`, `/docs/...`
+- French is prefixed: `/fr`, `/fr/blog`, `/fr/docs/...`
+- Spanish is prefixed: `/es`, `/es/blog`, `/es/docs/...`
+
+Middleware behavior:
+
+- `/studio`, `/_next`, `/api`, and public files are untouched.
+- `/fr` and `/es` are untouched.
+- `/en/...` redirects to the same path without `/en`.
+- All other paths rewrite to `/en/...` internally.
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Add environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in:
+
+- `SANITY_PROJECT_ID`
+- `SANITY_DATASET`
+- `SANITY_API_VERSION`
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `NEXT_PUBLIC_SITE_URL`
+
+3. Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Marketing site: `http://localhost:3000`
+- Studio: `http://localhost:3000/studio`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Content Model
 
-## Learn More
+Document-level translation is enabled via the Sanity Document Internationalization plugin. Each localized document includes a `language` field managed by the plugin.
 
-To learn more about Next.js, take a look at the following resources:
+Content types:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `siteSettings`: site name, domain, social links, default SEO, supported locales, default locale
+- `page`: slug, title, seo, blocks[] (structured objects)
+- `post`: slug, title, excerpt, body, publish date, author, categories
+- `docPage`: hierarchical slug/path, title, body, order, optional parent
+- `navigation` + `footer`: localized labels and links
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Creating Initial Content (EN/FR/ES)
 
-## Deploy on Vercel
+1. Create `siteSettings` documents for `en`, `fr`, and `es`.
+2. Create `navigation` and `footer` documents for each locale.
+3. Create `page` documents:
+   - `home` (for `/`)
+   - `privacy` (for `/privacy`)
+   - `terms` (for `/terms`)
+4. Create `post` documents per locale for `/blog`.
+5. Create `docPage` documents per locale for `/docs`.
+   - Use nested slugs like `getting-started/intro` for deeper routes.
+6. Use the translation menu in Sanity to create localized variants.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - start dev server
+- `npm run build` - production build
+- `npm run lint` - lint
+- `npm run typecheck` - TypeScript checks
+- `npm run format` - Prettier check
+
+## Deploy to Vercel
+
+```bash
+vercel
+```
+
+For production:
+
+```bash
+vercel --prod
+```
+
+Set the same environment variables in Vercel as in `.env.local`.
