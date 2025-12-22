@@ -1,10 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Check, ArrowRight, ChevronDown } from 'lucide-react';
-
-// SSR-safe useLayoutEffect
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 // --- КОНСТАНТИ ТА ДАНІ ---
 
@@ -105,13 +102,26 @@ const LanguageSelector = ({ mobileView = false }) => {
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Позначаємо що компонент замонтовано (для уникнення hydration mismatch)
-  useIsomorphicLayoutEffect(() => {
-    setMounted(true);
-    // Одразу перевіряємо позицію скролу при монтуванні (синхронно, до paint)
-    setScrolled(window.scrollY > 20);
+  // Використовуємо IntersectionObserver замість scroll event - працює краще на мобільних
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Коли sentinel виходить з viewport (не видно) - показуємо фон
+        setScrolled(!entry.isIntersecting);
+      },
+      { 
+        threshold: 0,
+        rootMargin: '-20px 0px 0px 0px' // Трігер на 20px від верху
+      }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
   }, []);
 
   // Блокування скролу при відкритому меню
@@ -126,29 +136,16 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
-  // Слухач скролу
-  useEffect(() => {
-    if (!mounted) return;
-    
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [mounted]);
-
-  // Визначаємо чи показувати фон (тільки після монтування, щоб уникнути мерехтіння)
-  const showBackground = mounted && scrolled;
-
   return (
     <>
+      {/* Невидимий елемент-сторож на самому верху сторінки */}
+      <div ref={sentinelRef} className="absolute top-0 left-0 w-full h-1 pointer-events-none" aria-hidden="true" />
+      
       <header className="fixed top-0 w-full z-50 flex justify-center pt-4 px-4 pointer-events-none">
         <nav 
           className={`
-            pointer-events-auto w-full max-w-5xl transform-gpu
-            ${mounted ? 'transition-all duration-200 ease-out' : ''}
-            ${showBackground 
+            pointer-events-auto w-full max-w-5xl transform-gpu transition-all duration-200 ease-out
+            ${scrolled 
               ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-gray-200/50 border border-gray-200/50 py-3 px-4 rounded-2xl' 
               : 'bg-transparent py-4 px-4 rounded-none border border-transparent' 
             }
@@ -160,7 +157,10 @@ const Navbar = () => {
               <img 
                 src="/assets/logo/logo.svg" 
                 alt="Jimmy Logo" 
+                width={72}
+                height={72}
                 className="w-9 h-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
+                style={{ imageRendering: 'auto' }}
               />
               <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
                 Jimmy
@@ -385,7 +385,10 @@ const App = () => {
             <img 
               src="/assets/logo/logo.svg" 
               alt="Jimmy Logo" 
+              width={64}
+              height={64}
               className="w-8 h-8 object-contain"
+              style={{ imageRendering: 'auto' }}
             />
             Jimmy
           </div>
