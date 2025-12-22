@@ -138,15 +138,19 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [mounted]);
 
+  // Визначаємо чи показувати фон (тільки після монтування, щоб уникнути мерехтіння)
+  const showBackground = mounted && scrolled;
+
   return (
     <>
       <header className="fixed top-0 w-full z-50 flex justify-center pt-4 px-4 pointer-events-none">
         <nav 
           className={`
-            pointer-events-auto w-full max-w-5xl transition-all duration-300 ease-out transform-gpu will-change-transform
-            ${scrolled 
+            pointer-events-auto w-full max-w-5xl transform-gpu
+            ${mounted ? 'transition-all duration-200 ease-out' : ''}
+            ${showBackground 
               ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-gray-200/50 border border-gray-200/50 py-3 px-4 rounded-2xl' 
-              : 'bg-transparent py-4 px-4 rounded-none border-transparent' 
+              : 'bg-transparent py-4 px-4 rounded-none border border-transparent' 
             }
           `}
         >
