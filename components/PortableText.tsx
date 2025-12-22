@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Check, ArrowRight, Zap, Smartphone, BarChart3, ChevronDown, Lock } from 'lucide-react';
+import { Menu, X, Check, ArrowRight, Zap, Smartphone, ChevronDown } from 'lucide-react';
 
 // --- КОНСТАНТИ КОЛЬОРІВ ---
 const COLORS = {
@@ -242,7 +242,7 @@ const Hero = () => {
             </div>
           ) : (
             <div className="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-full inline-flex items-center gap-2 font-medium animate-in fade-in slide-in-from-bottom-2">
-               <Check size={18} /> You're on the list! We'll be in touch.
+               <Check size={18} /> You&apos;re on the list! We&apos;ll be in touch.
             </div>
           )}
 

@@ -364,7 +364,7 @@ const Hero = () => {
           ) : (
             <div className="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center justify-center gap-3 font-medium shadow-sm animate-in fade-in zoom-in slide-in-from-bottom-2">
               <div className="bg-green-100 p-1.5 rounded-full text-green-600"><Check size={18} /></div>
-              <span>You're on the list! Keep an eye on your inbox.</span>
+              <span>You&apos;re on the list! Keep an eye on your inbox.</span>
             </div>
           )}
         </div>
