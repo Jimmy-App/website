@@ -103,22 +103,32 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Блокування скролу при відкритому меню
+  // Блокування скролу при відкритому меню (простіший метод без fixed)
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
+      document.documentElement.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
-      document.body.style.position = '';
-      document.body.style.width = '';
+      document.documentElement.style.overflow = '';
     }
+    return () => {
+      document.documentElement.style.overflow = '';
+    };
   }, [isOpen]);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    // Перевіряємо початкову позицію
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -127,7 +137,7 @@ const Navbar = () => {
       <header className="fixed top-0 w-full z-50 flex justify-center pt-4 px-4 pointer-events-none">
         <nav 
           className={`
-            pointer-events-auto w-full max-w-5xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+            pointer-events-auto w-full max-w-5xl transition-all duration-300 ease-out transform-gpu will-change-transform
             ${scrolled 
               ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-gray-200/50 border border-gray-200/50 py-3 px-4 rounded-2xl' 
               : 'bg-transparent py-4 px-4 rounded-none border-transparent' 
@@ -191,7 +201,7 @@ const Navbar = () => {
 
       {/* --- MOBILE FULLSCREEN MENU --- */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-5 fade-in duration-200 transform-gpu">
            <div className="flex flex-col h-[100dvh] pt-28 pb-8 px-6">
             
             {/* NAV LINKS SECTION */}
@@ -255,9 +265,12 @@ const DashboardMockup = () => {
         </div>
         <div className="bg-gray-100 relative group min-h-[300px] md:min-h-[500px]">
           <img 
-            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop" 
+            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" 
             alt="Jimmy Platform Dashboard" 
             className="w-full h-auto object-cover block"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
         </div>
@@ -332,7 +345,7 @@ const Hero = () => {
               <div className="mt-8 relative z-30 text-xs text-gray-500 font-medium flex items-center justify-center gap-2">
                 <div className="flex -space-x-2">
                   {COACH_AVATARS.map((url, i) => (
-                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach"/>
+                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach" loading="lazy" decoding="async"/>
                   ))}
                 </div>
                 <span>Join 400+ other coaches waiting for access.</span>
