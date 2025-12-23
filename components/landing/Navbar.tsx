@@ -160,164 +160,169 @@ const Navbar = () => {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
-         @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
       `}</style>
+      <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 flex justify-center pointer-events-none">
+        <div className="w-full max-w-6xl relative pointer-events-auto">
 
-      {/* --- DESKTOP HEADER --- */}
-      <header
-        className={`fixed top-0 left-0 w-full z-50 px-4 transition-all duration-300 ease-out border-b ${isScrolled
-            ? 'py-3 bg-white/80 backdrop-blur-xl border-gray-200/60 shadow-sm'
-            : 'py-5 bg-transparent border-transparent'
-          }`}
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Mobile Background: floating rounded bar */}
+          <div className="absolute inset-0 rounded-2xl bg-white/90 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 lg:hidden" />
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 cursor-pointer group select-none relative z-50">
-            <div className="relative">
-              <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-              <Image
-                src="/assets/logo/logo.svg"
-                alt="Jimmy Logo"
-                width={36}
-                height={36}
-                className="w-9 h-9 object-contain relative transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
-              />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
-              Jimmy
-            </span>
-          </Link>
+          {/* Desktop Background: floating rounded bar with fade logic */}
+          <div
+            className={`
+            hidden lg:block absolute inset-0 rounded-2xl transition-all duration-300 ease-out
+            ${isScrolled
+                ? 'bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100'
+                : 'bg-transparent border border-transparent opacity-0'
+              }
+          `}
+          />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-full bg-white/50 border border-gray-200/50 backdrop-blur-sm shadow-sm">
-            {MENU_STRUCTURE.map((item) => (
-              <div key={item.title} className="relative" onMouseLeave={handleDesktopLeave}>
-                {item.type === 'link' ? (
-                  <Link
-                    href={item.href}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
-                  >
-                    {/* @ts-ignore */}
-                    {item.icon && <item.icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
-                    {item.title}
-                  </Link>
-                ) : (
-                  <button
-                    onMouseEnter={() => handleDesktopEnter(item.title)}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 group ${activeDesktopMenu === item.title
-                        ? 'bg-gray-900 text-white shadow-md'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm'
-                      }`}
-                  >
-                    {item.title}
-                    <ChevronDown size={14} className={`transition-transform duration-200 opacity-50 ${activeDesktopMenu === item.title ? 'rotate-180' : ''}`} />
-                  </button>
-                )}
+          <nav className="relative z-10 flex items-center justify-between px-4 py-3">
 
-                {/* Dropdown / Mega Menu */}
-                {activeDesktopMenu === item.title && item.type !== 'link' && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-max z-50" onMouseEnter={() => handleDesktopEnter(item.title)}>
-                    <div
-                      className={`bg-white rounded-2xl shadow-xl ring-1 ring-gray-900/5 overflow-hidden animate-[slideUp_0.2s_ease-out] ${item.type === 'mega' ? 'w-[screen] max-w-4xl' : 'w-80'
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 cursor-pointer group select-none relative z-50">
+              <div className="relative">
+                <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+                <Image
+                  src="/assets/logo/logo.svg"
+                  alt="Jimmy Logo"
+                  width={36}
+                  height={36}
+                  className="w-9 h-9 object-contain relative transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
+                />
+              </div>
+              <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
+                Jimmy
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-full bg-white/50 border border-gray-200/50 backdrop-blur-sm shadow-sm">
+              {MENU_STRUCTURE.map((item) => (
+                <div key={item.title} className="relative" onMouseLeave={handleDesktopLeave}>
+                  {item.type === 'link' ? (
+                    <Link
+                      href={item.href}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
+                    >
+                      {/* @ts-ignore */}
+                      {item.icon && <item.icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
+                      {item.title}
+                    </Link>
+                  ) : (
+                    <button
+                      onMouseEnter={() => handleDesktopEnter(item.title)}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 group ${activeDesktopMenu === item.title
+                          ? 'bg-gray-900 text-white shadow-md'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm'
                         }`}
                     >
-                      {item.type === 'mega' ? (
-                        <div className="flex bg-gray-50/50 divide-x divide-gray-100">
-                          {/* @ts-ignore */}
-                          {item.columns!.map((col, idx) => (
-                            <div key={idx} className="flex-1 p-6 min-w-[320px]">
-                              <div className="mb-5 flex items-center gap-2">
-                                <span className={`h-6 w-1 rounded-full ${idx === 0 ? 'bg-purple-500' : 'bg-indigo-500'}`} />
-                                <div>
-                                  <div className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-0.5">{col.title}</div>
-                                  <div className="text-sm font-semibold text-gray-900">{col.subtitle}</div>
+                      {item.title}
+                      <ChevronDown size={14} className={`transition-transform duration-200 opacity-50 ${activeDesktopMenu === item.title ? 'rotate-180' : ''}`} />
+                    </button>
+                  )}
+
+                  {/* Desktop Dropdowns (Center aligned relative to item) */}
+                  {activeDesktopMenu === item.title && item.type !== 'link' && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-6 w-max z-50" onMouseEnter={() => handleDesktopEnter(item.title)}>
+                      <div
+                        className={`bg-white rounded-2xl shadow-xl ring-1 ring-gray-900/5 overflow-hidden animate-[slideUp_0.2s_ease-out] ${item.type === 'mega' ? 'w-[screen] max-w-4xl' : 'w-80'
+                          }`}
+                      >
+                        {item.type === 'mega' ? (
+                          <div className="flex bg-gray-50/50 divide-x divide-gray-100">
+                            {/* @ts-ignore */}
+                            {item.columns!.map((col, idx) => (
+                              <div key={idx} className="flex-1 p-6 min-w-[320px]">
+                                <div className="mb-5 flex items-center gap-2">
+                                  <span className={`h-6 w-1 rounded-full ${idx === 0 ? 'bg-purple-500' : 'bg-indigo-500'}`} />
+                                  <div>
+                                    <div className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-0.5">{col.title}</div>
+                                    <div className="text-sm font-semibold text-gray-900">{col.subtitle}</div>
+                                  </div>
+                                </div>
+                                <div className="space-y-1">
+                                  {col.items.map((subItem) => (
+                                    <Link key={subItem.label} href="#" className="flex items-start gap-3.5 p-3 rounded-xl hover:bg-white hover:shadow-md transition-all group/item duration-200">
+                                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${idx === 0 ? 'bg-purple-50 text-purple-600 group-hover/item:bg-purple-600 group-hover/item:text-white' : 'bg-indigo-50 text-indigo-600 group-hover/item:bg-indigo-600 group-hover/item:text-white'}`}>
+                                        <subItem.icon size={18} />
+                                      </div>
+                                      <div>
+                                        <div className="text-sm font-bold text-gray-900 flex items-center gap-2 mb-0.5">
+                                          {subItem.label}
+                                          {subItem.badge && (
+                                            <span className="px-1.5 py-0.5 rounded-md bg-gray-900 text-white text-[10px] font-bold shadow-sm">
+                                              {subItem.badge}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div className="text-xs text-gray-500 leading-relaxed font-medium">{subItem.desc}</div>
+                                      </div>
+                                    </Link>
+                                  ))}
                                 </div>
                               </div>
-                              <div className="space-y-1">
-                                {col.items.map((subItem) => (
-                                  <Link key={subItem.label} href="#" className="flex items-start gap-3.5 p-3 rounded-xl hover:bg-white hover:shadow-md transition-all group/item duration-200">
-                                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${idx === 0 ? 'bg-purple-50 text-purple-600 group-hover/item:bg-purple-600 group-hover/item:text-white' : 'bg-indigo-50 text-indigo-600 group-hover/item:bg-indigo-600 group-hover/item:text-white'}`}>
-                                      <subItem.icon size={18} />
-                                    </div>
-                                    <div>
-                                      <div className="text-sm font-bold text-gray-900 flex items-center gap-2 mb-0.5">
-                                        {subItem.label}
-                                        {subItem.badge && (
-                                          <span className="px-1.5 py-0.5 rounded-md bg-gray-900 text-white text-[10px] font-bold shadow-sm">
-                                            {subItem.badge}
-                                          </span>
-                                        )}
-                                      </div>
-                                      <div className="text-xs text-gray-500 leading-relaxed font-medium">{subItem.desc}</div>
-                                    </div>
-                                  </Link>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="p-2">
-                          {/* @ts-ignore */}
-                          {item.items!.map((subItem) => (
-                            <Link key={subItem.label} href="#" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 group-hover/item:text-purple-600 group-hover/item:bg-purple-100 transition-colors">
-                                <subItem.icon size={16} />
-                              </div>
-                              <div>
-                                <div className="text-sm font-bold text-gray-900 mb-0.5">{subItem.label}</div>
-                                {subItem.desc && <div className="text-xs text-gray-500 font-medium">{subItem.desc}</div>}
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="p-2">
+                            {/* @ts-ignore */}
+                            {item.items!.map((subItem) => (
+                              <Link key={subItem.label} href="#" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 group-hover/item:text-purple-600 group-hover/item:bg-purple-100 transition-colors">
+                                  <subItem.icon size={16} />
+                                </div>
+                                <div>
+                                  <div className="text-sm font-bold text-gray-900 mb-0.5">{subItem.label}</div>
+                                  {subItem.desc && <div className="text-xs text-gray-500 font-medium">{subItem.desc}</div>}
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
+                  )}
+                </div>
+              ))}
+            </div>
 
-          {/* Desktop Right Actions */}
-          <div className="hidden lg:flex items-center gap-4">
-            <LanguageSelector />
-            <div className="h-6 w-px bg-gray-200/80" />
-            <Link href="#waitlist" className="group">
+            {/* Desktop Right Actions */}
+            <div className="hidden lg:flex items-center gap-4">
+              <LanguageSelector />
+              <div className="h-6 w-px bg-gray-200/80" />
+              <Link href="#waitlist" className="group">
+                <button
+                  type="button"
+                  className="px-6 py-2.5 rounded-full text-sm font-bold text-white bg-gray-900 hover:bg-purple-600 transition-all shadow-lg hover:shadow-purple-500/30 active:scale-95 flex items-center gap-2"
+                >
+                  Join Waitlist
+                  <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <div className="lg:hidden flex items-center gap-3">
+              <LanguageSelector mobileView={false} />
               <button
-                type="button"
-                className="px-6 py-2.5 rounded-full text-sm font-bold text-white bg-gray-900 hover:bg-purple-600 transition-all shadow-lg hover:shadow-purple-500/30 active:scale-95 flex items-center gap-2"
+                onClick={() => {
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                  if ('vibrate' in navigator) navigator.vibrate(5);
+                }}
+                className="relative z-50 p-2.5 rounded-full bg-gray-100/80 backdrop-blur-sm self-center active:scale-90 transition-all"
               >
-                Join Waitlist
-                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                {isMobileMenuOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} className="text-gray-900" />}
               </button>
-            </Link>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="lg:hidden flex items-center gap-3">
-            <LanguageSelector mobileView={false} />
-            <button
-              onClick={() => {
-                setIsMobileMenuOpen(!isMobileMenuOpen);
-                if ('vibrate' in navigator) navigator.vibrate(5);
-              }}
-              className="relative z-50 p-2.5 rounded-full bg-gray-100/80 backdrop-blur-sm self-center active:scale-90 transition-all"
-            >
-              {isMobileMenuOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} className="text-gray-900" />}
-            </button>
-          </div>
+            </div>
+          </nav>
         </div>
       </header>
 
-
-      {/* --- MOBILE FULLSCREEN MENU --- */}
+      {/* --- MOBILE FULLSCREEN MENU (Portal-like Overlay) --- */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div className="fixed inset-0 z-[60] lg:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-white/60 backdrop-blur-xl animate-[fadeIn_0.3s_ease-out]"
@@ -325,7 +330,7 @@ const Navbar = () => {
           />
 
           {/* Menu Content */}
-          <div className="absolute inset-x-0 top-0 bottom-0 pt-24 pb-safe px-6 overflow-y-auto flex flex-col animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)]">
+          <div className="absolute inset-x-0 top-0 bottom-0 pt-28 pb-safe px-6 overflow-y-auto flex flex-col animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)]">
 
             <div className="flex-1 space-y-6">
               {MENU_STRUCTURE.map((item, index) => (
@@ -358,7 +363,6 @@ const Navbar = () => {
                       {/* Expanded Logic */}
                       {expandedMobileItems.includes(item.title) && (
                         <div className="space-y-4 pt-2 pl-2 animate-[fadeIn_0.3s_ease-out]">
-                          {/* Mega Menu Mobile Layout */}
                           {item.type === 'mega' ? (
                             /* @ts-ignore */
                             item.columns!.map((col, idx) => (
@@ -376,7 +380,6 @@ const Navbar = () => {
                               </div>
                             ))
                           ) : (
-                            /* Dropdown Mobile Layout */
                             /* @ts-ignore */
                             item.items!.map((subItem) => (
                               <Link key={subItem.label} href="#" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2">
