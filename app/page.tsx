@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Check, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, Check, ArrowRight, ChevronDown } from 'lucide-react';
 
+// --- ДАНІ ---
 const LANGUAGES = [
   { code: 'EN', flag: '🇺🇸', label: 'English' },
   { code: 'ES', flag: '🇪🇸', label: 'Español' },
@@ -20,170 +21,262 @@ const COACH_AVATARS = [
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&h=64&q=80"
 ];
 
-// Language Selector
-const LanguageSelector = () => {
+// --- КОМПОНЕНТИ ---
+
+const LanguageSelector = ({ mobileView = false }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(LANGUAGES[0]);
+  const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const listboxId = mobileView ? 'lang-listbox-mobile' : 'lang-listbox-desktop';
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const closeOnOutside = (event: PointerEvent) => {
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setIsOpen(false);
+      buttonRef.current?.focus();
+    };
+    window.addEventListener('pointerdown', closeOnOutside);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('pointerdown', closeOnOutside);
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isOpen]);
 
   return (
-    <div className="relative">
+    <div
+      ref={containerRef}
+      className={`relative ${mobileView ? 'w-full' : ''}`}
+    >
       <button 
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={listboxId}
+        className={`
+          flex items-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none
+          ${mobileView 
+            ? 'w-full justify-between bg-gray-50 border border-gray-100 p-4 text-base text-gray-900 active:bg-gray-100'
+            : 'px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 bg-transparent'
+          }
+        `}
       >
-        <span className="text-lg">{selected.flag}</span>
-        <span className="hidden sm:inline">{selected.code}</span>
-        <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <div className="flex items-center gap-2">
+          <span className="text-xl leading-none">{currentLang.flag}</span>
+          <span className={`${!mobileView ? 'hidden sm:inline' : 'font-semibold'}`}>
+            {mobileView ? currentLang.label : currentLang.code}
+          </span>
+        </div>
+        <ChevronDown size={mobileView ? 20 : 14} className={`transition-transform duration-200 text-gray-400 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-      
+
       {isOpen && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl z-20 py-1">
+        <div
+          id={listboxId}
+          role="listbox"
+          className={`overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${mobileView ? 'relative w-full mt-2 bg-white border border-gray-100 rounded-xl' : 'absolute top-full right-0 mt-2 w-40 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-xl rounded-xl z-50'}`}
+        >
+          <div className="p-1">
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => { setSelected(lang); setIsOpen(false); }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-purple-50 transition-colors"
+                onClick={() => { setCurrentLang(lang); setIsOpen(false); }}
+                type="button"
+                role="option"
+                aria-selected={currentLang.code === lang.code}
+                className={`flex items-center gap-3 w-full px-3 text-left rounded-lg transition-colors ${mobileView ? 'py-3 text-base text-gray-900 hover:bg-gray-50' : 'py-2 text-sm text-gray-700 hover:bg-purple-50'}`}
               >
                 <span className="text-lg">{lang.flag}</span>
-                <span className="flex-1 text-left">{lang.label}</span>
-                {selected.code === lang.code && <Check size={16} className="text-purple-600" />}
+                <span className="font-medium flex-1">{lang.label}</span>
+                {currentLang.code === lang.code && <Check size={16} className="text-purple-600" />}
               </button>
             ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
 };
 
-// Main Navbar
+// === ГОЛОВНЕ МЕНЮ (ПОВНІСТЮ ПЕРЕПИСАНЕ) ===
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const mobileMenuId = 'mobile-menu';
 
-  // Simple scroll detection
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      // Поріг 10px. Це працює миттєво.
+      setIsScrolled(window.scrollY > 10);
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Lock body scroll when menu is open
+  // Блокування скролу
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    
-    return () => {
-      document.body.style.overflow = '';
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setIsMobileMenuOpen(false);
+      mobileMenuButtonRef.current?.focus();
     };
-  }, [menuOpen]);
+    const closeOnResize = () => {
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    window.addEventListener('resize', closeOnResize);
+    mobileMenuRef.current?.focus();
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      window.removeEventListener('resize', closeOnResize);
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
-      {/* Desktop/Mobile Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-        <div className="max-w-5xl mx-auto">
+      {/* HEADER WRAPPER
+        fixed: Завжди зверху
+        top-0: Притиснутий до верху
+        z-50: Найвищий шар
+        pointer-events-none: Щоб кліки проходили крізь порожні місця
+        pt-3: Відступ зверху (для ефекту острівця)
+      */}
+      <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 pointer-events-none flex justify-center">
+        
+        {/* ISLAND CONTAINER 
+          Тут ми задаємо ширину і відступи.
+          pointer-events-auto: Повертаємо можливість клікати
+        */}
+        <div className="w-full max-w-5xl relative pointer-events-auto">
+          
+          {/* BACKGROUND LAYER (ОКРЕМИЙ ШАР)
+            Це ключ до вирішення багу. Ми не змінюємо розміри цього блоку.
+            Ми змінюємо ТІЛЬКИ opacity. Це миттєво.
+          */}
           <div 
             className={`
-              relative rounded-2xl transition-all duration-300
+              absolute inset-0 rounded-2xl transition-all duration-300 ease-out
               ${isScrolled 
-                ? 'bg-white/95 backdrop-blur-lg shadow-lg border border-gray-200' 
-                : 'bg-white/50 backdrop-blur-md border border-transparent'
+                ? 'bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100'
+                : 'bg-transparent border border-transparent opacity-0'
               }
             `}
-          >
-            <div className="flex items-center justify-between px-4 md:px-6 py-3">
-              
-              {/* Logo */}
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <Image 
-                  src="/assets/logo/logo.svg" 
-                  alt="Jimmy"
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 transition-transform group-hover:scale-110 group-hover:-rotate-6" 
-                />
-                <span className="font-bold text-xl text-gray-900 group-hover:text-purple-600 transition-colors">
-                  Jimmy
-                </span>
-              </Link>
+          />
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center gap-1 bg-gray-100/60 px-1.5 py-1.5 rounded-full">
-                {MENU_ITEMS.map((item) => (
-                  <a 
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
-                    className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-full transition-all"
-                  >
-                    {item}
-                  </a>
-                ))}
-              </div>
-
-              {/* Desktop Actions */}
-              <div className="hidden md:flex items-center gap-3">
-                <LanguageSelector />
-                <div className="w-px h-5 bg-gray-300" />
-                <button className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-purple-500/20 hover:shadow-lg transition-all hover:-translate-y-0.5">
-                  Join Waitlist
-                </button>
-              </div>
-
-              {/* Mobile Actions */}
-              <div className="flex items-center gap-2 md:hidden">
-                <LanguageSelector />
-                <button 
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  {menuOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden">
-          <div className="flex flex-col h-full px-6 pt-28 pb-8">
+          {/* CONTENT LAYER */}
+          <nav className="relative z-10 flex items-center justify-between px-4 py-3">
             
-            {/* Menu Items */}
-            <nav className="flex-1 space-y-2">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 cursor-pointer group select-none">
+              <Image 
+                src="/assets/logo/logo.svg" 
+                alt="Jimmy Logo"
+                width={36}
+                height={36}
+                className="w-8 h-8 md:w-9 md:h-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
+              />
+              <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
+                Jimmy
+              </span>
+            </Link>
+
+            {/* Desktop Links */}
+            <div className="hidden md:flex items-center gap-1 bg-gray-100/50 p-1.5 rounded-full border border-gray-200/50">
               {MENU_ITEMS.map((item) => (
                 <a 
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="group flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 transition-colors"
+                  className="px-5 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
                 >
-                  <span className="text-3xl font-bold text-gray-900 group-hover:text-purple-600">
-                    {item}
-                  </span>
-                  <ArrowRight size={24} className="text-gray-400 group-hover:text-purple-600 -rotate-45 group-hover:rotate-0 transition-transform" />
+                  {item}
                 </a>
               ))}
-            </nav>
+            </div>
 
-            {/* Bottom CTA */}
-            <div className="border-t border-gray-100 pt-6">
-              <button className="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-3">
+              <LanguageSelector />
+              <div className="h-5 w-px bg-gray-200"></div>
+              <button type="button" className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 hover:shadow-lg hover:shadow-purple-500/30 active:scale-95">
                 Join Waitlist
-                <ArrowRight size={20} />
               </button>
-              <p className="text-center mt-4 text-xs text-gray-400">© 2025 Jimmy App Inc.</p>
+            </div>
+
+            {/* Mobile Actions */}
+            <div className="md:hidden flex items-center gap-2">
+              <div className="relative z-50">
+                <LanguageSelector mobileView={false} />
+              </div>
+              <button 
+                ref={mobileMenuButtonRef}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                type="button"
+                aria-expanded={isMobileMenuOpen}
+                aria-controls={mobileMenuId}
+                aria-label="Toggle menu"
+                className={`p-2 rounded-lg transition-colors relative z-50 ${isMobileMenuOpen ? 'bg-gray-100' : 'hover:bg-gray-100'}`}
+              >
+                {isMobileMenuOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} className="text-gray-600" />}
+              </button>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      {/* MOBILE FULLSCREEN MENU */}
+      {isMobileMenuOpen && (
+        <div
+          id={mobileMenuId}
+          ref={mobileMenuRef}
+          role="dialog"
+          aria-modal="true"
+          tabIndex={-1}
+          className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-5 fade-in duration-200"
+        >
+           <div className="flex flex-col h-full pt-28 pb-8 px-6">
+            <div className="flex-1 space-y-2">
+              {MENU_ITEMS.map((item) => (
+                <a 
+                  key={item} 
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="group flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-all border border-transparent hover:border-gray-100"
+                >
+                  <span className="text-3xl font-bold text-gray-900">{item}</span>
+                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors">
+                    <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform" />
+                  </div>
+                </a>
+              ))}
+            </div>
+            <div className="mt-auto pt-6 border-t border-gray-100">
+              <button type="button" className="w-full py-4 rounded-xl text-lg font-bold text-white bg-purple-600 shadow-xl shadow-purple-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                  Join Waitlist <ArrowRight size={20} />
+               </button>
+               <div className="text-center mt-6 text-xs text-gray-400 font-medium">© 2025 Jimmy App Inc.</div>
             </div>
           </div>
         </div>
@@ -191,6 +284,8 @@ const Navbar = () => {
     </>
   );
 };
+
+// --- ІНШІ КОМПОНЕНТИ (HERO, DASHBOARD, APP) ---
 
 const DashboardMockup = () => {
   return (
@@ -204,18 +299,19 @@ const DashboardMockup = () => {
           </div>
           <div className="bg-white px-3 py-0.5 rounded text-[10px] font-mono text-gray-400 border border-gray-200 shadow-sm flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-green-500"></span>
-            jimmy.app/dashboard
+            app.jimmycoach.com
           </div>
           <div className="w-10"></div>
         </div>
-        <div className="bg-gray-100 relative group min-h-[300px] md:min-h-[500px]">
-          <img 
-            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" 
-            alt="Jimmy Platform Dashboard" 
-            className="w-full h-auto object-cover block"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
+        <div className="bg-gray-100 relative group">
+          <Image
+            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"
+            alt="Jimmy Platform Dashboard"
+            width={1200}
+            height={750}
+            priority
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            className="w-full h-auto"
           />
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
         </div>
@@ -289,8 +385,17 @@ const Hero = () => {
               </div>
               <div className="mt-8 relative z-30 text-xs text-gray-500 font-medium flex items-center justify-center gap-2">
                 <div className="flex -space-x-2">
-                  {COACH_AVATARS.map((url, i) => (
-                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach" loading="lazy" decoding="async"/>
+                  {COACH_AVATARS.map((url) => (
+                    <Image
+                      key={url}
+                      src={url}
+                      alt="Coach"
+                      width={24}
+                      height={24}
+                      sizes="24px"
+                      className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100"
+                      loading="lazy"
+                    />
                   ))}
                 </div>
                 <span>Join 400+ other coaches waiting for access.</span>
@@ -320,8 +425,8 @@ const App = () => {
             <Image 
               src="/assets/logo/logo.svg" 
               alt="Jimmy Logo" 
-              width={32}
-              height={32}
+              width={64}
+              height={64}
               className="w-8 h-8 object-contain"
             />
             Jimmy
