@@ -2,6 +2,8 @@ import Footer from '../components/landing/Footer';
 import Hero from '../components/landing/Hero';
 import Navbar from '../components/landing/Navbar';
 import ClientExperienceSection from '../components/landing/ClientExperienceSection';
+import PricingSection from '../components/landing/PricingSection';
+import ManifestoSection from '../components/landing/ManifestoSection';
 import CoreFeaturesSection from '../components/landing/CoreFeaturesSection';
 import ProblemSection from '../components/landing/ProblemSection';
 
@@ -13,6 +15,8 @@ const App = () => {
       <ProblemSection />
       <CoreFeaturesSection />
       <ClientExperienceSection />
+      <PricingSection />
+      <ManifestoSection />
       <Footer />
     </div>
   );
