@@ -191,7 +191,7 @@ const Navbar = () => {
         <div className="w-full max-w-6xl relative pointer-events-auto">
 
           {/* Mobile Background: floating rounded bar */}
-          <div className="absolute inset-0 rounded-2xl bg-white/90 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 lg:hidden" />
+          <div className="absolute inset-0 rounded-2xl bg-white/90 backdrop-blur-md border border-gray-200/50 shadow-lg shadow-gray-200/20 lg:hidden" />
 
           {/* Desktop Background: floating rounded bar with fade logic */}
           <div
@@ -346,7 +346,6 @@ const Navbar = () => {
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(!isMobileMenuOpen);
-                  if ('vibrate' in navigator) navigator.vibrate(10);
                 }}
                 className={`p-2 rounded-lg transition-colors ${isMobileMenuOpen ? 'bg-purple-100 text-purple-600' : 'hover:bg-gray-100 text-gray-600'}`}
               >
@@ -355,7 +354,7 @@ const Navbar = () => {
 
               {/* Mobile Menu Dropdown (Restored Original Style) */}
               {isMobileMenuOpen && (
-                <div className="absolute right-0 top-full mt-3 w-[90vw] max-w-sm bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-[dropdownSlide_0.2s_ease-out] z-[60]">
+                <div className="absolute right-0 top-full mt-3 w-[90vw] max-w-sm bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-[dropdownSlide_0.2s_ease-out] z-[60] will-change-transform">
                   <div className="max-h-[70vh] overflow-y-auto p-4 space-y-2">
                     {MENU_STRUCTURE.map((item) => (
                       <div key={item.title} className="border-b border-gray-100 last:border-0 pb-2 last:pb-0">
