@@ -73,8 +73,8 @@ const Navbar = () => {
       `}</style>
       <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 flex justify-center">
         <div className="w-full max-w-5xl relative">
-          {/* Mobile: завжди скляний фон */}
-          <div className="absolute inset-0 rounded-2xl bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 md:hidden" />
+          {/* Mobile: solid background БЕЗ blur - фікс для iOS 26.2 */}
+          <div className="absolute inset-0 rounded-2xl bg-white border border-gray-200/50 shadow-lg shadow-gray-200/20 md:hidden" />
 
           {/* Desktop: прозорий -> скляний при скролі */}
           <div
@@ -145,10 +145,10 @@ const Navbar = () => {
                   )}
                 </button>
 
-                {/* КРАСИВИЙ DROPDOWN */}
+                {/* КРАСИВИЙ DROPDOWN - БЕЗ blur на мобілі для iOS 26.2 */}
                 {isMobileMenuOpen && (
                   <div
-                    className="absolute right-0 top-full mt-3 w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
+                    className="absolute right-0 top-full mt-3 w-72 bg-white md:bg-white/95 md:backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
                     style={{
                       animation: 'dropdownSlide 0.2s ease-out',
                     }}
