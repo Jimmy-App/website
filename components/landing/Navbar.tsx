@@ -247,7 +247,6 @@ const Navbar = () => {
                       href={item.href || '#'}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
                     >
-                      {/* @ts-ignore */}
                       {item.icon && <item.icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
                       {item.title}
                     </Link>
@@ -273,7 +272,6 @@ const Navbar = () => {
                       >
                         {item.type === 'mega' ? (
                           <div className="flex bg-gray-50/50 divide-x divide-gray-100">
-                            {/* @ts-ignore */}
                             {item.columns!.map((col, idx) => (
                               <div key={idx} className="flex-1 p-6 min-w-[320px]">
                                 <div className="mb-5 flex items-center gap-2">
@@ -308,7 +306,6 @@ const Navbar = () => {
                           </div>
                         ) : (
                           <div className="p-2">
-                            {/* @ts-ignore */}
                             {item.items!.map((subItem) => (
                               <Link key={subItem.label} href="#" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
                                 <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 group-hover/item:text-purple-600 group-hover/item:bg-purple-100 transition-colors">
@@ -368,7 +365,6 @@ const Navbar = () => {
                             onClick={() => setIsMobileMenuOpen(false)}
                             className="flex items-center gap-2 py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg"
                           >
-                            {/* @ts-ignore */}
                             {item.icon && <item.icon size={18} className="text-purple-600" />}
                             {item.title}
                           </Link>
@@ -386,7 +382,6 @@ const Navbar = () => {
                             {expandedMobileItems.includes(item.title) && (
                               <div className="pl-2 pr-2 space-y-2 py-3 bg-gray-50/80 rounded-2xl mt-2 border border-black/5">
                                 {item.type === 'mega' ? (
-                                  /* @ts-ignore */
                                   item.columns!.map((col, idx) => (
                                     <div key={idx} className="mb-4 last:mb-0">
                                       <div className="text-[11px] font-bold text-gray-400 uppercase mb-2 ml-3 tracking-wider">{col.title}</div>
@@ -403,7 +398,6 @@ const Navbar = () => {
                                     </div>
                                   ))
                                 ) : (
-                                  /* @ts-ignore */
                                   item.items!.map((subItem) => (
                                     <a key={subItem.label} href="#" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-white active:bg-white transition-all">
                                       <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm ring-1 ring-black/5 shrink-0">

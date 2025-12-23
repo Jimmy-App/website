@@ -11,7 +11,6 @@ import { COACH_AVATARS } from './constants';
 const Hero = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const currentYear = new Date().getFullYear();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
