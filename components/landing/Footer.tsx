@@ -1,6 +1,8 @@
 import Image from 'next/image';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="py-12 border-t border-gray-100 mt-auto bg-white relative z-20">
       <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
@@ -14,7 +16,7 @@ const Footer = () => {
           />
           Jimmy
         </div>
-        <div className="text-gray-400 text-sm">© 2025 Jimmy Coach App. Built for independence.</div>
+        <div className="text-gray-400 text-sm">© {currentYear} Just Jimmy LLC. Built for independence.</div>
       </div>
     </footer>
   );

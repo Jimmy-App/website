@@ -9,8 +9,19 @@ import LanguageSelector from './LanguageSelector';
 import { MENU_ITEMS } from './constants';
 
 const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // Відслідковування скролу для desktop
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Закриття по кліку поза меню
   useEffect(() => {
@@ -36,10 +47,43 @@ const Navbar = () => {
   }, []);
 
   return (
+    <>
+      <style jsx global>{`
+        @keyframes dropdownSlide {
+          from {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.96);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        
+        @keyframes menuItemFade {
+          from {
+            opacity: 0;
+            transform: translateX(-8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 flex justify-center">
       <div className="w-full max-w-5xl relative">
-        {/* Glass background */}
-        <div className="absolute inset-0 rounded-2xl bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20" />
+        {/* Glass background - прозорий спочатку, з'являється при скролі */}
+        <div 
+          className={`
+            absolute inset-0 rounded-2xl transition-all duration-300 ease-out
+            ${
+              isScrolled
+                ? 'bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100'
+                : 'bg-transparent border border-transparent opacity-0'
+            }
+          `}
+        />
 
         <nav className="relative z-10 flex items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center gap-2 cursor-pointer group select-none">
@@ -100,31 +144,47 @@ const Navbar = () => {
                 )}
               </button>
 
-              {/* ПРОСТИЙ DROPDOWN - БЕЗ FULLSCREEN! */}
+              {/* КРАСИВИЙ DROPDOWN */}
               {isMobileMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div 
+                  className="absolute right-0 top-full mt-3 w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden"
+                  style={{
+                    animation: 'dropdownSlide 0.2s ease-out',
+                  }}
+                >
                   {/* Menu items */}
-                  <div className="p-2">
-                    {MENU_ITEMS.map((item) => (
+                  <div className="p-3">
+                    {MENU_ITEMS.map((item, index) => (
                       <a
                         key={item}
                         href={`#${item.toLowerCase()}`}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                        className="group flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 active:scale-[0.98] transition-all border border-transparent hover:border-purple-100"
+                        style={{
+                          animation: `menuItemFade 0.15s ease-out ${index * 0.03}s both`,
+                        }}
                       >
-                        <span className="text-base font-semibold text-gray-900">{item}</span>
-                        <ArrowRight size={16} className="text-gray-400" />
+                        <span className="text-base font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                          {item}
+                        </span>
+                        <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-purple-600 group-hover:scale-110 transition-all">
+                          <ArrowRight 
+                            size={14} 
+                            className="text-gray-400 group-hover:text-white -rotate-45 group-hover:rotate-0 transition-all" 
+                          />
+                        </div>
                       </a>
                     ))}
                   </div>
 
                   {/* CTA */}
-                  <div className="p-2 pt-0 border-t border-gray-100">
+                  <div className="p-3 pt-2 border-t border-gray-100/50 bg-gradient-to-b from-transparent to-gray-50/30">
                     <button
                       type="button"
-                      className="w-full py-3 rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-md shadow-purple-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                     >
-                      Join Waitlist <ArrowRight size={16} />
+                      Join Waitlist 
+                      <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </div>
                 </div>
@@ -134,6 +194,7 @@ const Navbar = () => {
         </nav>
       </div>
     </header>
+    </>
   );
 };
 

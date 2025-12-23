@@ -11,6 +11,7 @@ import { COACH_AVATARS } from './constants';
 const Hero = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,7 +32,7 @@ const Hero = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-600"></span>
           </span>
           <span className="text-[11px] font-bold text-purple-900 tracking-wider uppercase">
-            Waitlist Open • Q2 2025
+            Waitlist Open
           </span>
         </div>
 
