@@ -216,7 +216,7 @@ const Navbar = () => {
                 <div key={item.title} className="relative" onMouseLeave={handleDesktopLeave}>
                   {item.type === 'link' ? (
                     <Link
-                      href={item.href}
+                      href={item.href || '#'}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
                     >
                       {/* @ts-ignore */}
@@ -335,11 +335,15 @@ const Navbar = () => {
                     {MENU_STRUCTURE.map((item) => (
                       <div key={item.title} className="border-b border-gray-100 last:border-0 pb-2 last:pb-0">
                         {item.type === 'link' ? (
-                          <a href={item.href} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg">
+                          <Link
+                            href={item.href || '#'}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-2 py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg"
+                          >
                             {/* @ts-ignore */}
                             {item.icon && <item.icon size={18} className="text-purple-600" />}
                             {item.title}
-                          </a>
+                          </Link>
                         ) : (
                           <div>
                             <button
