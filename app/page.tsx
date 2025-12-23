@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Check, ArrowRight, ChevronDown } from 'lucide-react';
-
-// --- КОНСТАНТИ ---
+import { Check, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'EN', flag: '🇺🇸', label: 'English' },
@@ -20,179 +18,180 @@ const COACH_AVATARS = [
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&h=64&q=80"
 ];
 
-// --- КОМПОНЕНТИ МЕНЮ ---
-
-const LanguageSelector = ({ mobileView = false }) => {
+// Language Selector
+const LanguageSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const close = () => setIsOpen(false);
-    window.addEventListener('click', close);
-    return () => window.removeEventListener('click', close);
-  }, [isOpen]);
+  const [selected, setSelected] = useState(LANGUAGES[0]);
 
   return (
-    <div className={`relative ${mobileView ? 'w-full' : ''}`} onClick={(e) => e.stopPropagation()}>
+    <div className="relative">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`
-          flex items-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none
-          ${mobileView 
-            ? 'w-full justify-between bg-gray-50 border border-gray-100 p-4 text-base text-gray-900 active:bg-gray-100' 
-            : 'px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 bg-transparent' 
-          }
-        `}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
       >
-        <div className="flex items-center gap-2">
-          <span className="text-xl leading-none">{currentLang.flag}</span>
-          <span className={`${!mobileView ? 'hidden sm:inline' : 'font-semibold'}`}>
-            {mobileView ? currentLang.label : currentLang.code}
-          </span>
-        </div>
-        <ChevronDown size={mobileView ? 20 : 14} className={`transition-transform duration-200 text-gray-400 ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-lg">{selected.flag}</span>
+        <span className="hidden sm:inline">{selected.code}</span>
+        <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-
+      
       {isOpen && (
-        <div className={`overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${mobileView ? 'relative w-full mt-2 bg-white border border-gray-100 rounded-xl' : 'absolute top-full right-0 mt-2 w-40 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-xl rounded-xl z-50'}`}>
-          <div className="p-1">
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl z-20 py-1">
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => { setCurrentLang(lang); setIsOpen(false); }}
-                className={`flex items-center gap-3 w-full px-3 text-left rounded-lg transition-colors ${mobileView ? 'py-3 text-base text-gray-900 hover:bg-gray-50' : 'py-2 text-sm text-gray-700 hover:bg-purple-50'}`}
+                onClick={() => { setSelected(lang); setIsOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-purple-50 transition-colors"
               >
                 <span className="text-lg">{lang.flag}</span>
-                <span className="font-medium flex-1">{lang.label}</span>
-                {currentLang.code === lang.code && <Check size={16} className="text-purple-600" />}
+                <span className="flex-1 text-left">{lang.label}</span>
+                {selected.code === lang.code && <Check size={16} className="text-purple-600" />}
               </button>
             ))}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
 };
 
+// Main Navbar
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
+  // Optimized scroll detection for iOS
   useEffect(() => {
-    const onScroll = () => {
-      // Проста логіка: скрол більше 10px -> включаємо фон
-      setIsScrolled(window.scrollY > 10);
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    // Викликаємо одразу, щоб перевірити стан при перезавантаженні
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when menu is open
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [isMobileMenuOpen]);
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [menuOpen]);
 
   return (
     <>
-      {/* HEADER WRAPPER 
-        pt-3 px-3 (або більше на десктопі) створюють відступи для "острівця"
-      */}
-      <header className="fixed top-0 left-0 w-full z-50 pt-3 px-3 md:pt-4 md:px-4 pointer-events-none flex justify-center">
-        <div className="w-full max-w-5xl relative pointer-events-auto">
-          
-          {/* BACKGROUND LAYER (Окремий шар для стабільності на iOS)
-             Ми не змінюємо його розмір (width/height/padding), тільки opacity.
-          */}
+      {/* Desktop/Mobile Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
+        <div className="max-w-5xl mx-auto">
           <div 
             className={`
-              absolute inset-0 rounded-2xl border transition-all duration-300 ease-out
+              relative rounded-2xl transition-[background,border,box-shadow] duration-200 ease-out will-change-[background,border,box-shadow]
               ${isScrolled 
-                ? 'bg-white/90 backdrop-blur-xl border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100' 
-                : 'bg-transparent border-transparent opacity-0'
+                ? 'bg-white shadow-lg border border-gray-200' 
+                : 'bg-white/80 border border-white/20'
               }
             `}
-          />
+            style={{ WebkitBackdropFilter: isScrolled ? 'none' : 'blur(8px)', backdropFilter: isScrolled ? 'none' : 'blur(8px)' }}
+          >
+            <div className="flex items-center justify-between px-4 md:px-6 py-3">
+              
+              {/* Logo */}
+              <a href="/" className="flex items-center gap-2.5 group touch-manipulation">
+                <img 
+                  src="/assets/logo/logo.svg" 
+                  alt="Jimmy" 
+                  className="w-9 h-9 will-change-transform transition-transform group-hover:scale-110 group-hover:-rotate-6" 
+                />
+                <span className="font-bold text-xl text-gray-900 group-hover:text-purple-600 transition-colors">
+                  Jimmy
+                </span>
+              </a>
 
-          {/* CONTENT LAYER */}
-          <nav className="relative z-10 flex items-center justify-between px-4 py-3">
-            
-            {/* Logo */}
-            <div className="flex items-center gap-2 cursor-pointer group select-none">
-              <img 
-                src="/assets/logo/logo.svg" 
-                alt="Jimmy Logo" 
-                className="w-8 h-8 md:w-9 md:h-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3" 
-              />
-              <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
-                Jimmy
-              </span>
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center gap-1 bg-gray-100/60 px-1.5 py-1.5 rounded-full">
+                {MENU_ITEMS.map((item) => (
+                  <a 
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-full transition-colors touch-manipulation"
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+
+              {/* Desktop Actions */}
+              <div className="hidden md:flex items-center gap-3">
+                <LanguageSelector />
+                <div className="w-px h-5 bg-gray-300" />
+                <button className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-purple-500/20 hover:shadow-lg transition-colors touch-manipulation">
+                  Join Waitlist
+                </button>
+              </div>
+
+              {/* Mobile Actions */}
+              <div className="flex items-center gap-2 md:hidden">
+                <LanguageSelector />
+                <button 
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation active:scale-95"
+                >
+                  {menuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
+      </header>
 
-            {/* Desktop Links */}
-            <div className="hidden md:flex items-center gap-1 bg-gray-100/50 p-1.5 rounded-full border border-gray-200/50">
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 bg-white md:hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="flex flex-col h-full px-6 pt-28 pb-8">
+            
+            {/* Menu Items */}
+            <nav className="flex-1 space-y-2 overflow-y-auto">
               {MENU_ITEMS.map((item) => (
                 <a 
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="px-5 py-1.5 rounded-full text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
+                  onClick={() => setMenuOpen(false)}
+                  className="group flex items-center justify-between p-4 rounded-2xl active:bg-gray-100 transition-colors touch-manipulation"
                 >
-                  {item}
+                  <span className="text-3xl font-bold text-gray-900 group-active:text-purple-600">
+                    {item}
+                  </span>
+                  <ArrowRight size={24} className="text-gray-400 group-active:text-purple-600 -rotate-45 transition-transform" />
                 </a>
               ))}
-            </div>
+            </nav>
 
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-3">
-              <LanguageSelector />
-              <div className="h-5 w-px bg-gray-200"></div>
-              <button className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 hover:shadow-lg hover:shadow-purple-500/30 active:scale-95">
+            {/* Bottom CTA */}
+            <div className="border-t border-gray-100 pt-6">
+              <button className="w-full py-4 bg-purple-600 active:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition-colors active:scale-95 flex items-center justify-center gap-2 touch-manipulation">
                 Join Waitlist
+                <ArrowRight size={20} />
               </button>
-            </div>
-
-            {/* Mobile Actions */}
-            <div className="md:hidden flex items-center gap-2">
-              <div className="relative z-50">
-                <LanguageSelector mobileView={false} />
-              </div>
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`p-2 rounded-lg transition-colors relative z-50 ${isMobileMenuOpen ? 'bg-gray-100' : 'hover:bg-gray-100'}`}
-              >
-                {isMobileMenuOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} className="text-gray-600" />}
-              </button>
-            </div>
-          </nav>
-        </div>
-      </header>
-
-      {/* MOBILE FULLSCREEN MENU */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-5 fade-in duration-200">
-           <div className="flex flex-col h-full pt-28 pb-8 px-6">
-            <div className="flex-1 space-y-2 overflow-y-auto">
-              {MENU_ITEMS.map((item) => (
-                <a 
-                  key={item} 
-                  href="#" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="group flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-all border border-transparent hover:border-gray-100"
-                >
-                  <span className="text-3xl font-bold text-gray-900 tracking-tight group-hover:text-purple-600">{item}</span>
-                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors">
-                    <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform" />
-                  </div>
-                </a>
-              ))}
-            </div>
-            <div className="mt-auto pt-6 border-t border-gray-100">
-               <button className="w-full py-4 rounded-xl text-lg font-bold text-white bg-purple-600 shadow-xl shadow-purple-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                  Join Waitlist <ArrowRight size={20} />
-               </button>
-               <div className="text-center mt-6 text-xs text-gray-400 font-medium">© 2025 Jimmy App Inc.</div>
+              <p className="text-center mt-4 text-xs text-gray-400">© 2025 Jimmy App Inc.</p>
             </div>
           </div>
         </div>
@@ -200,8 +199,6 @@ const Navbar = () => {
     </>
   );
 };
-
-// --- ОРИГІНАЛЬНИЙ HERO ТА ІНШІ КОМПОНЕНТИ (ПОВЕРНУВ ЯК БУЛО) ---
 
 const DashboardMockup = () => {
   return (
