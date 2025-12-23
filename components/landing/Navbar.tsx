@@ -30,7 +30,8 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDesktopMenu, setActiveDesktopMenu] = useState<string | null>(null);
-  const [expandedMobileItems, setExpandedMobileItems] = useState<string[]>(['Features']); // Default open for better discovery
+  const [expandedMobileItems, setExpandedMobileItems] = useState<string[]>([]);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
   // Timeout ref for handling desktop menu delay
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -45,17 +46,25 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Закриття по кліку поза меню
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+
+      // Close desktop menus when clicking outside
+      if (!(event.target as Element).closest('.desktop-menu-trigger')) {
+        setActiveDesktopMenu(null);
+      }
     };
-  }, [isMobileMenuOpen]);
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Закриття на Escape
   useEffect(() => {
@@ -160,6 +169,10 @@ const Navbar = () => {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes dropdownSlide {
+          from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
       `}</style>
       <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 flex justify-center pointer-events-none">
         <div className="w-full max-w-6xl relative pointer-events-auto">
@@ -214,8 +227,8 @@ const Navbar = () => {
                     <button
                       onMouseEnter={() => handleDesktopEnter(item.title)}
                       className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 group ${activeDesktopMenu === item.title
-                          ? 'bg-gray-900 text-white shadow-md'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm'
+                        ? 'bg-gray-900 text-white shadow-md'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm'
                         }`}
                     >
                       {item.title}
@@ -295,120 +308,100 @@ const Navbar = () => {
               <Link href="#waitlist" className="group">
                 <button
                   type="button"
-                  className="px-6 py-2.5 rounded-full text-sm font-bold text-white bg-gray-900 hover:bg-purple-600 transition-all shadow-lg hover:shadow-purple-500/30 active:scale-95 flex items-center gap-2"
+                  className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 active:scale-95"
                 >
                   Join Waitlist
-                  <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </Link>
             </div>
 
             {/* Mobile Menu Toggle */}
-            <div className="lg:hidden flex items-center gap-3">
+            <div className="lg:hidden flex items-center gap-2" ref={mobileMenuRef}>
               <LanguageSelector mobileView={false} />
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(!isMobileMenuOpen);
-                  if ('vibrate' in navigator) navigator.vibrate(5);
+                  if ('vibrate' in navigator) navigator.vibrate(10);
                 }}
-                className="relative z-50 p-2.5 rounded-full bg-gray-100/80 backdrop-blur-sm self-center active:scale-90 transition-all"
+                className={`p-2 rounded-lg transition-colors ${isMobileMenuOpen ? 'bg-purple-100 text-purple-600' : 'hover:bg-gray-100 text-gray-600'}`}
               >
-                {isMobileMenuOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} className="text-gray-900" />}
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
+
+              {/* Mobile Menu Dropdown (Restored Original Style) */}
+              {isMobileMenuOpen && (
+                <div className="absolute right-0 top-full mt-3 w-[90vw] max-w-sm bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-[dropdownSlide_0.2s_ease-out]">
+                  <div className="max-h-[70vh] overflow-y-auto p-4 space-y-2">
+                    {MENU_STRUCTURE.map((item) => (
+                      <div key={item.title} className="border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                        {item.type === 'link' ? (
+                          <a href={item.href} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg">
+                            {/* @ts-ignore */}
+                            {item.icon && <item.icon size={18} className="text-purple-600" />}
+                            {item.title}
+                          </a>
+                        ) : (
+                          <div>
+                            <button
+                              onClick={() => toggleMobileItem(item.title)}
+                              className="flex items-center justify-between w-full py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg"
+                            >
+                              {item.title}
+                              <ChevronDown size={16} className={`transition-transform ${expandedMobileItems.includes(item.title) ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {/* Expanded Mobile Content */}
+                            {expandedMobileItems.includes(item.title) && (
+                              <div className="pl-2 pr-2 space-y-2 py-3 bg-gray-50/80 rounded-2xl mt-2 border border-black/5">
+                                {item.type === 'mega' ? (
+                                  /* @ts-ignore */
+                                  item.columns!.map((col, idx) => (
+                                    <div key={idx} className="mb-4 last:mb-0">
+                                      <div className="text-[11px] font-bold text-gray-400 uppercase mb-2 ml-3 tracking-wider">{col.title}</div>
+                                      <div className="space-y-1">
+                                        {col.items.map((subItem) => (
+                                          <a key={subItem.label} href="#" className="flex items-center gap-3.5 p-3 rounded-xl hover:bg-white active:bg-white transition-all">
+                                            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm ring-1 ring-black/5 shrink-0">
+                                              <subItem.icon size={18} />
+                                            </div>
+                                            <div className="text-sm font-bold text-gray-800">{subItem.label}</div>
+                                          </a>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  ))
+                                ) : (
+                                  /* @ts-ignore */
+                                  item.items!.map((subItem) => (
+                                    <a key={subItem.label} href="#" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-white active:bg-white transition-all">
+                                      <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm ring-1 ring-black/5 shrink-0">
+                                        <subItem.icon size={20} />
+                                      </div>
+                                      <div>
+                                        <div className="text-sm font-bold text-gray-900">{subItem.label}</div>
+                                        <div className="text-xs text-gray-500 leading-snug mt-0.5">{subItem.desc}</div>
+                                      </div>
+                                    </a>
+                                  ))
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-4 bg-gray-50 border-t border-gray-100">
+                    <button className="w-full py-3 rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-lg flex items-center justify-center gap-2">
+                      Join Waitlist <ArrowRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </nav>
         </div>
       </header>
-
-      {/* --- MOBILE FULLSCREEN MENU (Portal-like Overlay) --- */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-white/60 backdrop-blur-xl animate-[fadeIn_0.3s_ease-out]"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-
-          {/* Menu Content */}
-          <div className="absolute inset-x-0 top-0 bottom-0 pt-28 pb-safe px-6 overflow-y-auto flex flex-col animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)]">
-
-            <div className="flex-1 space-y-6">
-              {MENU_STRUCTURE.map((item, index) => (
-                <div key={item.title} className="border-b border-gray-100/80 last:border-0 pb-4 last:pb-0" style={{ animationDelay: `${index * 50}ms` }}>
-                  {item.type === 'link' ? (
-                    <Link
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-2xl font-bold text-gray-900 flex items-center gap-3"
-                    >
-                      {/* @ts-ignore */}
-                      {item.icon && <item.icon size={24} className="text-purple-600" />}
-                      {item.title}
-                    </Link>
-                  ) : (
-                    <div>
-                      <button
-                        onClick={() => toggleMobileItem(item.title)}
-                        className="w-full flex items-center justify-between text-2xl font-bold text-gray-900 mb-2"
-                      >
-                        <span className="flex items-center gap-3">
-                          {item.title}
-                        </span>
-                        <ChevronDown
-                          size={24}
-                          className={`text-gray-400 transition-transform duration-300 ${expandedMobileItems.includes(item.title) ? 'rotate-180' : ''}`}
-                        />
-                      </button>
-
-                      {/* Expanded Logic */}
-                      {expandedMobileItems.includes(item.title) && (
-                        <div className="space-y-4 pt-2 pl-2 animate-[fadeIn_0.3s_ease-out]">
-                          {item.type === 'mega' ? (
-                            /* @ts-ignore */
-                            item.columns!.map((col, idx) => (
-                              <div key={idx} className="space-y-3">
-                                <div className="text-xs font-bold uppercase tracking-wider text-purple-600 mt-4 mb-2">{col.subtitle}</div>
-                                {col.items.map((subItem) => (
-                                  <Link key={subItem.label} href="#" onClick={() => setIsMobileMenuOpen(false)} className="flex items-start gap-3 py-1">
-                                    <div className="mt-0.5 text-gray-400"><subItem.icon size={20} /></div>
-                                    <div>
-                                      <div className="text-base font-semibold text-gray-800">{subItem.label}</div>
-                                      <div className="text-xs text-gray-500 font-medium leading-snug pr-4">{subItem.desc}</div>
-                                    </div>
-                                  </Link>
-                                ))}
-                              </div>
-                            ))
-                          ) : (
-                            /* @ts-ignore */
-                            item.items!.map((subItem) => (
-                              <Link key={subItem.label} href="#" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 py-2">
-                                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500"><subItem.icon size={16} /></div>
-                                <span className="text-base font-semibold text-gray-700">{subItem.label}</span>
-                              </Link>
-                            ))
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Mobile Footer CTA */}
-            <div className="mt-8 pt-6 pb-8 border-t border-gray-100">
-              <div className="bg-gray-50 rounded-2xl p-4 flex flex-col items-center text-center gap-4">
-                <p className="text-sm text-gray-500 font-medium">Ready to professionalize your coaching?</p>
-                <button className="w-full py-3.5 rounded-xl text-base font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-md active:scale-[0.98] transition-all">
-                  Join Waitlist for Access
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      )}
     </>
   );
 };
