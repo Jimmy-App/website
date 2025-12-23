@@ -78,6 +78,19 @@ const Navbar = () => {
     return () => window.removeEventListener('keydown', handleEscape);
   }, []);
 
+  // Scroll locking effect
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      // Prevent iOS rubber banding/bouncing effects if needed, though overflow hidden usually suffices
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   const handleDesktopEnter = (title: string) => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -194,7 +207,22 @@ const Navbar = () => {
           <nav className="relative z-10 flex items-center justify-between px-4 py-3">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 cursor-pointer group select-none relative z-50">
+            <Link
+              href="/"
+              onClick={(e) => {
+                setIsMobileMenuOpen(false);
+                setActiveDesktopMenu(null);
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  if ('scrollRestoration' in history) {
+                    history.scrollRestoration = 'manual';
+                  }
+                  window.scrollTo(0, 0);
+                  window.location.reload();
+                }
+              }}
+              className="flex items-center gap-2.5 cursor-pointer group select-none relative z-50"
+            >
               <div className="relative">
                 <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
                 <Image
@@ -330,7 +358,7 @@ const Navbar = () => {
 
               {/* Mobile Menu Dropdown (Restored Original Style) */}
               {isMobileMenuOpen && (
-                <div className="absolute right-0 top-full mt-3 w-[90vw] max-w-sm bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-[dropdownSlide_0.2s_ease-out]">
+                <div className="absolute right-0 top-full mt-3 w-[90vw] max-w-sm bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-[dropdownSlide_0.2s_ease-out] z-[60]">
                   <div className="max-h-[70vh] overflow-y-auto p-4 space-y-2">
                     {MENU_STRUCTURE.map((item) => (
                       <div key={item.title} className="border-b border-gray-100 last:border-0 pb-2 last:pb-0">
