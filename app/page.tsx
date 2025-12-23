@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Check, ArrowRight, ChevronDown } from 'lucide-react';
 
-// --- ДАНІ ---
+// --- КОНСТАНТИ ---
+
 const LANGUAGES = [
   { code: 'EN', flag: '🇺🇸', label: 'English' },
   { code: 'ES', flag: '🇪🇸', label: 'Español' },
@@ -19,7 +20,7 @@ const COACH_AVATARS = [
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&h=64&q=80"
 ];
 
-// --- КОМПОНЕНТИ ---
+// --- КОМПОНЕНТИ МЕНЮ ---
 
 const LanguageSelector = ({ mobileView = false }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,22 +75,21 @@ const LanguageSelector = ({ mobileView = false }) => {
   );
 };
 
-// === ГОЛОВНЕ МЕНЮ (ПОВНІСТЮ ПЕРЕПИСАНЕ) ===
-
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
-      // Поріг 10px. Це працює миттєво.
+      // Проста логіка: скрол більше 10px -> включаємо фон
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    // Викликаємо одразу, щоб перевірити стан при перезавантаженні
+    onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Блокування скролу
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -97,31 +97,21 @@ const Navbar = () => {
 
   return (
     <>
-      {/* HEADER WRAPPER
-        fixed: Завжди зверху
-        top-0: Притиснутий до верху
-        z-50: Найвищий шар
-        pointer-events-none: Щоб кліки проходили крізь порожні місця
-        pt-3: Відступ зверху (для ефекту острівця)
+      {/* HEADER WRAPPER 
+        pt-3 px-3 (або більше на десктопі) створюють відступи для "острівця"
       */}
-      <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 pointer-events-none flex justify-center">
-        
-        {/* ISLAND CONTAINER 
-          Тут ми задаємо ширину і відступи.
-          pointer-events-auto: Повертаємо можливість клікати
-        */}
+      <header className="fixed top-0 left-0 w-full z-50 pt-3 px-3 md:pt-4 md:px-4 pointer-events-none flex justify-center">
         <div className="w-full max-w-5xl relative pointer-events-auto">
           
-          {/* BACKGROUND LAYER (ОКРЕМИЙ ШАР)
-            Це ключ до вирішення багу. Ми не змінюємо розміри цього блоку.
-            Ми змінюємо ТІЛЬКИ opacity. Це миттєво.
+          {/* BACKGROUND LAYER (Окремий шар для стабільності на iOS)
+             Ми не змінюємо його розмір (width/height/padding), тільки opacity.
           */}
           <div 
             className={`
-              absolute inset-0 rounded-2xl transition-all duration-300 ease-out
+              absolute inset-0 rounded-2xl border transition-all duration-300 ease-out
               ${isScrolled 
-                ? 'bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100' // Стан скролу
-                : 'bg-transparent border border-transparent opacity-0' // Початковий стан
+                ? 'bg-white/90 backdrop-blur-xl border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100' 
+                : 'bg-transparent border-transparent opacity-0'
               }
             `}
           />
@@ -130,11 +120,11 @@ const Navbar = () => {
           <nav className="relative z-10 flex items-center justify-between px-4 py-3">
             
             {/* Logo */}
-            <div className="flex items-center gap-2 cursor-pointer group">
+            <div className="flex items-center gap-2 cursor-pointer group select-none">
               <img 
                 src="/assets/logo/logo.svg" 
                 alt="Jimmy Logo" 
-                className="w-8 h-8 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3" 
+                className="w-8 h-8 md:w-9 md:h-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3" 
               />
               <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
                 Jimmy
@@ -183,7 +173,7 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-5 fade-in duration-200">
            <div className="flex flex-col h-full pt-28 pb-8 px-6">
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 space-y-2 overflow-y-auto">
               {MENU_ITEMS.map((item) => (
                 <a 
                   key={item} 
@@ -191,7 +181,7 @@ const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="group flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-all border border-transparent hover:border-gray-100"
                 >
-                  <span className="text-3xl font-bold text-gray-900">{item}</span>
+                  <span className="text-3xl font-bold text-gray-900 tracking-tight group-hover:text-purple-600">{item}</span>
                   <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors">
                     <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform" />
                   </div>
@@ -211,7 +201,7 @@ const Navbar = () => {
   );
 };
 
-// --- ІНШІ КОМПОНЕНТИ (HERO, DASHBOARD, APP) ---
+// --- ОРИГІНАЛЬНИЙ HERO ТА ІНШІ КОМПОНЕНТИ (ПОВЕРНУВ ЯК БУЛО) ---
 
 const DashboardMockup = () => {
   return (
@@ -235,6 +225,8 @@ const DashboardMockup = () => {
             alt="Jimmy Platform Dashboard" 
             className="w-full h-auto object-cover block"
             loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
         </div>
@@ -309,7 +301,7 @@ const Hero = () => {
               <div className="mt-8 relative z-30 text-xs text-gray-500 font-medium flex items-center justify-center gap-2">
                 <div className="flex -space-x-2">
                   {COACH_AVATARS.map((url, i) => (
-                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach" loading="lazy" />
+                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach" loading="lazy" decoding="async"/>
                   ))}
                 </div>
                 <span>Join 400+ other coaches waiting for access.</span>
@@ -342,6 +334,7 @@ const App = () => {
               width={64}
               height={64}
               className="w-8 h-8 object-contain"
+              style={{ imageRendering: 'auto' }}
             />
             Jimmy
           </div>
