@@ -115,6 +115,34 @@ const Navbar = () => {
   const MENU_STRUCTURE = [
     {
       title: 'Features',
+      type: 'link',
+      href: '#features',
+      icon: Zap
+    },
+    {
+      title: 'Experience',
+      type: 'link',
+      href: '#experience',
+      icon: Smartphone
+    },
+    {
+      title: 'Manifesto',
+      type: 'link',
+      href: '#manifesto',
+      icon: Heart
+    },
+    {
+      title: 'Pricing',
+      type: 'link',
+      href: '#pricing',
+      icon: Gem
+    }
+  ];
+
+  /*
+  const MENU_STRUCTURE = [
+    {
+      title: 'Features',
       type: 'mega',
       columns: [
         {
@@ -170,6 +198,7 @@ const Navbar = () => {
       icon: Gem
     }
   ];
+  */
 
   return (
     <>
@@ -241,87 +270,14 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-full bg-white/50 border border-gray-200/50 backdrop-blur-sm shadow-sm">
               {MENU_STRUCTURE.map((item) => (
-                <div key={item.title} className="relative" onMouseLeave={handleDesktopLeave}>
-                  {item.type === 'link' ? (
-                    <Link
-                      href={item.href || '#'}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
-                    >
-                      {item.icon && <item.icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
-                      {item.title}
-                    </Link>
-                  ) : (
-                    <button
-                      onMouseEnter={() => handleDesktopEnter(item.title)}
-                      className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 group ${activeDesktopMenu === item.title
-                        ? 'bg-gray-900 text-white shadow-md'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm'
-                        }`}
-                    >
-                      {item.title}
-                      <ChevronDown size={14} className={`transition-transform duration-200 opacity-50 ${activeDesktopMenu === item.title ? 'rotate-180' : ''}`} />
-                    </button>
-                  )}
-
-                  {/* Desktop Dropdowns (Center aligned relative to item) */}
-                  {activeDesktopMenu === item.title && item.type !== 'link' && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-6 w-max z-50" onMouseEnter={() => handleDesktopEnter(item.title)}>
-                      <div
-                        className={`bg-white rounded-2xl shadow-xl ring-1 ring-gray-900/5 overflow-hidden animate-[slideUp_0.2s_ease-out] ${item.type === 'mega' ? 'w-[screen] max-w-4xl' : 'w-80'
-                          }`}
-                      >
-                        {item.type === 'mega' ? (
-                          <div className="flex bg-gray-50/50 divide-x divide-gray-100">
-                            {item.columns!.map((col, idx) => (
-                              <div key={idx} className="flex-1 p-6 min-w-[320px]">
-                                <div className="mb-5 flex items-center gap-2">
-                                  <span className={`h-6 w-1 rounded-full ${idx === 0 ? 'bg-purple-500' : 'bg-indigo-500'}`} />
-                                  <div>
-                                    <div className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-0.5">{col.title}</div>
-                                    <div className="text-sm font-semibold text-gray-900">{col.subtitle}</div>
-                                  </div>
-                                </div>
-                                <div className="space-y-1">
-                                  {col.items.map((subItem) => (
-                                    <Link key={subItem.label} href="#" className="flex items-start gap-3.5 p-3 rounded-xl hover:bg-white hover:shadow-md transition-all group/item duration-200">
-                                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${idx === 0 ? 'bg-purple-50 text-purple-600 group-hover/item:bg-purple-600 group-hover/item:text-white' : 'bg-indigo-50 text-indigo-600 group-hover/item:bg-indigo-600 group-hover/item:text-white'}`}>
-                                        <subItem.icon size={18} />
-                                      </div>
-                                      <div>
-                                        <div className="text-sm font-bold text-gray-900 flex items-center gap-2 mb-0.5">
-                                          {subItem.label}
-                                          {subItem.badge && (
-                                            <span className="px-1.5 py-0.5 rounded-md bg-gray-900 text-white text-[10px] font-bold shadow-sm">
-                                              {subItem.badge}
-                                            </span>
-                                          )}
-                                        </div>
-                                        <div className="text-xs text-gray-500 leading-relaxed font-medium">{subItem.desc}</div>
-                                      </div>
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="p-2">
-                            {item.items!.map((subItem) => (
-                              <Link key={subItem.label} href="#" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 group-hover/item:text-purple-600 group-hover/item:bg-purple-100 transition-colors">
-                                  <subItem.icon size={16} />
-                                </div>
-                                <div>
-                                  <div className="text-sm font-bold text-gray-900 mb-0.5">{subItem.label}</div>
-                                  {subItem.desc && <div className="text-xs text-gray-500 font-medium">{subItem.desc}</div>}
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                <div key={item.title} className="relative">
+                  <Link
+                    href={item.href || '#'}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
+                  >
+                    {item.icon && <item.icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
+                    {item.title}
+                  </Link>
                 </div>
               ))}
             </div>
@@ -358,61 +314,14 @@ const Navbar = () => {
                   <div className="max-h-[70vh] overflow-y-auto p-4 space-y-2">
                     {MENU_STRUCTURE.map((item) => (
                       <div key={item.title} className="border-b border-gray-100 last:border-0 pb-2 last:pb-0">
-                        {item.type === 'link' ? (
-                          <Link
-                            href={item.href || '#'}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="flex items-center gap-2 py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg"
-                          >
-                            {item.icon && <item.icon size={18} className="text-purple-600" />}
-                            {item.title}
-                          </Link>
-                        ) : (
-                          <div>
-                            <button
-                              onClick={() => toggleMobileItem(item.title)}
-                              className="flex items-center justify-between w-full py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg"
-                            >
-                              {item.title}
-                              <ChevronDown size={16} className={`transition-transform ${expandedMobileItems.includes(item.title) ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            {/* Expanded Mobile Content */}
-                            {expandedMobileItems.includes(item.title) && (
-                              <div className="pl-2 pr-2 space-y-2 py-3 bg-gray-50/80 rounded-2xl mt-2 border border-black/5">
-                                {item.type === 'mega' ? (
-                                  item.columns!.map((col, idx) => (
-                                    <div key={idx} className="mb-4 last:mb-0">
-                                      <div className="text-[11px] font-bold text-gray-400 uppercase mb-2 ml-3 tracking-wider">{col.title}</div>
-                                      <div className="space-y-1">
-                                        {col.items.map((subItem) => (
-                                          <a key={subItem.label} href="#" className="flex items-center gap-3.5 p-3 rounded-xl hover:bg-white active:bg-white transition-all">
-                                            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm ring-1 ring-black/5 shrink-0">
-                                              <subItem.icon size={18} />
-                                            </div>
-                                            <div className="text-sm font-bold text-gray-800">{subItem.label}</div>
-                                          </a>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  ))
-                                ) : (
-                                  item.items!.map((subItem) => (
-                                    <a key={subItem.label} href="#" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-white active:bg-white transition-all">
-                                      <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-purple-600 shadow-sm ring-1 ring-black/5 shrink-0">
-                                        <subItem.icon size={20} />
-                                      </div>
-                                      <div>
-                                        <div className="text-sm font-bold text-gray-900">{subItem.label}</div>
-                                        <div className="text-xs text-gray-500 leading-snug mt-0.5">{subItem.desc}</div>
-                                      </div>
-                                    </a>
-                                  ))
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
+                        <Link
+                          href={item.href || '#'}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-2 py-3 px-2 text-gray-900 font-bold hover:bg-gray-50 rounded-lg"
+                        >
+                          {item.icon && <item.icon size={18} className="text-purple-600" />}
+                          {item.title}
+                        </Link>
                       </div>
                     ))}
                   </div>

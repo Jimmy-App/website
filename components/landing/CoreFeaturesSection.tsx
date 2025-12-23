@@ -15,7 +15,7 @@ import {
 
 const CoachFeatures = () => {
   return (
-    <section className="py-12 md:py-24 bg-white relative overflow-hidden border-t border-gray-100">
+    <section className="py-12 md:py-24 bg-white relative overflow-hidden border-t border-gray-100" id="features">
       {/* Background decoration - Simplified Purple Tones */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-50/30 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-50/20 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />

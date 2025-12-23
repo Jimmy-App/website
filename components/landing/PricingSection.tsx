@@ -19,7 +19,7 @@ const PricingSection = () => {
                 'Member Payments & Billing'
             ],
             highlight: false,
-            buttonText: 'Start for Free',
+            buttonText: 'Join Waitlist',
             buttonVariant: 'secondary'
         },
         {
@@ -37,7 +37,7 @@ const PricingSection = () => {
                 'Member Payments & Billing'
             ],
             highlight: true,
-            buttonText: 'Start Free Trial',
+            buttonText: 'Join Waitlist',
             buttonVariant: 'primary'
         },
         {
@@ -55,7 +55,7 @@ const PricingSection = () => {
                 'Priority 1:1 Support'
             ],
             highlight: false,
-            buttonText: 'Start Free Trial',
+            buttonText: 'Join Waitlist',
             buttonVariant: 'secondary'
         }
     ];
@@ -133,15 +133,15 @@ const PricingSection = () => {
                                 })}
                             </div>
 
-                            <button
-                                type="button"
-                                className={`w-full py-4 rounded-2xl text-sm font-bold transition-all duration-300 transform active:scale-[0.98] ${plan.highlight
+                            <a
+                                href="#waitlist"
+                                className={`w-full py-4 rounded-2xl text-sm font-bold transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center ${plan.highlight
                                     ? 'bg-white text-purple-700 hover:bg-purple-50 shadow-lg shadow-black/10'
                                     : 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-200/50'
                                     }`}
                             >
                                 {plan.buttonText}
-                            </button>
+                            </a>
                         </div>
                     ))}
                 </div>
