@@ -16,7 +16,7 @@ import {
 
 const ClientExperience = () => {
    return (
-      <section className="py-24 bg-white relative overflow-hidden border-t border-gray-100">
+      <section className="py-12 md:py-24 bg-white relative overflow-hidden border-t border-gray-100">
 
          {/* Background Decor */}
          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[800px] h-[800px] bg-purple-50/40 rounded-full blur-3xl -mr-64 pointer-events-none" />

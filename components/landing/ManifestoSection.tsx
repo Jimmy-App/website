@@ -16,7 +16,7 @@ const ManifestoSection = () => {
     };
 
     return (
-        <section className="py-32 bg-white relative overflow-hidden border-t border-gray-100">
+        <section className="py-16 md:py-32 bg-white relative overflow-hidden border-t border-gray-100">
             {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-50/60 via-white to-white" />

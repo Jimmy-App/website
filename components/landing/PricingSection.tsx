@@ -61,7 +61,7 @@ const PricingSection = () => {
     ];
 
     return (
-        <section className="py-32 bg-white relative overflow-hidden" id="pricing">
+        <section className="py-16 md:py-32 bg-white relative overflow-hidden" id="pricing">
             {/* Background Decor */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
                 <div className="absolute top-[20%] left-[10%] w-[600px] h-[600px] bg-purple-100/40 rounded-full blur-[100px] mix-blend-multiply" />
@@ -122,8 +122,8 @@ const PricingSection = () => {
                                     return (
                                         <div key={feature} className="flex items-start gap-3">
                                             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isAddon
-                                                    ? (plan.highlight ? 'bg-emerald-400 text-emerald-900' : 'bg-emerald-100 text-emerald-600')
-                                                    : (plan.highlight ? 'bg-white text-purple-600' : 'bg-purple-100 text-purple-600')
+                                                ? (plan.highlight ? 'bg-emerald-400 text-emerald-900' : 'bg-emerald-100 text-emerald-600')
+                                                : (plan.highlight ? 'bg-white text-purple-600' : 'bg-purple-100 text-purple-600')
                                                 }`}>
                                                 {isAddon ? <Plus size={12} strokeWidth={3} /> : <Check size={12} strokeWidth={3} />}
                                             </div>
