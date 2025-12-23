@@ -132,10 +132,16 @@ const Navbar = () => {
 
               <div className="relative">
                 <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  onClick={() => {
+                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                    // Haptic feedback для iOS
+                    if ('vibrate' in navigator) {
+                      navigator.vibrate(10);
+                    }
+                  }}
                   type="button"
                   aria-label="Toggle menu"
-                  className={`p-2 rounded-lg transition-colors ${isMobileMenuOpen ? 'bg-gray-100' : 'hover:bg-gray-100'
+                  className={`p-2 rounded-lg transition-all duration-200 active:scale-90 ${isMobileMenuOpen ? 'bg-purple-100 text-purple-600' : 'hover:bg-gray-100 text-gray-600 active:bg-gray-200'
                     }`}
                 >
                   {isMobileMenuOpen ? (
