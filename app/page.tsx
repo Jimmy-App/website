@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { Check, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
 
 const LANGUAGES = [
@@ -61,21 +63,13 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Optimized scroll detection for iOS
+  // Simple scroll detection
   useEffect(() => {
-    let ticking = false;
-    
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
-      }
+      setIsScrolled(window.scrollY > 20);
     };
     
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll);
     handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
@@ -85,15 +79,12 @@ const Navbar = () => {
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
     } else {
       document.body.style.overflow = '';
-      document.body.style.touchAction = '';
     }
     
     return () => {
       document.body.style.overflow = '';
-      document.body.style.touchAction = '';
     };
   }, [menuOpen]);
 
@@ -104,27 +95,28 @@ const Navbar = () => {
         <div className="max-w-5xl mx-auto">
           <div 
             className={`
-              relative rounded-2xl transition-[background,border,box-shadow] duration-200 ease-out will-change-[background,border,box-shadow]
+              relative rounded-2xl transition-all duration-300
               ${isScrolled 
-                ? 'bg-white shadow-lg border border-gray-200' 
-                : 'bg-white/80 border border-white/20'
+                ? 'bg-white/95 backdrop-blur-lg shadow-lg border border-gray-200' 
+                : 'bg-white/50 backdrop-blur-md border border-transparent'
               }
             `}
-            style={{ WebkitBackdropFilter: isScrolled ? 'none' : 'blur(8px)', backdropFilter: isScrolled ? 'none' : 'blur(8px)' }}
           >
             <div className="flex items-center justify-between px-4 md:px-6 py-3">
               
               {/* Logo */}
-              <a href="/" className="flex items-center gap-2.5 group touch-manipulation">
-                <img 
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <Image 
                   src="/assets/logo/logo.svg" 
-                  alt="Jimmy" 
-                  className="w-9 h-9 will-change-transform transition-transform group-hover:scale-110 group-hover:-rotate-6" 
+                  alt="Jimmy"
+                  width={36}
+                  height={36}
+                  className="w-9 h-9 transition-transform group-hover:scale-110 group-hover:-rotate-6" 
                 />
                 <span className="font-bold text-xl text-gray-900 group-hover:text-purple-600 transition-colors">
                   Jimmy
                 </span>
-              </a>
+              </Link>
 
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center gap-1 bg-gray-100/60 px-1.5 py-1.5 rounded-full">
@@ -132,7 +124,7 @@ const Navbar = () => {
                   <a 
                     key={item}
                     href={`#${item.toLowerCase()}`}
-                    className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-full transition-colors touch-manipulation"
+                    className="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-full transition-all"
                   >
                     {item}
                   </a>
@@ -143,7 +135,7 @@ const Navbar = () => {
               <div className="hidden md:flex items-center gap-3">
                 <LanguageSelector />
                 <div className="w-px h-5 bg-gray-300" />
-                <button className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-purple-500/20 hover:shadow-lg transition-colors touch-manipulation">
+                <button className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-purple-500/20 hover:shadow-lg transition-all hover:-translate-y-0.5">
                   Join Waitlist
                 </button>
               </div>
@@ -153,7 +145,7 @@ const Navbar = () => {
                 <LanguageSelector />
                 <button 
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation active:scale-95"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   {menuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -165,29 +157,29 @@ const Navbar = () => {
 
       {/* Mobile Menu Overlay */}
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="fixed inset-0 z-40 bg-white md:hidden">
           <div className="flex flex-col h-full px-6 pt-28 pb-8">
             
             {/* Menu Items */}
-            <nav className="flex-1 space-y-2 overflow-y-auto">
+            <nav className="flex-1 space-y-2">
               {MENU_ITEMS.map((item) => (
                 <a 
                   key={item}
                   href={`#${item.toLowerCase()}`}
                   onClick={() => setMenuOpen(false)}
-                  className="group flex items-center justify-between p-4 rounded-2xl active:bg-gray-100 transition-colors touch-manipulation"
+                  className="group flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 transition-colors"
                 >
-                  <span className="text-3xl font-bold text-gray-900 group-active:text-purple-600">
+                  <span className="text-3xl font-bold text-gray-900 group-hover:text-purple-600">
                     {item}
                   </span>
-                  <ArrowRight size={24} className="text-gray-400 group-active:text-purple-600 -rotate-45 transition-transform" />
+                  <ArrowRight size={24} className="text-gray-400 group-hover:text-purple-600 -rotate-45 group-hover:rotate-0 transition-transform" />
                 </a>
               ))}
             </nav>
 
             {/* Bottom CTA */}
             <div className="border-t border-gray-100 pt-6">
-              <button className="w-full py-4 bg-purple-600 active:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition-colors active:scale-95 flex items-center justify-center gap-2 touch-manipulation">
+              <button className="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
                 Join Waitlist
                 <ArrowRight size={20} />
               </button>
@@ -325,13 +317,12 @@ const App = () => {
       <footer className="py-12 border-t border-gray-100 mt-auto bg-white relative z-20">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
           <div className="text-2xl font-bold text-gray-900 mb-4 tracking-tight flex items-center gap-2 select-none">
-            <img 
+            <Image 
               src="/assets/logo/logo.svg" 
               alt="Jimmy Logo" 
-              width={64}
-              height={64}
+              width={32}
+              height={32}
               className="w-8 h-8 object-contain"
-              style={{ imageRendering: 'auto' }}
             />
             Jimmy
           </div>

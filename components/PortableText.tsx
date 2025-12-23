@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Menu, X, Check, ArrowRight, Zap, Smartphone, ChevronDown } from 'lucide-react';
 
 // --- КОНСТАНТИ КОЛЬОРІВ ---
@@ -250,7 +251,7 @@ const Hero = () => {
              <div className="flex -space-x-2">
                 {coachesAvatars.map((url, i) => (
                   <div key={i} className="w-6 h-6 rounded-full border-2 border-white overflow-hidden bg-gray-200 ring-2 ring-white z-10 hover:z-20 transition-all hover:scale-110">
-                    <img src={url} alt="Coach" className="w-full h-full object-cover" />
+                    <Image src={url} alt="Coach" width={24} height={24} className="w-full h-full object-cover" unoptimized />
                   </div>
                 ))}
              </div>
