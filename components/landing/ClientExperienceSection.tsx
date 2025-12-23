@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { 
   WifiOff, 
   Activity, 
@@ -8,7 +9,6 @@ import {
   Check, 
   Smartphone,
   Zap,
-  ArrowUpRight,
   ThumbsUp,
   Mic,
   Lock
@@ -176,10 +176,10 @@ const ClientExperience = () => {
                 <div className="mt-auto flex items-center gap-6">
                    <div className="flex items-center gap-3">
                      <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl border border-gray-200 shadow-sm group-hover:border-purple-200 transition-all duration-300 group-hover:scale-105">
-                        <img src="/assets/logo/apple-health.svg" alt="Apple Health" className="w-5 h-5" />
+                        <Image src="/assets/logo/apple-health.svg" alt="Apple Health" width={20} height={20} className="w-5 h-5" />
                      </div>
                      <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl border border-gray-200 shadow-sm group-hover:border-purple-200 transition-all duration-300 group-hover:scale-105">
-                        <img src="/assets/logo/google-fit.svg" alt="Google Fit" className="w-5 h-5" />
+                        <Image src="/assets/logo/google-fit.svg" alt="Google Fit" width={20} height={20} className="w-5 h-5" />
                      </div>
                    </div>
 

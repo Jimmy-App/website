@@ -43,7 +43,7 @@ const ProblemSection = () => {
               <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300">
                 <Table2 className="w-6 h-6 text-gray-400 group-hover:text-emerald-600 transition-colors" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">The "Spreadsheet" Hell</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">The &ldquo;Spreadsheet&rdquo; Hell</h3>
               <p className="text-gray-500 text-sm leading-relaxed">
                 You spend Sunday nights copy-pasting cells instead of resting. Formulas break. Links expire. It&apos;s not scalable.
               </p>
@@ -71,7 +71,7 @@ const ProblemSection = () => {
               <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300">
                 <LayoutGrid className="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition-colors" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">The "Enterprise" Overkill</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">The &ldquo;Enterprise&rdquo; Overkill</h3>
               <p className="text-gray-500 text-sm leading-relaxed">
                 Built for big box gyms. You don&apos;t need turnstile integrations, payroll systems, or 15 clicks just to assign a squat.
               </p>

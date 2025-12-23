@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { 
   Activity, 
   CreditCard, 
@@ -183,15 +184,17 @@ const CoachFeatures = () => {
                 {/* LOGOS SECTION - EDITED */}
                 <div className="flex items-center gap-4 relative z-10">
                   {/* Apple Health Image - BARE LOGO WITH SHADOW */}
-                  <img 
-                    src="/assets/logo/apple-health.svg" 
-                    alt="Apple Health" 
-                    className="w-10 h-10 drop-shadow-sm transition-transform group-hover:scale-110 duration-300" 
+                  <Image
+                    src="/assets/logo/apple-health.svg"
+                    alt="Apple Health"
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 drop-shadow-sm transition-transform group-hover:scale-110 duration-300"
                   />
 
                   {/* Google Fit Image - IN CONTAINER */}
                   <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl border border-gray-200 shadow-sm group-hover:border-purple-200 transition-all duration-300">
-                    <img src="/assets/logo/google-fit.svg" alt="Google Fit" className="w-6 h-6" />
+                    <Image src="/assets/logo/google-fit.svg" alt="Google Fit" width={24} height={24} className="w-6 h-6" />
                   </div>
                 </div>
 
