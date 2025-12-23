@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, Check, ArrowRight, ChevronDown } from 'lucide-react';
 
-// --- КОНСТАНТИ ТА ДАНІ ---
-
+// --- ДАНІ ---
 const LANGUAGES = [
   { code: 'EN', flag: '🇺🇸', label: 'English' },
   { code: 'ES', flag: '🇪🇸', label: 'Español' },
@@ -26,148 +25,123 @@ const LanguageSelector = ({ mobileView = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const close = () => setIsOpen(false);
+    window.addEventListener('click', close);
+    return () => window.removeEventListener('click', close);
+  }, [isOpen]);
+
   return (
-    <div className={`relative ${mobileView ? 'w-full' : ''}`}>
+    <div className={`relative ${mobileView ? 'w-full' : ''}`} onClick={(e) => e.stopPropagation()}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 
-          hover:bg-gray-100 hover:text-gray-900 transition-all duration-200
-          focus:outline-none 
+          flex items-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none
           ${mobileView 
-            ? 'w-full justify-between bg-gray-50 border border-gray-100 p-4 text-base rounded-xl active:bg-gray-100' 
-            : 'bg-white/50 backdrop-blur-md border border-gray-200/50 md:bg-transparent md:border-transparent' // Стиль для хедера на мобільному
+            ? 'w-full justify-between bg-gray-50 border border-gray-100 p-4 text-base text-gray-900 active:bg-gray-100' 
+            : 'px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 bg-transparent' 
           }
         `}
       >
         <div className="flex items-center gap-2">
-          <span className={`${mobileView ? 'text-xl' : 'text-lg'} leading-none`}>{currentLang.flag}</span>
-          
-          {/* Показуємо код мови (EN) на десктопі або якщо це не мобільний full-screen режим */}
-          <span className={`${!mobileView ? 'hidden sm:inline' : 'font-semibold text-gray-900'}`}>
+          <span className="text-xl leading-none">{currentLang.flag}</span>
+          <span className={`${!mobileView ? 'hidden sm:inline' : 'font-semibold'}`}>
             {mobileView ? currentLang.label : currentLang.code}
           </span>
         </div>
-        <ChevronDown 
-          size={mobileView ? 20 : 14} 
-          className={`transition-transform duration-300 text-gray-500 ${isOpen ? 'rotate-180' : ''}`} 
-        />
+        <ChevronDown size={mobileView ? 20 : 14} className={`transition-transform duration-200 text-gray-400 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <>
-          {/* Backdrop для закриття кліком зовні */}
-          <div className="fixed inset-0 z-10 cursor-default" onClick={() => setIsOpen(false)} />
-          
-          <div 
-            className={`
-              overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right
-              ${mobileView 
-                ? 'relative w-full mt-2 bg-gray-50 rounded-xl border border-gray-100' 
-                : 'absolute top-full right-0 mt-2 w-40 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-xl shadow-purple-900/5 rounded-xl z-20'
-              }
-            `}
-          >
-            <div className={`${mobileView ? 'p-2 space-y-1' : 'py-1'}`}>
-              {LANGUAGES.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => {
-                    setCurrentLang(lang);
-                    setIsOpen(false);
-                  }}
-                  className={`
-                    flex items-center gap-3 w-full px-4 text-sm text-left transition-colors text-gray-700
-                    ${mobileView 
-                      ? 'py-3 rounded-lg text-base hover:bg-white active:bg-white' 
-                      : 'py-2.5 hover:bg-purple-50'
-                    }
-                  `}
-                >
-                  <span className="text-lg">{lang.flag}</span>
-                  <span className="font-medium">{lang.label}</span>
-                  {currentLang.code === lang.code && (
-                    <Check size={mobileView ? 18 : 14} className="ml-auto text-purple-600" />
-                  )}
-                </button>
-              ))}
-            </div>
+        <div className={`overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right ${mobileView ? 'relative w-full mt-2 bg-white border border-gray-100 rounded-xl' : 'absolute top-full right-0 mt-2 w-40 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-xl rounded-xl z-50'}`}>
+          <div className="p-1">
+            {LANGUAGES.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => { setCurrentLang(lang); setIsOpen(false); }}
+                className={`flex items-center gap-3 w-full px-3 text-left rounded-lg transition-colors ${mobileView ? 'py-3 text-base text-gray-900 hover:bg-gray-50' : 'py-2 text-sm text-gray-700 hover:bg-purple-50'}`}
+              >
+                <span className="text-lg">{lang.flag}</span>
+                <span className="font-medium flex-1">{lang.label}</span>
+                {currentLang.code === lang.code && <Check size={16} className="text-purple-600" />}
+              </button>
+            ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
 };
 
+// === ГОЛОВНЕ МЕНЮ (ПОВНІСТЮ ПЕРЕПИСАНЕ) ===
+
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Використовуємо IntersectionObserver замість scroll event - працює краще на мобільних
   useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Коли sentinel виходить з viewport (не видно) - показуємо фон
-        setScrolled(!entry.isIntersecting);
-      },
-      { 
-        threshold: 0,
-        rootMargin: '-20px 0px 0px 0px' // Трігер на 20px від верху
-      }
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    const onScroll = () => {
+      // Поріг 10px. Це працює миттєво.
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Блокування скролу при відкритому меню
+  // Блокування скролу
   useEffect(() => {
-    if (isOpen) {
-      document.documentElement.style.overflow = 'hidden';
-    } else {
-      document.documentElement.style.overflow = '';
-    }
-    return () => {
-      document.documentElement.style.overflow = '';
-    };
-  }, [isOpen]);
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
-      {/* Невидимий елемент-сторож на самому верху сторінки */}
-      <div ref={sentinelRef} className="absolute top-0 left-0 w-full h-1 pointer-events-none" aria-hidden="true" />
-      
-      <header className="fixed top-0 w-full z-50 flex justify-center pt-4 px-4 pointer-events-none">
-        <nav 
-          className={`
-            pointer-events-auto w-full max-w-5xl transform-gpu transition-all duration-200 ease-out
-            ${scrolled 
-              ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-gray-200/50 border border-gray-200/50 py-3 px-4 rounded-2xl' 
-              : 'bg-transparent py-4 px-4 rounded-none border border-transparent' 
-            }
-          `}
-        >
-          <div className="flex justify-between items-center relative z-50">
+      {/* HEADER WRAPPER
+        fixed: Завжди зверху
+        top-0: Притиснутий до верху
+        z-50: Найвищий шар
+        pointer-events-none: Щоб кліки проходили крізь порожні місця
+        pt-3: Відступ зверху (для ефекту острівця)
+      */}
+      <header className="fixed top-0 left-0 w-full z-50 pt-4 px-4 pointer-events-none flex justify-center">
+        
+        {/* ISLAND CONTAINER 
+          Тут ми задаємо ширину і відступи.
+          pointer-events-auto: Повертаємо можливість клікати
+        */}
+        <div className="w-full max-w-5xl relative pointer-events-auto">
+          
+          {/* BACKGROUND LAYER (ОКРЕМИЙ ШАР)
+            Це ключ до вирішення багу. Ми не змінюємо розміри цього блоку.
+            Ми змінюємо ТІЛЬКИ opacity. Це миттєво.
+          */}
+          <div 
+            className={`
+              absolute inset-0 rounded-2xl transition-all duration-300 ease-out
+              ${isScrolled 
+                ? 'bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100' // Стан скролу
+                : 'bg-transparent border border-transparent opacity-0' // Початковий стан
+              }
+            `}
+          />
+
+          {/* CONTENT LAYER */}
+          <nav className="relative z-10 flex items-center justify-between px-4 py-3">
+            
             {/* Logo */}
-            <div className="flex items-center gap-2.5 cursor-pointer group select-none">
+            <div className="flex items-center gap-2 cursor-pointer group">
               <img 
                 src="/assets/logo/logo.svg" 
                 alt="Jimmy Logo" 
-                width={72}
-                height={72}
-                className="w-9 h-9 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
-                style={{ imageRendering: 'auto' }}
+                className="w-8 h-8 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3" 
               />
               <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
                 Jimmy
               </span>
             </div>
 
-            {/* Desktop Menu */}
+            {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-1 bg-gray-100/50 p-1.5 rounded-full border border-gray-200/50">
               {MENU_ITEMS.map((item) => (
                 <a 
@@ -184,71 +158,52 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-3">
               <LanguageSelector />
               <div className="h-5 w-px bg-gray-200"></div>
-              <button className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5 active:translate-y-0">
+              <button className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 hover:shadow-lg hover:shadow-purple-500/30 active:scale-95">
                 Join Waitlist
               </button>
             </div>
 
-            {/* Mobile Controls (Language + Toggle) */}
-            <div className="md:hidden flex items-center gap-3 pointer-events-auto">
-              
-              {/* 1. Language Selector in Header (Mobile) */}
+            {/* Mobile Actions */}
+            <div className="md:hidden flex items-center gap-2">
               <div className="relative z-50">
-                <LanguageSelector mobileView={false} /> 
+                <LanguageSelector mobileView={false} />
               </div>
-
-              {/* 2. Menu Button */}
               <button 
-                onClick={() => setIsOpen(!isOpen)} 
-                className={`p-2 rounded-lg transition-colors focus:outline-none relative z-50 ${isOpen ? 'bg-gray-100 text-gray-900' : 'bg-gray-100/80 text-gray-600 hover:bg-gray-200'}`}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={`p-2 rounded-lg transition-colors relative z-50 ${isMobileMenuOpen ? 'bg-gray-100' : 'hover:bg-gray-100'}`}
               >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
+                {isMobileMenuOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} className="text-gray-600" />}
               </button>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </div>
       </header>
 
-      {/* --- MOBILE FULLSCREEN MENU --- */}
-      {isOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-5 fade-in duration-200 transform-gpu">
-           <div className="flex flex-col h-[100dvh] pt-28 pb-8 px-6">
-            
-            {/* NAV LINKS SECTION */}
-            <div className="flex-1 flex flex-col justify-start space-y-2 overflow-y-auto">
+      {/* MOBILE FULLSCREEN MENU */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-white md:hidden animate-in slide-in-from-bottom-5 fade-in duration-200">
+           <div className="flex flex-col h-full pt-28 pb-8 px-6">
+            <div className="flex-1 space-y-2">
               {MENU_ITEMS.map((item) => (
                 <a 
                   key={item} 
                   href="#" 
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className="group flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-all border border-transparent hover:border-gray-100"
                 >
-                  <span className="text-3xl font-bold text-gray-900 tracking-tight group-hover:text-purple-600 transition-colors">
-                    {item}
-                  </span>
-                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-100 group-hover:text-purple-600 transition-all">
-                    <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                  <span className="text-3xl font-bold text-gray-900">{item}</span>
+                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-100 group-hover:text-purple-600 transition-colors">
+                    <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform" />
                   </div>
                 </a>
               ))}
             </div>
-
-            {/* BOTTOM ACTIONS SECTION (Language Removed from here) */}
-            <div className="mt-auto pt-6 border-t border-gray-100 bg-white">
-               <div className="flex flex-col gap-4">
-                  {/* Language Selector removed from here as requested */}
-                  
-                  <button className="w-full py-4 rounded-xl text-lg font-bold text-white bg-purple-600 shadow-xl shadow-purple-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                     Join Waitlist
-                     <ArrowRight size={20} />
-                  </button>
-               </div>
-               
-               <div className="text-center mt-6 text-xs text-gray-400 font-medium">
-                  © 2025 Jimmy App Inc.
-               </div>
+            <div className="mt-auto pt-6 border-t border-gray-100">
+               <button className="w-full py-4 rounded-xl text-lg font-bold text-white bg-purple-600 shadow-xl shadow-purple-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                  Join Waitlist <ArrowRight size={20} />
+               </button>
+               <div className="text-center mt-6 text-xs text-gray-400 font-medium">© 2025 Jimmy App Inc.</div>
             </div>
-
           </div>
         </div>
       )}
@@ -256,7 +211,8 @@ const Navbar = () => {
   );
 };
 
-// --- ІНШІ КОМПОНЕНТИ БЕЗ ЗМІН ---
+// --- ІНШІ КОМПОНЕНТИ (HERO, DASHBOARD, APP) ---
+
 const DashboardMockup = () => {
   return (
     <div className="relative w-full max-w-5xl mx-auto -mb-16 md:-mb-24 perspective-1000 z-20">
@@ -279,8 +235,6 @@ const DashboardMockup = () => {
             alt="Jimmy Platform Dashboard" 
             className="w-full h-auto object-cover block"
             loading="eager"
-            decoding="async"
-            fetchPriority="high"
           />
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
         </div>
@@ -355,7 +309,7 @@ const Hero = () => {
               <div className="mt-8 relative z-30 text-xs text-gray-500 font-medium flex items-center justify-center gap-2">
                 <div className="flex -space-x-2">
                   {COACH_AVATARS.map((url, i) => (
-                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach" loading="lazy" decoding="async"/>
+                    <img key={i} src={url} className="w-6 h-6 rounded-full border-2 border-white ring-1 ring-gray-100" alt="Coach" loading="lazy" />
                   ))}
                 </div>
                 <span>Join 400+ other coaches waiting for access.</span>
@@ -388,7 +342,6 @@ const App = () => {
               width={64}
               height={64}
               className="w-8 h-8 object-contain"
-              style={{ imageRendering: 'auto' }}
             />
             Jimmy
           </div>
