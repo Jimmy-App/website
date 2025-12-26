@@ -39,11 +39,32 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
   const subtitleParts = resolvedSubtitleTemplate.split('{brand}');
   const subtitleHasBrand = resolvedSubtitleTemplate.includes('{brand}');
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isSubmitting = status === 'submitting';
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (email) setSubmitted(true);
+    if (!email || isSubmitting) return;
+    setStatus('submitting');
+    setErrorMessage(null);
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'Unable to join the waitlist.');
+      }
+      setStatus('success');
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unable to join the waitlist.';
+      setErrorMessage(message);
+      setStatus('error');
+    }
   };
 
   return (
@@ -85,7 +106,7 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
         </p>
 
         <div className="w-full max-w-md relative group mb-24 z-20">
-          {!submitted ? (
+          {status !== 'success' ? (
             <div className="flex flex-col items-center">
               <div className="relative transform transition-all hover:scale-[1.01] w-full z-20">
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-200 to-indigo-200 rounded-full blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
@@ -99,18 +120,30 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
                       placeholder={resolvedInputPlaceholder}
                       className="w-full bg-transparent border-none p-2 text-gray-900 placeholder-gray-400 focus:ring-0 focus:outline-none text-base outline-none"
                       value={email}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        setEmail(event.target.value);
+                        if (status === 'error') {
+                          setStatus('idle');
+                          setErrorMessage(null);
+                        }
+                      }}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="flex-shrink-0 px-6 py-3.5 rounded-full font-bold text-white bg-purple-600 shadow-md flex items-center gap-2 hover:bg-purple-700 hover:shadow-lg hover:shadow-purple-500/25 active:scale-95 transition-all duration-200"
                   >
-                    {resolvedWaitlistLabel} <ArrowRight size={16} />
+                    {isSubmitting ? 'Joining...' : resolvedWaitlistLabel}{' '}
+                    <ArrowRight size={16} />
                   </button>
                 </form>
               </div>
+              {errorMessage && (
+                <p className="mt-4 text-sm text-red-500 font-medium">{errorMessage}</p>
+              )}
               <div className="mt-8 relative z-30 text-xs text-gray-500 font-medium flex items-center justify-center gap-2">
                 <div className="flex -space-x-2">
                   {COACH_AVATARS.map((url) => (
