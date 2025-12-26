@@ -1,13 +1,15 @@
 import { defineField, defineType } from "sanity";
+import type { ConditionalPropertyCallbackContext, SanityDocument } from "sanity";
 
-type DocumentWithLanguage = {
+type DocumentWithLanguage = SanityDocument & {
   language?: string;
 };
 
 const normalizeLocale = (locale?: string) => (locale === "ua" ? "uk" : locale);
 
 const hideForLocale = (locale: string) => {
-  return ({ document }: { document?: DocumentWithLanguage }) => {
+  return (context: ConditionalPropertyCallbackContext) => {
+    const document = context.document as DocumentWithLanguage | undefined;
     const documentLocale = normalizeLocale(document?.language);
     if (!documentLocale) {
       return false;
