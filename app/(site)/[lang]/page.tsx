@@ -64,6 +64,16 @@ export default async function HomePage({ params }: PageProps) {
     query: navigationByLanguageQuery,
     params: { language: lang },
   });
+  const normalizedNavigation = navigation
+    ? {
+        brandLabel: navigation.brandLabel ?? undefined,
+        mobileHelperText: navigation.mobileHelperText ?? undefined,
+        items: navigation.items?.map((item) => ({
+          label: item?.label ?? undefined,
+          href: item?.href ?? undefined,
+        })),
+      }
+    : null;
 
   const basePath = localeBasePath(lang);
 
@@ -72,7 +82,7 @@ export default async function HomePage({ params }: PageProps) {
       content={landingPage}
       brandHref={basePath}
       currentLocale={lang}
-      navigation={navigation}
+      navigation={normalizedNavigation}
     />
   );
 }

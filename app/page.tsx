@@ -44,13 +44,23 @@ const App = async () => {
     query: navigationByLanguageQuery,
     params: { language: defaultLocale },
   });
+  const normalizedNavigation = navigation
+    ? {
+        brandLabel: navigation.brandLabel ?? undefined,
+        mobileHelperText: navigation.mobileHelperText ?? undefined,
+        items: navigation.items?.map((item) => ({
+          label: item?.label ?? undefined,
+          href: item?.href ?? undefined,
+        })),
+      }
+    : null;
 
   return (
     <LandingPage
       content={landingPage}
       brandHref="/"
       currentLocale={defaultLocale}
-      navigation={navigation}
+      navigation={normalizedNavigation}
     />
   );
 };
