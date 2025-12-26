@@ -1,5 +1,5 @@
 import { defineConfig } from "sanity";
-import { deskTool } from "sanity/desk";
+import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { documentInternationalization } from "@sanity/document-internationalization";
 
@@ -39,7 +39,7 @@ export default defineConfig({
   basePath: "/jadmin",
   apiVersion,
   plugins: [
-    deskTool({ structure }),
+    structureTool({ structure }),
     visionTool(),
     documentInternationalization({
       supportedLanguages,
