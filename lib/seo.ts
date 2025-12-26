@@ -47,7 +47,8 @@ function resolveLocalizedValue(
     return value;
   }
   const normalizedLocale = normalizeLocale(locale);
-  return value[normalizedLocale] || value[locale || ""] || "";
+  const fallbackLocale = (defaultLocale as LocaleKey) || normalizedLocale;
+  return value[normalizedLocale] || (locale ? value[locale] : undefined) || value[fallbackLocale] || "";
 }
 
 function resolveOgImage(ogImage?: OgImage | null) {
