@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Check, ChevronDown } from 'lucide-react';
 
 import { defaultLocale, supportedLocales } from '@/lib/i18n';
@@ -21,7 +21,6 @@ const LanguageSelector = ({ mobileView = false, currentLocale }: LanguageSelecto
   const listboxId = mobileView ? 'lang-listbox-mobile' : 'lang-listbox-desktop';
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const resolvedLocale = useMemo(() => {
     if (currentLocale) {
@@ -117,9 +116,9 @@ const LanguageSelector = ({ mobileView = false, currentLocale }: LanguageSelecto
                     ? [lang.locale, ...segments.slice(1)]
                     : [lang.locale, ...segments];
                   const nextPath = `/${nextSegments.join('/')}`;
-                  const query = searchParams?.toString();
+                  const query = typeof window !== 'undefined' ? window.location.search : '';
                   const hash = typeof window !== 'undefined' ? window.location.hash : '';
-                  const fullPath = query ? `${nextPath}?${query}${hash}` : `${nextPath}${hash}`;
+                  const fullPath = query ? `${nextPath}${query}${hash}` : `${nextPath}${hash}`;
                   router.push(fullPath);
                 }}
                 type="button"
