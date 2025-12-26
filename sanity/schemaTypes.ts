@@ -10,6 +10,7 @@ import { navigation } from "./schemas/documents/navigation";
 import { page } from "./schemas/documents/page";
 import { post } from "./schemas/documents/post";
 import { siteSettings } from "./schemas/documents/siteSettings";
+import { landingPage } from "./schemas/documents/landingPage";
 
 export const schemaTypes = [
   seo,
@@ -19,6 +20,7 @@ export const schemaTypes = [
   author,
   category,
   siteSettings,
+  landingPage,
   page,
   post,
   docPage,

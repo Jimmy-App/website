@@ -1,10 +1,30 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import LandingPage from "@/components/landing/LandingPage";
+import type { LandingPageContent } from "@/components/landing/LandingPage";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
+import type { SeoFields } from "@/lib/seo";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import {
+  landingPageByLanguageQuery,
+  landingPageSeoByLanguageQuery,
+  navigationByLanguageQuery,
+} from "@/sanity/lib/queries";
 
 type PageProps = {
   params: Promise<{ lang: string }>;
+};
+
+type LandingPageSeoData = {
+  title?: string | null;
+  seo?: SeoFields | null;
+};
+
+type NavigationData = {
+  brandLabel?: string | null;
+  mobileHelperText?: string | null;
+  items?: { label?: string; href?: string }[] | null;
 };
 
 export async function generateMetadata({ params }: PageProps) {
@@ -14,9 +34,19 @@ export async function generateMetadata({ params }: PageProps) {
     return {};
   }
 
-  return {
-    title: "Home Page",
-  };
+  const landingPageSeo = await sanityFetch<LandingPageSeoData>({
+    query: landingPageSeoByLanguageQuery,
+    params: { language: lang },
+  });
+
+  const path = localeBasePath(lang);
+
+  return buildMetadata({
+    title: landingPageSeo?.title || "Home Page",
+    seo: landingPageSeo?.seo,
+    path,
+    locale: lang,
+  });
 }
 
 export default async function HomePage({ params }: PageProps) {
@@ -26,48 +56,23 @@ export default async function HomePage({ params }: PageProps) {
     notFound();
   }
 
-  const basePath = localeBasePath(lang) || "/";
+  const landingPage = await sanityFetch<LandingPageContent>({
+    query: landingPageByLanguageQuery,
+    params: { language: lang },
+  });
+  const navigation = await sanityFetch<NavigationData>({
+    query: navigationByLanguageQuery,
+    params: { language: lang },
+  });
+
+  const basePath = localeBasePath(lang);
 
   return (
-    <section className="hero">
-      <div className="hero-copy">
-        <div className="hero-kicker glass">New release: Insight Engine</div>
-        <h1 className="hero-title">Data-Driven Decisions Powered by AI</h1>
-        <p className="hero-subtitle">
-          Effortlessly analyze large datasets, uncover trends, and align every
-          team on the next best action.
-        </p>
-        <div className="hero-actions">
-          <Link className="btn btn-primary" href={`${basePath}#get-started`}>
-            Try for free
-          </Link>
-          <Link className="btn btn-glass" href={`${basePath}#demo`}>
-            Schedule a demo
-          </Link>
-        </div>
-        <div className="hero-meta">
-          <span>14-day trial</span>
-          <span>No credit card</span>
-          <span>Realtime insights</span>
-        </div>
-      </div>
-      <div className="hero-media">
-        <div className="hero-image glass">
-          <div className="hero-image-toolbar">
-            <span className="toolbar-dot" />
-            <span className="toolbar-dot" />
-            <span className="toolbar-dot" />
-          </div>
-          <div className="hero-image-placeholder">
-            Platform preview coming soon
-          </div>
-        </div>
-        <div className="hero-card glass">
-          <p className="hero-card-label">Live forecasting</p>
-          <p className="hero-card-value">+38% faster</p>
-          <p className="hero-card-caption">on decision cycles</p>
-        </div>
-      </div>
-    </section>
+    <LandingPage
+      content={landingPage}
+      brandHref={basePath}
+      currentLocale={lang}
+      navigation={navigation}
+    />
   );
 }

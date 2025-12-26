@@ -8,7 +8,36 @@ import { ArrowRight, Check } from 'lucide-react';
 import DashboardMockup from './DashboardMockup';
 import { COACH_AVATARS } from './constants';
 
-const Hero = () => {
+type HeroContent = {
+  badgeText?: string;
+  title?: string;
+  titleHighlight?: string;
+  subtitle?: string;
+  inputPlaceholder?: string;
+  mockupUrlLabel?: string;
+  socialProofText?: string;
+  successMessage?: string;
+};
+
+type HeroProps = {
+  waitlistLabel?: string;
+  brandLabel?: string;
+  content?: HeroContent | null;
+};
+
+const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
+  const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
+  const resolvedBadgeText = content?.badgeText || 'Waitlist Open';
+  const resolvedTitle = content?.title || 'The operating system for';
+  const resolvedTitleHighlight = content?.titleHighlight || 'independent coaches';
+  const resolvedBrandLabel = brandLabel || 'Jimmy';
+  const resolvedSubtitleTemplate = content?.subtitle || 'Stop hacking together Excel and WhatsApp. {brand} is the workspace built for solopreneurs to manage clients, programming, and progress.';
+  const resolvedInputPlaceholder = content?.inputPlaceholder || 'Enter your email...';
+  const resolvedMockupUrlLabel = content?.mockupUrlLabel || 'app.jimmycoach.com';
+  const resolvedSocialProofText = content?.socialProofText || 'Join 400+ other coaches waiting for access.';
+  const resolvedSuccessMessage = content?.successMessage || "You're on the list! Keep an eye on your inbox.";
+  const subtitleParts = resolvedSubtitleTemplate.split('{brand}');
+  const subtitleHasBrand = resolvedSubtitleTemplate.includes('{brand}');
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -18,7 +47,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative pt-20 lg:pt-24 pb-0 overflow-hidden bg-white" id="waitlist">
+    <section className="relative pt-20 lg:pt-40 pb-0 overflow-hidden bg-white" id="waitlist">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-purple-400 opacity-20 blur-[100px]"></div>
@@ -31,22 +60,28 @@ const Hero = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-600"></span>
           </span>
           <span className="text-[11px] font-bold text-purple-900 tracking-wider uppercase">
-            Waitlist Open
+            {resolvedBadgeText}
           </span>
         </div>
 
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-[1.1] max-w-4xl">
-          The operating system for
+          {resolvedTitle}
           <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600">
-            independent coaches
+            {resolvedTitleHighlight}
           </span>
         </h1>
 
         <p className="mt-4 max-w-2xl text-lg sm:text-xl text-gray-500 mb-10 leading-relaxed">
-          Stop hacking together Excel and WhatsApp.{' '}
-          <span className="text-gray-900 font-medium">Jimmy</span> is the workspace built
-          for solopreneurs to manage clients, programming, and progress.
+          {subtitleHasBrand ? (
+            <>
+              {subtitleParts[0]}
+              <span className="text-gray-900 font-medium">{resolvedBrandLabel}</span>
+              {subtitleParts[1]}
+            </>
+          ) : (
+            resolvedSubtitleTemplate
+          )}
         </p>
 
         <div className="w-full max-w-md relative group mb-24 z-20">
@@ -61,7 +96,7 @@ const Hero = () => {
                   <div className="flex-1 pl-5">
                     <input
                       type="email"
-                      placeholder="Enter your email..."
+                      placeholder={resolvedInputPlaceholder}
                       className="w-full bg-transparent border-none p-2 text-gray-900 placeholder-gray-400 focus:ring-0 focus:outline-none text-base outline-none"
                       value={email}
                       onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
@@ -72,7 +107,7 @@ const Hero = () => {
                     type="submit"
                     className="flex-shrink-0 px-6 py-3.5 rounded-full font-bold text-white bg-purple-600 shadow-md flex items-center gap-2 hover:bg-purple-700 hover:shadow-lg hover:shadow-purple-500/25 active:scale-95 transition-all duration-200"
                   >
-                    Join Waitlist <ArrowRight size={16} />
+                    {resolvedWaitlistLabel} <ArrowRight size={16} />
                   </button>
                 </form>
               </div>
@@ -91,7 +126,7 @@ const Hero = () => {
                     />
                   ))}
                 </div>
-                <span>Join 400+ other coaches waiting for access.</span>
+                <span>{resolvedSocialProofText}</span>
               </div>
             </div>
           ) : (
@@ -99,11 +134,11 @@ const Hero = () => {
               <div className="bg-green-100 p-1.5 rounded-full text-green-600">
                 <Check size={18} />
               </div>
-              <span>You&apos;re on the list! Keep an eye on your inbox.</span>
+              <span>{resolvedSuccessMessage}</span>
             </div>
           )}
         </div>
-        <DashboardMockup />
+        <DashboardMockup urlLabel={resolvedMockupUrlLabel} />
       </div>
     </section>
   );

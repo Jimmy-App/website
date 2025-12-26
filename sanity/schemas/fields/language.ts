@@ -12,6 +12,7 @@ export const languageField = defineField({
       { title: "English", value: "en" },
       { title: "French", value: "fr" },
       { title: "Spanish", value: "es" },
+      { title: "Ukrainian", value: "ua" },
     ],
   },
   initialValue: "en",

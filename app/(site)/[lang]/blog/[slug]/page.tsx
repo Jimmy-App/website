@@ -5,6 +5,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import type { SeoFields } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { postBySlugQuery } from "@/sanity/lib/queries";
 
@@ -16,7 +17,7 @@ type PostData = {
   author?: { name?: string } | null;
   categories?: { title?: string }[];
   body?: PortableTextBlock[] | null;
-  seo?: { title?: string; description?: string; noIndex?: boolean } | null;
+  seo?: SeoFields | null;
 };
 
 type PageProps = {
@@ -42,6 +43,7 @@ export async function generateMetadata({ params }: PageProps) {
     description: post?.excerpt || "",
     seo: post?.seo,
     path,
+    locale: lang,
   });
 }
 

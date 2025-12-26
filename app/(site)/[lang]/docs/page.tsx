@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: "Docs",
     description: "Documentation index page.",
     path,
+    locale: lang,
   });
 }
 

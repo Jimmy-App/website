@@ -5,6 +5,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import type { SeoFields } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { docPageBySlugQuery } from "@/sanity/lib/queries";
 
@@ -14,7 +15,7 @@ type DocPageData = {
   order?: number;
   parent?: { title?: string; slug?: string } | null;
   body?: PortableTextBlock[] | null;
-  seo?: { title?: string; description?: string; noIndex?: boolean } | null;
+  seo?: SeoFields | null;
 };
 
 type PageProps = {
@@ -38,9 +39,9 @@ export async function generateMetadata({ params }: PageProps) {
 
   return buildMetadata({
     title: docPage?.title || "Doc page",
-    description: docPage?.seo?.description || "",
     seo: docPage?.seo,
     path,
+    locale: lang,
   });
 }
 

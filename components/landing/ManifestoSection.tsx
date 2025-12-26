@@ -6,7 +6,36 @@ import Image from 'next/image';
 import { Heart, ArrowRight, Check } from 'lucide-react';
 import { COACH_AVATARS } from './constants';
 
-const ManifestoSection = () => {
+type ManifestoContent = {
+    badgeText?: string;
+    title?: string;
+    titleHighlight?: string;
+    bodyPrefix?: string;
+    bodyEmphasis?: string;
+    bodyMiddle?: string;
+    bodyStrong?: string;
+    inputPlaceholder?: string;
+    socialProofText?: string;
+    successMessage?: string;
+};
+
+type ManifestoSectionProps = {
+    waitlistLabel?: string;
+    content?: ManifestoContent | null;
+};
+
+const ManifestoSection = ({ waitlistLabel, content }: ManifestoSectionProps) => {
+    const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
+    const resolvedBadgeText = content?.badgeText || 'Our Mission';
+    const resolvedTitle = content?.title || 'Built for the';
+    const resolvedTitleHighlight = content?.titleHighlight || 'Independent.';
+    const resolvedBodyPrefix = content?.bodyPrefix || 'We are building Jimmy because we believe the future of fitness is ';
+    const resolvedBodyEmphasis = content?.bodyEmphasis || 'independent coaches';
+    const resolvedBodyMiddle = content?.bodyMiddle || ', not faceless franchises. We are here to give you the same tools the big guys have, ';
+    const resolvedBodyStrong = content?.bodyStrong || 'without the enterprise price tag.';
+    const resolvedInputPlaceholder = content?.inputPlaceholder || 'Enter your email...';
+    const resolvedSocialProofText = content?.socialProofText || 'Join 400+ other coaches waiting for access.';
+    const resolvedSuccessMessage = content?.successMessage || "You're on the list! Keep an eye on your inbox.";
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
@@ -27,16 +56,23 @@ const ManifestoSection = () => {
 
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-xs font-bold uppercase tracking-wider mb-8">
                     <Heart size={12} className="fill-purple-700" />
-                    Our Mission
+                    {resolvedBadgeText}
                 </div>
 
                 <h2 className="text-4xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-8 leading-tight">
-                    Built for the <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">Independent.</span>
+                    {resolvedTitle}{' '}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">
+                        {resolvedTitleHighlight}
+                    </span>
                 </h2>
 
                 <p className="text-xl md:text-2xl text-gray-500 leading-relaxed font-medium max-w-3xl mx-auto mb-16">
-                    We are building Jimmy because we believe the future of fitness is <span className="text-gray-900 font-semibold underline decoration-purple-200 decoration-4 underline-offset-4">independent coaches</span>, not faceless franchises.
-                    We are here to give you the same tools the big guys have, <span className="text-gray-900 font-semibold">without the enterprise price tag.</span>
+                    {resolvedBodyPrefix}
+                    <span className="text-gray-900 font-semibold underline decoration-purple-200 decoration-4 underline-offset-4">
+                        {resolvedBodyEmphasis}
+                    </span>
+                    {resolvedBodyMiddle}
+                    <span className="text-gray-900 font-semibold">{resolvedBodyStrong}</span>
                 </p>
 
                 {/* Waitlist Form */}
@@ -52,7 +88,7 @@ const ManifestoSection = () => {
                                     <div className="flex-1 pl-5">
                                         <input
                                             type="email"
-                                            placeholder="Enter your email..."
+                                            placeholder={resolvedInputPlaceholder}
                                             className="w-full bg-transparent border-none p-2 text-gray-900 placeholder-gray-400 focus:ring-0 focus:outline-none text-base outline-none"
                                             value={email}
                                             onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
@@ -63,7 +99,7 @@ const ManifestoSection = () => {
                                         type="submit"
                                         className="flex-shrink-0 px-6 py-3.5 rounded-full font-bold text-white bg-purple-600 shadow-md flex items-center gap-2 hover:bg-purple-700 hover:shadow-lg hover:shadow-purple-500/25 active:scale-95 transition-all duration-200"
                                     >
-                                        Join Waitlist <ArrowRight size={16} />
+                                        {resolvedWaitlistLabel} <ArrowRight size={16} />
                                     </button>
                                 </form>
                             </div>
@@ -82,7 +118,7 @@ const ManifestoSection = () => {
                                         />
                                     ))}
                                 </div>
-                                <span>Join 400+ other coaches waiting for access.</span>
+                                <span>{resolvedSocialProofText}</span>
                             </div>
                         </div>
                     ) : (
@@ -90,7 +126,7 @@ const ManifestoSection = () => {
                             <div className="bg-green-100 p-1.5 rounded-full text-green-600">
                                 <Check size={18} />
                             </div>
-                            <span>You&apos;re on the list! Keep an eye on your inbox.</span>
+                            <span>{resolvedSuccessMessage}</span>
                         </div>
                     )}
                 </div>

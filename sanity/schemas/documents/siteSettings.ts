@@ -36,7 +36,7 @@ export const siteSettings = defineType({
       title: "Supported Locales",
       type: "array",
       of: [{ type: "string" }],
-      initialValue: ["en", "fr", "es"],
+      initialValue: ["en", "fr", "es", "ua"],
     }),
     defineField({
       name: "defaultLocale",

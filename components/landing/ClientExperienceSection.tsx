@@ -14,7 +14,115 @@ import {
    Lock
 } from 'lucide-react';
 
-const ClientExperience = () => {
+type ClientExperienceContent = {
+   badgeText?: string;
+   title?: string;
+   subtitle?: string;
+   logging?: {
+      title?: string;
+      body?: string;
+      tagLabel?: string;
+      uiExerciseName?: string;
+      uiSetLabel?: string;
+      uiWeightLabel?: string;
+      uiIntensityLowLabel?: string;
+      uiIntensityHighLabel?: string;
+      uiRpeLabel?: string;
+      uiButtonLabel?: string;
+   };
+   timer?: {
+      title?: string;
+      body?: string;
+      uiRestLabel?: string;
+      uiTimerValue?: string;
+      uiLockLabel?: string;
+      uiLockValue?: string;
+   };
+   offline?: {
+      title?: string;
+      body?: string;
+      uiStatusLabel?: string;
+   };
+   chat?: {
+      title?: string;
+      body?: string;
+      uiVoiceNoteLabel?: string;
+   };
+   sync?: {
+      title?: string;
+      body?: string;
+      stats?: { label?: string; value?: string }[];
+      appleHealthAlt?: string;
+      googleFitAlt?: string;
+   };
+   video?: {
+      title?: string;
+      body?: string;
+   };
+};
+
+type ClientExperienceProps = {
+   content?: ClientExperienceContent | null;
+};
+
+const ClientExperience = ({ content }: ClientExperienceProps) => {
+   const resolvedBadgeText = content?.badgeText || 'The Client Experience';
+   const resolvedTitle = content?.title || 'Frictionless, fun workout tracking.';
+   const resolvedSubtitle = content?.subtitle || "Your clients don't want a spreadsheet on their phone. They want an experience.";
+
+   const resolvedLogging = {
+      title: content?.logging?.title || 'One thumb is enough.',
+      body: content?.logging?.body || 'Big buttons, intuitive RPE sliders, and auto-advancing sets.',
+      tagLabel: content?.logging?.tagLabel || 'Client favorite',
+      uiExerciseName: content?.logging?.uiExerciseName || 'Bench Press',
+      uiSetLabel: content?.logging?.uiSetLabel || 'Set 2 of 4',
+      uiWeightLabel: content?.logging?.uiWeightLabel || '185 lbs',
+      uiIntensityLowLabel: content?.logging?.uiIntensityLowLabel || 'Easy',
+      uiIntensityHighLabel: content?.logging?.uiIntensityHighLabel || 'Hard',
+      uiRpeLabel: content?.logging?.uiRpeLabel || 'RPE 8',
+      uiButtonLabel: content?.logging?.uiButtonLabel || 'Log Set'
+   };
+
+   const resolvedTimer = {
+      title: content?.timer?.title || 'The timer that follows them.',
+      body: content?.timer?.body || 'Timer stays visible on the Lock Screen and Dynamic Island while they switch apps or change music.',
+      uiRestLabel: content?.timer?.uiRestLabel || 'Rest',
+      uiTimerValue: content?.timer?.uiTimerValue || '00:42',
+      uiLockLabel: content?.timer?.uiLockLabel || 'Lock Screen',
+      uiLockValue: content?.timer?.uiLockValue || 'Resting: 00:42'
+   };
+
+   const resolvedOffline = {
+      title: content?.offline?.title || 'Works in the "Dungeon" Gyms.',
+      body: content?.offline?.body || 'Zero loading spinners. Works fully offline in basement gyms and syncs when they surface.',
+      uiStatusLabel: content?.offline?.uiStatusLabel || 'Auto-sync active'
+   };
+
+   const resolvedChat = {
+      title: content?.chat?.title || 'Chat with your Coach.',
+      body: content?.chat?.body || 'Need help with form? Send a video or voice note directly in the app. Clients can also join Community Groups to stay motivated with your team.',
+      uiVoiceNoteLabel: content?.chat?.uiVoiceNoteLabel || 'Voice Note • 0:24'
+   };
+
+   const resolvedSyncStats = content?.sync?.stats?.length
+      ? content.sync.stats
+      : [
+           { label: 'Steps', value: '10k+' },
+           { label: 'Sleep', value: 'Synced' }
+        ];
+
+   const resolvedSync = {
+      title: content?.sync?.title || 'Your watch talks to Jimmy.',
+      body: content?.sync?.body || "Seamless integration with Apple Health & Google Fit. Steps, sleep, and cardio data sync automatically, so they don't have to enter it manually.",
+      stats: resolvedSyncStats,
+      appleHealthAlt: content?.sync?.appleHealthAlt || 'Apple Health',
+      googleFitAlt: content?.sync?.googleFitAlt || 'Google Fit'
+   };
+
+   const resolvedVideo = {
+      title: content?.video?.title || 'No more "What is this exercise?".',
+      body: content?.video?.body || 'Every exercise comes with high-quality video demonstrations. Clients can watch, learn, and perform with confidence.'
+   };
    return (
       <section className="py-12 md:py-24 bg-white relative overflow-hidden border-t border-gray-100" id="experience">
 
@@ -28,13 +136,13 @@ const ClientExperience = () => {
             <div className="text-center max-w-3xl mx-auto mb-16">
                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-[11px] font-bold uppercase tracking-wider mb-6">
                   <Smartphone size={12} className="fill-purple-700" />
-                  The Client Experience
+                  {resolvedBadgeText}
                </div>
                <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight mb-6">
-                  Frictionless, fun workout tracking.
+                  {resolvedTitle}
                </h2>
                <p className="text-xl text-gray-500 leading-relaxed">
-                  Your clients don&apos;t want a spreadsheet on their phone. They want an experience.
+                  {resolvedSubtitle}
                </p>
             </div>
 
@@ -48,12 +156,12 @@ const ClientExperience = () => {
                         <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-110 duration-300">
                            <Zap size={24} />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">One thumb is enough.</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedLogging.title}</h3>
                         <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                           Big buttons, intuitive RPE sliders, and auto-advancing sets.
+                           {resolvedLogging.body}
                         </p>
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 text-gray-600 text-xs font-medium border border-gray-100">
-                           <ThumbsUp size={12} className="text-purple-600" /> Client favorite
+                           <ThumbsUp size={12} className="text-purple-600" /> {resolvedLogging.tagLabel}
                         </div>
                      </div>
 
@@ -61,17 +169,17 @@ const ClientExperience = () => {
                      <div className="w-full sm:w-[260px] bg-gray-50 rounded-2xl border border-gray-100 p-5 relative group-hover:bg-white group-hover:border-purple-100 transition-colors self-center mt-auto sm:mt-0">
                         <div className="flex justify-between items-center mb-4">
                            <div>
-                              <div className="text-sm font-bold text-gray-900">Bench Press</div>
-                              <div className="text-[10px] text-gray-400">Set 2 of 4</div>
+                              <div className="text-sm font-bold text-gray-900">{resolvedLogging.uiExerciseName}</div>
+                              <div className="text-[10px] text-gray-400">{resolvedLogging.uiSetLabel}</div>
                            </div>
-                           <div className="bg-white border border-gray-200 text-gray-900 text-xs font-bold px-2 py-1 rounded">185 lbs</div>
+                           <div className="bg-white border border-gray-200 text-gray-900 text-xs font-bold px-2 py-1 rounded">{resolvedLogging.uiWeightLabel}</div>
                         </div>
 
                         <div className="mb-5">
                            <div className="flex justify-between text-[10px] font-bold text-gray-400 mb-2">
-                              <span>Easy</span>
-                              <span className="text-purple-600">RPE 8</span>
-                              <span>Hard</span>
+                              <span>{resolvedLogging.uiIntensityLowLabel}</span>
+                              <span className="text-purple-600">{resolvedLogging.uiRpeLabel}</span>
+                              <span>{resolvedLogging.uiIntensityHighLabel}</span>
                            </div>
                            <div className="h-2 bg-gray-200 rounded-full relative overflow-hidden">
                               <div className="absolute top-0 left-0 h-full w-3/4 bg-purple-500 rounded-full"></div>
@@ -79,7 +187,7 @@ const ClientExperience = () => {
                         </div>
 
                         <div className="w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 group-hover:bg-purple-600 group-hover:shadow-purple-200 transition-all">
-                           <Check size={14} /> Log Set
+                           <Check size={14} /> {resolvedLogging.uiButtonLabel}
                         </div>
                      </div>
                   </div>
@@ -91,9 +199,9 @@ const ClientExperience = () => {
                      <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-110 duration-300">
                         <Activity size={24} />
                      </div>
-                     <h3 className="text-xl font-bold text-gray-900 mb-2">The timer that follows them.</h3>
+                     <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedTimer.title}</h3>
                      <p className="text-gray-500 text-sm leading-relaxed">
-                        Timer stays visible on the Lock Screen and Dynamic Island while they switch apps or change music.
+                        {resolvedTimer.body}
                      </p>
                   </div>
 
@@ -103,9 +211,9 @@ const ClientExperience = () => {
                            <div className="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center">
                               <Zap size={12} fill="currentColor" />
                            </div>
-                           <span className="text-[10px] font-medium text-gray-300">Rest</span>
+                           <span className="text-[10px] font-medium text-gray-300">{resolvedTimer.uiRestLabel}</span>
                         </div>
-                        <div className="text-lg font-bold text-purple-400 font-mono tracking-widest mr-1">00:42</div>
+                        <div className="text-lg font-bold text-purple-400 font-mono tracking-widest mr-1">{resolvedTimer.uiTimerValue}</div>
                      </div>
 
                      <div className="bg-gray-50 rounded-2xl border border-gray-100 p-4 flex items-center gap-3 group-hover:bg-white group-hover:border-purple-100 transition-colors relative overflow-hidden">
@@ -114,8 +222,8 @@ const ClientExperience = () => {
                            <Activity size={18} className="text-purple-600" />
                         </div>
                         <div>
-                           <div className="text-[10px] text-gray-400 uppercase font-bold">Lock Screen</div>
-                           <div className="text-sm font-bold text-gray-900">Resting: 00:42</div>
+                           <div className="text-[10px] text-gray-400 uppercase font-bold">{resolvedTimer.uiLockLabel}</div>
+                           <div className="text-sm font-bold text-gray-900">{resolvedTimer.uiLockValue}</div>
                         </div>
                      </div>
                   </div>
@@ -127,13 +235,13 @@ const ClientExperience = () => {
                      <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-5 text-emerald-600 transition-transform group-hover:scale-110 duration-300">
                         <WifiOff size={24} />
                      </div>
-                     <h3 className="text-xl font-bold text-gray-900 mb-2">Works in the &quot;Dungeon&quot; Gyms.</h3>
+                     <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedOffline.title}</h3>
                      <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                        Zero loading spinners. Works fully offline in basement gyms and syncs when they surface.
+                        {resolvedOffline.body}
                      </p>
                      <div className="mt-auto flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg w-fit border border-emerald-100">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        Auto-sync active
+                        {resolvedOffline.uiStatusLabel}
                      </div>
                   </div>
                </div>
@@ -143,9 +251,9 @@ const ClientExperience = () => {
                   <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-110 duration-300">
                      <MessageCircle size={24} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Chat with your Coach.</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedChat.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                     Need help with form? Send a video or voice note directly in the app. Clients can also join Community Groups to stay motivated with your team.
+                     {resolvedChat.body}
                   </p>
                   <div className="mt-auto bg-gray-50 rounded-xl p-3 border border-gray-100 group-hover:bg-white group-hover:border-purple-100 transition-colors">
                      <div className="flex items-center gap-3">
@@ -156,7 +264,7 @@ const ClientExperience = () => {
                            <div className="h-1.5 w-2/3 bg-gray-200 rounded-full mb-1 relative overflow-hidden">
                               <div className="absolute left-0 top-0 h-full w-1/2 bg-purple-500 rounded-full"></div>
                            </div>
-                           <div className="text-[9px] text-gray-400">Voice Note • 0:24</div>
+                           <div className="text-[9px] text-gray-400">{resolvedChat.uiVoiceNoteLabel}</div>
                         </div>
                      </div>
                   </div>
@@ -168,18 +276,18 @@ const ClientExperience = () => {
                      <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-110 duration-300">
                         <Activity size={24} />
                      </div>
-                     <h3 className="text-xl font-bold text-gray-900 mb-2">Your watch talks to Jimmy.</h3>
+                     <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedSync.title}</h3>
                      <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-md">
-                        Seamless integration with Apple Health & Google Fit. Steps, sleep, and cardio data sync automatically, so they don&apos;t have to enter it manually.
+                        {resolvedSync.body}
                      </p>
 
                      <div className="mt-auto flex items-center gap-6">
                         <div className="flex items-center gap-3">
                            <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl border border-gray-200 shadow-sm group-hover:border-purple-200 transition-all duration-300 group-hover:scale-105">
-                              <Image src="/assets/logo/apple-health.svg" alt="Apple Health" width={20} height={20} className="w-5 h-5" />
+                              <Image src="/assets/logo/apple-health.svg" alt={resolvedSync.appleHealthAlt} width={20} height={20} className="w-5 h-5" />
                            </div>
                            <div className="flex items-center justify-center w-10 h-10 bg-white rounded-xl border border-gray-200 shadow-sm group-hover:border-purple-200 transition-all duration-300 group-hover:scale-105">
-                              <Image src="/assets/logo/google-fit.svg" alt="Google Fit" width={20} height={20} className="w-5 h-5" />
+                              <Image src="/assets/logo/google-fit.svg" alt={resolvedSync.googleFitAlt} width={20} height={20} className="w-5 h-5" />
                            </div>
                         </div>
 
@@ -188,14 +296,12 @@ const ClientExperience = () => {
                         </div>
 
                         <div className="flex gap-2">
-                           <div className="bg-gray-50 border border-gray-100 px-3 py-2 rounded-lg text-center group-hover:bg-purple-50 group-hover:border-purple-100 transition-colors">
-                              <div className="text-[9px] text-gray-400 uppercase font-bold">Steps</div>
-                              <div className="text-xs font-bold text-gray-900">10k+</div>
-                           </div>
-                           <div className="bg-gray-50 border border-gray-100 px-3 py-2 rounded-lg text-center group-hover:bg-purple-50 group-hover:border-purple-100 transition-colors">
-                              <div className="text-[9px] text-gray-400 uppercase font-bold">Sleep</div>
-                              <div className="text-xs font-bold text-gray-900">Synced</div>
-                           </div>
+                           {resolvedSync.stats.slice(0, 2).map((stat, statIndex) => (
+                              <div key={`${stat.label || 'stat'}-${statIndex}`} className="bg-gray-50 border border-gray-100 px-3 py-2 rounded-lg text-center group-hover:bg-purple-50 group-hover:border-purple-100 transition-colors">
+                                 <div className="text-[9px] text-gray-400 uppercase font-bold">{stat.label}</div>
+                                 <div className="text-xs font-bold text-gray-900">{stat.value}</div>
+                              </div>
+                           ))}
                         </div>
                      </div>
                   </div>
@@ -208,9 +314,9 @@ const ClientExperience = () => {
                         <div className="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center mb-5 shadow-md shadow-purple-200 transition-transform group-hover:scale-110 duration-300">
                            <Play size={20} fill="currentColor" className="ml-0.5" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">No more &quot;What is this exercise?&quot;.</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedVideo.title}</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
-                           Every exercise comes with high-quality video demonstrations. Clients can watch, learn, and perform with confidence.
+                           {resolvedVideo.body}
                         </p>
                      </div>
                      <div className="mt-6 relative rounded-xl overflow-hidden aspect-video bg-gray-100 border border-gray-200 group-hover:border-purple-100 transition-colors">

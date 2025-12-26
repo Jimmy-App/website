@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: "Blog",
     description: "Blog index page.",
     path,
+    locale: lang,
   });
 }
 

@@ -17,7 +17,7 @@ Supported locales: `en` (default), `fr`, `es`.
 - French is prefixed: `/fr`, `/fr/blog`, `/fr/docs/...`
 - Spanish is prefixed: `/es`, `/es/blog`, `/es/docs/...`
 
-Middleware behavior:
+Proxy behavior:
 
 - `/studio`, `/_next`, `/api`, and public files are untouched.
 - `/fr` and `/es` are untouched.

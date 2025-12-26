@@ -1,20 +1,43 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Check, ChevronDown } from 'lucide-react';
+
+import { defaultLocale, supportedLocales } from '@/lib/i18n';
+import type { SupportedLocale } from '@/lib/i18n';
 
 import { LANGUAGES } from './constants';
 
 type LanguageSelectorProps = {
   mobileView?: boolean;
+  currentLocale?: SupportedLocale;
 };
 
-const LanguageSelector = ({ mobileView = false }: LanguageSelectorProps) => {
+const LanguageSelector = ({ mobileView = false, currentLocale }: LanguageSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listboxId = mobileView ? 'lang-listbox-mobile' : 'lang-listbox-desktop';
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const resolvedLocale = useMemo(() => {
+    if (currentLocale) {
+      return currentLocale;
+    }
+    const segments = pathname?.split('/').filter(Boolean) || [];
+    const firstSegment = segments[0];
+    if (firstSegment && supportedLocales.includes(firstSegment as SupportedLocale)) {
+      return firstSegment as SupportedLocale;
+    }
+    return defaultLocale;
+  }, [currentLocale, pathname]);
+
+  const currentLang = useMemo(() => {
+    return LANGUAGES.find((lang) => lang.locale === resolvedLocale) || LANGUAGES[0];
+  }, [resolvedLocale]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -80,14 +103,28 @@ const LanguageSelector = ({ mobileView = false }: LanguageSelectorProps) => {
           <div className="p-1">
             {LANGUAGES.map((lang) => (
               <button
-                key={lang.code}
+                key={lang.locale}
                 onClick={() => {
-                  setCurrentLang(lang);
                   setIsOpen(false);
+                  if (lang.locale === resolvedLocale) {
+                    return;
+                  }
+                  const segments = pathname?.split('/').filter(Boolean) || [];
+                  const hasLocale =
+                    segments.length > 0 &&
+                    supportedLocales.includes(segments[0] as SupportedLocale);
+                  const nextSegments = hasLocale
+                    ? [lang.locale, ...segments.slice(1)]
+                    : [lang.locale, ...segments];
+                  const nextPath = `/${nextSegments.join('/')}`;
+                  const query = searchParams?.toString();
+                  const hash = typeof window !== 'undefined' ? window.location.hash : '';
+                  const fullPath = query ? `${nextPath}?${query}${hash}` : `${nextPath}${hash}`;
+                  router.push(fullPath);
                 }}
                 type="button"
                 role="option"
-                aria-selected={currentLang.code === lang.code}
+                aria-selected={currentLang.locale === lang.locale}
                 className={`flex items-center gap-3 w-full px-3 text-left rounded-lg transition-colors ${
                   mobileView
                     ? 'py-3 text-base text-gray-900 hover:bg-gray-50'
@@ -96,7 +133,9 @@ const LanguageSelector = ({ mobileView = false }: LanguageSelectorProps) => {
               >
                 <span className="text-lg">{lang.flag}</span>
                 <span className="font-medium flex-1">{lang.label}</span>
-                {currentLang.code === lang.code && <Check size={16} className="text-purple-600" />}
+                {currentLang.locale === lang.locale && (
+                  <Check size={16} className="text-purple-600" />
+                )}
               </button>
             ))}
           </div>

@@ -14,7 +14,171 @@ export const siteSettingsQuery = defineQuery(`
 export const navigationByLanguageQuery = defineQuery(`
   *[_type == "navigation" && language == $language][0]{
     title,
+    brandLabel,
+    mobileHelperText,
     items[]{label, href}
+  }
+`);
+
+export const landingPageByLanguageQuery = defineQuery(`
+  *[_type == "landingPage" && language == $language][0]{
+    title,
+    cta{
+      waitlistLabel,
+      pricingSecondaryLabel
+    },
+    hero{
+      badgeText,
+      title,
+      titleHighlight,
+      subtitle,
+      inputPlaceholder,
+      mockupUrlLabel,
+      socialProofText,
+      successMessage
+    },
+    problem{
+      title,
+      titleHighlight,
+      subtitle,
+      cards[]{
+        key,
+        title,
+        body,
+        badge,
+        ctaLabel,
+        uiActionLabel,
+        uiAvatarInitials,
+        uiStatusLabel
+      }
+    },
+    coachFeatures{
+      badgeText,
+      title,
+      titleHighlight,
+      subtitle,
+      builder{
+        title,
+        body,
+        weekLabel,
+        exerciseItems,
+        exerciseDetail
+      },
+      payments{
+        title,
+        body,
+        revenueLabel,
+        revenueDelta,
+        revenueAmount,
+        notificationTitle,
+        notificationBody
+      },
+      chat{
+        title,
+        body,
+        messageText,
+        avatarInitials
+      },
+      health{
+        title,
+        body,
+        stats[]{label, value},
+        syncedLabel,
+        appleHealthAlt,
+        googleFitAlt
+      }
+    },
+    clientExperience{
+      badgeText,
+      title,
+      subtitle,
+      logging{
+        title,
+        body,
+        tagLabel,
+        uiExerciseName,
+        uiSetLabel,
+        uiWeightLabel,
+        uiIntensityLowLabel,
+        uiIntensityHighLabel,
+        uiRpeLabel,
+        uiButtonLabel
+      },
+      timer{
+        title,
+        body,
+        uiRestLabel,
+        uiTimerValue,
+        uiLockLabel,
+        uiLockValue
+      },
+      offline{
+        title,
+        body,
+        uiStatusLabel
+      },
+      chat{
+        title,
+        body,
+        uiVoiceNoteLabel
+      },
+      sync{
+        title,
+        body,
+        stats[]{label, value},
+        appleHealthAlt,
+        googleFitAlt
+      },
+      video{
+        title,
+        body
+      }
+    },
+    pricing{
+      badgeText,
+      title,
+      titleHighlight,
+      subtitle,
+      popularBadgeLabel,
+      secondaryHelperText,
+      plans[]{
+        name,
+        price,
+        period,
+        clients,
+        description,
+        isFeatured,
+        features[]{label, isAddon}
+      }
+    },
+    manifesto{
+      badgeText,
+      title,
+      titleHighlight,
+      bodyPrefix,
+      bodyEmphasis,
+      bodyMiddle,
+      bodyStrong,
+      inputPlaceholder,
+      socialProofText,
+      successMessage
+    },
+    footer{
+      brandLabel,
+      copyrightText
+    }
+  }
+`);
+
+export const landingPageSeoByLanguageQuery = defineQuery(`
+  *[_type == "landingPage" && language == $language][0]{
+    title,
+    seo{
+      title,
+      description,
+      ogImage,
+      noIndex
+    }
   }
 `);
 

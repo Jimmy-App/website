@@ -2,12 +2,13 @@ import { notFound } from "next/navigation";
 
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import type { SeoFields } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
 
 type PageData = {
   title?: string;
-  seo?: { title?: string; description?: string; noIndex?: boolean } | null;
+  seo?: SeoFields | null;
   blocks?: { _key?: string; _type?: string; heading?: string; body?: string }[];
 };
 
@@ -31,9 +32,9 @@ export async function generateMetadata({ params }: PageProps) {
 
   return buildMetadata({
     title: page?.title || "Terms",
-    description: page?.seo?.description || "",
     seo: page?.seo,
     path,
+    locale: lang,
   });
 }
 

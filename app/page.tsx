@@ -1,28 +1,57 @@
-import dynamic from 'next/dynamic';
-import Navbar from '../components/landing/Navbar';
-import Hero from '../components/landing/Hero';
-import FadeIn from '../components/ui/FadeIn';
+import LandingPage from '../components/landing/LandingPage';
+import type { LandingPageContent } from '../components/landing/LandingPage';
+import { defaultLocale } from '../lib/i18n';
+import { buildMetadata } from '../lib/seo';
+import type { SeoFields } from '../lib/seo';
+import { sanityFetch } from '../sanity/lib/fetch';
+import {
+  landingPageByLanguageQuery,
+  landingPageSeoByLanguageQuery,
+  navigationByLanguageQuery,
+} from '../sanity/lib/queries';
 
-// Lazy load below-the-fold sections
-const ProblemSection = dynamic(() => import('../components/landing/ProblemSection'));
-const CoreFeaturesSection = dynamic(() => import('../components/landing/CoreFeaturesSection'));
-const ClientExperienceSection = dynamic(() => import('../components/landing/ClientExperienceSection'));
-const PricingSection = dynamic(() => import('../components/landing/PricingSection'));
-const ManifestoSection = dynamic(() => import('../components/landing/ManifestoSection'));
-const Footer = dynamic(() => import('../components/landing/Footer'));
+type LandingPageSeoData = {
+  title?: string | null;
+  seo?: SeoFields | null;
+};
 
-const App = () => {
+type NavigationData = {
+  brandLabel?: string | null;
+  mobileHelperText?: string | null;
+  items?: { label?: string; href?: string }[] | null;
+};
+
+export async function generateMetadata() {
+  const landingPageSeo = await sanityFetch<LandingPageSeoData>({
+    query: landingPageSeoByLanguageQuery,
+    params: { language: defaultLocale },
+  });
+
+  return buildMetadata({
+    title: landingPageSeo?.title || 'Home Page',
+    seo: landingPageSeo?.seo,
+    path: '/',
+    locale: defaultLocale,
+  });
+}
+
+const App = async () => {
+  const landingPage = await sanityFetch<LandingPageContent>({
+    query: landingPageByLanguageQuery,
+    params: { language: defaultLocale },
+  });
+  const navigation = await sanityFetch<NavigationData>({
+    query: navigationByLanguageQuery,
+    params: { language: defaultLocale },
+  });
+
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-purple-100 selection:text-purple-900">
-      <Navbar />
-      <Hero />
-      <FadeIn delay={0.2}><ProblemSection /></FadeIn>
-      <FadeIn><CoreFeaturesSection /></FadeIn>
-      <FadeIn><ClientExperienceSection /></FadeIn>
-      <FadeIn><PricingSection /></FadeIn>
-      <FadeIn><ManifestoSection /></FadeIn>
-      <Footer />
-    </div>
+    <LandingPage
+      content={landingPage}
+      brandHref="/"
+      currentLocale={defaultLocale}
+      navigation={navigation}
+    />
   );
 };
 

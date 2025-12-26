@@ -14,8 +14,32 @@ import {
 } from 'lucide-react';
 
 import LanguageSelector from './LanguageSelector';
+import type { SupportedLocale } from '@/lib/i18n';
 
-const Navbar = () => {
+type NavbarMenuItem = {
+  label?: string;
+  href?: string;
+};
+
+type NavigationContent = {
+  brandLabel?: string;
+  mobileHelperText?: string;
+  items?: NavbarMenuItem[];
+};
+
+type NavbarProps = {
+  waitlistLabel?: string;
+  navigation?: NavigationContent | null;
+  brandHref?: string;
+  currentLocale?: SupportedLocale;
+};
+
+const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarProps) => {
+  const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
+  const resolvedBrandLabel = navigation?.brandLabel || 'Jimmy';
+  const resolvedMobileHelperText =
+    navigation?.mobileHelperText || 'Start your fitness journey today';
+  const resolvedBrandHref = brandHref || '/';
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDesktopMenu, setActiveDesktopMenu] = useState<string | null>(null);
@@ -120,32 +144,16 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const MENU_STRUCTURE = [
-    {
-      title: 'Features',
-      type: 'link',
-      href: '#features',
-      icon: Zap
-    },
-    {
-      title: 'Experience',
-      type: 'link',
-      href: '#experience',
-      icon: Smartphone
-    },
-    {
-      title: 'Manifesto',
-      type: 'link',
-      href: '#manifesto',
-      icon: Heart
-    },
-    {
-      title: 'Pricing',
-      type: 'link',
-      href: '#pricing',
-      icon: Gem
-    }
+  const defaultMenuItems = [
+    { label: 'Features', href: '#features' },
+    { label: 'Experience', href: '#experience' },
+    { label: 'Manifesto', href: '#manifesto' },
+    { label: 'Pricing', href: '#pricing' }
   ];
+  const resolvedMenuItems = navigation?.items?.length
+    ? navigation.items
+    : defaultMenuItems;
+  const menuIcons = [Zap, Smartphone, Heart, Gem];
 
   return (
     <>
@@ -188,16 +196,15 @@ const Navbar = () => {
 
           <nav className="relative z-10 flex items-center justify-between px-4 py-3">
             <Link
-              href="/"
+              href={resolvedBrandHref}
               onClick={(e) => {
                 setActiveDesktopMenu(null);
-                if (window.location.pathname === '/') {
+                if (window.location.pathname === resolvedBrandHref) {
                   e.preventDefault();
-                  if ('scrollRestoration' in history) {
-                    history.scrollRestoration = 'manual';
+                  if (window.location.hash || window.location.search) {
+                    window.history.replaceState(null, '', resolvedBrandHref);
                   }
                   window.scrollTo(0, 0);
-                  window.location.reload();
                 }
               }}
               className="flex items-center gap-2.5 cursor-pointer group select-none"
@@ -206,40 +213,45 @@ const Navbar = () => {
                 <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
                 <Image
                   src="/assets/logo/logo.svg"
-                  alt="Jimmy Logo"
+                  alt={`${resolvedBrandLabel} Logo`}
                   width={36}
                   height={36}
                   className="w-9 h-9 object-contain relative transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
                 />
               </div>
               <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
-                Jimmy
+                {resolvedBrandLabel}
               </span>
             </Link>
 
             <div className="flex items-center gap-1.5 p-1.5 rounded-full bg-white/50 border border-gray-200/50 backdrop-blur-sm shadow-sm">
-              {MENU_STRUCTURE.map((item) => (
-                <div key={item.title} className="relative">
-                  <Link
-                    href={item.href || '#'}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
-                  >
-                    {item.icon && <item.icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
-                    {item.title}
-                  </Link>
-                </div>
-              ))}
+              {resolvedMenuItems.map((item, index) => {
+                const Icon = menuIcons[index % menuIcons.length];
+                const label = item.label || defaultMenuItems[index]?.label || '';
+                const href = item.href || defaultMenuItems[index]?.href || '#';
+                return (
+                  <div key={`${label}-${index}`} className="relative">
+                    <Link
+                      href={href}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
+                    >
+                      {Icon && <Icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
+                      {label}
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="flex items-center gap-4">
-              <LanguageSelector />
+              <LanguageSelector currentLocale={currentLocale} />
               <div className="h-6 w-px bg-gray-200/80" />
               <Link href="#waitlist" className="group">
                 <button
                   type="button"
                   className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 active:scale-95"
                 >
-                  Join Waitlist
+                  {resolvedWaitlistLabel}
                 </button>
               </Link>
             </div>
@@ -258,16 +270,15 @@ const Navbar = () => {
       >
         <nav className="flex items-center justify-between px-4 py-3">
           <Link
-            href="/"
+            href={resolvedBrandHref}
             onClick={(e) => {
               setIsMobileMenuOpen(false);
-              if (window.location.pathname === '/') {
+              if (window.location.pathname === resolvedBrandHref) {
                 e.preventDefault();
-                if ('scrollRestoration' in history) {
-                  history.scrollRestoration = 'manual';
+                if (window.location.hash || window.location.search) {
+                  window.history.replaceState(null, '', resolvedBrandHref);
                 }
                 window.scrollTo(0, 0);
-                window.location.reload();
               }
             }}
             className="flex items-center gap-2.5 cursor-pointer group select-none"
@@ -276,19 +287,19 @@ const Navbar = () => {
               <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-active:opacity-20 transition-opacity duration-300" />
               <Image
                 src="/assets/logo/logo.svg"
-                alt="Jimmy Logo"
+                alt={`${resolvedBrandLabel} Logo`}
                 width={36}
                 height={36}
                 className="w-9 h-9 object-contain relative transition-transform duration-300 group-active:scale-95"
               />
             </div>
             <span className="font-bold text-xl tracking-tight text-gray-900">
-              Jimmy
+              {resolvedBrandLabel}
             </span>
           </Link>
 
           <div className="flex items-center gap-2">
-            <LanguageSelector mobileView={false} />
+            <LanguageSelector mobileView={false} currentLocale={currentLocale} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`p-2 rounded-lg transition-colors ${
@@ -314,29 +325,34 @@ const Navbar = () => {
           >
             {/* Navigation Items */}
             <div className="px-4 py-6 space-y-1">
-              {MENU_STRUCTURE.map((item, index) => (
-                <a
-                  key={item.title}
-                  href={item.href || '#'}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    handleMobileNavClick(item.href);
-                  }}
-                  className="flex items-center gap-3 py-3.5 px-4 text-gray-900 font-semibold text-base hover:bg-gray-50 rounded-xl transition-all active:scale-[0.98] animate-[slideDown_0.3s_ease-out]"
-                  style={{
-                    animationDelay: `${index * 0.05}s`,
-                    animationFillMode: 'both'
-                  }}
-                >
-                  {item.icon && (
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-purple-50 rounded-lg">
-                      <item.icon size={20} className="text-purple-600" />
-                    </div>
-                  )}
-                  <span className="flex-1">{item.title}</span>
-                  <ArrowRight size={18} className="text-gray-400" />
-                </a>
-              ))}
+              {resolvedMenuItems.map((item, index) => {
+                const Icon = menuIcons[index % menuIcons.length];
+                const label = item.label || defaultMenuItems[index]?.label || '';
+                const href = item.href || defaultMenuItems[index]?.href || '#';
+                return (
+                  <a
+                    key={`${label}-${index}`}
+                    href={href}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleMobileNavClick(href);
+                    }}
+                    className="flex items-center gap-3 py-3.5 px-4 text-gray-900 font-semibold text-base hover:bg-gray-50 rounded-xl transition-all active:scale-[0.98] animate-[slideDown_0.3s_ease-out]"
+                    style={{
+                      animationDelay: `${index * 0.05}s`,
+                      animationFillMode: 'both'
+                    }}
+                  >
+                    {Icon && (
+                      <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-purple-50 rounded-lg">
+                        <Icon size={20} className="text-purple-600" />
+                      </div>
+                    )}
+                    <span className="flex-1">{label}</span>
+                    <ArrowRight size={18} className="text-gray-400" />
+                  </a>
+                );
+              })}
             </div>
 
             {/* Divider */}
@@ -357,12 +373,12 @@ const Navbar = () => {
                   className="w-full py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg shadow-purple-500/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
                   type="button"
                 >
-                  Join Waitlist 
+                  {resolvedWaitlistLabel}
                   <ArrowRight size={20} />
                 </button>
               </a>
               <p className="text-center text-sm text-gray-500 mt-3">
-                Start your fitness journey today
+                {resolvedMobileHelperText}
               </p>
             </div>
           </div>

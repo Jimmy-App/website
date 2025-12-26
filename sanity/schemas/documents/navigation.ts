@@ -15,6 +15,16 @@ export const navigation = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "brandLabel",
+      title: "Brand Label",
+      type: "string",
+    }),
+    defineField({
+      name: "mobileHelperText",
+      title: "Mobile CTA Helper Text",
+      type: "string",
+    }),
+    defineField({
       name: "items",
       title: "Items",
       type: "array",

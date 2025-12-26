@@ -1,6 +1,11 @@
 import Image from 'next/image';
 
-const DashboardMockup = () => {
+type DashboardMockupProps = {
+  urlLabel?: string;
+};
+
+const DashboardMockup = ({ urlLabel }: DashboardMockupProps) => {
+  const resolvedUrlLabel = urlLabel || 'app.jimmycoach.com';
   return (
     <div className="relative w-full max-w-5xl mx-auto -mb-16 md:-mb-24 perspective-1000 z-20">
       <div className="relative rounded-t-2xl bg-white border border-b-0 border-gray-200 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden">
@@ -12,7 +17,7 @@ const DashboardMockup = () => {
           </div>
           <div className="bg-white px-3 py-0.5 rounded text-[10px] font-mono text-gray-400 border border-gray-200 shadow-sm flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-green-500"></span>
-            app.jimmycoach.com
+            {resolvedUrlLabel}
           </div>
           <div className="w-10"></div>
         </div>

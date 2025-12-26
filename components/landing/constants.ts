@@ -1,8 +1,8 @@
 export const LANGUAGES = [
-  { code: 'EN', flag: '🇺🇸', label: 'English' },
-  { code: 'ES', flag: '🇪🇸', label: 'Español' },
-  { code: 'FR', flag: '🇫🇷', label: 'Français' },
-  { code: 'UA', flag: '🇺🇦', label: 'Українська' },
+  { locale: 'en', code: 'EN', flag: '🇺🇸', label: 'English' },
+  { locale: 'es', code: 'ES', flag: '🇪🇸', label: 'Español' },
+  { locale: 'fr', code: 'FR', flag: '🇫🇷', label: 'Français' },
+  { locale: 'ua', code: 'UA', flag: '🇺🇦', label: 'Українська' },
 ];
 
 export const MENU_ITEMS = ['Features', 'Manifesto', 'Pricing'];
