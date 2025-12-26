@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { PortableTextBlock } from "@portabletext/types";
 
-import { PortableTextRenderer } from "@/components/PortableText";
+import PortableTextRenderer from "@/components/PortableText";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/fetch";
