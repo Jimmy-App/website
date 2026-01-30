@@ -1,12 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import {
    WifiOff,
    Activity,
    MessageCircle,
    Play,
-   Check,
    Smartphone,
    Zap,
    ThumbsUp,
@@ -123,6 +123,8 @@ const ClientExperience = ({ content }: ClientExperienceProps) => {
       title: content?.video?.title || 'No more "What is this exercise?".',
       body: content?.video?.body || 'Every exercise comes with high-quality video demonstrations. Clients can watch, learn, and perform with confidence.'
    };
+   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
    return (
       <section className="py-12 md:py-24 bg-white relative overflow-hidden border-t border-gray-100" id="experience">
 
@@ -166,29 +168,29 @@ const ClientExperience = ({ content }: ClientExperienceProps) => {
                      </div>
 
                      {/* UI Visual */}
-                     <div className="w-full sm:w-[260px] bg-gray-50 rounded-2xl border border-gray-100 p-5 relative group-hover:bg-white group-hover:border-purple-100 transition-colors self-center mt-auto sm:mt-0">
-                        <div className="flex justify-between items-center mb-4">
-                           <div>
-                              <div className="text-sm font-bold text-gray-900">{resolvedLogging.uiExerciseName}</div>
-                              <div className="text-[10px] text-gray-400">{resolvedLogging.uiSetLabel}</div>
-                           </div>
-                           <div className="bg-white border border-gray-200 text-gray-900 text-xs font-bold px-2 py-1 rounded">{resolvedLogging.uiWeightLabel}</div>
-                        </div>
-
-                        <div className="mb-5">
-                           <div className="flex justify-between text-[10px] font-bold text-gray-400 mb-2">
-                              <span>{resolvedLogging.uiIntensityLowLabel}</span>
-                              <span className="text-purple-600">{resolvedLogging.uiRpeLabel}</span>
-                              <span>{resolvedLogging.uiIntensityHighLabel}</span>
-                           </div>
-                           <div className="h-2 bg-gray-200 rounded-full relative overflow-hidden">
-                              <div className="absolute top-0 left-0 h-full w-3/4 bg-purple-500 rounded-full"></div>
-                           </div>
-                        </div>
-
-                        <div className="w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 group-hover:bg-purple-600 group-hover:shadow-purple-200 transition-all">
-                           <Check size={14} /> {resolvedLogging.uiButtonLabel}
-                        </div>
+                     <div
+                        className="w-full sm:w-[260px] rounded-2xl bg-transparent overflow-hidden relative transition-colors self-center mt-auto sm:mt-0"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setIsPreviewOpen((prev) => !prev)}
+                        onKeyDown={(event) => {
+                           if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              setIsPreviewOpen((prev) => !prev);
+                           }
+                        }}
+                        aria-pressed={isPreviewOpen}
+                     >
+                        <Image
+                           src="/assets/photo/mock/jimmy-screen-home.svg"
+                           alt="Jimmy mobile home screen"
+                           width={520}
+                           height={1040}
+                           className={`w-full h-[200px] sm:h-[220px] md:h-[240px] object-cover transition-[object-position] duration-700 ease-out group-hover:object-bottom ${
+                              isPreviewOpen ? 'object-bottom' : 'object-top'
+                           }`}
+                           sizes="(max-width: 640px) 90vw, 260px"
+                        />
                      </div>
                   </div>
                </div>
