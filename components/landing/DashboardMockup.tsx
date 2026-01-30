@@ -23,7 +23,7 @@ const DashboardMockup = ({ urlLabel }: DashboardMockupProps) => {
         </div>
         <div className="bg-gray-100 relative group min-h-[300px] md:min-h-[500px]">
           <Image 
-            src="/assets/photo/dashboard.svg" 
+            src="/assets/photo/dashboard.png" 
             alt="Jimmy Platform Dashboard" 
             width={1200}
             height={750}
