@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Your Password</title>
+  <style>
+    /* Reset styles */
+    body { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    
+    /* Select All functionality */
+    .token-text {
+      -webkit-user-select: all;
+      -moz-user-select: all;
+      -ms-user-select: all;
+      user-select: all;
+      cursor: text;
+    }
+  </style>
+</head>
+<body style="background-color: #F3F4F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+
+  <!-- Main Wrapper -->
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        
+        <!-- Card Container -->
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); overflow: hidden;">
+          
+          <!-- Top Accent Line -->
+          <tr>
+            <td height="6" style="background-color: #7C3AED;"></td>
+          </tr>
+
+          <!-- Logo Section -->
+          <tr>
+            <td align="center" style="padding: 40px 0 20px 0;">
+              <img src="https://jimmycoach.com/assets/logo/logo.svg" alt="Jimmy Coach" width="60" height="60" style="display: block; border-radius: 12px;">
+            </td>
+          </tr>
+
+          <!-- Text Content -->
+          <tr>
+            <td align="center" style="padding: 0 40px;">
+              <h1 style="margin: 0 0 12px; font-size: 22px; font-weight: 700; color: #111827; letter-spacing: -0.5px;">
+                Reset your password
+              </h1>
+              <p style="margin: 0 0 32px; font-size: 15px; line-height: 24px; color: #6B7280;">
+                Heard you need a new password? No worries, it happens to the best of us! 👋<br><br>
+                Use this code to set a new password for your <strong>Jimmy Coach</strong> account:
+              </p>
+            </td>
+          </tr>
+
+          <!-- Code Block -->
+          <tr>
+            <td align="center" style="padding: 0 40px 32px;">
+              <!-- Container with background -->
+              <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                  <td align="center" style="background-color: #F5F3FF; border: 1px solid #E9E5FD; border-radius: 16px; padding: 24px;">
+                    
+                    <!-- Label -->
+                    <p style="margin: 0 0 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8B5CF6;">
+                      Reset Code
+                    </p>
+                    
+                    <!-- The Token -->
+                    <div class="token-text" style="font-family: 'SF Mono', 'Courier New', Courier, monospace; font-size: 38px; font-weight: 700; color: #5B21B6; letter-spacing: 6px; line-height: 1;">
+                      {{ .Token }}
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Security Notice & Footer -->
+          <tr>
+            <td align="center" style="padding: 0 40px 40px; background-color: #ffffff;">
+              <p style="margin: 0 0 20px; font-size: 13px; color: #DC2626; background-color: #FEF2F2; padding: 10px 16px; border-radius: 8px; display: inline-block;">
+                🔒 If you didn't ask for this, you can safely ignore this email.
+              </p>
+              
+              <div style="height: 1px; background-color: #F3F4F6; width: 100%; margin: 0 0 20px;"></div>
+              
+              <p style="margin: 0; font-size: 12px; color: #D1D5DB;">
+                © 2026 Just Jimmy LLC
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Friendly Footer -->
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 480px;">
+          <tr>
+            <td align="center" style="padding-top: 24px;">
+              <p style="margin: 0; font-size: 12px; color: #9CA3AF;">
+                Sent with 💜 by Jimmy
+              </p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -1,16 +1,15 @@
 import Image from 'next/image';
 import {
   Activity,
-  CreditCard,
-  MessageSquare,
-  Layers,
-  Plus,
-  Play,
-  CheckCircle2,
-  Zap,
   ArrowUpRight,
+  CheckCircle2,
+  CreditCard,
+  GripVertical,
+  Layers,
+  MessageSquare,
+  Play,
+  Plus,
   TrendingUp,
-  GripVertical
 } from 'lucide-react';
 
 type CoachFeatureContent = {
@@ -48,270 +47,402 @@ type CoachFeatureContent = {
     appleHealthAlt?: string;
     googleFitAlt?: string;
   };
+  video?: {
+    title?: string;
+    body?: string;
+  };
 };
 
 type CoachFeaturesProps = {
   content?: CoachFeatureContent | null;
 };
 
-const CoachFeatures = ({ content }: CoachFeaturesProps) => {
+const CoreFeaturesSection = ({ content }: CoachFeaturesProps) => {
   const resolvedBadgeText = content?.badgeText || 'The Coach Experience';
   const resolvedTitle = content?.title || 'Program at the';
   const resolvedTitleHighlight = content?.titleHighlight || 'speed of thought.';
-  const resolvedSubtitle = content?.subtitle || 'We stripped away the clunky menus and slow loading times. Everything you need to run your business is one click away.';
+  const resolvedSubtitle =
+    content?.subtitle ||
+    'We stripped away the clunky menus and slow loading times. Everything you need to run your business is one click away.';
 
   const resolvedBuilder = {
     title: content?.builder?.title || 'Drag-and-drop with Video',
-    body: content?.builder?.body || 'Create programs in seconds. Attach videos, save templates, and automate progressions faster than writing on paper.',
+    body:
+      content?.builder?.body ||
+      'Create programs in seconds. Attach videos, save templates, and automate progressions faster than writing on paper.',
     weekLabel: content?.builder?.weekLabel || 'Week 1: Strength Block',
-    exerciseItems: content?.builder?.exerciseItems?.length ? content.builder.exerciseItems : ['Back Squat', 'Romanian Deadlift', 'Walking Lunges'],
-    exerciseDetail: content?.builder?.exerciseDetail || '3 sets x 8 reps @ RPE 8'
+    exerciseItems: content?.builder?.exerciseItems?.length
+      ? content.builder.exerciseItems
+      : ['Back Squat', 'Romanian Deadlift', 'Walking Lunges'],
+    exerciseDetail: content?.builder?.exerciseDetail || '3 sets x 8 reps @ RPE 8',
   };
 
   const resolvedPayments = {
     title: content?.payments?.title || 'Get paid while you sleep',
-    body: content?.payments?.body || 'Automate your income. Charge clients directly through the app and track revenue without chasing transfers.',
+    body:
+      content?.payments?.body ||
+      'Automate your income. Charge clients directly through the app and track revenue without chasing transfers.',
     revenueLabel: content?.payments?.revenueLabel || 'Monthly Revenue',
     revenueDelta: content?.payments?.revenueDelta || '+12%',
     revenueAmount: content?.payments?.revenueAmount || '$4,250.00',
     notificationTitle: content?.payments?.notificationTitle || 'New Subscription',
-    notificationBody: content?.payments?.notificationBody || 'Anna K. just paid $150'
+    notificationBody: content?.payments?.notificationBody || 'Anna K. just paid $150',
   };
 
   const resolvedChat = {
     title: content?.chat?.title || '1:1 & Group Chat',
-    body: content?.chat?.body || 'Direct real-time chat included. Send voice notes, videos, and feedback instantly. Group chats for community.',
-    messageText: content?.chat?.messageText || 'Form felt way better today! Should I increase weight?',
-    avatarInitials: content?.chat?.avatarInitials || 'JD'
+    body:
+      content?.chat?.body ||
+      'Direct real-time chat included. Send voice notes, videos, and feedback instantly. Group chats for community.',
+    messageText:
+      content?.chat?.messageText || 'Form felt way better today! Should I increase weight?',
+    avatarInitials: content?.chat?.avatarInitials || 'JD',
   };
 
   const resolvedHealthStats = content?.health?.stats?.length
     ? content.health.stats
     : [
         { label: 'Steps', value: '12,403' },
-        { label: 'Sleep', value: '7h 42m' }
+        { label: 'Sleep', value: '7h 42m' },
       ];
 
   const resolvedHealth = {
     title: content?.health?.title || 'The Full Picture',
-    body: content?.health?.body || 'We sync with Apple Health & Google Fit. See steps, sleep, and activity data automatically.',
+    body:
+      content?.health?.body ||
+      'We sync with Apple Health & Google Fit. See steps, sleep, and activity data automatically.',
     stats: resolvedHealthStats,
     syncedLabel: content?.health?.syncedLabel || 'Synced',
     appleHealthAlt: content?.health?.appleHealthAlt || 'Apple Health',
-    googleFitAlt: content?.health?.googleFitAlt || 'Google Fit'
+    googleFitAlt: content?.health?.googleFitAlt || 'Google Fit',
   };
+
+  const resolvedVideo = {
+    title: content?.video?.title || 'No more "What is this exercise?".',
+    body:
+      content?.video?.body ||
+      'Every exercise comes with high-quality video demonstrations. Clients can watch, learn, and perform with confidence.',
+  };
+
+  const baseCardClass =
+    'flex h-full flex-col rounded-[24px] border border-[#e1e8f2] bg-white p-6 sm:p-7 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:-translate-y-0.5';
+
   return (
-    <section className="py-12 md:py-24 bg-white relative overflow-hidden border-t border-gray-100" id="features">
-      {/* Background decoration - Simplified Purple Tones */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-50/30 rounded-full blur-3xl -mr-64 -mt-64 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-50/20 rounded-full blur-3xl -ml-32 -mb-32 pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
-        {/* Header - CENTERED */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-100 text-purple-700 text-[11px] font-bold uppercase tracking-wider mb-6">
-            <Zap size={12} className="fill-purple-700" />
+    <section
+      className="relative overflow-hidden border-t border-[#edf1f6] bg-white py-14 md:py-24"
+      id="features"
+    >
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#dfe7f2] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+            <Layers size={12} />
             {resolvedBadgeText}
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight mb-6">
+
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-5xl md:leading-[1.05]">
             {resolvedTitle}{' '}
-            <span className="text-purple-600">{resolvedTitleHighlight}</span>
+            <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+              {resolvedTitleHighlight}
+            </span>
           </h2>
-          <p className="text-xl text-gray-500 leading-relaxed mx-auto">
+
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-500 md:text-xl">
             {resolvedSubtitle}
           </p>
         </div>
 
-        {/* BENTO GRID LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="mt-10 grid gap-5 lg:grid-cols-12">
+          <article className={`${baseCardClass} lg:col-span-7`}>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
+              <Layers size={20} />
+            </div>
+            <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900">
+              {resolvedBuilder.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">{resolvedBuilder.body}</p>
 
-          {/* FEATURE A: Rapid Flow Builder */}
-          <div className="lg:col-span-7 group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-100/20">
-            <div className="relative z-10 flex flex-col h-full">
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-105 duration-300">
-                  <Layers size={24} />
+            <div className="mt-auto pt-6">
+              <div className="rounded-2xl border border-[#dbe5f1] bg-[#f8fbff] p-4">
+                <div className="flex items-center justify-between border-b border-[#e7edf5] pb-3">
+                  <span className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    {resolvedBuilder.weekLabel}
+                  </span>
+                  <button
+                    type="button"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#dbe5f1] bg-white text-slate-500"
+                    aria-label="Add exercise"
+                  >
+                    <Plus size={15} />
+                  </button>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{resolvedBuilder.title}</h3>
-                <p className="text-gray-500 leading-relaxed">
-                  {resolvedBuilder.body}
-                </p>
-              </div>
 
-              {/* UI Visualization */}
-              <div className="mt-auto bg-gray-50 rounded-2xl border border-gray-200 p-5 relative overflow-hidden group-hover:bg-white group-hover:border-purple-100 transition-colors duration-300">
-                <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-3">
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{resolvedBuilder.weekLabel}</span>
-                  <div className="flex gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-400 group-hover:text-purple-600 group-hover:border-purple-200 transition-colors cursor-pointer hover:bg-purple-50"><Plus size={14} /></div>
-                  </div>
-                </div>
-                <div className="space-y-2 relative">
-                  {resolvedBuilder.exerciseItems.map((ex, i) => (
-                    <div key={i}
-                      className="bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3 shadow-sm group-hover:border-purple-100 transition-all duration-300 relative z-10"
-                      style={{ transitionDelay: `${i * 50}ms` }}
+                <div className="mt-3 space-y-2">
+                  {resolvedBuilder.exerciseItems.map((exercise, index) => (
+                    <div
+                      key={`${exercise}-${index}`}
+                      className="flex items-center gap-3 rounded-xl border border-[#e7edf5] bg-white px-3 py-2.5"
                     >
-                      <GripVertical size={16} className="text-gray-300 cursor-grab group-hover:text-purple-500 transition-colors" />
-                      <div className="flex-1">
-                        <div className="text-sm font-bold text-gray-800">{ex}</div>
-                        <div className="text-[10px] text-gray-400">{resolvedBuilder.exerciseDetail}</div>
+                      <GripVertical size={15} className="text-slate-400" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-slate-800">{exercise}</p>
+                        <p className="truncate text-[11px] text-slate-500">
+                          {resolvedBuilder.exerciseDetail}
+                        </p>
                       </div>
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-hover:bg-purple-50 transition-colors">
-                        <Play size={12} className="text-gray-400 fill-gray-400 group-hover:text-purple-600 group-hover:fill-purple-600 transition-colors" />
+                      <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
+                        <Play size={12} className="translate-x-[1px]" fill="currentColor" />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-          </div>
+          </article>
 
-          {/* FEATURE B: Payments */}
-          <div className="lg:col-span-5 group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-100/20">
-            <div className="relative z-10 flex flex-col h-full">
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-105 duration-300">
-                <CreditCard size={24} />
+          <article className={`${baseCardClass} lg:col-span-5`}>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
+              <CreditCard size={20} />
+            </div>
+            <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900">
+              {resolvedPayments.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">{resolvedPayments.body}</p>
+
+            <div className="mt-auto pt-6 rounded-2xl border border-[#dbe5f1] bg-[#f8fbff] p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    {resolvedPayments.revenueLabel}
+                  </p>
+                  <p className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900">
+                    {resolvedPayments.revenueAmount}
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-full border border-[#dfe7f2] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#5b47ff]">
+                  <TrendingUp size={12} />
+                  {resolvedPayments.revenueDelta}
+                </span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{resolvedPayments.title}</h3>
-              <p className="text-gray-500 leading-relaxed mb-8">
-                {resolvedPayments.body}
-              </p>
 
-              {/* UI Visualization */}
-              <div className="mt-auto relative">
-                <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm relative z-10 overflow-hidden group-hover:border-purple-100 transition-colors">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{resolvedPayments.revenueLabel}</span>
-                    <span className="text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                      <TrendingUp size={12} /> {resolvedPayments.revenueDelta}
+              <div className="mt-4 grid h-14 grid-cols-8 items-end gap-1.5">
+                {[26, 38, 32, 44, 56, 48, 62, 70].map((height, index) => (
+                  <div
+                    key={`bar-${index}`}
+                    className="rounded-md bg-[#d7e1ef]"
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-4 flex items-center gap-3 rounded-xl border border-[#e7edf5] bg-white px-3 py-2.5">
+                <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#f0ebff] text-[#5b47ff]">
+                  $
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-slate-800">
+                    {resolvedPayments.notificationTitle}
+                  </p>
+                  <p className="truncate text-[11px] text-slate-500">
+                    {resolvedPayments.notificationBody}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article className={`${baseCardClass} lg:col-span-4`}>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
+              <MessageSquare size={20} />
+            </div>
+            <h3 className="mt-5 text-xl font-bold tracking-tight text-slate-900">
+              {resolvedChat.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">{resolvedChat.body}</p>
+
+            <div className="mt-auto pt-6 min-h-[224px] overflow-hidden rounded-2xl border border-[#dbe5f1] bg-white">
+              <div className="flex h-9 items-center justify-between border-b border-[#e7edf5] bg-[#f8fbff] px-3">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                  Live chat
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full border border-[#dfe7f2] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#5b47ff]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#5b47ff]" />
+                  online
+                </span>
+              </div>
+
+              <div className="grid min-h-[188px] grid-cols-[110px_minmax(0,1fr)]">
+                <div className="border-r border-[#e7edf5] bg-[#f8fbff] p-2">
+                  <div className="space-y-2">
+                    {[0, 1, 2].map((row) => (
+                      <div
+                        key={`thread-${row}`}
+                        className={`flex items-center gap-2 rounded-lg border px-2 py-1.5 ${
+                          row === 0
+                            ? 'border-[#d8ddff] bg-white'
+                            : 'border-[#e7edf5] bg-white/70'
+                        }`}
+                      >
+                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#f0ebff] text-[10px] font-semibold text-[#5b47ff]">
+                          {row === 0 ? resolvedChat.avatarInitials : 'CL'}
+                        </span>
+                        <span className="h-1.5 flex-1 rounded-full bg-[#d7e1ef]" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex h-full flex-col bg-white p-2.5 pb-2">
+                  <div className="max-w-[90%] rounded-2xl rounded-tl-sm border border-[#e7edf5] bg-[#f8fbff] px-3 py-2 text-[11px] leading-relaxed text-slate-600">
+                    {resolvedChat.messageText}
+                  </div>
+                  <div className="mt-2 ml-auto max-w-[86%] rounded-2xl rounded-tr-sm bg-[#5b47ff] px-3 py-2 text-[11px] text-white">
+                    <div className="flex items-center gap-2">
+                      <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
+                        <Play size={9} fill="currentColor" className="translate-x-[1px]" />
+                      </div>
+                      <div className="flex h-2.5 items-end gap-0.5">
+                        {[5, 8, 4, 10, 6, 7].map((level, index) => (
+                          <span
+                            key={`wave-${index}`}
+                            className="w-0.5 rounded-full bg-white/80"
+                            style={{ height: `${level * 10}%` }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-white/80">0:24</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-auto flex items-center gap-2 rounded-full border border-[#e7edf5] bg-[#f8fbff] px-2 py-1.5">
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#dbe5f1] bg-white text-[11px] text-slate-400">
+                      +
+                    </span>
+                    <span className="h-1.5 flex-1 rounded-full bg-[#d7e1ef]" />
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#5b47ff] text-[10px] font-semibold text-white">
+                      →
                     </span>
                   </div>
-                  <div className="text-3xl font-extrabold text-gray-900 mb-4">{resolvedPayments.revenueAmount}</div>
+                </div>
+              </div>
+            </div>
+          </article>
 
-                  <div className="relative h-16 overflow-hidden rounded-lg">
-                    <svg className="w-full h-full absolute bottom-0" viewBox="0 0 100 40" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="purpleGradientSimple" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#9333ea" stopOpacity="0.2" />
-                          <stop offset="100%" stopColor="#9333ea" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <path d="M0,35 Q10,30 20,34 Q30,38 40,25 Q50,15 60,22 Q70,28 80,15 Q90,5 100,18 V40 H0 Z" fill="url(#purpleGradientSimple)" className="opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-                      <path d="M0,35 Q10,30 20,34 Q30,38 40,25 Q50,15 60,22 Q70,28 80,15 Q90,5 100,18" fill="none" stroke="#9333ea" strokeWidth="2" className="transition-all duration-500" />
-                    </svg>
+          <article className={`${baseCardClass} lg:col-span-4`}>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
+              <Activity size={20} />
+            </div>
+            <h3 className="mt-5 text-xl font-bold tracking-tight text-slate-900">
+              {resolvedHealth.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">{resolvedHealth.body}</p>
+
+            <div className="mt-auto pt-6 min-h-[224px] overflow-hidden rounded-2xl border border-[#dbe5f1] bg-white">
+              <div className="flex h-9 items-center justify-between border-b border-[#e7edf5] bg-[#f8fbff] px-3">
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#e7edf5] bg-white">
+                    <Image
+                      src="/assets/logo/apple-health.svg"
+                      alt={resolvedHealth.appleHealthAlt}
+                      width={16}
+                      height={16}
+                      className="h-4 w-4"
+                    />
                   </div>
+                  <div className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-[#e7edf5] bg-white">
+                    <Image
+                      src="/assets/logo/google-fit.svg"
+                      alt={resolvedHealth.googleFitAlt}
+                      width={16}
+                      height={16}
+                      className="h-4 w-4"
+                    />
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-full border border-[#dfe7f2] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#5b47ff]">
+                  <CheckCircle2 size={11} />
+                  {resolvedHealth.syncedLabel}
+                </span>
+              </div>
 
-                  <div className="absolute bottom-2 left-2 right-2 bg-purple-900 text-white p-3 rounded-xl shadow-lg transform translate-y-[150%] group-hover:translate-y-0 transition-transform duration-300 ease-out flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center text-white font-bold text-xs">$</div>
-                    <div>
-                      <div className="text-xs font-bold text-white">{resolvedPayments.notificationTitle}</div>
-                      <div className="text-[10px] text-purple-200">{resolvedPayments.notificationBody}</div>
+              <div className="min-h-[188px] bg-[#f8fbff] p-3">
+                <div className="rounded-xl border border-[#e7edf5] bg-white p-2.5">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                      Weekly trend
+                    </span>
+                    <ArrowUpRight size={14} className="text-slate-400" />
+                  </div>
+                  <div className="grid h-14 grid-cols-10 items-end gap-1">
+                    {[32, 40, 36, 45, 49, 42, 58, 52, 61, 68].map((height, index) => (
+                      <span
+                        key={`health-bar-${index}`}
+                        className={`rounded-sm ${
+                          index > 6 ? 'bg-[#5b47ff]' : 'bg-[#d7e1ef]'
+                        }`}
+                        style={{ height: `${height}%` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-2.5 grid grid-cols-3 gap-2">
+                  {resolvedHealth.stats.slice(0, 2).map((stat, index) => (
+                    <div
+                      key={`${stat.label || 'stat'}-${index}`}
+                      className="rounded-lg border border-[#e7edf5] bg-white px-2 py-2 text-center"
+                    >
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                        {stat.label}
+                      </p>
+                      <p className="mt-0.5 text-[13px] font-bold text-slate-800">{stat.value}</p>
+                    </div>
+                  ))}
+                  <div className="rounded-lg border border-[#e7edf5] bg-white px-2 py-2 text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                      Goal
+                    </p>
+                    <p className="mt-0.5 text-[13px] font-bold text-[#5b47ff]">92%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article className={`${baseCardClass} lg:col-span-4`}>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
+              <Play size={18} fill="currentColor" className="translate-x-[1px]" />
+            </div>
+            <h3 className="mt-5 text-xl font-bold tracking-tight text-slate-900">
+              {resolvedVideo.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">{resolvedVideo.body}</p>
+
+            <div className="mt-auto pt-6">
+              <div className="rounded-2xl border border-[#dbe5f1] bg-[#f8fbff] p-4">
+                <div className="relative aspect-video overflow-hidden rounded-xl border border-[#e7edf5] bg-black">
+                  <iframe
+                    src="https://player.vimeo.com/video/999535716?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1&playsinline=1"
+                    className="absolute inset-0 h-full w-full"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    title="one arm cable rows"
+                    allowFullScreen
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-black/20" />
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/80 bg-white text-[#5b47ff] shadow-[0_10px_20px_-14px_rgba(91,71,255,0.45)]">
+                      <Play size={16} fill="currentColor" className="translate-x-[1px]" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* FEATURE C: Communication */}
-          <div className="lg:col-span-6 group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-100/20">
-            <div className="mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-105 duration-300">
-                <MessageSquare size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedChat.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {resolvedChat.body}
-              </p>
-            </div>
-
-            {/* UI Visualization */}
-            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 h-52 flex flex-col justify-end gap-4 relative overflow-hidden group-hover:bg-white group-hover:border-purple-100 transition-colors">
-              <div className="flex gap-3 max-w-[85%]">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 border-2 border-white shadow-sm"></div>
-                <div className="bg-white border border-gray-200 p-3 rounded-2xl rounded-tl-sm text-xs text-gray-600 shadow-sm leading-relaxed">
-                  {resolvedChat.messageText}
-                </div>
-              </div>
-              <div className="flex gap-3 max-w-[85%] ml-auto flex-row-reverse">
-                <div className="w-8 h-8 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center text-[10px] text-white font-bold shadow-sm border-2 border-white">
-                  {resolvedChat.avatarInitials}
-                </div>
-                <div className="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-sm text-xs shadow-sm shadow-purple-200/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors"><Play size={10} fill="currentColor" /></div>
-                    <div className="flex gap-0.5 h-3 items-center opacity-80">
-                      {[3, 7, 4, 10, 6, 8, 5, 3].map((h, i) => (
-                        <div key={i} className="w-0.5 bg-white rounded-full" style={{ height: `${h * 8}%` }}></div>
-                      ))}
-                    </div>
-                    <span className="text-[10px] text-purple-100 font-medium ml-1">0:24</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FEATURE D: Health Integrations */}
-          <div className="lg:col-span-6 group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-100/20">
-            <div className="mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-5 text-purple-600 transition-transform group-hover:scale-105 duration-300">
-                <Activity size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{resolvedHealth.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {resolvedHealth.body}
-              </p>
-            </div>
-
-            {/* UI Visualization */}
-            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 h-52 flex flex-col justify-between relative overflow-hidden group-hover:bg-white group-hover:border-purple-100 transition-colors">
-
-              {/* LOGOS SECTION - EDITED */}
-              <div className="flex items-center gap-4 relative z-10">
-                {/* Apple Health Image - BARE LOGO WITH SHADOW */}
-                <Image
-                  src="/assets/logo/apple-health.svg"
-                  alt={resolvedHealth.appleHealthAlt}
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 drop-shadow-sm transition-transform group-hover:scale-110 duration-300"
-                />
-
-                {/* Google Fit Image - IN CONTAINER */}
-                <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl border border-gray-200 shadow-sm group-hover:border-purple-200 transition-all duration-300">
-                  <Image src="/assets/logo/google-fit.svg" alt={resolvedHealth.googleFitAlt} width={24} height={24} className="w-6 h-6" />
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-3 relative z-10">
-                {resolvedHealth.stats.slice(0, 2).map((stat, statIndex) => (
-                  <div key={`${stat.label || 'stat'}-${statIndex}`} className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center group-hover:border-purple-100 transition-colors">
-                    <div className="text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-wider">{stat.label}</div>
-                    <div className="text-sm font-extrabold text-gray-900 group-hover:text-purple-600 transition-colors">{stat.value}</div>
-                  </div>
-                ))}
-                <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center group-hover:border-purple-100 transition-colors flex flex-col items-center justify-center">
-                  <div className="flex flex-col items-center gap-1 text-purple-600">
-                    <CheckCircle2 size={16} className="fill-purple-100" />
-                    <span className="text-[9px] font-bold uppercase tracking-wider">{resolvedHealth.syncedLabel}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute top-5 right-5 text-gray-300 group-hover:text-purple-400 group-hover:rotate-45 transition-all duration-300">
-                <ArrowUpRight size={20} />
-              </div>
-            </div>
-          </div>
-
+          </article>
         </div>
       </div>
     </section>
   );
 };
 
-export default CoachFeatures;
+export default CoreFeaturesSection;

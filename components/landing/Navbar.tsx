@@ -6,11 +6,7 @@ import Image from 'next/image';
 import {
   ArrowRight,
   Menu,
-  X,
-  Zap,
-  Smartphone,
-  Gem,
-  Heart
+  X
 } from 'lucide-react';
 
 import LanguageSelector from './LanguageSelector';
@@ -36,9 +32,9 @@ type NavbarProps = {
 
 const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarProps) => {
   const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
+  const resolvedLoginLabel = 'Login';
+  const loginHref = 'https://app.jimmycoach.com';
   const resolvedBrandLabel = navigation?.brandLabel || 'Jimmy';
-  const resolvedMobileHelperText =
-    navigation?.mobileHelperText || 'Start your fitness journey today';
   const resolvedBrandHref = brandHref || '/';
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -153,7 +149,6 @@ const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarP
   const resolvedMenuItems = navigation?.items?.length
     ? navigation.items
     : defaultMenuItems;
-  const menuIcons = [Zap, Smartphone, Heart, Gem];
 
   return (
     <>
@@ -174,6 +169,27 @@ const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarP
           from { transform: translateY(-100%); }
           to { transform: translateY(0); }
         }
+        @keyframes desktopNavbarEnter {
+          from {
+            opacity: 0;
+            transform: translateY(-18px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .desktop-navbar-enter {
+            animation: desktopNavbarEnter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .desktop-navbar-enter {
+            animation: none !important;
+          }
+        }
 
         .navbar-glass {
           backdrop-filter: saturate(180%) blur(20px);
@@ -182,19 +198,17 @@ const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarP
       `}</style>
 
       {/* ============= DESKTOP HEADER ============= */}
-      <header className="hidden lg:block fixed top-0 left-0 w-full z-50 pt-4 px-4 pointer-events-none">
-        <div className="w-full max-w-6xl mx-auto relative pointer-events-auto">
-          <div
+      <header className="desktop-navbar-enter hidden lg:block fixed top-0 left-0 w-full z-50 pt-4 px-4 pointer-events-none">
+        <div className="w-full max-w-6xl mx-auto pointer-events-auto">
+          <nav
             className={`
-              absolute inset-0 rounded-2xl transition-all duration-300 ease-out
+              relative flex items-center justify-between gap-4 border border-transparent transition-all duration-300 ease-out
               ${isScrolled
-                ? 'bg-white/85 backdrop-blur-xl border border-gray-200/50 shadow-lg shadow-gray-200/20 opacity-100'
-                : 'bg-transparent border border-transparent opacity-0'
+                ? 'rounded-[28px] border-[#e7edf5] bg-white/95 px-4 py-2.5 shadow-[0_16px_36px_-26px_rgba(124,58,237,0.30)]'
+                : 'px-1 py-2'
               }
             `}
-          />
-
-          <nav className="relative z-10 flex items-center justify-between px-4 py-3">
+          >
             <Link
               href={resolvedBrandHref}
               onClick={(e) => {
@@ -207,51 +221,74 @@ const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarP
                   window.scrollTo(0, 0);
                 }
               }}
-              className="flex items-center gap-2.5 cursor-pointer group select-none"
+              className="group flex items-center"
             >
-              <div className="relative">
-                <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-                <Image
-                  src="/assets/logo/logo.svg"
-                  alt={`${resolvedBrandLabel} Logo`}
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 object-contain relative transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3"
-                />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-gray-900 group-hover:text-purple-600 transition-colors">
-                {resolvedBrandLabel}
-              </span>
+              <Image
+                src="/assets/logo/logo-full.svg"
+                alt={`${resolvedBrandLabel} Logo`}
+                width={180}
+                height={72}
+                className={`
+                  w-auto object-contain transition-all duration-200
+                  ${isScrolled ? 'h-10' : 'h-11'}
+                `}
+              />
             </Link>
 
-            <div className="flex items-center gap-1.5 p-1.5 rounded-full bg-white/50 border border-gray-200/50 backdrop-blur-sm shadow-sm">
-              {resolvedMenuItems.map((item, index) => {
-                const Icon = menuIcons[index % menuIcons.length];
-                const label = item.label || defaultMenuItems[index]?.label || '';
-                const href = item.href || defaultMenuItems[index]?.href || '#';
-                return (
-                  <div key={`${label}-${index}`} className="relative">
+            <div className="flex flex-1 items-center justify-center px-2">
+              <div
+                className="flex items-center gap-1 rounded-[22px] border border-[#e7edf5] bg-white px-2 py-1"
+                onMouseLeave={handleDesktopLeave}
+              >
+                {resolvedMenuItems.map((item, index) => {
+                  const label = item.label || defaultMenuItems[index]?.label || '';
+                  const href = item.href || defaultMenuItems[index]?.href || '#';
+                  const isActive = activeDesktopMenu === label;
+
+                  return (
                     <Link
+                      key={`${label}-${index}`}
                       href={href}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all duration-200"
+                      className={`
+                        desktop-menu-trigger relative px-5 py-2 text-[15px] font-semibold transition-colors duration-200
+                        ${isActive
+                          ? 'text-slate-800'
+                          : 'text-slate-600 hover:text-slate-800'
+                        }
+                      `}
+                      onMouseEnter={() => handleDesktopEnter(label)}
+                      onFocus={() => handleDesktopEnter(label)}
+                      onBlur={handleDesktopLeave}
+                      onClick={() => setActiveDesktopMenu(label)}
                     >
-                      {Icon && <Icon size={16} className="text-gray-400 group-hover:text-purple-500" />}
                       {label}
+                      <span
+                        className={`
+                          pointer-events-none absolute left-5 right-5 -bottom-0 h-0.5 rounded-full bg-purple-600 transition-opacity duration-200
+                          ${isActive ? 'opacity-100' : 'opacity-0'}
+                        `}
+                      />
                     </Link>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <LanguageSelector currentLocale={currentLocale} />
-              <div className="h-6 w-px bg-gray-200/80" />
+              <a
+                href={loginHref}
+                className="inline-flex items-center px-1 py-2 text-[15px] font-semibold text-slate-600 transition-colors duration-200 hover:text-slate-900"
+              >
+                {resolvedLoginLabel}
+              </a>
               <Link href="#waitlist" className="group">
                 <button
                   type="button"
-                  className="px-5 py-2 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-md shadow-purple-500/20 active:scale-95"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-purple-700 active:scale-95"
                 >
                   {resolvedWaitlistLabel}
+                  <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5" />
                 </button>
               </Link>
             </div>
@@ -261,11 +298,7 @@ const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarP
 
       {/* ============= MOBILE HEADER ============= */}
       <div 
-        className={`lg:hidden sticky top-0 left-0 w-full z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-white/80 backdrop-blur-xl shadow-sm' 
-            : 'bg-white'
-        }`}
+        className="lg:hidden sticky top-0 left-0 w-full z-50 bg-white"
         ref={mobileMenuRef}
       >
         <nav className="flex items-center justify-between px-4 py-3">
@@ -281,108 +314,113 @@ const Navbar = ({ waitlistLabel, navigation, brandHref, currentLocale }: NavbarP
                 window.scrollTo(0, 0);
               }
             }}
-            className="flex items-center gap-2.5 cursor-pointer group select-none"
+            className="flex items-center cursor-pointer group select-none"
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-purple-500 rounded-full blur opacity-0 group-active:opacity-20 transition-opacity duration-300" />
-              <Image
-                src="/assets/logo/logo.svg"
-                alt={`${resolvedBrandLabel} Logo`}
-                width={36}
-                height={36}
-                className="w-9 h-9 object-contain relative transition-transform duration-300 group-active:scale-95"
-              />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-gray-900">
-              {resolvedBrandLabel}
-            </span>
+            <Image
+              src="/assets/logo/logo-full.svg"
+              alt={`${resolvedBrandLabel} Logo`}
+              width={180}
+              height={72}
+              className="h-10 w-auto object-contain"
+            />
           </Link>
 
           <div className="flex items-center gap-2">
             <LanguageSelector mobileView={false} currentLocale={currentLocale} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-95 ${
                 isMobileMenuOpen 
-                  ? 'bg-purple-100 text-purple-600' 
-                  : 'text-gray-600 active:bg-gray-100'
+                  ? 'border-slate-200 bg-slate-50 text-slate-800'
+                  : 'border-[#e7edf5] bg-white text-slate-700 active:bg-slate-50'
               }`}
               aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <span className="relative h-5 w-5">
+                <Menu
+                  className={`absolute inset-0 h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isMobileMenuOpen
+                      ? 'rotate-45 scale-75 opacity-0'
+                      : 'rotate-0 scale-100 opacity-100'
+                  }`}
+                />
+                <X
+                  className={`absolute inset-0 h-5 w-5 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isMobileMenuOpen
+                      ? 'rotate-0 scale-100 opacity-100'
+                      : '-rotate-45 scale-75 opacity-0'
+                  }`}
+                />
+              </span>
             </button>
           </div>
         </nav>
 
-        {/* DROPDOWN MENU - не fixed, просто розгортається вниз */}
-        {isMobileMenuOpen && (
-          <div 
-            className="absolute left-0 right-0 top-full bg-white border-t border-gray-100 shadow-xl animate-[slideInFromTop_0.3s_ease-out] z-40"
-            style={{
-              maxHeight: 'calc(100vh - 60px)',
-              overflowY: 'auto'
-            }}
-          >
-            {/* Navigation Items */}
-            <div className="px-4 py-6 space-y-1">
-              {resolvedMenuItems.map((item, index) => {
-                const Icon = menuIcons[index % menuIcons.length];
-                const label = item.label || defaultMenuItems[index]?.label || '';
-                const href = item.href || defaultMenuItems[index]?.href || '#';
-                return (
-                  <a
-                    key={`${label}-${index}`}
-                    href={href}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      handleMobileNavClick(href);
-                    }}
-                    className="flex items-center gap-3 py-3.5 px-4 text-gray-900 font-semibold text-base hover:bg-gray-50 rounded-xl transition-all active:scale-[0.98] animate-[slideDown_0.3s_ease-out]"
-                    style={{
-                      animationDelay: `${index * 0.05}s`,
-                      animationFillMode: 'both'
-                    }}
-                  >
-                    {Icon && (
-                      <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-purple-50 rounded-lg">
-                        <Icon size={20} className="text-purple-600" />
-                      </div>
-                    )}
-                    <span className="flex-1">{label}</span>
-                    <ArrowRight size={18} className="text-gray-400" />
-                  </a>
-                );
-              })}
-            </div>
-
-            {/* Divider */}
-            <div className="px-4 py-2">
-              <div className="h-px bg-gray-200" />
-            </div>
-
-            {/* Bottom CTA */}
-            <div className="px-4 pb-6 pt-2">
-              <a
-                href="#waitlist"
-                onClick={(event) => {
-                  event.preventDefault();
-                  handleMobileNavClick('#waitlist');
-                }}
-              >
-                <button 
-                  className="w-full py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg shadow-purple-500/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-                  type="button"
+        {/* DROPDOWN MENU */}
+        <div 
+          className={`absolute left-3 right-3 top-full z-40 mt-2 origin-top rounded-2xl border border-[#d9e2ef] bg-white px-4 pb-4 pt-3 shadow-[0_14px_30px_-22px_rgba(15,23,42,0.45)] transition-[opacity,transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
+            isMobileMenuOpen
+              ? 'translate-y-0 scale-100 opacity-100 pointer-events-auto'
+              : '-translate-y-3 scale-[0.985] opacity-0 pointer-events-none'
+          }`}
+          style={{
+            maxHeight: 'calc(100vh - 60px)',
+            overflowY: 'auto'
+          }}
+          aria-hidden={!isMobileMenuOpen}
+        >
+          {/* Navigation Items */}
+          <div className="space-y-1">
+            {resolvedMenuItems.map((item, index) => {
+              const label = item.label || defaultMenuItems[index]?.label || '';
+              const href = item.href || defaultMenuItems[index]?.href || '#';
+              return (
+                <a
+                  key={`${label}-${index}`}
+                  href={href}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleMobileNavClick(href);
+                  }}
+                  className="flex items-center gap-3 rounded-full px-4 py-3 text-base font-semibold text-slate-700 transition-colors active:bg-slate-50"
                 >
-                  {resolvedWaitlistLabel}
-                  <ArrowRight size={20} />
-                </button>
-              </a>
-              <p className="text-center text-sm text-gray-500 mt-3">
-                {resolvedMobileHelperText}
-              </p>
-            </div>
+                  <span className="flex-1">{label}</span>
+                  <ArrowRight size={18} className="text-slate-400" />
+                </a>
+              );
+            })}
           </div>
-        )}
+
+          {/* Divider */}
+          <div className="py-2.5">
+            <div className="h-px bg-[#e7edf5]" />
+          </div>
+
+          {/* Bottom CTA */}
+          <div className="space-y-2 pb-1">
+            <a
+              href={loginHref}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#d9e2ef] bg-white px-5 py-3 text-base font-semibold text-slate-700 transition-colors active:bg-slate-50"
+            >
+              {resolvedLoginLabel}
+            </a>
+            <a
+              href="#waitlist"
+              onClick={(event) => {
+                event.preventDefault();
+                handleMobileNavClick('#waitlist');
+              }}
+            >
+              <button 
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-5 py-3.5 text-base font-semibold text-white transition-colors hover:bg-purple-700 active:bg-purple-700"
+                type="button"
+              >
+                {resolvedWaitlistLabel}
+                <ArrowRight size={18} />
+              </button>
+            </a>
+          </div>
+        </div>
       </div>
     </>
   );
