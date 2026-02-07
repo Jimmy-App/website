@@ -94,45 +94,22 @@ export const landingPageByLanguageQuery = defineQuery(`
       subtitle,
       logging{
         title,
-        body,
-        tagLabel,
-        uiExerciseName,
-        uiSetLabel,
-        uiWeightLabel,
-        uiIntensityLowLabel,
-        uiIntensityHighLabel,
-        uiRpeLabel,
-        uiButtonLabel
+        body
       },
-      timer{
+      progress{
         title,
-        body,
-        uiRestLabel,
-        uiTimerValue,
-        uiLockLabel,
-        uiLockValue
+        body
       },
-      offline{
+      workouts{
         title,
-        body,
-        uiStatusLabel
+        body
       },
       chat{
         title,
-        body,
-        uiVoiceNoteLabel
-      },
-      sync{
-        title,
-        body,
-        stats[]{label, value},
-        appleHealthAlt,
-        googleFitAlt
-      },
-      video{
-        title,
         body
-      }
+      },
+      ctaLabel,
+      ctaHelperText
     },
     pricing{
       badgeText,
@@ -140,6 +117,10 @@ export const landingPageByLanguageQuery = defineQuery(`
       titleHighlight,
       subtitle,
       popularBadgeLabel,
+      monthlyLabel,
+      yearlyLabel,
+      yearlySaveLabel,
+      yearlyFreeMonths,
       secondaryHelperText,
       plans[]{
         name,

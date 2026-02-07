@@ -1,195 +1,411 @@
 'use client';
 
-import { Check, ArrowRight, Zap, Sparkles, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, Check, Plus, Sparkles, Users, Zap } from 'lucide-react';
+import {
+  LANDING_SECTION_BADGE_CLASS,
+  LANDING_SECTION_TITLE_CLASS,
+} from './constants';
 
 type PricingContent = {
-    badgeText?: string;
-    title?: string;
-    titleHighlight?: string;
-    subtitle?: string;
-    popularBadgeLabel?: string;
-    secondaryHelperText?: string;
-    plans?: {
-        name?: string;
-        price?: string;
-        period?: string;
-        clients?: string;
-        description?: string;
-        isFeatured?: boolean;
-        features?: { label?: string; isAddon?: boolean }[];
-    }[];
+  badgeText?: string;
+  title?: string;
+  titleHighlight?: string;
+  subtitle?: string;
+  monthlyLabel?: string;
+  yearlyLabel?: string;
+  yearlySaveLabel?: string;
+  yearlyFreeMonths?: number;
+  popularBadgeLabel?: string;
+  secondaryHelperText?: string;
+  plans?: {
+    name?: string;
+    price?: string;
+    period?: string;
+    clients?: string;
+    description?: string;
+    isFeatured?: boolean;
+    features?: { label?: string; isAddon?: boolean }[];
+  }[];
 };
 
 type PricingSectionProps = {
-    waitlistLabel?: string;
-    pricingSecondaryLabel?: string;
-    content?: PricingContent | null;
+  waitlistLabel?: string;
+  pricingSecondaryLabel?: string;
+  content?: PricingContent | null;
+};
+
+type BillingFrequency = 'monthly' | 'yearly';
+
+const priceMatch = /^([^0-9]*)([0-9]+(?:[.,][0-9]+)?)/;
+
+const parsePrice = (price: string) => {
+  const match = price.trim().match(priceMatch);
+  if (!match) return null;
+
+  const amount = Number.parseFloat(match[2].replace(',', '.'));
+  if (Number.isNaN(amount)) return null;
+
+  return {
+    symbol: match[1] || '',
+    amount,
+  };
+};
+
+const formatAmount = (amount: number) =>
+  Number.isInteger(amount) ? `${amount}` : amount.toFixed(2);
+
+const formatMonthsLabel = (months: number) => {
+  const value = formatAmount(months);
+  const suffix = months === 1 ? 'month' : 'months';
+  return `Save ${value} ${suffix}`;
+};
+
+const displayPrice = (
+  price: string,
+  frequency: BillingFrequency,
+  yearlyFreeMonths: number
+) => {
+  const parsed = parsePrice(price);
+  if (!parsed) return price;
+
+  const normalizedFreeMonths = Math.min(Math.max(yearlyFreeMonths, 0), 12);
+  const yearlyPaidMonths = Math.max(12 - normalizedFreeMonths, 0);
+  const adjusted =
+    frequency === 'yearly' && parsed.amount > 0
+      ? parsed.amount * yearlyPaidMonths
+      : parsed.amount;
+  return `${parsed.symbol}${formatAmount(adjusted)}`;
+};
+
+const periodLabel = (period: string | undefined, frequency: BillingFrequency) =>
+  frequency === 'yearly' ? '/yr' : period || '/mo';
+
+const parseClientsLabel = (label: string | undefined) => {
+  const value = label?.trim() || 'Up to 0 Clients';
+  const match = value.match(/^Up to\s+(\d+)\s+(.+)$/i);
+  if (!match) {
+    return { prefix: '', count: value, suffix: '' };
+  }
+
+  return {
+    prefix: 'Up to',
+    count: match[1],
+    suffix: match[2],
+  };
+};
+
+const planAudience = (name: string | undefined, index: number) => {
+  const normalized = (name || '').toLowerCase();
+  if (normalized.includes('starter')) return 'Best for solo coaches starting out';
+  if (normalized.includes('growth')) return 'Best for growing coaching businesses';
+  if (normalized.includes('elite')) return 'Best for high-volume coaching teams';
+
+  const fallback = [
+    'Best for solo coaches starting out',
+    'Best for growing coaching businesses',
+    'Best for high-volume coaching teams',
+  ];
+  return fallback[index] || 'Best for modern coaching businesses';
 };
 
 const PricingSection = ({ waitlistLabel, pricingSecondaryLabel, content }: PricingSectionProps) => {
-    const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
-    const resolvedPricingSecondaryLabel = pricingSecondaryLabel || 'See all pricing plans';
-    const resolvedBadgeText = content?.badgeText || 'Pricing Plans';
-    const resolvedTitle = content?.title || 'Grow first.';
-    const resolvedTitleHighlight = content?.titleHighlight || 'Pay later.';
-    const resolvedSubtitle = content?.subtitle || 'A pricing model that aligns with your success. Start for free and upgrade only when your business grows.';
-    const resolvedPopularBadgeLabel = content?.popularBadgeLabel || 'Most Popular';
-    const resolvedSecondaryHelperText = content?.secondaryHelperText || 'Compare features and limits for 200+ clients';
+  const [selectedFrequency, setSelectedFrequency] =
+    useState<BillingFrequency>('monthly');
 
-    const defaultPlans = [
-        {
-            name: 'The Starter',
-            price: '€0',
-            period: '/mo',
-            clients: 'Up to 5 Clients',
-            description: 'Perfect for getting started.',
-            features: [
-                { label: 'Core Workout Builder (Drag & Drop)', isAddon: false },
-                { label: '1:1 Direct Client Chat', isAddon: false },
-                { label: 'Basic Exercise Library (Videos)', isAddon: false },
-                { label: 'Apple Health & Google Fit Sync', isAddon: false },
-                { label: 'Mobile App for Clients (Offline-first)', isAddon: false },
-                { label: 'Member Payments & Billing', isAddon: true }
-            ],
-            isFeatured: false
-        },
-        {
-            name: 'The Growth',
-            price: '€49',
-            period: '/mo',
-            clients: 'Up to 30 Clients',
-            description: 'For growing coaching businesses.',
-            features: [
-                { label: 'Everything in Starter', isAddon: false },
-                { label: 'Revenue Analytics & Projections', isAddon: false },
-                { label: 'Advanced Progression Tracking', isAddon: false },
-                { label: 'Custom Workout Templates', isAddon: false },
-                { label: 'Priority Email Support', isAddon: false },
-                { label: 'Member Payments & Billing', isAddon: true }
-            ],
-            isFeatured: true
-        },
-        {
-            name: 'The Elite',
-            price: '€99',
-            period: '/mo',
-            clients: 'Up to 200 Clients',
-            description: 'Maximum scale and automation.',
-            features: [
-                { label: 'Everything in Growth', isAddon: false },
-                { label: 'Group Chats & Community Groups', isAddon: false },
-                { label: 'Advanced Branding (Your colors/logo)', isAddon: false },
-                { label: 'Bulk Program Assignment', isAddon: false },
-                { label: 'Exportable Data & Reports', isAddon: false },
-                { label: 'Priority 1:1 Support', isAddon: false }
-            ],
-            isFeatured: false
-        }
-    ];
+  const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
+  const resolvedPricingSecondaryLabel =
+    pricingSecondaryLabel || 'See all pricing plans';
+  const resolvedBadgeText = content?.badgeText || 'Pricing Plans';
+  const resolvedTitle = content?.title || 'Grow first.';
+  const resolvedTitleHighlight = content?.titleHighlight || 'Pay later.';
+  const resolvedSubtitle =
+    content?.subtitle ||
+    'A pricing model that aligns with your success. Start for free and upgrade only when your business grows.';
+  const resolvedMonthlyLabel = content?.monthlyLabel || 'Monthly';
+  const resolvedYearlyLabel = content?.yearlyLabel || 'Yearly';
+  const resolvedYearlyFreeMonths =
+    typeof content?.yearlyFreeMonths === 'number' ? content.yearlyFreeMonths : 2;
+  const normalizedYearlyFreeMonths = Math.min(
+    Math.max(resolvedYearlyFreeMonths, 0),
+    12
+  );
+  const defaultYearlySaveLabel =
+    normalizedYearlyFreeMonths > 0 ? formatMonthsLabel(normalizedYearlyFreeMonths) : '';
+  const resolvedYearlySaveLabel = content?.yearlySaveLabel || defaultYearlySaveLabel;
+  const resolvedPopularBadgeLabel = content?.popularBadgeLabel || 'Most Popular';
+  const resolvedSecondaryHelperText =
+    content?.secondaryHelperText || 'Compare features and limits for 200+ clients';
 
-    const resolvedPlans = content?.plans?.length ? content.plans : defaultPlans;
+  const defaultPlans = [
+    {
+      name: 'The Starter',
+      price: '€0',
+      period: '/mo',
+      clients: 'Up to 5 Clients',
+      description: 'Perfect for getting started.',
+      features: [
+        { label: 'Core Workout Builder (Drag & Drop)', isAddon: false },
+        { label: '1:1 Direct Client Chat', isAddon: false },
+        { label: 'Basic Exercise Library (Videos)', isAddon: false },
+        { label: 'Apple Health & Google Fit Sync', isAddon: false },
+        { label: 'Mobile App for Clients (Offline-first)', isAddon: false },
+        { label: 'Member Payments & Billing', isAddon: true },
+      ],
+      isFeatured: false,
+    },
+    {
+      name: 'The Growth',
+      price: '€49',
+      period: '/mo',
+      clients: 'Up to 30 Clients',
+      description: 'For growing coaching businesses.',
+      features: [
+        { label: 'Everything in Starter', isAddon: false },
+        { label: 'Revenue Analytics & Projections', isAddon: false },
+        { label: 'Advanced Progression Tracking', isAddon: false },
+        { label: 'Custom Workout Templates', isAddon: false },
+        { label: 'Priority Email Support', isAddon: false },
+        { label: 'Member Payments & Billing', isAddon: true },
+      ],
+      isFeatured: true,
+    },
+    {
+      name: 'The Elite',
+      price: '€99',
+      period: '/mo',
+      clients: 'Up to 200 Clients',
+      description: 'Maximum scale and automation.',
+      features: [
+        { label: 'Everything in Growth', isAddon: false },
+        { label: 'Group Chats & Community Groups', isAddon: false },
+        { label: 'Advanced Branding (Your colors/logo)', isAddon: false },
+        { label: 'Bulk Program Assignment', isAddon: false },
+        { label: 'Exportable Data & Reports', isAddon: false },
+        { label: 'Priority 1:1 Support', isAddon: false },
+      ],
+      isFeatured: false,
+    },
+  ];
 
-    return (
-        <section className="py-16 md:py-32 bg-white relative overflow-hidden" id="pricing">
-            {/* Background Decor */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-                <div className="absolute top-[20%] left-[10%] w-[600px] h-[600px] bg-purple-100/40 rounded-full blur-[100px] mix-blend-multiply" />
-                <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-indigo-100/40 rounded-full blur-[100px] mix-blend-multiply" />
-            </div>
+  const resolvedPlans = content?.plans?.length ? content.plans : defaultPlans;
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+  return (
+    <section className="border-t border-[#edf1f6] bg-white py-14 md:py-24" id="pricing">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className={`mb-5 ${LANDING_SECTION_BADGE_CLASS}`}>
+            <Zap size={12} />
+            {resolvedBadgeText}
+          </div>
 
-                {/* Header */}
-                <div className="text-center max-w-3xl mx-auto mb-20">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-50 border border-purple-100/50 text-purple-700 text-xs font-bold uppercase tracking-wider mb-8 shadow-sm">
-                        <Zap size={12} className="fill-purple-700" />
-                        {resolvedBadgeText}
-                    </div>
-                    <h2 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-8">
-                        {resolvedTitle}{' '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">
-                            {resolvedTitleHighlight}
-                        </span>
-                    </h2>
-                    <p className="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto">
-                        {resolvedSubtitle}
+          <h2 className={LANDING_SECTION_TITLE_CLASS}>
+            {resolvedTitle}{' '}
+            <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+              {resolvedTitleHighlight}
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-500 sm:text-lg md:text-xl">
+            {resolvedSubtitle}
+          </p>
+        </div>
+
+        <div className="mt-8 flex items-center justify-center">
+          <div className="inline-flex rounded-full border border-[#dfe7f2] bg-[#f5f8fc] p-1">
+            <button
+              type="button"
+              onClick={() => setSelectedFrequency('monthly')}
+              className={`inline-flex items-center rounded-full px-4 py-2 text-base font-semibold transition-colors ${
+                selectedFrequency === 'monthly'
+                  ? 'bg-white text-purple-700 shadow-[0_8px_14px_-12px_rgba(15,23,42,0.45)]'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              {resolvedMonthlyLabel}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedFrequency('yearly')}
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-base font-semibold transition-colors ${
+                selectedFrequency === 'yearly'
+                  ? 'bg-white text-purple-700 shadow-[0_8px_14px_-12px_rgba(15,23,42,0.45)]'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <span>{resolvedYearlyLabel}</span>
+              {resolvedYearlySaveLabel ? (
+                <span
+                  className={`rounded-full border px-2 py-0.5 text-[10px] font-bold shadow-[0_6px_12px_-8px_rgba(91,71,255,0.9)] ${
+                    selectedFrequency === 'yearly'
+                      ? 'border-[#5b47ff] bg-[#5b47ff] text-white'
+                      : 'border-[#6d5cff] bg-[#6d5cff] text-white'
+                  }`}
+                >
+                  {resolvedYearlySaveLabel}
+                </span>
+              ) : null}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {resolvedPlans.map((plan, index) => {
+            const isFeatured = Boolean(plan.isFeatured);
+            const planFeatures = plan.features || [];
+            const resolvedPlanPrice = displayPrice(
+              plan.price || '€0',
+              selectedFrequency,
+              normalizedYearlyFreeMonths
+            );
+            const resolvedPeriod = periodLabel(plan.period, selectedFrequency);
+            const parsedClients = parseClientsLabel(plan.clients);
+
+            return (
+              <article
+                key={`${plan.name || 'plan'}-${index}`}
+                className={`relative flex h-full flex-col rounded-[24px] border p-6 sm:p-7 ${
+                  isFeatured
+                    ? 'border-purple-200 bg-purple-50/60 shadow-[0_18px_34px_-24px_rgba(147,51,234,0.2)]'
+                    : 'border-[#e1e8f2] bg-white shadow-[0_12px_24px_-20px_rgba(15,23,42,0.16)]'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                      Plan
                     </p>
+                    <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+                      {plan.name}
+                    </h3>
+                  </div>
+                  {isFeatured ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-purple-700">
+                      <Sparkles size={11} />
+                      {resolvedPopularBadgeLabel}
+                    </span>
+                  ) : null}
                 </div>
 
-                {/* Pricing Cards */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-24">
-                    {resolvedPlans.map((plan, index) => (
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                  {planAudience(plan.name, index)}
+                </p>
+
+                <div className="mt-5 flex items-end gap-2">
+                  <span
+                    className={`text-5xl font-extrabold tracking-tight ${
+                      isFeatured ? 'text-purple-700' : 'text-slate-900'
+                    }`}
+                  >
+                    {resolvedPlanPrice}
+                  </span>
+                  <span className="pb-1 text-base font-medium text-slate-400">
+                    {resolvedPeriod}
+                  </span>
+                </div>
+
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                  {plan.description}
+                </p>
+
+                <div
+                  className={`mt-5 inline-flex max-w-full items-center gap-2 rounded-full border px-2.5 py-1.5 ${
+                    isFeatured
+                      ? 'border-purple-200 bg-white text-purple-700'
+                      : 'border-[#e2e8f2] bg-[#f8fbff] text-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`inline-flex h-5 w-5 items-center justify-center rounded-full ${
+                      isFeatured
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'bg-[#eef2f8] text-slate-600'
+                    }`}
+                  >
+                    <Users size={12} />
+                  </span>
+
+                  <p className="text-sm font-semibold leading-none">
+                    {parsedClients.prefix ? (
+                      <>
+                        <span className={isFeatured ? 'text-purple-600/80' : 'text-slate-500'}>
+                          {parsedClients.prefix}{' '}
+                        </span>
+                        <span className="text-[15px] font-bold">{parsedClients.count}</span>{' '}
+                        {parsedClients.suffix}
+                      </>
+                    ) : (
+                      parsedClients.count
+                    )}
+                  </p>
+                </div>
+
+                <div className="mt-6 flex-1 border-t border-[#e8edf5] pt-5">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-slate-400">
+                    What&apos;s included
+                  </p>
+
+                  <div className="space-y-3">
+                    {planFeatures.map((feature, featureIndex) => {
+                      const isAddon = Boolean(feature.isAddon);
+                      return (
                         <div
-                            key={`${plan.name || 'plan'}-${index}`}
-                            className={`relative flex flex-col p-8 md:p-10 rounded-[32px] transition-all duration-300 group
-                ${plan.isFeatured
-                                    ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-2xl shadow-purple-900/40 scale-100 lg:scale-105 z-10 ring-1 ring-white/10'
-                                    : 'bg-white text-gray-900 border border-gray-100 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-100/10 z-0'
-                                }
-              `}
+                          key={`${feature.label || 'feature'}-${featureIndex}`}
+                          className="flex items-start gap-3"
                         >
-                            {plan.isFeatured && (
-                                <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-white text-purple-700 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 ring-4 ring-white/20">
-                                    <Sparkles size={12} className="fill-purple-700/20" /> {resolvedPopularBadgeLabel}
-                                </div>
+                          <span
+                            className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+                              isAddon
+                                ? 'bg-emerald-100 text-emerald-700'
+                                : 'bg-[#eef2f8] text-slate-700'
+                            }`}
+                          >
+                            {isAddon ? (
+                              <Plus size={12} strokeWidth={2.5} />
+                            ) : (
+                              <Check size={12} strokeWidth={2.5} />
                             )}
-
-                            <div className="mb-8">
-                                <h3 className={`text-lg font-bold mb-4 ${plan.isFeatured ? 'text-purple-100' : 'text-gray-900'}`}>{plan.name}</h3>
-                                <div className="flex items-baseline gap-1 mb-4">
-                                    <span className={`text-5xl font-extrabold tracking-tight ${plan.isFeatured ? 'text-white' : 'text-gray-900'}`}>{plan.price}</span>
-                                    <span className={`text-lg font-medium ${plan.isFeatured ? 'text-purple-200' : 'text-gray-400'}`}>{plan.period}</span>
-                                </div>
-                                <p className={`text-sm ${plan.isFeatured ? 'text-purple-100' : 'text-gray-500'}`}>{plan.description}</p>
-                            </div>
-
-                            <div className={`p-4 rounded-2xl mb-8 flex items-center justify-center font-bold text-sm ${plan.isFeatured ? 'bg-white/10 text-white border border-white/20' : 'bg-purple-50 text-purple-900 border border-purple-100'
-                                }`}>
-                                {plan.clients}
-                            </div>
-
-                            <div className="flex-1 space-y-5 mb-10">
-                                {(plan.features || []).map((feature, featureIndex) => {
-                                    const isAddon = Boolean(feature.isAddon);
-                                    return (
-                                        <div key={`${feature.label || 'feature'}-${featureIndex}`} className="flex items-start gap-3">
-                                            <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isAddon
-                                                ? (plan.isFeatured ? 'bg-emerald-400 text-emerald-900' : 'bg-emerald-100 text-emerald-600')
-                                                : (plan.isFeatured ? 'bg-white text-purple-600' : 'bg-purple-100 text-purple-600')
-                                                }`}>
-                                                {isAddon ? <Plus size={12} strokeWidth={3} /> : <Check size={12} strokeWidth={3} />}
-                                            </div>
-                                            <span className={`text-sm font-medium ${plan.isFeatured ? 'text-white' : 'text-gray-600'}`}>{feature.label}</span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            <a
-                                href="#waitlist"
-                                className={`w-full py-4 rounded-2xl text-sm font-bold transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center ${plan.isFeatured
-                                    ? 'bg-white text-purple-700 hover:bg-purple-50 shadow-lg shadow-black/10'
-                                    : 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-200/50'
-                                    }`}
-                            >
-                                {resolvedWaitlistLabel}
-                            </a>
+                          </span>
+                          <span className="text-sm leading-relaxed text-slate-600">
+                            {feature.label}
+                          </span>
                         </div>
-                    ))}
+                      );
+                    })}
+                  </div>
                 </div>
 
-                {/* Secondary CTA */}
-                <div className="text-center">
-                    <a href="#" className="inline-flex items-center gap-2 text-base font-bold text-gray-900 hover:text-purple-600 transition-colors group">
-                        {resolvedPricingSecondaryLabel}
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform text-purple-500" />
-                    </a>
-                    <p className="text-gray-400 mt-2 text-xs">{resolvedSecondaryHelperText}</p>
-                </div>
+                <a
+                  href="#waitlist"
+                  className={`mt-7 inline-flex w-full items-center justify-center rounded-full px-4 py-3 text-base font-semibold transition-colors ${
+                    isFeatured
+                      ? 'bg-purple-600 text-white hover:bg-purple-700'
+                      : 'border border-purple-200 bg-white text-purple-700 hover:bg-purple-50'
+                  }`}
+                >
+                  {resolvedWaitlistLabel}
+                </a>
+              </article>
+            );
+          })}
+        </div>
 
-            </div>
-        </section>
-    );
+        <div className="mt-10 text-center">
+          <a
+            href="#"
+            className="group inline-flex items-center gap-2 text-base font-bold text-gray-900 transition-colors hover:text-purple-700"
+          >
+            {resolvedPricingSecondaryLabel}
+            <ArrowRight
+              size={18}
+              className="text-purple-600 transition-transform group-hover:translate-x-1"
+            />
+          </a>
+          <p className="mt-2 text-sm text-gray-400">{resolvedSecondaryHelperText}</p>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default PricingSection;

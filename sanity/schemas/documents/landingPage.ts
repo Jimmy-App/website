@@ -334,148 +334,49 @@ export const landingPage = defineType({
         }),
         defineField({
           name: "logging",
-          title: "Logging Feature",
+          title: "Intuitive Feature Card",
           type: "object",
           fields: [
             defineField({ name: "title", title: "Title", type: "string" }),
             defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
-            defineField({ name: "tagLabel", title: "Tag Label", type: "string" }),
-            defineField({
-              name: "uiExerciseName",
-              title: "UI Exercise Name",
-              type: "string",
-            }),
-            defineField({
-              name: "uiSetLabel",
-              title: "UI Set Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiWeightLabel",
-              title: "UI Weight Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiIntensityLowLabel",
-              title: "UI Intensity Low Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiIntensityHighLabel",
-              title: "UI Intensity High Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiRpeLabel",
-              title: "UI RPE Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiButtonLabel",
-              title: "UI Button Label",
-              type: "string",
-            }),
           ],
         }),
         defineField({
-          name: "timer",
-          title: "Timer Feature",
+          name: "progress",
+          title: "Progress Feature Card",
           type: "object",
           fields: [
             defineField({ name: "title", title: "Title", type: "string" }),
             defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
-            defineField({
-              name: "uiRestLabel",
-              title: "UI Rest Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiTimerValue",
-              title: "UI Timer Value",
-              type: "string",
-            }),
-            defineField({
-              name: "uiLockLabel",
-              title: "UI Lock Label",
-              type: "string",
-            }),
-            defineField({
-              name: "uiLockValue",
-              title: "UI Lock Value",
-              type: "string",
-            }),
           ],
         }),
         defineField({
-          name: "offline",
-          title: "Offline Feature",
+          name: "workouts",
+          title: "Workouts Feature Card",
           type: "object",
           fields: [
             defineField({ name: "title", title: "Title", type: "string" }),
             defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
-            defineField({
-              name: "uiStatusLabel",
-              title: "UI Status Label",
-              type: "string",
-            }),
           ],
         }),
         defineField({
           name: "chat",
-          title: "Chat Feature",
+          title: "Chats Feature Card",
           type: "object",
           fields: [
             defineField({ name: "title", title: "Title", type: "string" }),
             defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
-            defineField({
-              name: "uiVoiceNoteLabel",
-              title: "UI Voice Note Label",
-              type: "string",
-            }),
           ],
         }),
         defineField({
-          name: "sync",
-          title: "Sync Feature",
-          type: "object",
-          fields: [
-            defineField({ name: "title", title: "Title", type: "string" }),
-            defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
-            defineField({
-              name: "stats",
-              title: "Stats",
-              type: "array",
-              of: [
-                {
-                  type: "object",
-                  name: "syncStat",
-                  fields: [
-                    defineField({ name: "label", title: "Label", type: "string" }),
-                    defineField({ name: "value", title: "Value", type: "string" }),
-                  ],
-                },
-              ],
-            }),
-            defineField({
-              name: "appleHealthAlt",
-              title: "Apple Health Alt Text",
-              type: "string",
-            }),
-            defineField({
-              name: "googleFitAlt",
-              title: "Google Fit Alt Text",
-              type: "string",
-            }),
-          ],
+          name: "ctaLabel",
+          title: "CTA Label",
+          type: "string",
         }),
         defineField({
-          name: "video",
-          title: "Video Feature",
-          type: "object",
-          fields: [
-            defineField({ name: "title", title: "Title", type: "string" }),
-            defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
-          ],
+          name: "ctaHelperText",
+          title: "CTA Helper Text",
+          type: "string",
         }),
       ],
     }),
@@ -496,6 +397,31 @@ export const landingPage = defineType({
           name: "popularBadgeLabel",
           title: "Popular Badge Label",
           type: "string",
+        }),
+        defineField({
+          name: "monthlyLabel",
+          title: "Monthly Toggle Label",
+          type: "string",
+        }),
+        defineField({
+          name: "yearlyLabel",
+          title: "Yearly Toggle Label",
+          type: "string",
+        }),
+        defineField({
+          name: "yearlySaveLabel",
+          title: "Yearly Save Label",
+          type: "string",
+          description:
+            "Optional custom label on Yearly toggle. Leave empty to auto-generate from discount percent.",
+        }),
+        defineField({
+          name: "yearlyFreeMonths",
+          title: "Yearly Free Months",
+          type: "number",
+          initialValue: 2,
+          description:
+            "Used in yearly price formula: monthlyPrice * (12 - freeMonths).",
         }),
         defineField({
           name: "secondaryHelperText",

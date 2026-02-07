@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight, Check, Layers, LayoutGrid, Table2 } from 'lucide-react';
+import {
+  LANDING_SECTION_BADGE_CLASS,
+  LANDING_SECTION_TITLE_CLASS,
+} from './constants';
 
 type ProblemCard = {
   key?: string;
@@ -154,12 +158,12 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#dfe7f2] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+          <div className={`mb-5 ${LANDING_SECTION_BADGE_CLASS}`}>
             <Layers size={12} />
             Built for modern coaches
           </div>
 
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 md:text-5xl md:leading-[1.05]">
+          <h2 className={LANDING_SECTION_TITLE_CLASS}>
             {resolvedTitle}{' '}
             <span
               ref={highlightRef}
@@ -171,7 +175,7 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
             </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-500 md:text-xl">
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-500 sm:text-lg md:text-xl">
             {resolvedSubtitle}
           </p>
         </div>
@@ -181,8 +185,8 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
             <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
               <Table2 size={20} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">{spreadsheetCard.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">{spreadsheetCard.body}</p>
+            <h3 className="text-lg font-bold text-slate-900 sm:text-xl">{spreadsheetCard.title}</h3>
+            <p className="mt-2 text-base leading-relaxed text-slate-500">{spreadsheetCard.body}</p>
 
             <div className="mt-6 h-[170px] overflow-hidden rounded-2xl border border-[#dbe5f1] bg-white shadow-[inset_0_1px_0_#ffffff]">
               <div className="flex h-9 items-center justify-between border-b border-[#e7edf5] bg-[#f8fbff] px-3">
@@ -191,12 +195,12 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
                   <span className="h-2 w-2 rounded-full bg-[#c9d7ea]" />
                   <span className="h-2 w-2 rounded-full bg-[#c9d7ea]" />
                 </div>
-                <span className="rounded-full border border-[#e7edf5] bg-white px-2 py-0.5 text-[9px] font-semibold text-slate-400">
+                <span className="rounded-full border border-[#e7edf5] bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-400">
                   Sheet v9
                 </span>
               </div>
 
-              <div className="grid h-[calc(170px-36px)] grid-cols-5 gap-px bg-[#dfe7f2] p-px text-[9px] font-semibold text-slate-400">
+              <div className="grid h-[calc(170px-36px)] grid-cols-5 gap-px bg-[#dfe7f2] p-px text-[11px] font-semibold text-slate-400">
                 {Array.from({ length: 25 }).map((_, index) => {
                   const isBroken = index === 13;
                   return (
@@ -220,13 +224,13 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
             <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-[#e7edf5] bg-[#f8fbff] text-slate-500">
               <LayoutGrid size={20} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">{enterpriseCard.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">{enterpriseCard.body}</p>
+            <h3 className="text-lg font-bold text-slate-900 sm:text-xl">{enterpriseCard.title}</h3>
+            <p className="mt-2 text-base leading-relaxed text-slate-500">{enterpriseCard.body}</p>
 
             <div className="mt-6 h-[170px] overflow-hidden rounded-2xl border border-[#dbe5f1] bg-white shadow-[inset_0_1px_0_#ffffff]">
               <div className="flex h-9 items-center justify-between border-b border-[#e7edf5] bg-[#f8fbff] px-3">
                 <span className="h-2 w-24 rounded-full bg-[#d7e1ef]" />
-                <span className="rounded-full border border-[#e7edf5] bg-white px-2 py-0.5 text-[9px] font-semibold text-slate-400">
+                <span className="rounded-full border border-[#e7edf5] bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-400">
                   Pro Suite
                 </span>
               </div>
@@ -265,29 +269,29 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
         <article className="mt-6 overflow-hidden rounded-[28px] border border-[#dfe7f2] bg-white p-5 shadow-[0_18px_34px_-26px_rgba(15,23,42,0.2)] sm:p-7">
           <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
             <div className="order-2 lg:order-1">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece9ff] bg-[#f7f4ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#5b47ff]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#ece9ff] bg-[#f7f4ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#5b47ff]">
                 <Check size={12} />
                 {jimmyBadge}
               </div>
 
-              <h3 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+              <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl md:text-3xl">
                 {jimmyCard.title}
               </h3>
 
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-500 md:text-base">
+              <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500 md:text-lg">
                 {jimmyCard.body}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
-                <span className="rounded-full border border-[#dce7f4] bg-[#f8fbff] px-3 py-1 text-xs font-semibold text-slate-600">
+                <span className="rounded-full border border-[#dce7f4] bg-[#f8fbff] px-3 py-1 text-sm font-semibold text-slate-600">
                   {jimmyStatusLabel}
                 </span>
-                <span className="rounded-full border border-[#dce7f4] bg-[#f8fbff] px-3 py-1 text-xs font-semibold text-slate-600">
+                <span className="rounded-full border border-[#dce7f4] bg-[#f8fbff] px-3 py-1 text-sm font-semibold text-slate-600">
                   {jimmyActionLabel}
                 </span>
               </div>
 
-              <div className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <div className="mt-7 inline-flex items-center gap-2 text-base font-semibold text-slate-900">
                 {jimmyCtaLabel}
                 <ArrowRight size={16} />
               </div>

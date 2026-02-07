@@ -84,50 +84,31 @@ export type LandingPageContent = {
     logging?: {
       title?: string;
       body?: string;
-      tagLabel?: string;
-      uiExerciseName?: string;
-      uiSetLabel?: string;
-      uiWeightLabel?: string;
-      uiIntensityLowLabel?: string;
-      uiIntensityHighLabel?: string;
-      uiRpeLabel?: string;
-      uiButtonLabel?: string;
     };
-    timer?: {
+    progress?: {
       title?: string;
       body?: string;
-      uiRestLabel?: string;
-      uiTimerValue?: string;
-      uiLockLabel?: string;
-      uiLockValue?: string;
     };
-    offline?: {
+    workouts?: {
       title?: string;
       body?: string;
-      uiStatusLabel?: string;
     };
     chat?: {
       title?: string;
       body?: string;
-      uiVoiceNoteLabel?: string;
     };
-    sync?: {
-      title?: string;
-      body?: string;
-      stats?: { label?: string; value?: string }[];
-      appleHealthAlt?: string;
-      googleFitAlt?: string;
-    };
-    video?: {
-      title?: string;
-      body?: string;
-    };
+    ctaLabel?: string;
+    ctaHelperText?: string;
   };
   pricing?: {
     badgeText?: string;
     title?: string;
     titleHighlight?: string;
     subtitle?: string;
+    monthlyLabel?: string;
+    yearlyLabel?: string;
+    yearlySaveLabel?: string;
+    yearlyFreeMonths?: number;
     popularBadgeLabel?: string;
     secondaryHelperText?: string;
     plans?: {
