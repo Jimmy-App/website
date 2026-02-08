@@ -24,8 +24,9 @@ const SiteHeader = ({ lang }: SiteHeaderProps) => {
       ? pathname.slice(0, -1)
       : pathname;
   const isHome = normalizedPath === `/${lang}` || (normalizedPath === "/" && lang === "en");
+  const isForCoachesPage = normalizedPath?.endsWith("/for-coaches");
 
-  if (isHome) {
+  if (isHome || isForCoachesPage) {
     return null;
   }
 
