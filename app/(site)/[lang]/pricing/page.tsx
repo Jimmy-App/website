@@ -2,14 +2,19 @@ import { notFound } from "next/navigation";
 
 import Navbar from "@/components/landing/Navbar";
 import type { LandingPageContent } from "@/components/landing/LandingPage";
-import { PricingSectionWithComparison } from "@/components/ui/pricing-section-with-comparison";
+import {
+  PricingSectionWithComparison,
+  type PricingSectionWithComparisonContent,
+} from "@/components/ui/pricing-section-with-comparison";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import type { SeoFields } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
   landingPageByLanguageQuery,
   navigationByLanguageQuery,
   pricingByLanguageQuery,
+  pricingSeoByLanguageQuery,
 } from "@/sanity/lib/queries";
 
 type PageProps = {
@@ -44,7 +49,12 @@ type NavigationData = {
 };
 
 type PricingDocumentData = {
-  pricing?: LandingPageContent["pricing"] | null;
+  pricing?: PricingSectionWithComparisonContent | null;
+};
+
+type PricingSeoData = {
+  title?: string | null;
+  seo?: SeoFields | null;
 };
 
 export async function generateMetadata({ params }: PageProps) {
@@ -54,10 +64,24 @@ export async function generateMetadata({ params }: PageProps) {
     return {};
   }
 
+  const pricingSeo = await sanityFetch<PricingSeoData>({
+    query: pricingSeoByLanguageQuery,
+    params: { language: lang },
+  });
+  const fallbackPricingSeo =
+    !pricingSeo && lang !== "en"
+      ? await sanityFetch<PricingSeoData>({
+          query: pricingSeoByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
+  const resolvedPricingSeo = pricingSeo || fallbackPricingSeo;
+
   return buildMetadata({
-    title: "Pricing",
+    title: resolvedPricingSeo?.title || "Pricing",
     description:
       "Simple pricing for independent coaches. Start free and upgrade as your coaching business grows.",
+    seo: resolvedPricingSeo?.seo,
     path: `${localeBasePath(lang)}/pricing`,
     locale: lang,
   });

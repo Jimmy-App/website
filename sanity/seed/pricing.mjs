@@ -30,6 +30,11 @@ const client = createClient({
 
 const englishPricing = {
   title: "Pricing",
+  seo: {
+    title: "Pricing",
+    description:
+      "Simple pricing for independent coaches. Start free and upgrade as your coaching business grows.",
+  },
   pricingSecondaryLabel: "See all pricing plans",
   badgeText: "Pricing Plans",
   titleHighlight: "Pay later.",
@@ -42,6 +47,24 @@ const englishPricing = {
   yearlyFreeMonths: 2,
   currency: "usd",
   secondaryHelperText: "200+ clients? Custom needs? Let's talk.",
+  pricingPage: {
+    standardPlanCtaLabel: "Join Waitlist",
+    addOnLabel: "Add-on",
+    featuresHeadingLabel: "Features",
+    includedInLabel: "Included in",
+    clientCapacityTitle: "Client Capacity",
+    clientCapacityDescription: "Maximum active clients per plan",
+    customPlan: {
+      name: "The Brand",
+      description:
+        "Your own white-label app in the App Store. Fully branded for you.",
+      price: "",
+      period: "",
+      clients: "Unlimited",
+      ctaLabel: "Contact Sales",
+      ctaHref: "/en/for-coaches",
+    },
+  },
   plans: [
     {
       name: "The Starter",
@@ -49,6 +72,7 @@ const englishPricing = {
       period: "/mo",
       clients: "Up to 5 Clients",
       description: "Perfect for side hustles and getting your first clients.",
+      ctaLabel: "Join Waitlist",
       isFeatured: false,
       features: [
         { label: "Coach & Back-Office", isAddon: false },
@@ -65,6 +89,7 @@ const englishPricing = {
       period: "/mo",
       clients: "Up to 25 Clients",
       description: "For coaches ready to quit their 9-to-5 job.",
+      ctaLabel: "Join Waitlist",
       isFeatured: true,
       features: [
         { label: "Everything in Starter", isAddon: false },
@@ -81,6 +106,7 @@ const englishPricing = {
       period: "/mo",
       clients: "Up to 200 Clients",
       description: "Serious tools to dominate your niche.",
+      ctaLabel: "Join Waitlist",
       isFeatured: false,
       features: [
         { label: "Everything in The Scale", isAddon: false },

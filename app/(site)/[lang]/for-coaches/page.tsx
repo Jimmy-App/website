@@ -1,13 +1,19 @@
 import { notFound } from "next/navigation";
 import ForCoachesCtaSection from "@/components/landing/ForCoachesCtaSection";
+import type { ForCoachesPageContent } from "@/components/landing/forCoachesContent";
 import ForCoachesFeaturesSection from "@/components/landing/ForCoachesFeaturesSection";
 import ForCoachesHeroSection from "@/components/landing/ForCoachesHeroSection";
 import ForCoachesWhySection from "@/components/landing/ForCoachesWhySection";
 import Navbar from "@/components/landing/Navbar";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import type { SeoFields } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { navigationByLanguageQuery } from "@/sanity/lib/queries";
+import {
+  forCoachesPageByLanguageQuery,
+  forCoachesPageSeoByLanguageQuery,
+  navigationByLanguageQuery,
+} from "@/sanity/lib/queries";
 
 type PageProps = {
   params: Promise<{ lang: string }>;
@@ -40,6 +46,11 @@ type NavigationData = {
   } | null;
 };
 
+type ForCoachesPageSeoData = {
+  title?: string | null;
+  seo?: SeoFields | null;
+};
+
 export async function generateMetadata({ params }: PageProps) {
   const { lang } = await params;
 
@@ -47,10 +58,24 @@ export async function generateMetadata({ params }: PageProps) {
     return {};
   }
 
+  const pageSeo = await sanityFetch<ForCoachesPageSeoData>({
+    query: forCoachesPageSeoByLanguageQuery,
+    params: { language: lang },
+  });
+  const fallbackPageSeo =
+    !pageSeo && lang !== "en"
+      ? await sanityFetch<ForCoachesPageSeoData>({
+          query: forCoachesPageSeoByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
+  const resolvedPageSeo = pageSeo || fallbackPageSeo;
+
   return buildMetadata({
-    title: "For Coaches",
+    title: resolvedPageSeo?.title || "For Coaches",
     description:
       "Discover how Jimmy helps coaches create programs, manage clients, and keep communication in one place.",
+    seo: resolvedPageSeo?.seo,
     path: `${localeBasePath(lang)}/for-coaches`,
     locale: lang,
   });
@@ -66,6 +91,18 @@ export default async function ForCoachesPage({ params }: PageProps) {
   const homeHref = localeBasePath(lang);
   const waitlistHref = `${homeHref}#waitlist`;
   const pricingHref = `${homeHref}#pricing`;
+  const pageContent = await sanityFetch<ForCoachesPageContent>({
+    query: forCoachesPageByLanguageQuery,
+    params: { language: lang },
+  });
+  const fallbackPageContent =
+    !pageContent && lang !== "en"
+      ? await sanityFetch<ForCoachesPageContent>({
+          query: forCoachesPageByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
+  const resolvedPageContent = pageContent || fallbackPageContent;
   const navigation = await sanityFetch<NavigationData>({
     query: navigationByLanguageQuery,
     params: { language: lang },
@@ -157,12 +194,17 @@ export default async function ForCoachesPage({ params }: PageProps) {
         brandHref={homeHref}
         currentLocale={lang}
       />
-      <ForCoachesHeroSection homeHref={homeHref} waitlistHref={waitlistHref} />
-      <ForCoachesWhySection />
-      <ForCoachesFeaturesSection />
+      <ForCoachesHeroSection
+        homeHref={homeHref}
+        waitlistHref={waitlistHref}
+        content={resolvedPageContent?.hero}
+      />
+      <ForCoachesWhySection content={resolvedPageContent?.why} />
+      <ForCoachesFeaturesSection content={resolvedPageContent?.features} />
       <ForCoachesCtaSection
         waitlistHref={waitlistHref}
         pricingHref={pricingHref}
+        content={resolvedPageContent?.cta}
       />
     </>
   );

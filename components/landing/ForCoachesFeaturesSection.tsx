@@ -2,6 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import {
+  DEFAULT_FOR_COACHES_FEATURE_ITEMS,
+  DEFAULT_FOR_COACHES_FEATURES_CONTENT,
+  type ForCoachesFeaturesContent,
+} from "./forCoachesContent";
 
 type FeatureItem = {
   anchorId: string;
@@ -12,46 +17,41 @@ type FeatureItem = {
   imageAlt: string;
 };
 
-const featureItems: FeatureItem[] = [
-  {
-    anchorId: "for-coaches-create-programs",
-    category: "Create Programs",
-    headline: "Program faster than they can complain.",
-    description:
-      'Drag, drop, done. Build complex programs in minutes, not hours. Save your best workouts as templates so you never have to type "Barbell Back Squat" from scratch again.',
-    imageSrc: "/assets/photo/dashboard.png",
-    imageAlt: "Create Programs feature preview",
-  },
-  {
-    anchorId: "for-coaches-exercise-database",
-    category: "Exercise Database",
-    headline: "A library that actually makes sense.",
-    description:
-      "Access hundreds of built-in exercises or add your own custom videos from YouTube. No more sending clients random Instagram links to explain a lunge.",
-    imageSrc: "/assets/photo/dashboard.png",
-    imageAlt: "Exercise Database feature preview",
-  },
-  {
-    anchorId: "for-coaches-manage-clients",
-    category: "Manage Clients",
-    headline: "Your entire roster, sorted.",
-    description:
-      "See who’s active, who’s slacking, and who owes you a check-in—all in one view. It’s like having a personal assistant who loves organizing lists.",
-    imageSrc: "/assets/photo/dashboard.png",
-    imageAlt: "Manage Clients feature preview",
-  },
-  {
-    anchorId: "for-coaches-team-chat",
-    category: "Team Chat",
-    headline: "Keep your WhatsApp for memes.",
-    description:
-      "Stop mixing client check-ins with your family group chat. Keep all coaching communication, feedback, and videos in one dedicated professional channel.",
-    imageSrc: "/assets/photo/dashboard.png",
-    imageAlt: "Team Chat feature preview",
-  },
-];
+type ForCoachesFeaturesSectionProps = {
+  content?: ForCoachesFeaturesContent | null;
+};
 
-const ForCoachesFeaturesSection = () => {
+const ForCoachesFeaturesSection = ({
+  content,
+}: ForCoachesFeaturesSectionProps) => {
+  const title = content?.title ?? DEFAULT_FOR_COACHES_FEATURES_CONTENT.title;
+  const subtitle =
+    content?.subtitle ?? DEFAULT_FOR_COACHES_FEATURES_CONTENT.subtitle;
+  const sourceItems =
+    content?.items && content.items.length > 0
+      ? content.items
+      : DEFAULT_FOR_COACHES_FEATURE_ITEMS;
+  const resolvedItems: FeatureItem[] = sourceItems.map((item, index) => {
+    const fallbackItem =
+      DEFAULT_FOR_COACHES_FEATURE_ITEMS[index] ||
+      DEFAULT_FOR_COACHES_FEATURE_ITEMS[0];
+
+    return {
+      anchorId:
+        item?.anchorId ||
+        fallbackItem.anchorId ||
+        `for-coaches-feature-${index + 1}`,
+      category: item?.category || fallbackItem.category || "Feature",
+      headline: item?.headline || fallbackItem.headline || "",
+      description: item?.description || fallbackItem.description || "",
+      imageSrc:
+        item?.imageSrc ||
+        fallbackItem.imageSrc ||
+        "/assets/photo/dashboard.png",
+      imageAlt: item?.imageAlt || fallbackItem.imageAlt || "Feature preview",
+    };
+  });
+
   return (
     <section
       id="for-coaches-features"
@@ -60,17 +60,13 @@ const ForCoachesFeaturesSection = () => {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
-            Everything you need. <br className="hidden sm:inline" />
-            Nothing you don&apos;t.
+            {title}
           </h2>
-          <p className="mt-6 text-lg leading-8 text-slate-600">
-            Directly mapped to your screenshot list: Create Programs, Exercise
-            Database, Manage Clients, Team Chat.
-          </p>
+          <p className="mt-6 text-lg leading-8 text-slate-600">{subtitle}</p>
         </div>
 
         <div className="mt-16 space-y-20 lg:mt-24 lg:space-y-32">
-          {featureItems.map((feature, featureIdx) => (
+          {resolvedItems.map((feature, featureIdx) => (
             <motion.div
               id={feature.anchorId}
               initial={{ opacity: 0, y: 40 }}
@@ -95,11 +91,11 @@ const ForCoachesFeaturesSection = () => {
               </div>
 
               <div
-                className={`relative rounded-3xl bg-slate-50 p-4 border border-slate-100 shadow-xl shadow-slate-200/50 ${
+                className={`relative rounded-3xl border border-slate-100 bg-slate-50 p-4 shadow-xl shadow-slate-200/50 ${
                   featureIdx % 2 === 1 ? "lg:order-first" : ""
                 }`}
               >
-                <div className="overflow-hidden rounded-2xl bg-white border border-slate-200/60">
+                <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white">
                   <div className="flex h-10 items-center gap-2 border-b border-slate-100 bg-slate-50/50 px-4">
                     <div className="size-2.5 rounded-full bg-rose-300" />
                     <div className="size-2.5 rounded-full bg-amber-300" />

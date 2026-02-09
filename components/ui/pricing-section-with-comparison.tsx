@@ -29,8 +29,29 @@ type PricingPlan = {
   period?: string;
   clients?: string;
   description?: string;
+  ctaLabel?: string;
   isFeatured?: boolean;
   features?: PricingPlanFeature[];
+};
+
+type PricingPageCustomPlan = {
+  name?: string;
+  description?: string;
+  price?: string;
+  period?: string;
+  clients?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+};
+
+type PricingPageSettings = {
+  standardPlanCtaLabel?: string;
+  addOnLabel?: string;
+  featuresHeadingLabel?: string;
+  includedInLabel?: string;
+  clientCapacityTitle?: string;
+  clientCapacityDescription?: string;
+  customPlan?: PricingPageCustomPlan;
 };
 
 type PricingContent = {
@@ -38,7 +59,14 @@ type PricingContent = {
   title?: string;
   titleHighlight?: string;
   subtitle?: string;
+  monthlyLabel?: string;
+  yearlyLabel?: string;
+  yearlySaveLabel?: string;
+  yearlyFreeMonths?: number;
+  popularBadgeLabel?: string;
+  secondaryHelperText?: string;
   currency?: string;
+  pricingPage?: PricingPageSettings;
   plans?: PricingPlan[];
 };
 
@@ -54,10 +82,7 @@ type FeatureMap = Record<string, { isAddon: boolean }>;
 type NormalizedPlan = {
   name: string;
   description: string;
-  price: string;
-  period: string;
   clients: string;
-  isFeatured: boolean;
   featureMap: FeatureMap;
 };
 
@@ -69,6 +94,7 @@ type PricingCard = {
   ctaLabel: string;
   ctaHref: string;
   isFeatured: boolean;
+  stickToBottom?: boolean;
 };
 
 type PricingSectionWithComparisonProps = {
@@ -227,57 +253,58 @@ function PricingSectionWithComparison({
   const defaultPlans: PricingPlan[] = [
     {
       name: "The Starter",
-      description: "Perfect for getting started.",
+      description: "Perfect for side hustles and getting your first clients.",
       price: "€0",
       period: "/mo",
       clients: "Up to 5 Clients",
+      ctaLabel: "Join Waitlist",
       isFeatured: false,
       features: [
-        { label: "Core Workout Builder (Drag & Drop)", isAddon: false },
-        { label: "1:1 Direct Client Chat", isAddon: false },
-        { label: "Basic Exercise Library (Videos)", isAddon: false },
-        { label: "Apple Health & Google Fit Sync", isAddon: false },
-        { label: "Mobile App for Clients (Offline-first)", isAddon: false },
-        { label: "Member Payments & Billing", isAddon: true },
+        { label: "Coach & Back-Office", isAddon: false },
+        { label: "Client Communication", isAddon: false },
+        { label: "Exercise Library", isAddon: false },
+        { label: "Health Sync", isAddon: false },
+        { label: "Client App", isAddon: false },
+        { label: "Payments & Billing", isAddon: true },
       ],
     },
     {
-      name: "The Growth",
-      description: "For growing coaching businesses.",
+      name: "The Scale",
+      description: "For coaches ready to quit their 9-to-5 job.",
       price: "€49",
       period: "/mo",
-      clients: "Up to 30 Clients",
+      clients: "Up to 25 Clients",
+      ctaLabel: "Join Waitlist",
       isFeatured: true,
       features: [
         { label: "Everything in Starter", isAddon: false },
-        { label: "Revenue Analytics & Projections", isAddon: false },
-        { label: "Advanced Progression Tracking", isAddon: false },
-        { label: "Custom Workout Templates", isAddon: false },
-        { label: "Priority Email Support", isAddon: false },
-        { label: "Member Payments & Billing", isAddon: true },
+        { label: "Revenue Analytics", isAddon: false },
+        { label: "Progress Tracking", isAddon: false },
+        { label: "Workout Templates", isAddon: false },
+        { label: "Priority Support", isAddon: false },
+        { label: "Payments & Billing", isAddon: true },
       ],
     },
     {
       name: "The Elite",
-      description: "Maximum scale and automation.",
+      description: "Serious tools to dominate your niche.",
       price: "€99",
       period: "/mo",
       clients: "Up to 200 Clients",
+      ctaLabel: "Join Waitlist",
       isFeatured: false,
       features: [
-        { label: "Everything in Growth", isAddon: false },
-        { label: "Group Chats & Community Groups", isAddon: false },
-        { label: "Advanced Branding (Your colors/logo)", isAddon: false },
-        { label: "Bulk Program Assignment", isAddon: false },
-        { label: "Exportable Data & Reports", isAddon: false },
+        { label: "Everything in The Scale", isAddon: false },
+        { label: "Group Communication", isAddon: false },
+        { label: "Branding", isAddon: false },
+        { label: "Bulk Actions", isAddon: false },
+        { label: "Data & Reports", isAddon: false },
         { label: "Priority 1:1 Support", isAddon: false },
       ],
     },
   ];
-
-  const sourcePlans = (content?.plans?.length ? content.plans : defaultPlans).slice(
-    0,
-    3,
+  const sourcePlans = [0, 1, 2].map(
+    (index) => content?.plans?.[index] || defaultPlans[index],
   );
   const resolvedTitle = content?.title || "Grow first.";
   const resolvedTitleHighlight = content?.titleHighlight || "Pay later.";
@@ -285,67 +312,71 @@ function PricingSectionWithComparison({
     content?.subtitle ||
     "A pricing model that aligns with your success. Start for free and upgrade only when your business grows.";
   const resolvedCurrency = resolvePricingCurrency(content?.currency, currentLocale);
+  const resolvedStandardPlanCtaLabel =
+    content?.pricingPage?.standardPlanCtaLabel || "Join Waitlist";
+  const resolvedAddOnLabel = content?.pricingPage?.addOnLabel || "Add-on";
+  const resolvedFeaturesHeadingLabel =
+    content?.pricingPage?.featuresHeadingLabel || "Features";
+  const resolvedIncludedInLabel =
+    content?.pricingPage?.includedInLabel || "Included in";
+  const resolvedClientCapacityTitle =
+    content?.pricingPage?.clientCapacityTitle || "Client Capacity";
+  const resolvedClientCapacityDescription =
+    content?.pricingPage?.clientCapacityDescription ||
+    "Maximum active clients per plan";
   const basePathFromWaitlist = waitlistHref.split("#")[0] || "";
   const contactSalesHref = basePathFromWaitlist
     ? `${basePathFromWaitlist}/for-coaches`
     : "/for-coaches";
-  const starterPriceAmount =
-    resolvePlanAmount({
-      prices: sourcePlans[0]?.prices,
-      currency: resolvedCurrency,
-      fallbackPrice: sourcePlans[0]?.price,
-    }) ?? 0;
-  const scalePriceAmount =
-    resolvePlanAmount({
-      prices: sourcePlans[1]?.prices,
-      currency: resolvedCurrency,
-      fallbackPrice: sourcePlans[1]?.price,
-    }) ?? 49;
-  const elitePriceAmount =
-    resolvePlanAmount({
-      prices: sourcePlans[2]?.prices,
-      currency: resolvedCurrency,
-      fallbackPrice: sourcePlans[2]?.price,
-    }) ?? 99;
+  const resolvedCustomPlan = content?.pricingPage?.customPlan;
+  const resolvedCustomPlanName = resolvedCustomPlan?.name || "The Brand";
+  const resolvedCustomPlanDescription =
+    resolvedCustomPlan?.description ||
+    "Your own white-label app in the App Store. Fully branded for you.";
+  const resolvedCustomPlanPrice = resolvedCustomPlan?.price || "";
+  const resolvedCustomPlanPeriod = resolvedCustomPlan?.period || "";
+  const resolvedCustomPlanClients = resolvedCustomPlan?.clients || "Unlimited";
+  const resolvedCustomPlanCtaLabel =
+    resolvedCustomPlan?.ctaLabel || "Contact Sales";
+  const resolvedCustomPlanCtaHref =
+    resolvedCustomPlan?.ctaHref || contactSalesHref;
 
-  const pricingCards: PricingCard[] = [
-    {
-      name: "The Starter",
-      description: "Perfect for side hustles and getting your first clients.",
-      price: formatPriceValue(starterPriceAmount, resolvedCurrency),
-      period: sourcePlans[0]?.period || "/mo",
-      ctaLabel: "Join Waitlist",
-      ctaHref: waitlistHref,
-      isFeatured: false,
-    },
-    {
-      name: "The Scale",
-      description: "For coaches ready to quit their 9-to-5 job.",
-      price: formatPriceValue(scalePriceAmount, resolvedCurrency),
-      period: sourcePlans[1]?.period || "/mo",
-      ctaLabel: "Join Waitlist",
-      ctaHref: waitlistHref,
-      isFeatured: true,
-    },
-    {
-      name: "The Elite",
-      description: "Serious tools to dominate your niche.",
-      price: formatPriceValue(elitePriceAmount, resolvedCurrency),
-      period: sourcePlans[2]?.period || "/mo",
-      ctaLabel: "Join Waitlist",
-      ctaHref: waitlistHref,
-      isFeatured: false,
-    },
-    {
-      name: "The Brand",
+  const fallbackAmounts = [0, 49, 99];
+  const pricingCards: PricingCard[] = sourcePlans.map((plan, index) => {
+    const amount =
+      resolvePlanAmount({
+        prices: plan.prices,
+        currency: resolvedCurrency,
+        fallbackPrice: plan.price,
+      }) ?? fallbackAmounts[index] ?? 0;
+    const fallbackPlan = defaultPlans[index];
+
+    return {
+      name: plan.name || fallbackPlan?.name || `Plan ${index + 1}`,
       description:
-        "Your own white-label app in the App Store. Fully branded for you.",
-      price: "",
-      ctaLabel: "Contact Sales",
-      ctaHref: contactSalesHref,
-      isFeatured: false,
-    },
-  ];
+        plan.description ||
+        fallbackPlan?.description ||
+        "Built for modern coaching businesses.",
+      price: formatPriceValue(amount, resolvedCurrency),
+      period: plan.period || fallbackPlan?.period || "/mo",
+      ctaLabel: plan.ctaLabel || resolvedStandardPlanCtaLabel,
+      ctaHref: waitlistHref,
+      isFeatured:
+        typeof plan.isFeatured === "boolean"
+          ? plan.isFeatured
+          : Boolean(fallbackPlan?.isFeatured),
+    };
+  });
+  pricingCards.push({
+    name: resolvedCustomPlanName,
+    description: resolvedCustomPlanDescription,
+    price: resolvedCustomPlanPrice,
+    period: resolvedCustomPlanPeriod || undefined,
+    ctaLabel: resolvedCustomPlanCtaLabel,
+    ctaHref: resolvedCustomPlanCtaHref,
+    isFeatured: false,
+    stickToBottom: true,
+  });
 
   const normalizedFeatureMaps: FeatureMap[] = [];
   const normalizedPlans: NormalizedPlan[] = sourcePlans.map((plan, planIndex) => {
@@ -378,12 +409,12 @@ function PricingSectionWithComparison({
     normalizedFeatureMaps[planIndex] = resolvedFeatureMap;
 
     return {
-      name: plan.name || `Plan ${planIndex + 1}`,
-      description: plan.description || "Built for modern coaching businesses.",
-      price: plan.price || "€0",
-      period: plan.period || "/mo",
+      name: plan.name || defaultPlans[planIndex]?.name || `Plan ${planIndex + 1}`,
+      description:
+        plan.description ||
+        defaultPlans[planIndex]?.description ||
+        "Built for modern coaching businesses.",
       clients: plan.clients || "",
-      isFeatured: Boolean(plan.isFeatured),
       featureMap: resolvedFeatureMap,
     };
   });
@@ -411,8 +442,8 @@ function PricingSectionWithComparison({
       featureMap: plan.featureMap,
     })),
     {
-      name: pricingCards[3]?.name || "The Brand",
-      clients: "Unlimited",
+      name: resolvedCustomPlanName,
+      clients: resolvedCustomPlanClients,
       featureMap: customPlanFeatureMap,
     },
   ];
@@ -423,7 +454,7 @@ function PricingSectionWithComparison({
   ): ComparisonValue => {
     const priority: Record<string, number> = {
       minus: 0,
-      "Add-on": 1,
+      [resolvedAddOnLabel]: 1,
       check: 2,
     };
     const currentPriority = priority[current] ?? -1;
@@ -439,7 +470,7 @@ function PricingSectionWithComparison({
     const values = comparisonPlans.map((plan) => {
       const feature = plan.featureMap[label];
       if (!feature) return "minus";
-      return feature.isAddon ? "Add-on" : "check";
+      return feature.isAddon ? resolvedAddOnLabel : "check";
     });
     const dedupeKey = `${rowView.title}|||${rowView.description || ""}`;
 
@@ -468,8 +499,8 @@ function PricingSectionWithComparison({
       if (!clients) return "N/A";
       return clients.replace(/^Up to\s+/i, "");
     }),
-    displayTitle: "Client Capacity",
-    displayDescription: "Maximum active clients per plan",
+    displayTitle: resolvedClientCapacityTitle,
+    displayDescription: resolvedClientCapacityDescription,
   };
   const rows: ComparisonRow[] = [clientLimitRow, ...featureRowsNormalized];
   const comparisonColumnTitles = comparisonPlans.map((plan) => plan.name);
@@ -520,7 +551,7 @@ function PricingSectionWithComparison({
                     variant={card.isFeatured ? "default" : "outline"}
                     className={cn(
                       "!h-auto w-fit gap-2 !rounded-full px-6 py-3 text-sm font-semibold transition-all",
-                      card.ctaLabel === "Contact Sales" ? "mt-auto" : "mt-8",
+                      card.stickToBottom ? "mt-auto" : "mt-8",
                       card.isFeatured
                         ? "bg-purple-600 text-white shadow-[0_14px_30px_-18px_rgba(124,58,237,0.9)] hover:bg-purple-700"
                         : "border-[#d9e2ef] bg-white text-slate-700 hover:bg-slate-50",
@@ -537,13 +568,13 @@ function PricingSectionWithComparison({
 
             <div className="border-t border-[#e7edf5] px-4 py-4 lg:px-6">
               <p className="text-sm font-semibold uppercase tracking-[0.1em] text-slate-500">
-                Features
+                {resolvedFeaturesHeadingLabel}
               </p>
             </div>
 
             <div className="grid grid-cols-5 divide-x divide-[#e7edf5] border-t border-[#e7edf5]">
               <div className="px-4 py-3 text-sm font-semibold text-slate-500 lg:px-6">
-                Included in
+                {resolvedIncludedInLabel}
               </div>
               {comparisonColumnTitles.map((title) => (
                 <div
@@ -595,4 +626,5 @@ function PricingSectionWithComparison({
   );
 }
 
+export type { PricingContent as PricingSectionWithComparisonContent };
 export { PricingSectionWithComparison };

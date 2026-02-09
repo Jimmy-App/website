@@ -6,6 +6,8 @@ import { author } from "./schemas/documents/author";
 import { category } from "./schemas/documents/category";
 import { docPage } from "./schemas/documents/docPage";
 import { footer } from "./schemas/documents/footer";
+import { forClientsPage } from "./schemas/documents/forClientsPage";
+import { forCoachesPage } from "./schemas/documents/forCoachesPage";
 import { navigation } from "./schemas/documents/navigation";
 import { page } from "./schemas/documents/page";
 import { post } from "./schemas/documents/post";
@@ -22,6 +24,8 @@ export const schemaTypes = [
   category,
   siteSettings,
   landingPage,
+  forClientsPage,
+  forCoachesPage,
   pricing,
   page,
   post,

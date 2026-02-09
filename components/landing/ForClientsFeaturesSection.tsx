@@ -2,6 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import {
+  DEFAULT_FOR_CLIENTS_FEATURE_ITEMS,
+  DEFAULT_FOR_CLIENTS_FEATURES_CONTENT,
+  type ForClientsFeaturesContent,
+} from "./forClientsContent";
 
 type FeatureItem = {
   anchorId: string;
@@ -12,46 +17,37 @@ type FeatureItem = {
   imageAlt: string;
 };
 
-const featureItems: FeatureItem[] = [
-  {
-    anchorId: "for-clients-the-app",
-    category: "The App",
-    headline: "An app you won't hate using.",
-    description:
-      "Clean design, no clutter. We stripped away the complex menus so you can focus on your form, not on fighting the interface.",
-    imageSrc: "/assets/photo/mock/jimmy-screen-home.svg",
-    imageAlt: "Client app home preview",
-  },
-  {
-    anchorId: "for-clients-track-results",
-    category: "Track Results",
-    headline: "Your personal Hall of Fame.",
-    description:
-      "Watch your numbers go up. Visualize your strength gains, track body weight trends, and compare progress photos side-by-side to see how far you've come.",
-    imageSrc: "/assets/photo/mock/jimmy-screen-progress.svg",
-    imageAlt: "Client progress tracking preview",
-  },
-  {
-    anchorId: "for-clients-training-log",
-    category: "Training Log",
-    headline: "Log sets in seconds.",
-    description:
-      "Easily record weight, reps, and RPE. We show you your history from last week right on the screen, so you never have to guess, \"Wait, how much did I lift last time?\"",
-    imageSrc: "/assets/photo/mock/jimmy-screen-workout.svg",
-    imageAlt: "Client workout logging preview",
-  },
-  {
-    anchorId: "for-clients-stay-connected",
-    category: "Stay Connected",
-    headline: "Feedback, exactly when you need it.",
-    description:
-      "Not sure about your squat depth? Record a video and send it to your coach directly inside the exercise chat. Get feedback, corrections, and high-fives without leaving the app.",
-    imageSrc: "/assets/photo/mock/jimmy-screen-chats.svg",
-    imageAlt: "Client chat preview",
-  },
-];
+type ForClientsFeaturesSectionProps = {
+  content?: ForClientsFeaturesContent | null;
+};
 
-const ForClientsFeaturesSection = () => {
+const ForClientsFeaturesSection = ({ content }: ForClientsFeaturesSectionProps) => {
+  const title = content?.title ?? DEFAULT_FOR_CLIENTS_FEATURES_CONTENT.title;
+  const subtitle =
+    content?.subtitle ?? DEFAULT_FOR_CLIENTS_FEATURES_CONTENT.subtitle;
+  const sourceItems =
+    content?.items && content.items.length > 0
+      ? content.items
+      : DEFAULT_FOR_CLIENTS_FEATURE_ITEMS;
+  const resolvedItems: FeatureItem[] = sourceItems.map((item, index) => {
+    const fallbackItem =
+      DEFAULT_FOR_CLIENTS_FEATURE_ITEMS[index] ||
+      DEFAULT_FOR_CLIENTS_FEATURE_ITEMS[0];
+
+    return {
+      anchorId:
+        item?.anchorId || fallbackItem.anchorId || `for-clients-feature-${index + 1}`,
+      category: item?.category || fallbackItem.category || "Feature",
+      headline: item?.headline || fallbackItem.headline || "",
+      description: item?.description || fallbackItem.description || "",
+      imageSrc:
+        item?.imageSrc ||
+        fallbackItem.imageSrc ||
+        "/assets/photo/mock/jimmy-screen-home.svg",
+      imageAlt: item?.imageAlt || fallbackItem.imageAlt || "Client app preview",
+    };
+  });
+
   return (
     <section
       id="for-clients-features"
@@ -60,16 +56,15 @@ const ForClientsFeaturesSection = () => {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
-            Built for training.
-            <br className="hidden sm:inline" /> Not for friction.
+            {title}
           </h2>
           <p className="mt-6 text-lg leading-8 text-slate-600">
-            The App, Track Results, Training Log, and Stay Connected.
+            {subtitle}
           </p>
         </div>
 
         <div className="mt-16 space-y-20 lg:mt-24 lg:space-y-32">
-          {featureItems.map((feature, featureIdx) => (
+          {resolvedItems.map((feature, featureIdx) => (
             <motion.div
               id={feature.anchorId}
               initial={{ opacity: 0, y: 40 }}

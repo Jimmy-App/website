@@ -2,16 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import {
+  DEFAULT_FOR_CLIENTS_HERO_CONTENT,
+  type ForClientsHeroContent,
+} from "./forClientsContent";
 
 type ForClientsHeroSectionProps = {
   homeHref: string;
   waitlistHref: string;
+  content?: ForClientsHeroContent | null;
 };
 
 const ForClientsHeroSection = ({
   homeHref,
   waitlistHref,
+  content,
 }: ForClientsHeroSectionProps) => {
+  const badgeText =
+    content?.badgeText ?? DEFAULT_FOR_CLIENTS_HERO_CONTENT.badgeText;
+  const title = content?.title ?? DEFAULT_FOR_CLIENTS_HERO_CONTENT.title;
+  const titleHighlight =
+    content?.titleHighlight ?? DEFAULT_FOR_CLIENTS_HERO_CONTENT.titleHighlight;
+  const subtitle =
+    content?.subtitle ?? DEFAULT_FOR_CLIENTS_HERO_CONTENT.subtitle;
+  const primaryButtonLabel =
+    content?.primaryButtonLabel ??
+    DEFAULT_FOR_CLIENTS_HERO_CONTENT.primaryButtonLabel;
+  const secondaryButtonLabel =
+    content?.secondaryButtonLabel ??
+    DEFAULT_FOR_CLIENTS_HERO_CONTENT.secondaryButtonLabel;
+  const imageAlt = content?.imageAlt ?? DEFAULT_FOR_CLIENTS_HERO_CONTENT.imageAlt;
+
   return (
     <section className="relative overflow-hidden bg-[#f5f7fb] pb-16 pt-20 lg:bg-white lg:pt-40">
       <style jsx>{`
@@ -128,21 +149,19 @@ const ForClientsHeroSection = ({
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-purple-600" />
               </span>
               <span className="text-[11px] font-bold uppercase tracking-wider text-purple-900">
-                For Clients
+                {badgeText}
               </span>
             </p>
 
             <h1 className="hero-reveal hero-delay-2 max-w-4xl text-5xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-6xl md:text-7xl lg:max-w-2xl">
-              Your coach, now in{" "}
+              {title}{" "}
               <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                your pocket.
+                {titleHighlight}
               </span>
             </h1>
 
             <p className="hero-reveal hero-delay-3 mb-10 mt-6 max-w-2xl text-lg leading-relaxed text-gray-500 sm:text-xl lg:max-w-xl">
-              Ditch the printed PDFs, messy spreadsheets, and WhatsApp chats.
-              Get your workouts, track your personal bests, and chat with your
-              coach in one app that actually looks good.
+              {subtitle}
             </p>
 
             <div className="hero-reveal hero-delay-4 flex w-full flex-nowrap items-center justify-center gap-3 sm:w-auto lg:justify-start">
@@ -150,13 +169,13 @@ const ForClientsHeroSection = ({
                 href={waitlistHref}
                 className="inline-flex whitespace-nowrap items-center justify-center rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(124,58,237,0.9)] transition-all hover:bg-purple-700"
               >
-                Download the App
+                {primaryButtonLabel}
               </Link>
               <Link
                 href={homeHref}
                 className="inline-flex whitespace-nowrap items-center justify-center rounded-full border border-[#d9e2ef] bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
               >
-                Back to home
+                {secondaryButtonLabel}
               </Link>
             </div>
           </div>
@@ -167,7 +186,7 @@ const ForClientsHeroSection = ({
                 <div className="mockup-unveil">
                   <Image
                     src="/assets/photo/mock/mobileapp-screen.gif"
-                    alt="Jimmy client app preview"
+                    alt={imageAlt}
                     width={960}
                     height={720}
                     sizes="(max-width: 1024px) 68vw, 360px"

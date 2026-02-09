@@ -9,6 +9,11 @@ export const pricing = defineType({
   fields: [
     languageField,
     defineField({
+      name: "seo",
+      title: "SEO",
+      type: "seo",
+    }),
+    defineField({
       name: "title",
       title: "Section Title",
       type: "string",
@@ -82,6 +87,100 @@ export const pricing = defineType({
       type: "string",
     }),
     defineField({
+      name: "pricingPage",
+      title: "Pricing Page Settings",
+      type: "object",
+      fields: [
+        defineField({
+          name: "standardPlanCtaLabel",
+          title: "Standard Plan CTA Label",
+          type: "string",
+          initialValue: "Join Waitlist",
+        }),
+        defineField({
+          name: "addOnLabel",
+          title: "Add-on Label",
+          type: "string",
+          initialValue: "Add-on",
+        }),
+        defineField({
+          name: "featuresHeadingLabel",
+          title: "Features Heading Label",
+          type: "string",
+          initialValue: "Features",
+        }),
+        defineField({
+          name: "includedInLabel",
+          title: "Included In Label",
+          type: "string",
+          initialValue: "Included in",
+        }),
+        defineField({
+          name: "clientCapacityTitle",
+          title: "Client Capacity Title",
+          type: "string",
+          initialValue: "Client Capacity",
+        }),
+        defineField({
+          name: "clientCapacityDescription",
+          title: "Client Capacity Description",
+          type: "string",
+          initialValue: "Maximum active clients per plan",
+        }),
+        defineField({
+          name: "customPlan",
+          title: "Custom Plan Card",
+          type: "object",
+          fields: [
+            defineField({
+              name: "name",
+              title: "Name",
+              type: "string",
+              initialValue: "The Brand",
+            }),
+            defineField({
+              name: "description",
+              title: "Description",
+              type: "text",
+              rows: 3,
+              initialValue:
+                "Your own white-label app in the App Store. Fully branded for you.",
+            }),
+            defineField({
+              name: "price",
+              title: "Price Label",
+              type: "string",
+              description: "Optional. Leave empty if not needed.",
+            }),
+            defineField({
+              name: "period",
+              title: "Period",
+              type: "string",
+            }),
+            defineField({
+              name: "clients",
+              title: "Clients",
+              type: "string",
+              initialValue: "Unlimited",
+            }),
+            defineField({
+              name: "ctaLabel",
+              title: "CTA Label",
+              type: "string",
+              initialValue: "Contact Sales",
+            }),
+            defineField({
+              name: "ctaHref",
+              title: "CTA Href",
+              type: "string",
+              description:
+                "Relative or absolute URL. Leave empty to use /for-coaches.",
+            }),
+          ],
+        }),
+      ],
+    }),
+    defineField({
       name: "plans",
       title: "Plans",
       type: "array",
@@ -106,6 +205,11 @@ export const pricing = defineType({
             defineField({
               name: "description",
               title: "Description",
+              type: "string",
+            }),
+            defineField({
+              name: "ctaLabel",
+              title: "CTA Label",
               type: "string",
             }),
             defineField({
