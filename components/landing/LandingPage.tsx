@@ -9,7 +9,6 @@ const CoreFeaturesSection = dynamic(() => import('./CoreFeaturesSection'));
 const ClientExperienceSection = dynamic(() => import('./ClientExperienceSection'));
 const PricingSection = dynamic(() => import('./PricingSection'));
 const ManifestoSection = dynamic(() => import('./ManifestoSection'));
-const Footer = dynamic(() => import('./Footer'));
 
 export type LandingPageContent = {
   cta?: {
@@ -22,7 +21,6 @@ export type LandingPageContent = {
     titleHighlight?: string;
     subtitle?: string;
     inputPlaceholder?: string;
-    mockupUrlLabel?: string;
     socialProofText?: string;
     successMessage?: string;
   };
@@ -37,7 +35,6 @@ export type LandingPageContent = {
       badge?: string;
       ctaLabel?: string;
       uiActionLabel?: string;
-      uiAvatarInitials?: string;
       uiStatusLabel?: string;
     }[];
   };
@@ -76,6 +73,12 @@ export type LandingPageContent = {
       appleHealthAlt?: string;
       googleFitAlt?: string;
     };
+    video?: {
+      title?: string;
+      body?: string;
+    };
+    ctaLabel?: string;
+    ctaHelperText?: string;
   };
   clientExperience?: {
     badgeText?: string;
@@ -90,6 +93,14 @@ export type LandingPageContent = {
       body?: string;
     };
     workouts?: {
+      title?: string;
+      body?: string;
+    };
+    timer?: {
+      title?: string;
+      body?: string;
+    };
+    offline?: {
       title?: string;
       body?: string;
     };
@@ -109,11 +120,16 @@ export type LandingPageContent = {
     yearlyLabel?: string;
     yearlySaveLabel?: string;
     yearlyFreeMonths?: number;
+    currency?: string;
     popularBadgeLabel?: string;
     secondaryHelperText?: string;
     plans?: {
       name?: string;
-      price?: string;
+      prices?: {
+        usd?: number;
+        eur?: number;
+        gbp?: number;
+      };
       period?: string;
       clients?: string;
       description?: string;
@@ -132,10 +148,6 @@ export type LandingPageContent = {
     inputPlaceholder?: string;
     socialProofText?: string;
     successMessage?: string;
-  };
-  footer?: {
-    brandLabel?: string;
-    copyrightText?: string;
   };
 };
 
@@ -157,7 +169,8 @@ const LandingPage = ({
   navigation,
 }: LandingPageProps) => {
   const waitlistLabel = content?.cta?.waitlistLabel;
-  const pricingSecondaryLabel = 'See all pricing plans';
+  const pricingSecondaryLabel =
+    content?.cta?.pricingSecondaryLabel || 'See all pricing plans';
   const brandLabel = navigation?.brandLabel;
   const pricingSecondaryHref = currentLocale
     ? `${localeBasePath(currentLocale)}/pricing`
@@ -191,12 +204,12 @@ const LandingPage = ({
           waitlistHref={waitlistHref}
           pricingSecondaryLabel={pricingSecondaryLabel}
           pricingSecondaryHref={pricingSecondaryHref}
+          currentLocale={currentLocale}
         />
       </FadeIn>
       <FadeIn>
         <ManifestoSection content={content?.manifesto} waitlistLabel={waitlistLabel} />
       </FadeIn>
-      <Footer content={content?.footer} />
     </div>
   );
 };

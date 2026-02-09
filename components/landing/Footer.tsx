@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-type FooterContent = {
+export type FooterContent = {
   brandLabel?: string;
   copyrightText?: string;
 };
@@ -13,7 +13,7 @@ const Footer = ({ content }: FooterProps) => {
   const currentYear = new Date().getFullYear();
   const resolvedBrandLabel = content?.brandLabel || 'Jimmy';
   const resolvedCopyright =
-    content?.copyrightText || '© {year} Just Jimmy LLC. Built for independence.';
+    content?.copyrightText || '© {year} Just Jimmy LLC. Built for freedom.';
   const copyrightText = resolvedCopyright
     .replace('{year}', currentYear.toString())
     .replace('{{year}}', currentYear.toString());

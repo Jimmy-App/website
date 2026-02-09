@@ -9,6 +9,7 @@ import { footer } from "./schemas/documents/footer";
 import { navigation } from "./schemas/documents/navigation";
 import { page } from "./schemas/documents/page";
 import { post } from "./schemas/documents/post";
+import { pricing } from "./schemas/documents/pricing";
 import { siteSettings } from "./schemas/documents/siteSettings";
 import { landingPage } from "./schemas/documents/landingPage";
 
@@ -21,6 +22,7 @@ export const schemaTypes = [
   category,
   siteSettings,
   landingPage,
+  pricing,
   page,
   post,
   docPage,

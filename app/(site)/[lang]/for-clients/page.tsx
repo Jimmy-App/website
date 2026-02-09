@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import Footer from "@/components/landing/Footer";
 import ForClientsCtaSection from "@/components/landing/ForClientsCtaSection";
 import ForClientsFeaturesSection from "@/components/landing/ForClientsFeaturesSection";
 import ForClientsHeroSection from "@/components/landing/ForClientsHeroSection";
@@ -50,7 +49,6 @@ export default async function ForClientsPage({ params }: PageProps) {
         waitlistHref={waitlistHref}
         coachesHref={coachesHref}
       />
-      <Footer />
     </>
   );
 }

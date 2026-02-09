@@ -9,26 +9,27 @@ export const footer = defineType({
   fields: [
     languageField,
     defineField({
-      name: "title",
-      title: "Title",
+      name: "brandLabel",
+      title: "Brand Label",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "items",
-      title: "Items",
-      type: "array",
-      of: [{ type: "navItem" }],
+      name: "copyrightText",
+      title: "Copyright Text",
+      type: "string",
+      validation: (Rule) => Rule.required(),
+      description: "Use {year} to insert the current year.",
     }),
   ],
   preview: {
     select: {
-      title: "title",
+      brandLabel: "brandLabel",
       language: "language",
     },
-    prepare({ title, language }) {
+    prepare({ brandLabel, language }) {
       return {
-        title: title || "Footer",
+        title: brandLabel || "Footer",
         subtitle: language ? `Locale: ${language}` : "Locale not set",
       };
     },

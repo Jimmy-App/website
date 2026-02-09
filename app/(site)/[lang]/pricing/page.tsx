@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
 import type { LandingPageContent } from "@/components/landing/LandingPage";
 import { PricingSectionWithComparison } from "@/components/ui/pricing-section-with-comparison";
@@ -10,6 +9,7 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import {
   landingPageByLanguageQuery,
   navigationByLanguageQuery,
+  pricingByLanguageQuery,
 } from "@/sanity/lib/queries";
 
 type PageProps = {
@@ -20,6 +20,10 @@ type NavigationData = {
   brandLabel?: string | null;
   mobileHelperText?: string | null;
   items?: { label?: string; href?: string }[] | null;
+};
+
+type PricingDocumentData = {
+  pricing?: LandingPageContent["pricing"] | null;
 };
 
 export async function generateMetadata({ params }: PageProps) {
@@ -51,6 +55,17 @@ export default async function PricingPage({ params }: PageProps) {
     query: landingPageByLanguageQuery,
     params: { language: lang },
   });
+  const pricingDocument = await sanityFetch<PricingDocumentData>({
+    query: pricingByLanguageQuery,
+    params: { language: lang },
+  });
+  const fallbackPricingDocument =
+    !pricingDocument?.pricing && lang !== "en"
+      ? await sanityFetch<PricingDocumentData>({
+          query: pricingByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
   const navigation = await sanityFetch<NavigationData>({
     query: navigationByLanguageQuery,
     params: { language: lang },
@@ -68,6 +83,8 @@ export default async function PricingPage({ params }: PageProps) {
     : null;
 
   const resolvedWaitlistLabel = pricingContent?.cta?.waitlistLabel || "Join Waitlist";
+  const resolvedPricingContent =
+    pricingDocument?.pricing || fallbackPricingDocument?.pricing;
 
   return (
     <>
@@ -90,10 +107,10 @@ export default async function PricingPage({ params }: PageProps) {
 
         <div className="relative z-10">
           <PricingSectionWithComparison
-            content={pricingContent?.pricing}
+            content={resolvedPricingContent}
             waitlistHref={waitlistHref}
+            currentLocale={lang}
           />
-          <Footer content={pricingContent?.footer} />
         </div>
       </div>
     </>

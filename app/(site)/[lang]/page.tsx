@@ -10,6 +10,7 @@ import {
   landingPageByLanguageQuery,
   landingPageSeoByLanguageQuery,
   navigationByLanguageQuery,
+  pricingByLanguageQuery,
 } from "@/sanity/lib/queries";
 
 type PageProps = {
@@ -25,6 +26,13 @@ type NavigationData = {
   brandLabel?: string | null;
   mobileHelperText?: string | null;
   items?: { label?: string; href?: string }[] | null;
+};
+
+type PricingDocumentData = {
+  cta?: {
+    pricingSecondaryLabel?: string | null;
+  } | null;
+  pricing?: LandingPageContent["pricing"] | null;
 };
 
 export async function generateMetadata({ params }: PageProps) {
@@ -64,6 +72,17 @@ export default async function HomePage({ params }: PageProps) {
     query: navigationByLanguageQuery,
     params: { language: lang },
   });
+  const pricingDocument = await sanityFetch<PricingDocumentData>({
+    query: pricingByLanguageQuery,
+    params: { language: lang },
+  });
+  const fallbackPricingDocument =
+    !pricingDocument?.pricing && lang !== "en"
+      ? await sanityFetch<PricingDocumentData>({
+          query: pricingByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
   const normalizedNavigation = navigation
     ? {
         brandLabel: navigation.brandLabel ?? undefined,
@@ -74,12 +93,29 @@ export default async function HomePage({ params }: PageProps) {
         })),
       }
     : null;
+  const mergedLandingPage: LandingPageContent | null =
+    landingPage || pricingDocument
+      ? {
+          ...(landingPage || {}),
+          cta: {
+            ...(landingPage?.cta || {}),
+            pricingSecondaryLabel:
+              pricingDocument?.cta?.pricingSecondaryLabel ??
+              fallbackPricingDocument?.cta?.pricingSecondaryLabel ??
+              undefined,
+          },
+          pricing:
+            pricingDocument?.pricing ||
+            fallbackPricingDocument?.pricing ||
+            undefined,
+        }
+      : null;
 
   const basePath = localeBasePath(lang);
 
   return (
     <LandingPage
-      content={landingPage}
+      content={mergedLandingPage}
       brandHref={basePath}
       currentLocale={lang}
       navigation={normalizedNavigation}

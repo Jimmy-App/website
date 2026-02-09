@@ -4,6 +4,13 @@ import {
   Minus,
   MoveRight,
 } from "lucide-react";
+import type { SupportedLocale } from "@/lib/i18n";
+import {
+  formatPriceValue,
+  resolvePlanAmount,
+  resolvePricingCurrency,
+  type PricingPlanPrices,
+} from "@/lib/pricing";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +25,7 @@ type PricingPlanFeature = {
 type PricingPlan = {
   name?: string;
   price?: string;
+  prices?: PricingPlanPrices;
   period?: string;
   clients?: string;
   description?: string;
@@ -30,6 +38,7 @@ type PricingContent = {
   title?: string;
   titleHighlight?: string;
   subtitle?: string;
+  currency?: string;
   plans?: PricingPlan[];
 };
 
@@ -65,6 +74,7 @@ type PricingCard = {
 type PricingSectionWithComparisonProps = {
   content?: PricingContent | null;
   waitlistHref?: string;
+  currentLocale?: SupportedLocale;
   className?: string;
 };
 
@@ -211,6 +221,7 @@ function ComparisonCellValue({ value }: { value: ComparisonValue }) {
 function PricingSectionWithComparison({
   content,
   waitlistHref = "#waitlist",
+  currentLocale,
   className,
 }: PricingSectionWithComparisonProps) {
   const defaultPlans: PricingPlan[] = [
@@ -273,17 +284,36 @@ function PricingSectionWithComparison({
   const resolvedSubtitle =
     content?.subtitle ||
     "A pricing model that aligns with your success. Start for free and upgrade only when your business grows.";
+  const resolvedCurrency = resolvePricingCurrency(content?.currency, currentLocale);
   const basePathFromWaitlist = waitlistHref.split("#")[0] || "";
   const contactSalesHref = basePathFromWaitlist
     ? `${basePathFromWaitlist}/for-coaches`
     : "/for-coaches";
+  const starterPriceAmount =
+    resolvePlanAmount({
+      prices: sourcePlans[0]?.prices,
+      currency: resolvedCurrency,
+      fallbackPrice: sourcePlans[0]?.price,
+    }) ?? 0;
+  const scalePriceAmount =
+    resolvePlanAmount({
+      prices: sourcePlans[1]?.prices,
+      currency: resolvedCurrency,
+      fallbackPrice: sourcePlans[1]?.price,
+    }) ?? 49;
+  const elitePriceAmount =
+    resolvePlanAmount({
+      prices: sourcePlans[2]?.prices,
+      currency: resolvedCurrency,
+      fallbackPrice: sourcePlans[2]?.price,
+    }) ?? 99;
 
   const pricingCards: PricingCard[] = [
     {
       name: "The Starter",
       description: "Perfect for side hustles and getting your first clients.",
-      price: "$0",
-      period: "/mo",
+      price: formatPriceValue(starterPriceAmount, resolvedCurrency),
+      period: sourcePlans[0]?.period || "/mo",
       ctaLabel: "Join Waitlist",
       ctaHref: waitlistHref,
       isFeatured: false,
@@ -291,8 +321,8 @@ function PricingSectionWithComparison({
     {
       name: "The Scale",
       description: "For coaches ready to quit their 9-to-5 job.",
-      price: "$49",
-      period: "/mo",
+      price: formatPriceValue(scalePriceAmount, resolvedCurrency),
+      period: sourcePlans[1]?.period || "/mo",
       ctaLabel: "Join Waitlist",
       ctaHref: waitlistHref,
       isFeatured: true,
@@ -300,8 +330,8 @@ function PricingSectionWithComparison({
     {
       name: "The Elite",
       description: "Serious tools to dominate your niche.",
-      price: "$99",
-      period: "/mo",
+      price: formatPriceValue(elitePriceAmount, resolvedCurrency),
+      period: sourcePlans[2]?.period || "/mo",
       ctaLabel: "Join Waitlist",
       ctaHref: waitlistHref,
       isFeatured: false,

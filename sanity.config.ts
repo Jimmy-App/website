@@ -17,6 +17,7 @@ const supportedLanguages = [
 const localizedSchemaTypes = [
   "siteSettings",
   "landingPage",
+  "pricing",
   "page",
   "post",
   "docPage",

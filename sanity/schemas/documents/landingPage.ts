@@ -30,11 +30,6 @@ export const landingPage = defineType({
           type: "string",
           validation: (Rule) => Rule.required(),
         }),
-        defineField({
-          name: "pricingSecondaryLabel",
-          title: "Pricing Secondary Link Label",
-          type: "string",
-        }),
       ],
     }),
     defineField({
@@ -67,11 +62,6 @@ export const landingPage = defineType({
         defineField({
           name: "inputPlaceholder",
           title: "Email Input Placeholder",
-          type: "string",
-        }),
-        defineField({
-          name: "mockupUrlLabel",
-          title: "Mockup URL Label",
           type: "string",
         }),
         defineField({
@@ -152,11 +142,6 @@ export const landingPage = defineType({
                 defineField({
                   name: "uiActionLabel",
                   title: "UI Action Label",
-                  type: "string",
-                }),
-                defineField({
-                  name: "uiAvatarInitials",
-                  title: "UI Avatar Initials",
                   type: "string",
                 }),
                 defineField({
@@ -309,6 +294,25 @@ export const landingPage = defineType({
             }),
           ],
         }),
+        defineField({
+          name: "video",
+          title: "Video Feature",
+          type: "object",
+          fields: [
+            defineField({ name: "title", title: "Title", type: "string" }),
+            defineField({ name: "body", title: "Body", type: "text", rows: 3 }),
+          ],
+        }),
+        defineField({
+          name: "ctaLabel",
+          title: "CTA Label",
+          type: "string",
+        }),
+        defineField({
+          name: "ctaHelperText",
+          title: "CTA Helper Text",
+          type: "string",
+        }),
       ],
     }),
     defineField({
@@ -381,108 +385,6 @@ export const landingPage = defineType({
       ],
     }),
     defineField({
-      name: "pricing",
-      title: "Pricing",
-      type: "object",
-      fields: [
-        defineField({ name: "badgeText", title: "Badge Text", type: "string" }),
-        defineField({ name: "title", title: "Title", type: "string" }),
-        defineField({
-          name: "titleHighlight",
-          title: "Title Highlight",
-          type: "string",
-        }),
-        defineField({ name: "subtitle", title: "Subtitle", type: "text", rows: 3 }),
-        defineField({
-          name: "popularBadgeLabel",
-          title: "Popular Badge Label",
-          type: "string",
-        }),
-        defineField({
-          name: "monthlyLabel",
-          title: "Monthly Toggle Label",
-          type: "string",
-        }),
-        defineField({
-          name: "yearlyLabel",
-          title: "Yearly Toggle Label",
-          type: "string",
-        }),
-        defineField({
-          name: "yearlySaveLabel",
-          title: "Yearly Save Label",
-          type: "string",
-          description:
-            "Optional custom label on Yearly toggle. Leave empty to auto-generate from discount percent.",
-        }),
-        defineField({
-          name: "yearlyFreeMonths",
-          title: "Yearly Free Months",
-          type: "number",
-          initialValue: 2,
-          description:
-            "Used in yearly price formula: monthlyPrice * (12 - freeMonths).",
-        }),
-        defineField({
-          name: "secondaryHelperText",
-          title: "Secondary Helper Text",
-          type: "string",
-        }),
-        defineField({
-          name: "plans",
-          title: "Plans",
-          type: "array",
-          of: [
-            {
-              type: "object",
-              name: "pricingPlan",
-              fields: [
-                defineField({ name: "name", title: "Name", type: "string" }),
-                defineField({ name: "price", title: "Price", type: "string" }),
-                defineField({ name: "period", title: "Period", type: "string" }),
-                defineField({ name: "clients", title: "Clients", type: "string" }),
-                defineField({
-                  name: "description",
-                  title: "Description",
-                  type: "string",
-                }),
-                defineField({
-                  name: "isFeatured",
-                  title: "Is Featured",
-                  type: "boolean",
-                  initialValue: false,
-                }),
-                defineField({
-                  name: "features",
-                  title: "Features",
-                  type: "array",
-                  of: [
-                    {
-                      type: "object",
-                      name: "planFeature",
-                      fields: [
-                        defineField({
-                          name: "label",
-                          title: "Label",
-                          type: "string",
-                        }),
-                        defineField({
-                          name: "isAddon",
-                          title: "Is Add-on",
-                          type: "boolean",
-                          initialValue: false,
-                        }),
-                      ],
-                    },
-                  ],
-                }),
-              ],
-            },
-          ],
-        }),
-      ],
-    }),
-    defineField({
       name: "manifesto",
       title: "Manifesto",
       type: "object",
@@ -530,24 +432,6 @@ export const landingPage = defineType({
           name: "successMessage",
           title: "Success Message",
           type: "string",
-        }),
-      ],
-    }),
-    defineField({
-      name: "footer",
-      title: "Footer",
-      type: "object",
-      fields: [
-        defineField({
-          name: "brandLabel",
-          title: "Brand Label",
-          type: "string",
-        }),
-        defineField({
-          name: "copyrightText",
-          title: "Copyright Text",
-          type: "string",
-          description: "Use {year} to insert the current year.",
         }),
       ],
     }),

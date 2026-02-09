@@ -24,8 +24,7 @@ export const landingPageByLanguageQuery = defineQuery(`
   *[_type == "landingPage" && language == $language][0]{
     title,
     cta{
-      waitlistLabel,
-      pricingSecondaryLabel
+      waitlistLabel
     },
     hero{
       badgeText,
@@ -33,7 +32,6 @@ export const landingPageByLanguageQuery = defineQuery(`
       titleHighlight,
       subtitle,
       inputPlaceholder,
-      mockupUrlLabel,
       socialProofText,
       successMessage
     },
@@ -48,7 +46,6 @@ export const landingPageByLanguageQuery = defineQuery(`
         badge,
         ctaLabel,
         uiActionLabel,
-        uiAvatarInitials,
         uiStatusLabel
       }
     },
@@ -86,7 +83,13 @@ export const landingPageByLanguageQuery = defineQuery(`
         syncedLabel,
         appleHealthAlt,
         googleFitAlt
-      }
+      },
+      video{
+        title,
+        body
+      },
+      ctaLabel,
+      ctaHelperText
     },
     clientExperience{
       badgeText,
@@ -104,33 +107,20 @@ export const landingPageByLanguageQuery = defineQuery(`
         title,
         body
       },
+      timer{
+        title,
+        body
+      },
+      offline{
+        title,
+        body
+      },
       chat{
         title,
         body
       },
       ctaLabel,
       ctaHelperText
-    },
-    pricing{
-      badgeText,
-      title,
-      titleHighlight,
-      subtitle,
-      popularBadgeLabel,
-      monthlyLabel,
-      yearlyLabel,
-      yearlySaveLabel,
-      yearlyFreeMonths,
-      secondaryHelperText,
-      plans[]{
-        name,
-        price,
-        period,
-        clients,
-        description,
-        isFeatured,
-        features[]{label, isAddon}
-      }
     },
     manifesto{
       badgeText,
@@ -143,10 +133,6 @@ export const landingPageByLanguageQuery = defineQuery(`
       inputPlaceholder,
       socialProofText,
       successMessage
-    },
-    footer{
-      brandLabel,
-      copyrightText
     }
   }
 `);
@@ -163,10 +149,44 @@ export const landingPageSeoByLanguageQuery = defineQuery(`
   }
 `);
 
+export const pricingByLanguageQuery = defineQuery(`
+  *[_type == "pricing" && language == $language][0]{
+    "cta": {
+      "pricingSecondaryLabel": pricingSecondaryLabel
+    },
+    "pricing": {
+      "badgeText": badgeText,
+      "title": title,
+      "titleHighlight": titleHighlight,
+      "subtitle": subtitle,
+      "popularBadgeLabel": popularBadgeLabel,
+      "monthlyLabel": monthlyLabel,
+      "yearlyLabel": yearlyLabel,
+      "yearlySaveLabel": yearlySaveLabel,
+      "yearlyFreeMonths": yearlyFreeMonths,
+      "currency": currency,
+      "secondaryHelperText": secondaryHelperText,
+      "plans": plans[]{
+        name,
+        prices{
+          usd,
+          eur,
+          gbp
+        },
+        period,
+        clients,
+        description,
+        isFeatured,
+        features[]{label, isAddon}
+      }
+    }
+  }
+`);
+
 export const footerByLanguageQuery = defineQuery(`
   *[_type == "footer" && language == $language][0]{
-    title,
-    items[]{label, href}
+    brandLabel,
+    copyrightText
   }
 `);
 

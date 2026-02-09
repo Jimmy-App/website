@@ -32,6 +32,14 @@ type ClientExperienceContent = {
     title?: string;
     body?: string;
   };
+  timer?: {
+    title?: string;
+    body?: string;
+  };
+  offline?: {
+    title?: string;
+    body?: string;
+  };
   chat?: {
     title?: string;
     body?: string;
@@ -94,9 +102,10 @@ const ClientExperienceSection = ({
       },
       {
         key: 'progress',
-        title: content?.progress?.title || 'My Progress',
+        title: content?.progress?.title || content?.timer?.title || 'My Progress',
         description:
           content?.progress?.body ||
+          content?.timer?.body ||
           'Clear personal records, consistency trends, and milestones that keep clients engaged.',
         icon: BarChart3,
         preview: {
@@ -108,9 +117,10 @@ const ClientExperienceSection = ({
       },
       {
         key: 'workouts',
-        title: content?.workouts?.title || 'Workouts',
+        title: content?.workouts?.title || content?.offline?.title || 'Workouts',
         description:
           content?.workouts?.body ||
+          content?.offline?.body ||
           'Open today plan, start training instantly, and log each set without breaking flow.',
         icon: Dumbbell,
         preview: {
@@ -140,8 +150,12 @@ const ClientExperienceSection = ({
       content?.chat?.title,
       content?.logging?.body,
       content?.logging?.title,
+      content?.offline?.body,
+      content?.offline?.title,
       content?.progress?.body,
       content?.progress?.title,
+      content?.timer?.body,
+      content?.timer?.title,
       content?.workouts?.body,
       content?.workouts?.title,
     ]

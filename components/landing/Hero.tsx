@@ -9,7 +9,6 @@ type HeroContent = {
   titleHighlight?: string;
   subtitle?: string;
   inputPlaceholder?: string;
-  mockupUrlLabel?: string;
   socialProofText?: string;
   successMessage?: string;
 };

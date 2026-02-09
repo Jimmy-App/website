@@ -11,6 +11,7 @@ export const structure: StructureResolver = (S) =>
             .title("Marketing")
             .items([
               S.documentTypeListItem("landingPage").title("Landing Pages"),
+              S.documentTypeListItem("pricing").title("Pricing"),
               S.documentTypeListItem("navigation").title("Navigation"),
               S.documentTypeListItem("footer").title("Footer"),
               S.documentTypeListItem("siteSettings").title("Site Settings"),

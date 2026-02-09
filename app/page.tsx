@@ -1,5 +1,7 @@
 import LandingPage from '../components/landing/LandingPage';
 import type { LandingPageContent } from '../components/landing/LandingPage';
+import SiteFooter from '../components/site/SiteFooter';
+import type { SiteFooterContent } from '../components/site/SiteFooter';
 import { defaultLocale } from '../lib/i18n';
 import { buildMetadata } from '../lib/seo';
 import type { SeoFields } from '../lib/seo';
@@ -8,6 +10,8 @@ import {
   landingPageByLanguageQuery,
   landingPageSeoByLanguageQuery,
   navigationByLanguageQuery,
+  footerByLanguageQuery,
+  pricingByLanguageQuery,
 } from '../sanity/lib/queries';
 
 type LandingPageSeoData = {
@@ -20,6 +24,15 @@ type NavigationData = {
   mobileHelperText?: string | null;
   items?: { label?: string; href?: string }[] | null;
 };
+
+type PricingDocumentData = {
+  cta?: {
+    pricingSecondaryLabel?: string | null;
+  } | null;
+  pricing?: LandingPageContent['pricing'] | null;
+};
+
+type FooterData = SiteFooterContent | null;
 
 export async function generateMetadata() {
   const landingPageSeo = await sanityFetch<LandingPageSeoData>({
@@ -44,6 +57,14 @@ const App = async () => {
     query: navigationByLanguageQuery,
     params: { language: defaultLocale },
   });
+  const pricingDocument = await sanityFetch<PricingDocumentData>({
+    query: pricingByLanguageQuery,
+    params: { language: defaultLocale },
+  });
+  const footer = await sanityFetch<FooterData>({
+    query: footerByLanguageQuery,
+    params: { language: defaultLocale },
+  });
   const normalizedNavigation = navigation
     ? {
         brandLabel: navigation.brandLabel ?? undefined,
@@ -54,14 +75,29 @@ const App = async () => {
         })),
       }
     : null;
+  const mergedLandingPage: LandingPageContent | null =
+    landingPage || pricingDocument
+      ? {
+          ...(landingPage || {}),
+          cta: {
+            ...(landingPage?.cta || {}),
+            pricingSecondaryLabel:
+              pricingDocument?.cta?.pricingSecondaryLabel ?? undefined,
+          },
+          pricing: pricingDocument?.pricing ?? undefined,
+        }
+      : null;
 
   return (
-    <LandingPage
-      content={landingPage}
-      brandHref="/"
-      currentLocale={defaultLocale}
-      navigation={normalizedNavigation}
-    />
+    <>
+      <LandingPage
+        content={mergedLandingPage}
+        brandHref="/"
+        currentLocale={defaultLocale}
+        navigation={normalizedNavigation}
+      />
+      <SiteFooter content={footer} />
+    </>
   );
 };
 

@@ -2,6 +2,14 @@
 
 import { useState } from 'react';
 import { ArrowRight, Check, Plus, Sparkles, Users, Zap } from 'lucide-react';
+import type { SupportedLocale } from '@/lib/i18n';
+import {
+  formatPriceValue,
+  resolvePlanAmount,
+  resolvePricingCurrency,
+  type PricingCurrency,
+  type PricingPlanPrices,
+} from '@/lib/pricing';
 import {
   LANDING_SECTION_BADGE_CLASS,
   LANDING_SECTION_TITLE_CLASS,
@@ -16,17 +24,21 @@ type PricingContent = {
   yearlyLabel?: string;
   yearlySaveLabel?: string;
   yearlyFreeMonths?: number;
+  currency?: string;
   popularBadgeLabel?: string;
   secondaryHelperText?: string;
-  plans?: {
-    name?: string;
-    price?: string;
-    period?: string;
-    clients?: string;
-    description?: string;
-    isFeatured?: boolean;
-    features?: { label?: string; isAddon?: boolean }[];
-  }[];
+  plans?: PricingPlan[];
+};
+
+type PricingPlan = {
+  name?: string;
+  price?: string;
+  prices?: PricingPlanPrices;
+  period?: string;
+  clients?: string;
+  description?: string;
+  isFeatured?: boolean;
+  features?: { label?: string; isAddon?: boolean }[];
 };
 
 type PricingSectionProps = {
@@ -34,25 +46,11 @@ type PricingSectionProps = {
   waitlistHref?: string;
   pricingSecondaryLabel?: string;
   pricingSecondaryHref?: string;
+  currentLocale?: SupportedLocale;
   content?: PricingContent | null;
 };
 
 type BillingFrequency = 'monthly' | 'yearly';
-
-const priceMatch = /^([^0-9]*)([0-9]+(?:[.,][0-9]+)?)/;
-
-const parsePrice = (price: string) => {
-  const match = price.trim().match(priceMatch);
-  if (!match) return null;
-
-  const amount = Number.parseFloat(match[2].replace(',', '.'));
-  if (Number.isNaN(amount)) return null;
-
-  return {
-    symbol: match[1] || '',
-    amount,
-  };
-};
 
 const formatAmount = (amount: number) =>
   Number.isInteger(amount) ? `${amount}` : amount.toFixed(2);
@@ -64,20 +62,19 @@ const formatMonthsLabel = (months: number) => {
 };
 
 const displayPrice = (
-  price: string,
+  amount: number | null,
+  fallbackPrice: string,
   frequency: BillingFrequency,
-  yearlyFreeMonths: number
+  yearlyFreeMonths: number,
+  currency: PricingCurrency
 ) => {
-  const parsed = parsePrice(price);
-  if (!parsed) return price;
+  if (amount === null) return fallbackPrice;
 
   const normalizedFreeMonths = Math.min(Math.max(yearlyFreeMonths, 0), 12);
   const yearlyPaidMonths = Math.max(12 - normalizedFreeMonths, 0);
   const adjusted =
-    frequency === 'yearly' && parsed.amount > 0
-      ? parsed.amount * yearlyPaidMonths
-      : parsed.amount;
-  return `${parsed.symbol}${formatAmount(adjusted)}`;
+    frequency === 'yearly' && amount > 0 ? amount * yearlyPaidMonths : amount;
+  return formatPriceValue(adjusted, currency);
 };
 
 const periodLabel = (period: string | undefined, frequency: BillingFrequency) =>
@@ -116,6 +113,7 @@ const PricingSection = ({
   waitlistHref,
   pricingSecondaryLabel,
   pricingSecondaryHref,
+  currentLocale,
   content,
 }: PricingSectionProps) => {
   const [selectedFrequency, setSelectedFrequency] =
@@ -144,10 +142,11 @@ const PricingSection = ({
   const resolvedYearlySaveLabel = content?.yearlySaveLabel || defaultYearlySaveLabel;
   const resolvedPopularBadgeLabel = content?.popularBadgeLabel || 'Most Popular';
   const resolvedSecondaryHelperText =
-    '200+ clients? Custom needs? Let\'s talk.';
+    content?.secondaryHelperText || "200+ clients? Custom needs? Let's talk.";
   const resolvedPricingSecondaryHref = pricingSecondaryHref || '/pricing';
+  const resolvedCurrency = resolvePricingCurrency(content?.currency, currentLocale);
 
-  const defaultPlans = [
+  const defaultPlans: PricingPlan[] = [
     {
       name: 'The Starter',
       price: '€0',
@@ -263,10 +262,17 @@ const PricingSection = ({
           {resolvedPlans.map((plan, index) => {
             const isFeatured = Boolean(plan.isFeatured);
             const planFeatures = plan.features || [];
+            const baseAmount = resolvePlanAmount({
+              prices: plan.prices,
+              currency: resolvedCurrency,
+              fallbackPrice: plan.price,
+            });
             const resolvedPlanPrice = displayPrice(
-              plan.price || '€0',
+              baseAmount,
+              plan.price || '$0',
               selectedFrequency,
-              normalizedYearlyFreeMonths
+              normalizedYearlyFreeMonths,
+              resolvedCurrency
             );
             const resolvedPeriod = periodLabel(plan.period, selectedFrequency);
             const parsedClients = parseClientsLabel(plan.clients);

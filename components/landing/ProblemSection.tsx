@@ -16,7 +16,6 @@ type ProblemCard = {
   ctaLabel?: string;
   uiActionLabel?: string;
   uiStatusLabel?: string;
-  uiAvatarInitials?: string;
 };
 
 type ProblemContent = {
@@ -55,7 +54,6 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
       badge: 'New',
       ctaLabel: 'See the platform',
       uiActionLabel: 'Update Program',
-      uiAvatarInitials: 'JD',
       uiStatusLabel: 'Active clients',
     },
   ];

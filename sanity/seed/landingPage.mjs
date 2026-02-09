@@ -32,7 +32,6 @@ const baseContent = {
   title: "Landing Page",
   cta: {
     waitlistLabel: "Join Waitlist",
-    pricingSecondaryLabel: "See all pricing plans",
   },
   hero: {
     badgeText: "Waitlist Open",
@@ -41,7 +40,6 @@ const baseContent = {
     subtitle:
       "Stop hacking together Excel and WhatsApp. {brand} is the workspace built for solopreneurs to manage clients, programming, and progress.",
     inputPlaceholder: "Enter your email...",
-    mockupUrlLabel: "app.jimmycoach.com",
     socialProofText: "Join 400+ other coaches waiting for access.",
     successMessage: "You're on the list! Keep an eye on your inbox.",
   },
@@ -71,7 +69,6 @@ const baseContent = {
         badge: "New",
         ctaLabel: "See how it works",
         uiActionLabel: "Update Program",
-        uiAvatarInitials: "JD",
         uiStatusLabel: "Active",
       },
     ],
@@ -248,17 +245,12 @@ const baseContent = {
     socialProofText: "Join 400+ other coaches waiting for access.",
     successMessage: "You're on the list! Keep an eye on your inbox.",
   },
-  footer: {
-    brandLabel: "Jimmy",
-    copyrightText: "© {year} Just Jimmy LLC. Built for independence.",
-  },
 };
 
 const spanishContent = {
   title: "Página de aterrizaje",
   cta: {
     waitlistLabel: "Únete a la lista de espera",
-    pricingSecondaryLabel: "Ver todos los planes de precios",
   },
   hero: {
     badgeText: "Lista de espera abierta",
@@ -267,7 +259,6 @@ const spanishContent = {
     subtitle:
       "Deja de improvisar con Excel y WhatsApp. {brand} es el espacio de trabajo creado para emprendedores individuales para gestionar clientes, programación y progreso.",
     inputPlaceholder: "Introduce tu correo...",
-    mockupUrlLabel: "app.jimmycoach.com",
     socialProofText: "Únete a más de 400 entrenadores esperando acceso.",
     successMessage: "Estás en la lista! Mantente atento a tu bandeja de entrada.",
   },
@@ -297,7 +288,6 @@ const spanishContent = {
         badge: "Nuevo",
         ctaLabel: "Ver cómo funciona",
         uiActionLabel: "Actualizar programa",
-        uiAvatarInitials: "JD",
         uiStatusLabel: "Activo",
       },
     ],
@@ -481,17 +471,12 @@ const spanishContent = {
     socialProofText: "Únete a más de 400 entrenadores esperando acceso.",
     successMessage: "Estás en la lista! Mantente atento a tu bandeja de entrada.",
   },
-  footer: {
-    brandLabel: "Jimmy",
-    copyrightText: "© {year} Just Jimmy LLC. Hecho para la independencia.",
-  },
 };
 
 const frenchContent = {
   title: "Page d'atterrissage",
   cta: {
     waitlistLabel: "Rejoindre la liste d'attente",
-    pricingSecondaryLabel: "Voir tous les plans tarifaires",
   },
   hero: {
     badgeText: "Liste d'attente ouverte",
@@ -500,7 +485,6 @@ const frenchContent = {
     subtitle:
       "Arrête de bricoler avec Excel et WhatsApp. {brand} est l'espace de travail conçu pour les solopreneurs afin de gérer les clients, la programmation et la progression.",
     inputPlaceholder: "Entrez votre e-mail...",
-    mockupUrlLabel: "app.jimmycoach.com",
     socialProofText: "Rejoignez plus de 400 coachs en attente d'accès.",
     successMessage:
       "Vous êtes sur la liste ! Gardez un oeil sur votre boîte de réception.",
@@ -531,7 +515,6 @@ const frenchContent = {
         badge: "Nouveau",
         ctaLabel: "Voir comment ça marche",
         uiActionLabel: "Mettre à jour le programme",
-        uiAvatarInitials: "JD",
         uiStatusLabel: "Actif",
       },
     ],
@@ -719,17 +702,12 @@ const frenchContent = {
     successMessage:
       "Vous êtes sur la liste ! Gardez un oeil sur votre boîte de réception.",
   },
-  footer: {
-    brandLabel: "Jimmy",
-    copyrightText: "© {year} Just Jimmy LLC. Conçu pour l'indépendance.",
-  },
 };
 
 const ukrainianContent = {
   title: "Посадкова сторінка",
   cta: {
     waitlistLabel: "Приєднатися до списку очікування",
-    pricingSecondaryLabel: "Переглянути всі тарифні плани",
   },
   hero: {
     badgeText: "Список очікування відкрито",
@@ -738,7 +716,6 @@ const ukrainianContent = {
     subtitle:
       "Перестаньте склеювати все з Excel і WhatsApp. {brand} — робочий простір для солопренерів, щоб керувати клієнтами, програмами та прогресом.",
     inputPlaceholder: "Введіть свій email...",
-    mockupUrlLabel: "app.jimmycoach.com",
     socialProofText: "Приєднуйтесь до понад 400 тренерів, які чекають доступу.",
     successMessage: "Ви у списку! Слідкуйте за своєю поштою.",
   },
@@ -768,7 +745,6 @@ const ukrainianContent = {
         badge: "Нове",
         ctaLabel: "Подивитися, як це працює",
         uiActionLabel: "Оновити програму",
-        uiAvatarInitials: "JD",
         uiStatusLabel: "Активний",
       },
     ],
@@ -951,10 +927,6 @@ const ukrainianContent = {
     socialProofText: "Приєднуйтесь до понад 400 тренерів, які чекають доступу.",
     successMessage: "Ви у списку! Слідкуйте за своєю поштою.",
   },
-  footer: {
-    brandLabel: "Jimmy",
-    copyrightText: "© {year} Just Jimmy LLC. Створено для незалежності.",
-  },
 };
 
 const localizedContent = {
@@ -983,7 +955,8 @@ const run = async () => {
     );
 
     if (existing?._id) {
-      const { _type, ...payload } = doc;
+      const payload = { ...doc };
+      delete payload._type;
       await client.patch(existing._id).set(payload).commit();
       console.log(`updated landingPage for ${doc.language}`);
     } else {
