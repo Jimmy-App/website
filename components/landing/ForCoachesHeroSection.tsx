@@ -134,15 +134,16 @@ const ForCoachesHeroSection = ({
             </p>
 
             <h1 className="hero-reveal hero-delay-2 max-w-4xl text-5xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-6xl md:text-7xl lg:max-w-2xl">
-              Run your coaching business
-              <span className="block bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                in one system.
+              Stop coaching in{" "}
+              <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                spreadsheets.
               </span>
             </h1>
 
             <p className="hero-reveal hero-delay-3 mb-10 mt-6 max-w-2xl text-lg leading-relaxed text-gray-500 sm:text-xl lg:max-w-xl">
-              Jimmy helps you program faster, manage clients clearly, and keep
-              communication organized for both coaches and clients.
+              Build programs, track progress, and manage clients in one place.
+              Jimmy is the simple, powerful tool that gives you your Sundays
+              back.
             </p>
 
             <div className="hero-reveal hero-delay-4 flex w-full flex-nowrap items-center justify-center gap-3 sm:w-auto lg:justify-start">

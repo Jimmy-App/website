@@ -169,15 +169,35 @@ const Navbar = ({
     }, 150);
   };
   const handleMobileNavClick = (targetHref?: string) => {
-    if (targetHref && !targetHref.startsWith("#")) {
+    if (!targetHref) {
+      pendingScrollTargetRef.current = null;
+      setIsMobileFeaturesOpen(false);
+      setIsMobileMenuOpen(false);
+      return;
+    }
+
+    if (!targetHref.startsWith("#")) {
+      try {
+        const resolvedUrl = new URL(targetHref, window.location.origin);
+        const isSamePage = resolvedUrl.pathname === window.location.pathname;
+
+        if (isSamePage && resolvedUrl.hash) {
+          pendingScrollTargetRef.current = resolvedUrl.hash;
+          setIsMobileFeaturesOpen(false);
+          setIsMobileMenuOpen(false);
+          return;
+        }
+      } catch {
+        // Ignore parse errors and fallback to navigation.
+      }
+
       setIsMobileMenuOpen(false);
       setIsMobileFeaturesOpen(false);
       window.location.assign(targetHref);
       return;
     }
 
-    pendingScrollTargetRef.current =
-      targetHref && targetHref.startsWith("#") ? targetHref : null;
+    pendingScrollTargetRef.current = targetHref;
     setIsMobileFeaturesOpen(false);
     setIsMobileMenuOpen(false);
   };
@@ -191,6 +211,17 @@ const Navbar = ({
   const resolvedMenuItems = navigation?.items?.length
     ? navigation.items
     : defaultMenuItems;
+  const homeHref = currentLocale ? localeBasePath(currentLocale) : "/";
+  const homeWaitlistHref = `${homeHref}#waitlist`;
+  const resolveSectionHref = (href?: string) => {
+    if (!href) {
+      return "#";
+    }
+    if (href.startsWith("#")) {
+      return `${homeHref}${href}`;
+    }
+    return href;
+  };
   const resolvedFeaturesMenuLabel =
     resolvedMenuItems.find(
       (item, index) =>
@@ -200,22 +231,55 @@ const Navbar = ({
   const forCoachesHref = currentLocale
     ? `${localeBasePath(currentLocale)}/for-coaches`
     : "/for-coaches";
+  const forCoachesFeaturesHref = `${forCoachesHref}#for-coaches-features`;
   const forClientsHref = currentLocale
-    ? `${localeBasePath(currentLocale)}#experience`
-    : "/#experience";
+    ? `${localeBasePath(currentLocale)}/for-clients`
+    : "/for-clients";
 
   const coachFeatureItems: FeatureDropdownItem[] = [
-    { label: "Create Programs", href: forCoachesHref, icon: ClipboardList },
-    { label: "Exercise Database", href: forCoachesHref, icon: Database },
-    { label: "Manage Clients", href: forCoachesHref, icon: Users },
-    { label: "Team Chat", href: forCoachesHref, icon: MessagesSquare },
+    {
+      label: "Create Programs",
+      href: `${forCoachesHref}#for-coaches-create-programs`,
+      icon: ClipboardList,
+    },
+    {
+      label: "Exercise Database",
+      href: `${forCoachesHref}#for-coaches-exercise-database`,
+      icon: Database,
+    },
+    {
+      label: "Manage Clients",
+      href: `${forCoachesHref}#for-coaches-manage-clients`,
+      icon: Users,
+    },
+    {
+      label: "Team Chat",
+      href: `${forCoachesHref}#for-coaches-team-chat`,
+      icon: MessagesSquare,
+    },
   ];
 
   const clientFeatureItems: FeatureDropdownItem[] = [
-    { label: "The App", href: forClientsHref, icon: Smartphone },
-    { label: "Track Results", href: forClientsHref, icon: BarChart3 },
-    { label: "Training Log", href: forClientsHref, icon: Dumbbell },
-    { label: "Stay Connected", href: forClientsHref, icon: MessageCircle },
+    {
+      label: "The App",
+      href: `${forClientsHref}#for-clients-the-app`,
+      icon: Smartphone,
+    },
+    {
+      label: "Track Results",
+      href: `${forClientsHref}#for-clients-track-results`,
+      icon: BarChart3,
+    },
+    {
+      label: "Training Log",
+      href: `${forClientsHref}#for-clients-training-log`,
+      icon: Dumbbell,
+    },
+    {
+      label: "Stay Connected",
+      href: `${forClientsHref}#for-clients-stay-connected`,
+      icon: MessageCircle,
+    },
   ];
 
   return (
@@ -335,9 +399,12 @@ const Navbar = ({
                     item.label || defaultMenuItems[index]?.label || "";
                   const href =
                     item.href || defaultMenuItems[index]?.href || "#";
+                  const sectionHref = resolveSectionHref(href);
                   const isActive = activeDesktopMenu === label;
                   const isFeaturesItem = label === resolvedFeaturesMenuLabel;
-                  const targetHref = isFeaturesItem ? forCoachesHref : href;
+                  const targetHref = isFeaturesItem
+                    ? forCoachesFeaturesHref
+                    : sectionHref;
 
                   return (
                     <Link
@@ -418,7 +485,7 @@ const Navbar = ({
                       ))}
                     </div>
                     <Link
-                      href={forCoachesHref}
+                      href={forCoachesFeaturesHref}
                       className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
@@ -431,9 +498,13 @@ const Navbar = ({
                   </div>
 
                   <div className="rounded-xl border border-[#e7edf5] bg-[#f8fbff] p-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
+                    <Link
+                      href={forClientsHref}
+                      className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
+                      onClick={() => setActiveDesktopMenu(null)}
+                    >
                       FOR CLIENTS:
-                    </p>
+                    </Link>
                     <div className="mt-3 space-y-1">
                       {clientFeatureItems.map((feature) => (
                         <Link
@@ -498,7 +569,7 @@ const Navbar = ({
               >
                 {resolvedLoginLabel}
               </a>
-              <Link href="#waitlist" className="group">
+              <Link href={homeWaitlistHref} className="group">
                 <button
                   type="button"
                   className="inline-flex items-center gap-1.5 rounded-full bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-purple-700 active:scale-95"
@@ -602,8 +673,11 @@ const Navbar = ({
                 const label =
                   item.label || defaultMenuItems[index]?.label || "";
                 const href = item.href || defaultMenuItems[index]?.href || "#";
+                const sectionHref = resolveSectionHref(href);
                 const isFeaturesItem = label === resolvedFeaturesMenuLabel;
-                const targetHref = isFeaturesItem ? forCoachesHref : href;
+                const targetHref = isFeaturesItem
+                  ? forCoachesFeaturesHref
+                  : sectionHref;
 
                 if (isFeaturesItem) {
                   return (
@@ -670,10 +744,10 @@ const Navbar = ({
                                 ))}
                               </div>
                               <a
-                                href={forCoachesHref}
+                                href={forCoachesFeaturesHref}
                                 onClick={(event) => {
                                   event.preventDefault();
-                                  handleMobileNavClick(forCoachesHref);
+                                  handleMobileNavClick(forCoachesFeaturesHref);
                                 }}
                                 className="mt-1 flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-purple-600 transition-[transform,background-color] duration-150 active:scale-[0.98] active:bg-slate-50"
                               >
@@ -764,10 +838,10 @@ const Navbar = ({
               {resolvedLoginLabel}
             </a>
             <a
-              href="#waitlist"
+              href={homeWaitlistHref}
               onClick={(event) => {
                 event.preventDefault();
-                handleMobileNavClick("#waitlist");
+                handleMobileNavClick(homeWaitlistHref);
               }}
             >
               <button

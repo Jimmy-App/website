@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 type FeatureItem = {
+  anchorId: string;
   category: string;
   headline: string;
   description: string;
@@ -13,6 +14,7 @@ type FeatureItem = {
 
 const featureItems: FeatureItem[] = [
   {
+    anchorId: "for-coaches-create-programs",
     category: "Create Programs",
     headline: "Program faster than they can complain.",
     description:
@@ -21,6 +23,7 @@ const featureItems: FeatureItem[] = [
     imageAlt: "Create Programs feature preview",
   },
   {
+    anchorId: "for-coaches-exercise-database",
     category: "Exercise Database",
     headline: "A library that actually makes sense.",
     description:
@@ -29,6 +32,7 @@ const featureItems: FeatureItem[] = [
     imageAlt: "Exercise Database feature preview",
   },
   {
+    anchorId: "for-coaches-manage-clients",
     category: "Manage Clients",
     headline: "Your entire roster, sorted.",
     description:
@@ -37,6 +41,7 @@ const featureItems: FeatureItem[] = [
     imageAlt: "Manage Clients feature preview",
   },
   {
+    anchorId: "for-coaches-team-chat",
     category: "Team Chat",
     headline: "Keep your WhatsApp for memes.",
     description:
@@ -48,7 +53,10 @@ const featureItems: FeatureItem[] = [
 
 const ForCoachesFeaturesSection = () => {
   return (
-    <section className="bg-white py-24 sm:py-32">
+    <section
+      id="for-coaches-features"
+      className="scroll-mt-24 bg-white py-24 sm:py-32"
+    >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
@@ -64,12 +72,13 @@ const ForCoachesFeaturesSection = () => {
         <div className="mt-16 space-y-20 lg:mt-24 lg:space-y-32">
           {featureItems.map((feature, featureIdx) => (
             <motion.div
+              id={feature.anchorId}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.7, ease: "easeOut" }}
               key={feature.category}
-              className="flex flex-col gap-12 lg:grid lg:grid-cols-2 lg:items-center lg:gap-20"
+              className="scroll-mt-24 flex flex-col gap-12 lg:grid lg:grid-cols-2 lg:items-center lg:gap-20"
             >
               <div
                 className={`flex flex-col ${featureIdx % 2 === 1 ? "lg:order-last" : ""}`}
