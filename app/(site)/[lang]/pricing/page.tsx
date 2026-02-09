@@ -20,6 +20,27 @@ type NavigationData = {
   brandLabel?: string | null;
   mobileHelperText?: string | null;
   items?: { label?: string; href?: string }[] | null;
+  featuresDropdown?: {
+    coaches?: {
+      badgeLabel?: string | null;
+      items?: { label?: string; href?: string }[] | null;
+      viewAllLabel?: string | null;
+      viewAllHref?: string | null;
+    } | null;
+    clients?: {
+      badgeLabel?: string | null;
+      items?: { label?: string; href?: string }[] | null;
+      viewAllLabel?: string | null;
+      viewAllHref?: string | null;
+    } | null;
+    platform?: {
+      badgeText?: string | null;
+      headline?: string | null;
+      subheadline?: string | null;
+      buttonLabel?: string | null;
+      buttonHref?: string | null;
+    } | null;
+  } | null;
 };
 
 type PricingDocumentData = {
@@ -79,6 +100,67 @@ export default async function PricingPage({ params }: PageProps) {
           label: item?.label ?? undefined,
           href: item?.href ?? undefined,
         })),
+        featuresDropdown: navigation.featuresDropdown
+          ? {
+              coaches: navigation.featuresDropdown.coaches
+                ? {
+                    badgeLabel:
+                      navigation.featuresDropdown.coaches.badgeLabel ??
+                      undefined,
+                    items: navigation.featuresDropdown.coaches.items?.map(
+                      (item) => ({
+                        label: item?.label ?? undefined,
+                        href: item?.href ?? undefined,
+                      }),
+                    ),
+                    viewAllLabel:
+                      navigation.featuresDropdown.coaches.viewAllLabel ??
+                      undefined,
+                    viewAllHref:
+                      navigation.featuresDropdown.coaches.viewAllHref ??
+                      undefined,
+                  }
+                : undefined,
+              clients: navigation.featuresDropdown.clients
+                ? {
+                    badgeLabel:
+                      navigation.featuresDropdown.clients.badgeLabel ??
+                      undefined,
+                    items: navigation.featuresDropdown.clients.items?.map(
+                      (item) => ({
+                        label: item?.label ?? undefined,
+                        href: item?.href ?? undefined,
+                      }),
+                    ),
+                    viewAllLabel:
+                      navigation.featuresDropdown.clients.viewAllLabel ??
+                      undefined,
+                    viewAllHref:
+                      navigation.featuresDropdown.clients.viewAllHref ??
+                      undefined,
+                  }
+                : undefined,
+              platform: navigation.featuresDropdown.platform
+                ? {
+                    badgeText:
+                      navigation.featuresDropdown.platform.badgeText ??
+                      undefined,
+                    headline:
+                      navigation.featuresDropdown.platform.headline ??
+                      undefined,
+                    subheadline:
+                      navigation.featuresDropdown.platform.subheadline ??
+                      undefined,
+                    buttonLabel:
+                      navigation.featuresDropdown.platform.buttonLabel ??
+                      undefined,
+                    buttonHref:
+                      navigation.featuresDropdown.platform.buttonHref ??
+                      undefined,
+                  }
+                : undefined,
+            }
+          : undefined,
       }
     : null;
 

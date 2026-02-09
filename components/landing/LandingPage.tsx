@@ -159,6 +159,27 @@ type LandingPageProps = {
     brandLabel?: string;
     mobileHelperText?: string;
     items?: { label?: string; href?: string }[];
+    featuresDropdown?: {
+      coaches?: {
+        badgeLabel?: string;
+        items?: { label?: string; href?: string }[];
+        viewAllLabel?: string;
+        viewAllHref?: string;
+      };
+      clients?: {
+        badgeLabel?: string;
+        items?: { label?: string; href?: string }[];
+        viewAllLabel?: string;
+        viewAllHref?: string;
+      };
+      platform?: {
+        badgeText?: string;
+        headline?: string;
+        subheadline?: string;
+        buttonLabel?: string;
+        buttonHref?: string;
+      };
+    };
   } | null;
 };
 

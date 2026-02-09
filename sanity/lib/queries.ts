@@ -16,7 +16,28 @@ export const navigationByLanguageQuery = defineQuery(`
     title,
     brandLabel,
     mobileHelperText,
-    items[]{label, href}
+    items[]{label, href},
+    featuresDropdown{
+      coaches{
+        badgeLabel,
+        items[]{label, href},
+        viewAllLabel,
+        viewAllHref
+      },
+      clients{
+        badgeLabel,
+        items[]{label, href},
+        viewAllLabel,
+        viewAllHref
+      },
+      platform{
+        badgeText,
+        headline,
+        subheadline,
+        buttonLabel,
+        buttonHref
+      }
+    }
   }
 `);
 

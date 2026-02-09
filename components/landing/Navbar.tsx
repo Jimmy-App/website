@@ -27,10 +27,30 @@ type NavbarMenuItem = {
   href?: string;
 };
 
+type FeatureDropdownColumn = {
+  badgeLabel?: string;
+  items?: NavbarMenuItem[];
+  viewAllLabel?: string;
+  viewAllHref?: string;
+};
+
+type FeatureDropdownPlatform = {
+  badgeText?: string;
+  headline?: string;
+  subheadline?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+};
+
 type NavigationContent = {
   brandLabel?: string;
   mobileHelperText?: string;
   items?: NavbarMenuItem[];
+  featuresDropdown?: {
+    coaches?: FeatureDropdownColumn;
+    clients?: FeatureDropdownColumn;
+    platform?: FeatureDropdownPlatform;
+  };
 };
 
 type NavbarProps = {
@@ -241,52 +261,96 @@ const Navbar = ({
   const forClientsHref = currentLocale
     ? `${localeBasePath(currentLocale)}/for-clients`
     : "/for-clients";
-
-  const coachFeatureItems: FeatureDropdownItem[] = [
+  const defaultCoachFeatureItems: NavbarMenuItem[] = [
     {
       label: "Create Programs",
       href: `${forCoachesHref}#for-coaches-create-programs`,
-      icon: ClipboardList,
     },
     {
       label: "Exercise Database",
       href: `${forCoachesHref}#for-coaches-exercise-database`,
-      icon: Database,
     },
     {
       label: "Manage Clients",
       href: `${forCoachesHref}#for-coaches-manage-clients`,
-      icon: Users,
     },
     {
       label: "Team Chat",
       href: `${forCoachesHref}#for-coaches-team-chat`,
-      icon: MessagesSquare,
     },
   ];
-
-  const clientFeatureItems: FeatureDropdownItem[] = [
+  const defaultClientFeatureItems: NavbarMenuItem[] = [
     {
       label: "The App",
       href: `${forClientsHref}#for-clients-the-app`,
-      icon: Smartphone,
     },
     {
       label: "Track Results",
       href: `${forClientsHref}#for-clients-track-results`,
-      icon: BarChart3,
     },
     {
       label: "Training Log",
       href: `${forClientsHref}#for-clients-training-log`,
-      icon: Dumbbell,
     },
     {
       label: "Stay Connected",
       href: `${forClientsHref}#for-clients-stay-connected`,
-      icon: MessageCircle,
     },
   ];
+  const coachFeatureIcons: LucideIcon[] = [
+    ClipboardList,
+    Database,
+    Users,
+    MessagesSquare,
+  ];
+  const clientFeatureIcons: LucideIcon[] = [
+    Smartphone,
+    BarChart3,
+    Dumbbell,
+    MessageCircle,
+  ];
+  const mapDropdownItems = (
+    items: NavbarMenuItem[] | undefined,
+    defaultItems: NavbarMenuItem[],
+    icons: LucideIcon[],
+  ): FeatureDropdownItem[] => {
+    const sourceItems = items?.length ? items : defaultItems;
+    return sourceItems.map((item, index) => ({
+      label: item.label || defaultItems[index]?.label || "",
+      href: item.href || defaultItems[index]?.href || "#",
+      icon: icons[Math.min(index, icons.length - 1)],
+    }));
+  };
+  const coachesDropdown = navigation?.featuresDropdown?.coaches;
+  const clientsDropdown = navigation?.featuresDropdown?.clients;
+  const platformDropdown = navigation?.featuresDropdown?.platform;
+  const resolvedCoachesBadgeLabel = coachesDropdown?.badgeLabel || "FOR COACHES:";
+  const resolvedCoachesViewAllLabel = coachesDropdown?.viewAllLabel || "View All";
+  const resolvedCoachesViewAllHref =
+    coachesDropdown?.viewAllHref || forCoachesFeaturesHref;
+  const resolvedClientsBadgeLabel = clientsDropdown?.badgeLabel || "FOR CLIENTS:";
+  const resolvedClientsViewAllLabel = clientsDropdown?.viewAllLabel || "View All";
+  const resolvedClientsViewAllHref = clientsDropdown?.viewAllHref || forClientsHref;
+  const resolvedPlatformBadgeText = platformDropdown?.badgeText || "PLATFORM";
+  const resolvedPlatformHeadline =
+    platformDropdown?.headline || "See how Jimmy simplifies your life.";
+  const resolvedPlatformSubheadline =
+    platformDropdown?.subheadline ||
+    "Take a 15-minute tour with our team. We'll show you exactly how to save 10 hours a week. No sales pressure.";
+  const resolvedPlatformButtonLabel =
+    platformDropdown?.buttonLabel || "Book a Demo";
+  const resolvedPlatformButtonHref = platformDropdown?.buttonHref || forCoachesHref;
+
+  const coachFeatureItems = mapDropdownItems(
+    coachesDropdown?.items,
+    defaultCoachFeatureItems,
+    coachFeatureIcons,
+  );
+  const clientFeatureItems = mapDropdownItems(
+    clientsDropdown?.items,
+    defaultClientFeatureItems,
+    clientFeatureIcons,
+  );
 
   return (
     <>
@@ -468,7 +532,7 @@ const Navbar = ({
                       className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
-                      FOR COACHES:
+                      {resolvedCoachesBadgeLabel}
                     </Link>
                     <div className="mt-3 space-y-1">
                       {coachFeatureItems.map((feature) => (
@@ -491,11 +555,11 @@ const Navbar = ({
                       ))}
                     </div>
                     <Link
-                      href={forCoachesFeaturesHref}
+                      href={resolvedCoachesViewAllHref}
                       className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
-                      <span>View All</span>
+                      <span>{resolvedCoachesViewAllLabel}</span>
                       <ArrowRight
                         size={14}
                         className="transition-transform duration-200 group-hover:translate-x-0.5"
@@ -509,7 +573,7 @@ const Navbar = ({
                       className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
-                      FOR CLIENTS:
+                      {resolvedClientsBadgeLabel}
                     </Link>
                     <div className="mt-3 space-y-1">
                       {clientFeatureItems.map((feature) => (
@@ -532,11 +596,11 @@ const Navbar = ({
                       ))}
                     </div>
                     <Link
-                      href={forClientsHref}
+                      href={resolvedClientsViewAllHref}
                       className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
-                      <span>View All</span>
+                      <span>{resolvedClientsViewAllLabel}</span>
                       <ArrowRight
                         size={14}
                         className="transition-transform duration-200 group-hover:translate-x-0.5"
@@ -546,21 +610,20 @@ const Navbar = ({
 
                   <div className="flex h-full flex-col justify-between rounded-xl border border-[#ddd6fe] bg-gradient-to-b from-[#faf5ff] to-white p-4">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-purple-500">
-                      PLATFORM
+                      {resolvedPlatformBadgeText}
                     </p>
                     <h4 className="text-base font-bold text-slate-900">
-                      See how Jimmy simplifies your life.
+                      {resolvedPlatformHeadline}
                     </h4>
                     <p className="text-sm leading-relaxed text-slate-600">
-                      Take a 15-minute tour with our team. We&apos;ll show you
-                      exactly how to save 10 hours a week. No sales pressure.
+                      {resolvedPlatformSubheadline}
                     </p>
                     <Link
-                      href={forCoachesHref}
+                      href={resolvedPlatformButtonHref}
                       className="inline-flex w-fit self-start items-center gap-2 rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
-                      Book a Demo
+                      {resolvedPlatformButtonLabel}
                       <ArrowRight size={14} />
                     </Link>
                   </div>
@@ -723,7 +786,7 @@ const Navbar = ({
                           <div className="mt-2 space-y-4 rounded-2xl border border-[#e7edf5] bg-[#f8fbff] p-3">
                             <div>
                               <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
-                                FOR COACHES
+                                {resolvedCoachesBadgeLabel}
                               </p>
                               <div className="mt-1 space-y-1">
                                 {coachFeatureItems.map((feature) => (
@@ -751,14 +814,14 @@ const Navbar = ({
                                 ))}
                               </div>
                               <a
-                                href={forCoachesFeaturesHref}
+                                href={resolvedCoachesViewAllHref}
                                 onClick={(event) => {
                                   event.preventDefault();
-                                  handleMobileNavClick(forCoachesFeaturesHref);
+                                  handleMobileNavClick(resolvedCoachesViewAllHref);
                                 }}
                                 className="mt-1 flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-purple-600 transition-[transform,background-color] duration-150 active:scale-[0.98] active:bg-slate-50"
                               >
-                                <span>View all features</span>
+                                <span>{resolvedCoachesViewAllLabel}</span>
                                 <ArrowRight size={15} />
                               </a>
                             </div>
@@ -767,7 +830,7 @@ const Navbar = ({
 
                             <div>
                               <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
-                                FOR CLIENTS
+                                {resolvedClientsBadgeLabel}
                               </p>
                               <div className="mt-1 space-y-1">
                                 {clientFeatureItems.map((feature) => (
@@ -795,15 +858,40 @@ const Navbar = ({
                                 ))}
                               </div>
                               <a
-                                href={forClientsHref}
+                                href={resolvedClientsViewAllHref}
                                 onClick={(event) => {
                                   event.preventDefault();
-                                  handleMobileNavClick(forClientsHref);
+                                  handleMobileNavClick(resolvedClientsViewAllHref);
                                 }}
                                 className="mt-1 flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-purple-600 transition-[transform,background-color] duration-150 active:scale-[0.98] active:bg-slate-50"
                               >
-                                <span>View all features</span>
+                                <span>{resolvedClientsViewAllLabel}</span>
                                 <ArrowRight size={15} />
+                              </a>
+                            </div>
+
+                            <div className="h-px bg-[#e7edf5]" />
+
+                            <div className="space-y-2 rounded-xl border border-[#ddd6fe] bg-gradient-to-b from-[#faf5ff] to-white p-3">
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-purple-500">
+                                {resolvedPlatformBadgeText}
+                              </p>
+                              <h4 className="text-sm font-bold text-slate-900">
+                                {resolvedPlatformHeadline}
+                              </h4>
+                              <p className="text-xs leading-relaxed text-slate-600">
+                                {resolvedPlatformSubheadline}
+                              </p>
+                              <a
+                                href={resolvedPlatformButtonHref}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  handleMobileNavClick(resolvedPlatformButtonHref);
+                                }}
+                                className="inline-flex items-center gap-2 rounded-full bg-purple-600 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-purple-700 active:bg-purple-700"
+                              >
+                                {resolvedPlatformButtonLabel}
+                                <ArrowRight size={14} />
                               </a>
                             </div>
                           </div>
