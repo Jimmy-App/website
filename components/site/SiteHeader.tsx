@@ -14,7 +14,7 @@ const navItems = [
   { label: "Home", href: "" },
   { label: "Solutions", href: "#solutions", hasMenu: true },
   { label: "Resources", href: "#resources", hasMenu: true },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Pricing", href: "pricing" },
 ];
 
 const SiteHeader = ({ lang }: SiteHeaderProps) => {
@@ -26,8 +26,9 @@ const SiteHeader = ({ lang }: SiteHeaderProps) => {
   const isHome = normalizedPath === `/${lang}` || (normalizedPath === "/" && lang === "en");
   const isForCoachesPage = normalizedPath?.endsWith("/for-coaches");
   const isForClientsPage = normalizedPath?.endsWith("/for-clients");
+  const isPricingPage = normalizedPath?.endsWith("/pricing");
 
-  if (isHome || isForCoachesPage || isForClientsPage) {
+  if (isHome || isForCoachesPage || isForClientsPage || isPricingPage) {
     return null;
   }
 

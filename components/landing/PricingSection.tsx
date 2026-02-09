@@ -31,7 +31,9 @@ type PricingContent = {
 
 type PricingSectionProps = {
   waitlistLabel?: string;
+  waitlistHref?: string;
   pricingSecondaryLabel?: string;
+  pricingSecondaryHref?: string;
   content?: PricingContent | null;
 };
 
@@ -109,11 +111,18 @@ const planAudience = (name: string | undefined, index: number) => {
   return fallback[index] || 'Best for modern coaching businesses';
 };
 
-const PricingSection = ({ waitlistLabel, pricingSecondaryLabel, content }: PricingSectionProps) => {
+const PricingSection = ({
+  waitlistLabel,
+  waitlistHref,
+  pricingSecondaryLabel,
+  pricingSecondaryHref,
+  content,
+}: PricingSectionProps) => {
   const [selectedFrequency, setSelectedFrequency] =
     useState<BillingFrequency>('monthly');
 
   const resolvedWaitlistLabel = waitlistLabel || 'Join Waitlist';
+  const resolvedWaitlistHref = waitlistHref || '#waitlist';
   const resolvedPricingSecondaryLabel =
     pricingSecondaryLabel || 'See all pricing plans';
   const resolvedBadgeText = content?.badgeText || 'Pricing Plans';
@@ -136,6 +145,7 @@ const PricingSection = ({ waitlistLabel, pricingSecondaryLabel, content }: Prici
   const resolvedPopularBadgeLabel = content?.popularBadgeLabel || 'Most Popular';
   const resolvedSecondaryHelperText =
     content?.secondaryHelperText || 'Compare features and limits for 200+ clients';
+  const resolvedPricingSecondaryHref = pricingSecondaryHref || '#';
 
   const defaultPlans = [
     {
@@ -376,7 +386,7 @@ const PricingSection = ({ waitlistLabel, pricingSecondaryLabel, content }: Prici
                 </div>
 
                 <a
-                  href="#waitlist"
+                  href={resolvedWaitlistHref}
                   className={`mt-7 inline-flex w-full items-center justify-center rounded-full px-4 py-3 text-base font-semibold transition-colors ${
                     isFeatured
                       ? 'bg-purple-600 text-white hover:bg-purple-700'
@@ -392,7 +402,7 @@ const PricingSection = ({ waitlistLabel, pricingSecondaryLabel, content }: Prici
 
         <div className="mt-10 text-center">
           <a
-            href="#"
+            href={resolvedPricingSecondaryHref}
             className="group inline-flex items-center gap-2 text-base font-bold text-gray-900 transition-colors hover:text-purple-700"
           >
             {resolvedPricingSecondaryLabel}

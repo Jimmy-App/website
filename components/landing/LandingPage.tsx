@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import Navbar from './Navbar';
 import Hero from './Hero';
 import FadeIn from '../ui/FadeIn';
-import type { SupportedLocale } from '@/lib/i18n';
+import { localeBasePath, type SupportedLocale } from '@/lib/i18n';
 
 const ProblemSection = dynamic(() => import('./ProblemSection'));
 const CoreFeaturesSection = dynamic(() => import('./CoreFeaturesSection'));
@@ -159,6 +159,12 @@ const LandingPage = ({
   const waitlistLabel = content?.cta?.waitlistLabel;
   const pricingSecondaryLabel = content?.cta?.pricingSecondaryLabel;
   const brandLabel = navigation?.brandLabel;
+  const pricingSecondaryHref = currentLocale
+    ? `${localeBasePath(currentLocale)}/pricing`
+    : '/pricing';
+  const waitlistHref = currentLocale
+    ? `${localeBasePath(currentLocale)}#waitlist`
+    : '#waitlist';
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-purple-100 selection:text-purple-900">
@@ -176,7 +182,9 @@ const LandingPage = ({
         <PricingSection
           content={content?.pricing}
           waitlistLabel={waitlistLabel}
+          waitlistHref={waitlistHref}
           pricingSecondaryLabel={pricingSecondaryLabel}
+          pricingSecondaryHref={pricingSecondaryHref}
         />
       </FadeIn>
       <FadeIn>

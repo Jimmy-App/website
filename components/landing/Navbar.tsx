@@ -212,10 +212,16 @@ const Navbar = ({
     ? navigation.items
     : defaultMenuItems;
   const homeHref = currentLocale ? localeBasePath(currentLocale) : "/";
+  const pricingPageHref = currentLocale
+    ? `${localeBasePath(currentLocale)}/pricing`
+    : "/pricing";
   const homeWaitlistHref = `${homeHref}#waitlist`;
   const resolveSectionHref = (href?: string) => {
     if (!href) {
       return "#";
+    }
+    if (href === "#pricing") {
+      return pricingPageHref;
     }
     if (href.startsWith("#")) {
       return `${homeHref}${href}`;
@@ -538,22 +544,23 @@ const Navbar = ({
                     </Link>
                   </div>
 
-                  <div className="rounded-xl border border-[#ddd6fe] bg-gradient-to-b from-[#faf5ff] to-white p-4">
+                  <div className="flex h-full flex-col justify-between rounded-xl border border-[#ddd6fe] bg-gradient-to-b from-[#faf5ff] to-white p-4">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-purple-500">
-                      Platform
+                      PLATFORM
                     </p>
-                    <h4 className="mt-2 text-base font-bold text-slate-900">
-                      Make your coaching addictive.
+                    <h4 className="text-base font-bold text-slate-900">
+                      See how Jimmy simplifies your life.
                     </h4>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                      All key features for coaches and clients in one product.
+                    <p className="text-sm leading-relaxed text-slate-600">
+                      Take a 15-minute tour with our team. We&apos;ll show you
+                      exactly how to save 10 hours a week. No sales pressure.
                     </p>
                     <Link
                       href={forCoachesHref}
-                      className="mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-700"
+                      className="inline-flex w-fit self-start items-center gap-2 rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
-                      Explore features
+                      Book a Demo
                       <ArrowRight size={14} />
                     </Link>
                   </div>
