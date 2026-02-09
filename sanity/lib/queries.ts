@@ -353,10 +353,32 @@ export const pricingSeoByLanguageQuery = defineQuery(`
   }
 `);
 
+export const pricingFeaturesByLanguageQuery = defineQuery(`
+  *[_type == "pricingFeatures" && language == $language][0]{
+    title,
+    rows[]{
+      title,
+      description,
+      includedPlans,
+      addOnPlans
+    }
+  }
+`);
+
 export const footerByLanguageQuery = defineQuery(`
   *[_type == "footer" && language == $language][0]{
     brandLabel,
     copyrightText
+  }
+`);
+
+export const cookieBannerByLanguageQuery = defineQuery(`
+  *[_type == "cookieBanner" && language == $language][0]{
+    title,
+    description,
+    policyLinkLabel,
+    rejectButtonLabel,
+    acceptButtonLabel
   }
 `);
 

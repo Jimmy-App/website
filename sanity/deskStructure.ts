@@ -14,8 +14,10 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("forClientsPage").title("For Clients Page"),
               S.documentTypeListItem("forCoachesPage").title("For Coaches Page"),
               S.documentTypeListItem("pricing").title("Pricing"),
+              S.documentTypeListItem("pricingFeatures").title("Pricing Features"),
               S.documentTypeListItem("navigation").title("Navigation"),
               S.documentTypeListItem("footer").title("Footer"),
+              S.documentTypeListItem("cookieBanner").title("Cookie Banner"),
               S.documentTypeListItem("siteSettings").title("Site Settings"),
             ])
         ),

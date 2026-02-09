@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
+import {
+  COOKIE_CONSENT_UPDATED_EVENT,
+  getStoredCookieConsent,
+} from "@/lib/cookie-consent";
 
 type MetaPixelProps = {
   pixelId: string;
@@ -19,9 +23,27 @@ const MetaPixel = ({ pixelId }: MetaPixelProps) => {
   const pathname = usePathname();
   const isJadminPage = pathname?.startsWith("/jadmin");
   const hasTrackedInitialPage = useRef(false);
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
     if (isJadminPage) {
+      return;
+    }
+
+    const syncConsent = () => {
+      const consent = getStoredCookieConsent();
+      setIsEnabled(Boolean(consent?.marketing));
+    };
+
+    syncConsent();
+    window.addEventListener(COOKIE_CONSENT_UPDATED_EVENT, syncConsent);
+
+    return () =>
+      window.removeEventListener(COOKIE_CONSENT_UPDATED_EVENT, syncConsent);
+  }, [isJadminPage]);
+
+  useEffect(() => {
+    if (isJadminPage || !isEnabled) {
       return;
     }
 
@@ -33,9 +55,9 @@ const MetaPixel = ({ pixelId }: MetaPixelProps) => {
     if (typeof window.fbq === "function") {
       window.fbq("track", "PageView");
     }
-  }, [isJadminPage, pathname]);
+  }, [isEnabled, isJadminPage, pathname]);
 
-  if (isJadminPage) {
+  if (isJadminPage || !isEnabled) {
     return null;
   }
 

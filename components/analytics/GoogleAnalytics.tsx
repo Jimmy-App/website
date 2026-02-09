@@ -1,7 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
+import {
+  COOKIE_CONSENT_UPDATED_EVENT,
+  getStoredCookieConsent,
+} from "@/lib/cookie-consent";
 
 type GoogleAnalyticsProps = {
   measurementId: string;
@@ -10,8 +15,26 @@ type GoogleAnalyticsProps = {
 const GoogleAnalytics = ({ measurementId }: GoogleAnalyticsProps) => {
   const pathname = usePathname();
   const isJadminPage = pathname?.startsWith("/jadmin");
+  const [isEnabled, setIsEnabled] = useState(false);
 
-  if (isJadminPage) {
+  useEffect(() => {
+    if (isJadminPage) {
+      return;
+    }
+
+    const syncConsent = () => {
+      const consent = getStoredCookieConsent();
+      setIsEnabled(Boolean(consent?.analytics));
+    };
+
+    syncConsent();
+    window.addEventListener(COOKIE_CONSENT_UPDATED_EVENT, syncConsent);
+
+    return () =>
+      window.removeEventListener(COOKIE_CONSENT_UPDATED_EVENT, syncConsent);
+  }, [isJadminPage]);
+
+  if (isJadminPage || !isEnabled) {
     return null;
   }
 

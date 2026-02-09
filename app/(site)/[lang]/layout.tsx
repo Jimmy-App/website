@@ -5,8 +5,9 @@ import { isSupportedLocale, supportedLocales } from "@/lib/i18n";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import type { SiteFooterContent } from "@/components/site/SiteFooter";
+import CookieBanner, { type CookieBannerContent } from "@/components/cookie-banner";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { footerByLanguageQuery } from "@/sanity/lib/queries";
+import { cookieBannerByLanguageQuery, footerByLanguageQuery } from "@/sanity/lib/queries";
 
 export function generateStaticParams() {
   return supportedLocales.map((lang) => ({ lang }));
@@ -18,6 +19,7 @@ type LocaleLayoutProps = {
 };
 
 type FooterData = SiteFooterContent | null;
+type CookieBannerData = CookieBannerContent | null;
 
 export default async function LocaleLayout({
   children,
@@ -33,10 +35,21 @@ export default async function LocaleLayout({
     query: footerByLanguageQuery,
     params: { language: lang },
   });
+  const cookieBanner = await sanityFetch<CookieBannerData>({
+    query: cookieBannerByLanguageQuery,
+    params: { language: lang },
+  });
   const fallbackFooter =
     !footer && lang !== "en"
       ? await sanityFetch<FooterData>({
           query: footerByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
+  const fallbackCookieBanner =
+    !cookieBanner && lang !== "en"
+      ? await sanityFetch<CookieBannerData>({
+          query: cookieBannerByLanguageQuery,
           params: { language: "en" },
         })
       : null;
@@ -45,7 +58,11 @@ export default async function LocaleLayout({
     <div className="site">
       <SiteHeader lang={lang} />
       <main>{children}</main>
-      <SiteFooter content={footer || fallbackFooter} />
+      <SiteFooter content={footer || fallbackFooter} currentLocale={lang} />
+      <CookieBanner
+        content={cookieBanner || fallbackCookieBanner}
+        currentLocale={lang}
+      />
     </div>
   );
 }

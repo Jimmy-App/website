@@ -1,4 +1,5 @@
 import LandingPage from '../components/landing/LandingPage';
+import CookieBanner, { type CookieBannerContent } from '../components/cookie-banner';
 import type { LandingPageContent } from '../components/landing/LandingPage';
 import SiteFooter from '../components/site/SiteFooter';
 import type { SiteFooterContent } from '../components/site/SiteFooter';
@@ -11,6 +12,7 @@ import {
   landingPageSeoByLanguageQuery,
   navigationByLanguageQuery,
   footerByLanguageQuery,
+  cookieBannerByLanguageQuery,
   pricingByLanguageQuery,
 } from '../sanity/lib/queries';
 
@@ -54,6 +56,7 @@ type PricingDocumentData = {
 };
 
 type FooterData = SiteFooterContent | null;
+type CookieBannerData = CookieBannerContent | null;
 
 export async function generateMetadata() {
   const landingPageSeo = await sanityFetch<LandingPageSeoData>({
@@ -84,6 +87,10 @@ const App = async () => {
   });
   const footer = await sanityFetch<FooterData>({
     query: footerByLanguageQuery,
+    params: { language: defaultLocale },
+  });
+  const cookieBanner = await sanityFetch<CookieBannerData>({
+    query: cookieBannerByLanguageQuery,
     params: { language: defaultLocale },
   });
   const normalizedNavigation = navigation
@@ -178,7 +185,8 @@ const App = async () => {
         currentLocale={defaultLocale}
         navigation={normalizedNavigation}
       />
-      <SiteFooter content={footer} />
+      <SiteFooter content={footer} currentLocale={defaultLocale} />
+      <CookieBanner content={cookieBanner} currentLocale={defaultLocale} />
     </>
   );
 };

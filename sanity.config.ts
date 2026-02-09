@@ -18,11 +18,13 @@ const localizedSchemaTypes = [
   "siteSettings",
   "landingPage",
   "pricing",
+  "pricingFeatures",
   "page",
   "post",
   "docPage",
   "navigation",
   "footer",
+  "cookieBanner",
 ];
 
 const hiddenTemplateIds = new Set(
