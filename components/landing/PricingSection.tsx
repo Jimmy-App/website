@@ -144,8 +144,8 @@ const PricingSection = ({
   const resolvedYearlySaveLabel = content?.yearlySaveLabel || defaultYearlySaveLabel;
   const resolvedPopularBadgeLabel = content?.popularBadgeLabel || 'Most Popular';
   const resolvedSecondaryHelperText =
-    content?.secondaryHelperText || 'Compare features and limits for 200+ clients';
-  const resolvedPricingSecondaryHref = pricingSecondaryHref || '#';
+    '200+ clients? Custom needs? Let\'s talk.';
+  const resolvedPricingSecondaryHref = pricingSecondaryHref || '/pricing';
 
   const defaultPlans = [
     {

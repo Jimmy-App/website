@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import {
   Activity,
@@ -55,19 +56,26 @@ type CoachFeatureContent = {
     title?: string;
     body?: string;
   };
+  ctaLabel?: string;
+  ctaHelperText?: string;
 };
 
 type CoachFeaturesProps = {
   content?: CoachFeatureContent | null;
+  ctaHref?: string;
 };
 
-const CoreFeaturesSection = ({ content }: CoachFeaturesProps) => {
+const CoreFeaturesSection = ({ content, ctaHref = '/for-coaches' }: CoachFeaturesProps) => {
   const resolvedBadgeText = content?.badgeText || 'The Coach Experience';
   const resolvedTitle = content?.title || 'Program at the';
   const resolvedTitleHighlight = content?.titleHighlight || 'speed of thought.';
   const resolvedSubtitle =
     content?.subtitle ||
     'We stripped away the clunky menus and slow loading times. Everything you need to run your business is one click away.';
+  const resolvedCtaLabel = content?.ctaLabel || 'See full platform features →';
+  const resolvedCtaHelperText =
+    content?.ctaHelperText ||
+    'Create programs, automate check-ins, and manage payments — all in one dashboard.';
 
   const resolvedBuilder = {
     title: content?.builder?.title || 'Drag-and-drop with Video',
@@ -449,6 +457,16 @@ const CoreFeaturesSection = ({ content }: CoachFeaturesProps) => {
               </div>
             </div>
           </article>
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            href={ctaHref}
+            className="group inline-flex items-center gap-2 whitespace-nowrap text-base font-bold text-gray-900 transition-colors hover:text-purple-600"
+          >
+            {resolvedCtaLabel}
+          </Link>
+          <p className="mt-2 text-base text-gray-400 sm:whitespace-nowrap">{resolvedCtaHelperText}</p>
         </div>
       </div>
     </section>

@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import type { LucideIcon } from 'lucide-react';
 import {
-  ArrowRight,
   BarChart3,
   Dumbbell,
   MessageCircle,
@@ -42,6 +42,7 @@ type ClientExperienceContent = {
 
 type ClientExperienceProps = {
   content?: ClientExperienceContent | null;
+  ctaHref?: string;
 };
 
 type FeatureKey = 'intuitive' | 'progress' | 'workouts' | 'chats';
@@ -61,16 +62,19 @@ type FeatureCard = {
 
 const defaultScreenSrc = '/assets/photo/mock/jimmy-screen-home.svg';
 
-const ClientExperienceSection = ({ content }: ClientExperienceProps) => {
+const ClientExperienceSection = ({
+  content,
+  ctaHref = '/for-clients',
+}: ClientExperienceProps) => {
   const resolvedBadgeText = content?.badgeText || 'The Client Experience';
   const resolvedTitle = content?.title || 'Frictionless, fun workout tracking.';
   const resolvedSubtitle =
     content?.subtitle ||
     "Your clients don't want a spreadsheet on their phone. They want an experience.";
-  const resolvedCtaLabel = content?.ctaLabel || 'View all mobile app features';
+  const resolvedCtaLabel = content?.ctaLabel || 'See the app experience →';
   const resolvedCtaHelperText =
     content?.ctaHelperText ||
-    'Track workouts, monitor progress, and stay connected - all in one place.';
+    'No more PDFs or messy chats. A clean, simple app your clients will actually love using.';
 
   const features = useMemo<FeatureCard[]>(
     () => [
@@ -276,16 +280,12 @@ const ClientExperienceSection = ({ content }: ClientExperienceProps) => {
           </div>
 
           <div className="mt-12 text-center">
-            <a
-              href="#pricing"
+            <Link
+              href={ctaHref}
               className="group inline-flex items-center gap-2 text-base font-bold text-gray-900 transition-colors hover:text-purple-600"
             >
               {resolvedCtaLabel}
-              <ArrowRight
-                size={18}
-                className="text-purple-500 transition-transform group-hover:translate-x-1"
-              />
-            </a>
+            </Link>
             <p className="mt-2 text-base text-gray-400">
               {resolvedCtaHelperText}
             </p>

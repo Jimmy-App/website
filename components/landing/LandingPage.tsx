@@ -157,7 +157,7 @@ const LandingPage = ({
   navigation,
 }: LandingPageProps) => {
   const waitlistLabel = content?.cta?.waitlistLabel;
-  const pricingSecondaryLabel = content?.cta?.pricingSecondaryLabel;
+  const pricingSecondaryLabel = 'See all pricing plans';
   const brandLabel = navigation?.brandLabel;
   const pricingSecondaryHref = currentLocale
     ? `${localeBasePath(currentLocale)}/pricing`
@@ -165,6 +165,12 @@ const LandingPage = ({
   const waitlistHref = currentLocale
     ? `${localeBasePath(currentLocale)}#waitlist`
     : '#waitlist';
+  const forCoachesHref = currentLocale
+    ? `${localeBasePath(currentLocale)}/for-coaches`
+    : '/for-coaches';
+  const forClientsHref = currentLocale
+    ? `${localeBasePath(currentLocale)}/for-clients`
+    : '/for-clients';
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-purple-100 selection:text-purple-900">
@@ -176,8 +182,8 @@ const LandingPage = ({
       />
       <Hero content={content?.hero} waitlistLabel={waitlistLabel} brandLabel={brandLabel} />
       <FadeIn delay={0.2}><ProblemSection content={content?.problem} /></FadeIn>
-      <FadeIn><CoreFeaturesSection content={content?.coachFeatures} /></FadeIn>
-      <FadeIn><ClientExperienceSection content={content?.clientExperience} /></FadeIn>
+      <FadeIn><CoreFeaturesSection content={content?.coachFeatures} ctaHref={forCoachesHref} /></FadeIn>
+      <FadeIn><ClientExperienceSection content={content?.clientExperience} ctaHref={forClientsHref} /></FadeIn>
       <FadeIn>
         <PricingSection
           content={content?.pricing}
