@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
 import type { SeoFields } from "@/lib/seo";
+import LegalNavbar from "@/components/landing/LegalNavbar";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
 
@@ -68,6 +69,7 @@ export default async function PrivacyPage({ params }: PageProps) {
   if (!page) {
     return (
       <>
+        <LegalNavbar lang={lang} />
         <section className="mx-auto w-full max-w-4xl px-4 pb-12 pt-24 sm:px-6 lg:px-8 lg:pt-32">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Privacy Policy
@@ -97,6 +99,7 @@ export default async function PrivacyPage({ params }: PageProps) {
 
   return (
     <>
+      <LegalNavbar lang={lang} />
       <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 lg:px-8 lg:pt-32">
         {page.blocks?.length ? (
           <div className="lg:grid lg:grid-cols-12 lg:gap-10">

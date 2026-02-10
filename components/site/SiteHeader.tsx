@@ -27,8 +27,19 @@ const SiteHeader = ({ lang }: SiteHeaderProps) => {
   const isForCoachesPage = normalizedPath?.endsWith("/for-coaches");
   const isForClientsPage = normalizedPath?.endsWith("/for-clients");
   const isPricingPage = normalizedPath?.endsWith("/pricing");
+  const isPrivacyPage = normalizedPath?.endsWith("/privacy");
+  const isTermsPage = normalizedPath?.endsWith("/terms");
+  const isCookiePolicyPage = normalizedPath?.endsWith("/cookie-policy");
 
-  if (isHome || isForCoachesPage || isForClientsPage || isPricingPage) {
+  if (
+    isHome ||
+    isForCoachesPage ||
+    isForClientsPage ||
+    isPricingPage ||
+    isPrivacyPage ||
+    isTermsPage ||
+    isCookiePolicyPage
+  ) {
     return null;
   }
 

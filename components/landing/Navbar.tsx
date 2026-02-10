@@ -99,6 +99,10 @@ const Navbar = ({
   }, []);
 
   useEffect(() => {
+    if (!isMobileMenuOpen && !activeDesktopMenu) {
+      return;
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         mobileMenuRef.current &&
@@ -119,9 +123,13 @@ const Navbar = ({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [activeDesktopMenu, isMobileMenuOpen]);
 
   useEffect(() => {
+    if (!isMobileMenuOpen && !activeDesktopMenu) {
+      return;
+    }
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
@@ -131,7 +139,7 @@ const Navbar = ({
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, []);
+  }, [activeDesktopMenu, isMobileMenuOpen]);
 
   // Simple body scroll lock
   useEffect(() => {
@@ -724,19 +732,15 @@ const Navbar = ({
         </nav>
 
         {/* DROPDOWN MENU */}
-        <div
-          className={`absolute left-3 right-3 top-full z-40 mt-2 origin-top rounded-2xl border border-[#d9e2ef] bg-white px-4 pb-4 pt-3 shadow-[0_14px_30px_-22px_rgba(15,23,42,0.45)] transition-[opacity,transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
-            isMobileMenuOpen
-              ? "translate-y-0 scale-100 opacity-100 pointer-events-auto"
-              : "-translate-y-3 scale-[0.985] opacity-0 pointer-events-none"
-          } flex flex-col`}
-          style={{
-            maxHeight: "calc(100svh - 72px)",
-            overflow: "hidden",
-          }}
-          aria-hidden={!isMobileMenuOpen}
-        >
-          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+        {isMobileMenuOpen ? (
+          <div
+            className="absolute left-3 right-3 top-full z-40 mt-2 flex origin-top flex-col rounded-2xl border border-[#d9e2ef] bg-white px-4 pb-4 pt-3 shadow-[0_14px_30px_-22px_rgba(15,23,42,0.45)]"
+            style={{
+              maxHeight: "calc(100svh - 72px)",
+              overflow: "hidden",
+            }}
+          >
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             {/* Navigation Items */}
             <div className="space-y-1">
               {resolvedMenuItems.map((item, index) => {
@@ -774,16 +778,9 @@ const Navbar = ({
                         />
                       </button>
 
-                      <div
-                        id="mobile-features-submenu"
-                        className={`grid transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                          isMobileFeaturesOpen
-                            ? "grid-rows-[1fr] opacity-100"
-                            : "grid-rows-[0fr] opacity-0"
-                        }`}
-                      >
-                        <div className="overflow-hidden">
-                          <div className="mt-2 space-y-4 rounded-2xl border border-[#e7edf5] bg-[#f8fbff] p-3">
+                      {isMobileFeaturesOpen ? (
+                        <div id="mobile-features-submenu" className="mt-2">
+                          <div className="space-y-4 rounded-2xl border border-[#e7edf5] bg-[#f8fbff] p-3">
                             <div>
                               <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
                                 {resolvedCoachesBadgeLabel}
@@ -896,7 +893,7 @@ const Navbar = ({
                             </div>
                           </div>
                         </div>
-                      </div>
+                      ) : null}
                     </div>
                   );
                 }
@@ -922,33 +919,34 @@ const Navbar = ({
             <div className="py-2.5">
               <div className="h-px bg-[#e7edf5]" />
             </div>
-          </div>
+            </div>
 
-          {/* Bottom CTA */}
-          <div className="space-y-2 border-t border-[#e7edf5] bg-white pb-1 pt-3">
-            <a
-              href={loginHref}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#d9e2ef] bg-white px-5 py-3 text-base font-semibold text-slate-700 transition-colors active:bg-slate-50"
-            >
-              {resolvedLoginLabel}
-            </a>
-            <a
-              href={homeWaitlistHref}
-              onClick={(event) => {
-                event.preventDefault();
-                handleMobileNavClick(homeWaitlistHref);
-              }}
-            >
-              <button
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-5 py-3.5 text-base font-semibold text-white transition-colors hover:bg-purple-700 active:bg-purple-700"
-                type="button"
+            {/* Bottom CTA */}
+            <div className="space-y-2 border-t border-[#e7edf5] bg-white pb-1 pt-3">
+              <a
+                href={loginHref}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#d9e2ef] bg-white px-5 py-3 text-base font-semibold text-slate-700 transition-colors active:bg-slate-50"
               >
-                {resolvedWaitlistLabel}
-                <ArrowRight size={18} />
-              </button>
-            </a>
+                {resolvedLoginLabel}
+              </a>
+              <a
+                href={homeWaitlistHref}
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleMobileNavClick(homeWaitlistHref);
+                }}
+              >
+                <button
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-5 py-3.5 text-base font-semibold text-white transition-colors hover:bg-purple-700 active:bg-purple-700"
+                  type="button"
+                >
+                  {resolvedWaitlistLabel}
+                  <ArrowRight size={18} />
+                </button>
+              </a>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </>
   );

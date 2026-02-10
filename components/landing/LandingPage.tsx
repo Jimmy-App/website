@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import Navbar from './Navbar';
 import Hero from './Hero';
-import FadeIn from '../ui/FadeIn';
 import { localeBasePath, type SupportedLocale } from '@/lib/i18n';
 
 const ProblemSection = dynamic(() => import('./ProblemSection'));
@@ -215,22 +214,18 @@ const LandingPage = ({
         currentLocale={currentLocale}
       />
       <Hero content={content?.hero} waitlistLabel={waitlistLabel} brandLabel={brandLabel} />
-      <FadeIn delay={0.2}><ProblemSection content={content?.problem} /></FadeIn>
-      <FadeIn><CoreFeaturesSection content={content?.coachFeatures} ctaHref={forCoachesHref} /></FadeIn>
-      <FadeIn><ClientExperienceSection content={content?.clientExperience} ctaHref={forClientsHref} /></FadeIn>
-      <FadeIn>
-        <PricingSection
-          content={content?.pricing}
-          waitlistLabel={waitlistLabel}
-          waitlistHref={waitlistHref}
-          pricingSecondaryLabel={pricingSecondaryLabel}
-          pricingSecondaryHref={pricingSecondaryHref}
-          currentLocale={currentLocale}
-        />
-      </FadeIn>
-      <FadeIn>
-        <ManifestoSection content={content?.manifesto} waitlistLabel={waitlistLabel} />
-      </FadeIn>
+      <ProblemSection content={content?.problem} />
+      <CoreFeaturesSection content={content?.coachFeatures} ctaHref={forCoachesHref} />
+      <ClientExperienceSection content={content?.clientExperience} ctaHref={forClientsHref} />
+      <PricingSection
+        content={content?.pricing}
+        waitlistLabel={waitlistLabel}
+        waitlistHref={waitlistHref}
+        pricingSecondaryLabel={pricingSecondaryLabel}
+        pricingSecondaryHref={pricingSecondaryHref}
+        currentLocale={currentLocale}
+      />
+      <ManifestoSection content={content?.manifesto} waitlistLabel={waitlistLabel} />
     </div>
   );
 };

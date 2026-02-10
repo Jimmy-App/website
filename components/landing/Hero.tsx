@@ -89,6 +89,9 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
           transform-origin: 50% 100%;
           will-change: transform, opacity;
         }
+        .hero-reveal {
+          opacity: 1;
+        }
         @media (min-width: 1024px) {
           .hand-reveal-desktop {
             animation: hand-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -96,26 +99,26 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
           .hand-float {
             animation: hand-float 7s ease-in-out 1s infinite;
           }
-        }
-        .hero-reveal {
-          opacity: 0;
-          animation: hero-fade-up 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
-          will-change: transform, opacity, filter;
-        }
-        .hero-delay-1 {
-          animation-delay: 70ms;
-        }
-        .hero-delay-2 {
-          animation-delay: 150ms;
-        }
-        .hero-delay-3 {
-          animation-delay: 230ms;
-        }
-        .hero-delay-4 {
-          animation-delay: 320ms;
-        }
-        .hero-delay-5 {
-          animation-delay: 420ms;
+          .hero-reveal {
+            opacity: 0;
+            animation: hero-fade-up 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+            will-change: transform, opacity, filter;
+          }
+          .hero-delay-1 {
+            animation-delay: 70ms;
+          }
+          .hero-delay-2 {
+            animation-delay: 150ms;
+          }
+          .hero-delay-3 {
+            animation-delay: 230ms;
+          }
+          .hero-delay-4 {
+            animation-delay: 320ms;
+          }
+          .hero-delay-5 {
+            animation-delay: 420ms;
+          }
         }
         @media (prefers-reduced-motion: reduce) {
           .hand-reveal-desktop,
@@ -185,36 +188,20 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
                 className="relative w-full group"
                 socialProofClassName="mt-8 relative z-30 flex items-center justify-center gap-2 text-xs font-medium text-gray-500 lg:justify-start"
               />
-
-              <div className="-mb-1 mt-4 flex w-full justify-center lg:hidden">
-                <div className="hand-float">
-                  <Image
-                    src="/assets/photo/mock/hand-mock-hero.png"
-                    alt="Jimmy app hand mockup"
-                    width={1041}
-                    height={1323}
-                    loading="eager"
-                    fetchPriority="high"
-                    quality={65}
-                    sizes="(max-width: 639px) 62vw, (max-width: 1023px) 56vw, 0px"
-                    className="h-[360px] w-auto select-none object-contain sm:h-[500px]"
-                  />
-                </div>
-              </div>
             </div>
           </div>
 
-          <div className="relative hidden items-end justify-end lg:flex lg:h-[calc(100svh-10rem)] lg:self-end">
-            <div className="relative flex w-full justify-end lg:-translate-x-[7%]">
+          <div className="relative -mb-1 mt-4 flex w-full items-end justify-center lg:mt-0 lg:h-[calc(100svh-10rem)] lg:justify-end lg:self-end">
+            <div className="relative flex w-full justify-center lg:justify-end lg:-translate-x-[7%]">
               <div className="hand-reveal-desktop hand-float">
                 <Image
                   src="/assets/photo/mock/hand-mock-hero.png"
                   alt="Jimmy app hand mockup"
                   width={1041}
                   height={1323}
-                  quality={70}
-                  sizes="(max-width: 700px) 0px, (max-width: 1439px) 500px, 580px"
-                  className="h-[620px] max-h-full w-auto max-w-none select-none object-contain xl:h-[710px] 2xl:h-[760px]"
+                  quality={60}
+                  sizes="(max-width: 639px) 52vw, (max-width: 1023px) 50vw, (max-width: 1439px) 500px, 580px"
+                  className="h-[300px] w-auto max-w-none select-none object-contain sm:h-[460px] lg:h-[620px] lg:max-h-full xl:h-[710px] 2xl:h-[760px]"
                   priority
                 />
               </div>
