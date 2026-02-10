@@ -49,16 +49,6 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
       id="waitlist"
     >
       <style jsx>{`
-        @keyframes hand-reveal {
-          0% {
-            opacity: 0;
-            transform: translateY(24px) scale(0.97) rotate(15deg);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1) rotate(0deg);
-          }
-        }
         @keyframes hand-float {
           0% {
             transform: translateY(0);
@@ -82,14 +72,13 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
             filter: blur(0);
           }
         }
-        .hand-reveal {
-          animation: hand-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-          transform-origin: 50% 100%;
-          will-change: transform, opacity;
-        }
         .hand-float {
-          animation: hand-float 7s ease-in-out 1s infinite;
           will-change: transform;
+        }
+        @media (min-width: 1024px) {
+          .hand-float {
+            animation: hand-float 7s ease-in-out 1s infinite;
+          }
         }
         .hero-reveal {
           opacity: 0;
@@ -112,7 +101,6 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
           animation-delay: 420ms;
         }
         @media (prefers-reduced-motion: reduce) {
-          .hand-reveal,
           .hand-float,
           .hero-reveal {
             animation: none;
@@ -170,7 +158,7 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
               )}
             </p>
 
-            <div className="hero-reveal hero-delay-4 relative z-20 mb-0 mx-auto w-full max-w-md lg:mx-0">
+            <div className="relative z-20 mb-0 mx-auto w-full max-w-md lg:mx-0">
               <WaitlistSignupForm
                 waitlistLabel={resolvedWaitlistLabel}
                 inputPlaceholder={resolvedInputPlaceholder}
@@ -180,20 +168,19 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
                 socialProofClassName="mt-8 relative z-30 flex items-center justify-center gap-2 text-xs font-medium text-gray-500 lg:justify-start"
               />
 
-              <div className="hero-reveal hero-delay-5 -mb-1 mt-4 flex w-full justify-center lg:hidden">
-                <div className="hand-reveal">
-                  <div className="hand-float">
-                    <Image
-                      src="/assets/photo/mock/hand-mock-hero.png"
-                      alt="Jimmy app hand mockup"
-                      width={1041}
-                      height={1323}
-                      loading="eager"
-                      fetchPriority="high"
-                      sizes="(max-width: 639px) 78vw, (max-width: 1023px) 68vw, 0px"
-                      className="h-[430px] w-auto select-none object-contain sm:h-[500px]"
-                    />
-                  </div>
+              <div className="-mb-1 mt-4 flex w-full justify-center lg:hidden">
+                <div className="hand-float">
+                  <Image
+                    src="/assets/photo/mock/hand-mock-hero.png"
+                    alt="Jimmy app hand mockup"
+                    width={1041}
+                    height={1323}
+                    loading="eager"
+                    fetchPriority="high"
+                    quality={65}
+                    sizes="(max-width: 639px) 62vw, (max-width: 1023px) 56vw, 0px"
+                    className="h-[360px] w-auto select-none object-contain sm:h-[500px]"
+                  />
                 </div>
               </div>
             </div>
@@ -201,18 +188,17 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
 
           <div className="relative hidden items-end justify-end lg:flex lg:h-[calc(100svh-10rem)] lg:self-end">
             <div className="relative flex w-full justify-end lg:-translate-x-[7%]">
-              <div className="hand-reveal">
-                <div className="hand-float">
-                  <Image
-                    src="/assets/photo/mock/hand-mock-hero.png"
-                    alt="Jimmy app hand mockup"
-                    width={1041}
-                    height={1323}
-                    sizes="(max-width: 700px) 0px, (max-width: 1439px) 500px, 580px"
-                    className="h-[620px] max-h-full w-auto max-w-none select-none object-contain xl:h-[710px] 2xl:h-[760px]"
-                    priority
-                  />
-                </div>
+              <div className="hand-float">
+                <Image
+                  src="/assets/photo/mock/hand-mock-hero.png"
+                  alt="Jimmy app hand mockup"
+                  width={1041}
+                  height={1323}
+                  quality={70}
+                  sizes="(max-width: 700px) 0px, (max-width: 1439px) 500px, 580px"
+                  className="h-[620px] max-h-full w-auto max-w-none select-none object-contain xl:h-[710px] 2xl:h-[760px]"
+                  priority
+                />
               </div>
             </div>
           </div>
