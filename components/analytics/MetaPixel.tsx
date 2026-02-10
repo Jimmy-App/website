@@ -24,11 +24,20 @@ const MetaPixel = ({ pixelId }: MetaPixelProps) => {
   const isJadminPage = pathname?.startsWith("/jadmin");
   const hasTrackedInitialPage = useRef(false);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [isSafariBrowser, setIsSafariBrowser] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (isJadminPage) {
       return;
     }
+
+    const userAgent = window.navigator.userAgent;
+    const isSafari =
+      /Safari/i.test(userAgent) &&
+      !/Chrome|Chromium|CriOS|FxiOS|Edg|OPR|SamsungBrowser|Android/i.test(
+        userAgent,
+      );
+    setIsSafariBrowser(isSafari);
 
     const syncConsent = () => {
       const consent = getStoredCookieConsent();
@@ -57,13 +66,14 @@ const MetaPixel = ({ pixelId }: MetaPixelProps) => {
     }
   }, [isEnabled, isJadminPage, pathname]);
 
-  if (isJadminPage || !isEnabled) {
+  if (isJadminPage || !isEnabled || isSafariBrowser === null) {
     return null;
   }
+  const scriptStrategy = isSafariBrowser ? "lazyOnload" : "afterInteractive";
 
   return (
     <>
-      <Script id="meta-pixel" strategy="afterInteractive">
+      <Script id="meta-pixel" strategy={scriptStrategy}>
         {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
