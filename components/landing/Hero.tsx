@@ -200,9 +200,10 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
                     alt="Jimmy app hand mockup"
                     width={1041}
                     height={1323}
+                    fetchPriority="high"
                     quality={60}
-                    sizes="(max-width: 639px) 52vw, (max-width: 1023px) 50vw, (max-width: 1439px) 500px, 580px"
-                    className="h-[300px] w-auto max-w-none select-none object-contain sm:h-[460px] lg:h-[620px] lg:max-h-full xl:h-[710px] 2xl:h-[760px]"
+                    sizes="(max-width: 639px) 70vw, (max-width: 1023px) 62vw, (max-width: 1439px) 500px, 580px"
+                    className="h-[400px] w-auto max-w-none select-none object-contain sm:h-[540px] lg:h-[620px] lg:max-h-full xl:h-[710px] 2xl:h-[760px]"
                     priority
                   />
                 </div>
