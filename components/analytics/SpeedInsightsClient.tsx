@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { usePathname } from "next/navigation";
 
-const VercelAnalytics = () => {
+const SpeedInsightsClient = () => {
   const pathname = usePathname();
   const isJadminPage = pathname?.startsWith("/jadmin");
   const [isReadyToLoad, setIsReadyToLoad] = useState(false);
@@ -53,7 +53,7 @@ const VercelAnalytics = () => {
     return null;
   }
 
-  return <Analytics />;
+  return <SpeedInsights />;
 };
 
-export default VercelAnalytics;
+export default SpeedInsightsClient;
