@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import DeferredVimeoEmbed from './DeferredVimeoEmbed';
 import {
   Activity,
   ArrowUpRight,
@@ -437,24 +438,7 @@ const CoreFeaturesSection = ({ content, ctaHref = '/for-coaches' }: CoachFeature
 
             <div className="mt-auto pt-6">
               <div className="rounded-2xl border border-[#dbe5f1] bg-[#f8fbff] p-4">
-                <div className="relative aspect-video overflow-hidden rounded-xl border border-[#e7edf5] bg-black">
-                  <iframe
-                    src="https://player.vimeo.com/video/999535716?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1&playsinline=1"
-                    className="absolute inset-0 h-full w-full"
-                    frameBorder="0"
-                    loading="lazy"
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    title="one arm cable rows"
-                    allowFullScreen
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-black/20" />
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/80 bg-white text-[#5b47ff] shadow-[0_10px_20px_-14px_rgba(91,71,255,0.45)]">
-                      <Play size={16} fill="currentColor" className="translate-x-[1px]" />
-                    </div>
-                  </div>
-                </div>
+                <DeferredVimeoEmbed videoId="999535716" title="one arm cable rows" />
               </div>
             </div>
           </article>
