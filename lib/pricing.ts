@@ -17,6 +17,12 @@ const CURRENCY_SYMBOLS: Record<PricingCurrency, string> = {
   gbp: "£",
 };
 
+const CURRENCY_SYMBOL_POSITIONS: Record<PricingCurrency, "prefix" | "suffix"> = {
+  usd: "prefix",
+  eur: "suffix",
+  gbp: "prefix",
+};
+
 export function resolvePricingCurrency(
   currency: string | null | undefined,
   locale?: SupportedLocale,
@@ -77,5 +83,11 @@ export function resolvePlanAmount({
 export function formatPriceValue(amount: number, currency: PricingCurrency) {
   const symbol = CURRENCY_SYMBOLS[currency];
   const normalized = Number.isInteger(amount) ? `${amount}` : amount.toFixed(2);
+  const position = CURRENCY_SYMBOL_POSITIONS[currency];
+
+  if (position === "suffix") {
+    return `${normalized}${symbol}`;
+  }
+
   return `${symbol}${normalized}`;
 }

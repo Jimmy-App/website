@@ -108,7 +108,6 @@ type PricingCard = {
   ctaLabel: string;
   ctaHref: string;
   isFeatured: boolean;
-  stickToBottom?: boolean;
 };
 
 type PricingSectionWithComparisonProps = {
@@ -393,7 +392,6 @@ function PricingSectionWithComparison({
     ctaLabel: resolvedCustomPlanCtaLabel,
     ctaHref: resolvedCustomPlanCtaHref,
     isFeatured: false,
-    stickToBottom: true,
   });
 
   const normalizedFeatureMaps: FeatureMap[] = [];
@@ -583,32 +581,34 @@ function PricingSectionWithComparison({
                   <p className="mt-2 text-sm leading-relaxed text-slate-500">
                     {card.description}
                   </p>
-                  <p className="mt-8 flex flex-col gap-1 text-xl sm:flex-row sm:items-end sm:gap-2">
-                    <span className="text-4xl font-extrabold tracking-tight text-slate-900">
-                      {card.price}
-                    </span>
-                    {card.period ? (
-                      <span className="pb-1 text-sm font-medium text-slate-400">
-                        {card.period}
+                  <div className="mt-auto pt-8">
+                    <p className="flex flex-col gap-1 text-xl sm:flex-row sm:items-end sm:gap-2">
+                      <span className="text-4xl font-extrabold tracking-tight text-slate-900">
+                        {card.price}
                       </span>
-                    ) : null}
-                  </p>
-                  <Button
-                    asChild
-                    variant={card.isFeatured ? "default" : "outline"}
-                    className={cn(
-                      "!h-auto w-fit gap-2 !rounded-full px-6 py-3 text-sm font-semibold transition-all",
-                      card.stickToBottom ? "mt-auto" : "mt-8",
-                      card.isFeatured
-                        ? "bg-purple-600 text-white shadow-[0_14px_30px_-18px_rgba(124,58,237,0.9)] hover:bg-purple-700"
-                        : "border-[#d9e2ef] bg-white text-slate-700 hover:bg-slate-50",
-                    )}
-                  >
-                    <Link href={card.ctaHref}>
-                      {card.ctaLabel}
-                      <MoveRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                      {card.period ? (
+                        <span className="pb-1 text-sm font-medium text-slate-400">
+                          {card.period}
+                        </span>
+                      ) : null}
+                    </p>
+                    <Button
+                      asChild
+                      variant={card.isFeatured ? "default" : "outline"}
+                      className={cn(
+                        "!h-auto w-fit gap-2 !rounded-full px-6 py-3 text-sm font-semibold transition-all",
+                        "mt-8",
+                        card.isFeatured
+                          ? "bg-purple-600 text-white shadow-[0_14px_30px_-18px_rgba(124,58,237,0.9)] hover:bg-purple-700"
+                          : "border-[#d9e2ef] bg-white text-slate-700 hover:bg-slate-50",
+                      )}
+                    >
+                      <Link href={card.ctaHref}>
+                        {card.ctaLabel}
+                        <MoveRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
