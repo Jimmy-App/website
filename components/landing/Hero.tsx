@@ -49,6 +49,16 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
       id="waitlist"
     >
       <style jsx>{`
+        @keyframes hand-reveal {
+          0% {
+            opacity: 0;
+            transform: translateY(24px) scale(0.97) rotate(15deg);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1) rotate(0deg);
+          }
+        }
         @keyframes hand-float {
           0% {
             transform: translateY(0);
@@ -75,7 +85,14 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
         .hand-float {
           will-change: transform;
         }
+        .hand-reveal-desktop {
+          transform-origin: 50% 100%;
+          will-change: transform, opacity;
+        }
         @media (min-width: 1024px) {
+          .hand-reveal-desktop {
+            animation: hand-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+          }
           .hand-float {
             animation: hand-float 7s ease-in-out 1s infinite;
           }
@@ -101,6 +118,7 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
           animation-delay: 420ms;
         }
         @media (prefers-reduced-motion: reduce) {
+          .hand-reveal-desktop,
           .hand-float,
           .hero-reveal {
             animation: none;
@@ -188,7 +206,7 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
 
           <div className="relative hidden items-end justify-end lg:flex lg:h-[calc(100svh-10rem)] lg:self-end">
             <div className="relative flex w-full justify-end lg:-translate-x-[7%]">
-              <div className="hand-float">
+              <div className="hand-reveal-desktop hand-float">
                 <Image
                   src="/assets/photo/mock/hand-mock-hero.png"
                   alt="Jimmy app hand mockup"
