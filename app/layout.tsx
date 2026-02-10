@@ -1,5 +1,6 @@
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import MetaPixel from "@/components/analytics/MetaPixel";
+import BrowserClassifier from "@/components/analytics/BrowserClassifier";
 import SpeedInsightsClient from "@/components/analytics/SpeedInsightsClient";
 import VercelAnalytics from "@/components/analytics/VercelAnalytics";
 import "./globals.css";
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <BrowserClassifier />
         <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
         <MetaPixel pixelId={META_PIXEL_ID} />
         {children}
