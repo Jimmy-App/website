@@ -188,6 +188,8 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
                       alt="Jimmy app hand mockup"
                       width={1041}
                       height={1323}
+                      loading="eager"
+                      fetchPriority="high"
                       sizes="(max-width: 639px) 78vw, (max-width: 1023px) 68vw, 0px"
                       className="h-[430px] w-auto select-none object-contain sm:h-[500px]"
                     />

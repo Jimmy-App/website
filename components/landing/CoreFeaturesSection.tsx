@@ -442,6 +442,7 @@ const CoreFeaturesSection = ({ content, ctaHref = '/for-coaches' }: CoachFeature
                     src="https://player.vimeo.com/video/999535716?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1&playsinline=1"
                     className="absolute inset-0 h-full w-full"
                     frameBorder="0"
+                    loading="lazy"
                     allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     title="one arm cable rows"
