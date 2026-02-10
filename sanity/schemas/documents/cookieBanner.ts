@@ -24,6 +24,15 @@ export const cookieBanner = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "policyLinkHref",
+      title: "Policy Link URL",
+      type: "string",
+      description:
+        "Relative URL (for example: /en/cookie-policy) or a full external URL.",
+      initialValue: "/cookie-policy",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: "policyLinkLabel",
       title: "Policy Link Label",
       type: "string",

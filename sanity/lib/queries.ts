@@ -376,6 +376,7 @@ export const cookieBannerByLanguageQuery = defineQuery(`
   *[_type == "cookieBanner" && language == $language][0]{
     title,
     description,
+    policyLinkHref,
     policyLinkLabel,
     rejectButtonLabel,
     acceptButtonLabel

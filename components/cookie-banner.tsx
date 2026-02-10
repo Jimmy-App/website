@@ -15,6 +15,7 @@ import { localeBasePath, type SupportedLocale } from "@/lib/i18n";
 export type CookieBannerContent = {
   title?: string;
   description?: string;
+  policyLinkHref?: string;
   policyLinkLabel?: string;
   rejectButtonLabel?: string;
   acceptButtonLabel?: string;
@@ -28,6 +29,7 @@ type CookieBannerProps = {
 const DEFAULT_CONTENT: Required<CookieBannerContent> = {
   title: "Cookie Preferences",
   description: "We use cookies for analytics and marketing.",
+  policyLinkHref: "/cookie-policy",
   policyLinkLabel: "Read Cookie Policy",
   rejectButtonLabel: "Reject All",
   acceptButtonLabel: "Accept All",
@@ -37,11 +39,14 @@ export default function CookieBanner({
   content,
   currentLocale = "en",
 }: CookieBannerProps) {
-  const cookiePolicyHref = `${localeBasePath(currentLocale)}/cookie-policy`;
   const resolvedContent = {
     ...DEFAULT_CONTENT,
     ...content,
   };
+  const cookiePolicyHref = resolvePolicyLinkHref(
+    resolvedContent.policyLinkHref,
+    currentLocale,
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -140,4 +145,34 @@ export default function CookieBanner({
       </div>
     </div>
   );
+}
+
+function resolvePolicyLinkHref(
+  linkHref: string | undefined,
+  locale: SupportedLocale,
+) {
+  const defaultHref = `${localeBasePath(locale)}/cookie-policy`;
+  if (!linkHref) {
+    return defaultHref;
+  }
+
+  const normalizedHref = linkHref.trim();
+  if (!normalizedHref) {
+    return defaultHref;
+  }
+
+  if (
+    normalizedHref.startsWith("http://") ||
+    normalizedHref.startsWith("https://") ||
+    normalizedHref.startsWith("mailto:") ||
+    normalizedHref.startsWith("tel:")
+  ) {
+    return normalizedHref;
+  }
+
+  if (!normalizedHref.startsWith("/")) {
+    return defaultHref;
+  }
+
+  return normalizedHref;
 }
