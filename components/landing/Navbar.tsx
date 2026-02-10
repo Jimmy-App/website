@@ -523,7 +523,7 @@ const Navbar = ({
                 })}
               </div>
               <div
-                className={`desktop-menu-dropdown absolute left-1/2 top-full z-40 mt-3 w-[760px] -translate-x-1/2 rounded-2xl border border-[#d9e2ef] bg-white p-5 shadow-[0_24px_46px_-30px_rgba(15,23,42,0.45)] transition-[opacity,transform] duration-200 ${
+                className={`desktop-menu-dropdown absolute left-1/2 top-full z-40 mt-3 w-max min-w-[760px] -translate-x-1/2 rounded-2xl border border-[#d9e2ef] bg-white p-5 shadow-[0_24px_46px_-30px_rgba(15,23,42,0.45)] transition-[opacity,transform] duration-200 ${
                   isFeaturesMenuOpen
                     ? "translate-y-0 opacity-100 pointer-events-auto"
                     : "translate-y-2 opacity-0 pointer-events-none"
@@ -533,11 +533,11 @@ const Navbar = ({
                 }
                 onMouseLeave={handleDesktopLeave}
               >
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-[max-content_max-content_248px] gap-4">
                   <div className="rounded-xl border border-[#e7edf5] bg-[#f8fbff] p-4">
                     <Link
                       href={forCoachesHref}
-                      className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
+                      className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
                       {resolvedCoachesBadgeLabel}
@@ -554,7 +554,9 @@ const Navbar = ({
                             size={14}
                             className="text-slate-600 transition-colors duration-200 group-hover:text-purple-600"
                           />
-                          <span>{feature.label}</span>
+                          <span className="whitespace-nowrap">
+                            {feature.label}
+                          </span>
                           <ArrowRight
                             size={13}
                             className="ml-auto text-slate-300 opacity-70 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-purple-500 group-hover:opacity-100"
@@ -564,7 +566,7 @@ const Navbar = ({
                     </div>
                     <Link
                       href={resolvedCoachesViewAllHref}
-                      className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
+                      className="group mt-3 inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
                       <span>{resolvedCoachesViewAllLabel}</span>
@@ -578,7 +580,7 @@ const Navbar = ({
                   <div className="rounded-xl border border-[#e7edf5] bg-[#f8fbff] p-4">
                     <Link
                       href={forClientsHref}
-                      className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
+                      className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 transition-colors hover:text-purple-600"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
                       {resolvedClientsBadgeLabel}
@@ -595,7 +597,9 @@ const Navbar = ({
                             size={14}
                             className="text-slate-600 transition-colors duration-200 group-hover:text-purple-600"
                           />
-                          <span>{feature.label}</span>
+                          <span className="whitespace-nowrap">
+                            {feature.label}
+                          </span>
                           <ArrowRight
                             size={13}
                             className="ml-auto text-slate-300 opacity-70 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-purple-500 group-hover:opacity-100"
@@ -605,7 +609,7 @@ const Navbar = ({
                     </div>
                     <Link
                       href={resolvedClientsViewAllHref}
-                      className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
+                      className="group mt-3 inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-purple-600 transition-colors hover:text-purple-700"
                       onClick={() => setActiveDesktopMenu(null)}
                     >
                       <span>{resolvedClientsViewAllLabel}</span>
