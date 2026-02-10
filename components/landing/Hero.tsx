@@ -179,7 +179,7 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
               )}
             </p>
 
-            <div className="relative z-20 mb-0 mx-auto w-full max-w-md lg:mx-0">
+            <div className="hero-reveal hero-delay-4 relative z-20 mb-0 mx-auto w-full max-w-md lg:mx-0">
               <WaitlistSignupForm
                 waitlistLabel={resolvedWaitlistLabel}
                 inputPlaceholder={resolvedInputPlaceholder}
@@ -193,17 +193,19 @@ const Hero = ({ waitlistLabel, brandLabel, content }: HeroProps) => {
 
           <div className="relative -mb-1 mt-4 flex w-full items-end justify-center lg:mt-0 lg:h-[calc(100svh-10rem)] lg:justify-end lg:self-end">
             <div className="relative flex w-full justify-center lg:justify-end lg:-translate-x-[7%]">
-              <div className="hand-reveal-desktop hand-float">
-                <Image
-                  src="/assets/photo/mock/hand-mock-hero.png"
-                  alt="Jimmy app hand mockup"
-                  width={1041}
-                  height={1323}
-                  quality={60}
-                  sizes="(max-width: 639px) 52vw, (max-width: 1023px) 50vw, (max-width: 1439px) 500px, 580px"
-                  className="h-[300px] w-auto max-w-none select-none object-contain sm:h-[460px] lg:h-[620px] lg:max-h-full xl:h-[710px] 2xl:h-[760px]"
-                  priority
-                />
+              <div className="hand-reveal-desktop">
+                <div className="hand-float">
+                  <Image
+                    src="/assets/photo/mock/hand-mock-hero.png"
+                    alt="Jimmy app hand mockup"
+                    width={1041}
+                    height={1323}
+                    quality={60}
+                    sizes="(max-width: 639px) 52vw, (max-width: 1023px) 50vw, (max-width: 1439px) 500px, 580px"
+                    className="h-[300px] w-auto max-w-none select-none object-contain sm:h-[460px] lg:h-[620px] lg:max-h-full xl:h-[710px] 2xl:h-[760px]"
+                    priority
+                  />
+                </div>
               </div>
             </div>
           </div>
