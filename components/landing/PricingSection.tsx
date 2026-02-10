@@ -262,6 +262,8 @@ const PricingSection = ({
           {resolvedPlans.map((plan, index) => {
             const isFeatured = Boolean(plan.isFeatured);
             const planFeatures = plan.features || [];
+            const resolvedPlanDescription =
+              plan.description?.trim() || planAudience(plan.name, index);
             const baseAmount = resolvePlanAmount({
               prices: plan.prices,
               currency: resolvedCurrency,
@@ -304,7 +306,7 @@ const PricingSection = ({
                 </div>
 
                 <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                  {planAudience(plan.name, index)}
+                  {resolvedPlanDescription}
                 </p>
 
                 <div className="mt-5 flex items-end gap-2">
@@ -319,10 +321,6 @@ const PricingSection = ({
                     {resolvedPeriod}
                   </span>
                 </div>
-
-                <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                  {plan.description}
-                </p>
 
                 <div
                   className={`mt-5 inline-flex max-w-full items-center gap-2 rounded-full border px-2.5 py-1.5 ${

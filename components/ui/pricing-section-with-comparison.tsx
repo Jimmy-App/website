@@ -22,6 +22,8 @@ type PricingPlanFeature = {
   isAddon?: boolean;
 };
 
+type PricingPlanKey = "starter" | "scale" | "elite" | "brand";
+
 type PricingPlan = {
   name?: string;
   price?: string;
@@ -42,6 +44,18 @@ type PricingPageCustomPlan = {
   clients?: string;
   ctaLabel?: string;
   ctaHref?: string;
+};
+
+type PricingFeatureMatrixRow = {
+  title?: string;
+  description?: string;
+  includedPlans?: PricingPlanKey[];
+  addOnPlans?: PricingPlanKey[];
+};
+
+type PricingFeaturesContent = {
+  title?: string;
+  rows?: PricingFeatureMatrixRow[];
 };
 
 type PricingPageSettings = {
@@ -99,6 +113,7 @@ type PricingCard = {
 
 type PricingSectionWithComparisonProps = {
   content?: PricingContent | null;
+  featuresContent?: PricingFeaturesContent | null;
   waitlistHref?: string;
   currentLocale?: SupportedLocale;
   className?: string;
@@ -246,6 +261,7 @@ function ComparisonCellValue({ value }: { value: ComparisonValue }) {
 
 function PricingSectionWithComparison({
   content,
+  featuresContent,
   waitlistHref = "#waitlist",
   currentLocale,
   className,
@@ -316,7 +332,9 @@ function PricingSectionWithComparison({
     content?.pricingPage?.standardPlanCtaLabel || "Join Waitlist";
   const resolvedAddOnLabel = content?.pricingPage?.addOnLabel || "Add-on";
   const resolvedFeaturesHeadingLabel =
-    content?.pricingPage?.featuresHeadingLabel || "Features";
+    featuresContent?.title?.trim() ||
+    content?.pricingPage?.featuresHeadingLabel ||
+    "Features";
   const resolvedIncludedInLabel =
     content?.pricingPage?.includedInLabel || "Included in";
   const resolvedClientCapacityTitle =
@@ -447,6 +465,12 @@ function PricingSectionWithComparison({
       featureMap: customPlanFeatureMap,
     },
   ];
+  const comparisonPlanKeys: PricingPlanKey[] = [
+    "starter",
+    "scale",
+    "elite",
+    "brand",
+  ];
 
   const mergeComparisonValue = (
     current: ComparisonValue,
@@ -502,7 +526,30 @@ function PricingSectionWithComparison({
     displayTitle: resolvedClientCapacityTitle,
     displayDescription: resolvedClientCapacityDescription,
   };
-  const rows: ComparisonRow[] = [clientLimitRow, ...featureRowsNormalized];
+  const matrixRows = (featuresContent?.rows || []).filter((row) =>
+    Boolean(row?.title?.trim()),
+  );
+  const featureRowsFromMatrix: ComparisonRow[] = matrixRows.map((row) => {
+    const rowTitle = row.title?.trim() || "Feature";
+    const rowDescription = row.description?.trim();
+    const includedPlans = row.includedPlans || [];
+    const addOnPlans = row.addOnPlans || [];
+
+    return {
+      label: rowTitle,
+      values: comparisonPlanKeys.map((planKey) => {
+        if (includedPlans.includes(planKey)) return "check";
+        if (addOnPlans.includes(planKey)) return resolvedAddOnLabel;
+        return "minus";
+      }),
+      displayTitle: rowTitle,
+      displayDescription: rowDescription,
+    };
+  });
+  const rows: ComparisonRow[] =
+    featureRowsFromMatrix.length > 0
+      ? [clientLimitRow, ...featureRowsFromMatrix]
+      : [clientLimitRow, ...featureRowsNormalized];
   const comparisonColumnTitles = comparisonPlans.map((plan) => plan.name);
 
   return (
@@ -586,16 +633,18 @@ function PricingSectionWithComparison({
               ))}
             </div>
 
-            {rows.map((row) => {
+            {rows.map((row, rowIndex) => {
               const rowLabelView = {
-                title: row.displayTitle || resolveRowLabelView(row.label).title,
+                title:
+                  row.displayTitle ?? resolveRowLabelView(row.label).title,
                 description:
-                  row.displayDescription || resolveRowLabelView(row.label).description,
+                  row.displayDescription ??
+                  resolveRowLabelView(row.label).description,
               };
 
               return (
                 <div
-                  key={row.label}
+                  key={`${row.label}-${rowIndex}`}
                   className="grid grid-cols-5 divide-x divide-[#e7edf5] border-t border-[#e7edf5]"
                 >
                   <div className="px-4 py-4 lg:px-6">
@@ -626,5 +675,8 @@ function PricingSectionWithComparison({
   );
 }
 
-export type { PricingContent as PricingSectionWithComparisonContent };
+export type {
+  PricingContent as PricingSectionWithComparisonContent,
+  PricingFeaturesContent as PricingSectionWithComparisonFeaturesContent,
+};
 export { PricingSectionWithComparison };

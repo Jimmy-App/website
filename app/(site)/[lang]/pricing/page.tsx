@@ -5,6 +5,7 @@ import type { LandingPageContent } from "@/components/landing/LandingPage";
 import {
   PricingSectionWithComparison,
   type PricingSectionWithComparisonContent,
+  type PricingSectionWithComparisonFeaturesContent,
 } from "@/components/ui/pricing-section-with-comparison";
 import { isSupportedLocale, localeBasePath } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
@@ -14,6 +15,7 @@ import {
   landingPageByLanguageQuery,
   navigationByLanguageQuery,
   pricingByLanguageQuery,
+  pricingFeaturesByLanguageQuery,
   pricingSeoByLanguageQuery,
 } from "@/sanity/lib/queries";
 
@@ -51,6 +53,8 @@ type NavigationData = {
 type PricingDocumentData = {
   pricing?: PricingSectionWithComparisonContent | null;
 };
+
+type PricingFeaturesDocumentData = PricingSectionWithComparisonFeaturesContent | null;
 
 type PricingSeoData = {
   title?: string | null;
@@ -104,10 +108,22 @@ export default async function PricingPage({ params }: PageProps) {
     query: pricingByLanguageQuery,
     params: { language: lang },
   });
+  const pricingFeaturesDocument = await sanityFetch<PricingFeaturesDocumentData>({
+    query: pricingFeaturesByLanguageQuery,
+    params: { language: lang },
+  });
   const fallbackPricingDocument =
     !pricingDocument?.pricing && lang !== "en"
       ? await sanityFetch<PricingDocumentData>({
           query: pricingByLanguageQuery,
+          params: { language: "en" },
+        })
+      : null;
+  const fallbackPricingFeaturesDocument =
+    (!pricingFeaturesDocument?.rows || pricingFeaturesDocument.rows.length === 0) &&
+    lang !== "en"
+      ? await sanityFetch<PricingFeaturesDocumentData>({
+          query: pricingFeaturesByLanguageQuery,
           params: { language: "en" },
         })
       : null;
@@ -191,6 +207,11 @@ export default async function PricingPage({ params }: PageProps) {
   const resolvedWaitlistLabel = pricingContent?.cta?.waitlistLabel || "Join Waitlist";
   const resolvedPricingContent =
     pricingDocument?.pricing || fallbackPricingDocument?.pricing;
+  const resolvedPricingFeaturesContent =
+    (pricingFeaturesDocument?.rows?.length ? pricingFeaturesDocument : null) ||
+    (fallbackPricingFeaturesDocument?.rows?.length
+      ? fallbackPricingFeaturesDocument
+      : null);
 
   return (
     <>
@@ -214,6 +235,7 @@ export default async function PricingPage({ params }: PageProps) {
         <div className="relative z-10">
           <PricingSectionWithComparison
             content={resolvedPricingContent}
+            featuresContent={resolvedPricingFeaturesContent}
             waitlistHref={waitlistHref}
             currentLocale={lang}
           />
