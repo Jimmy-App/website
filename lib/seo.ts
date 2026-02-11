@@ -29,11 +29,38 @@ const localeAliases: Partial<Record<LocaleKey, LocaleKey>> = {
   ua: "uk",
 };
 
+const legalNoIndexPaths = new Set(["/privacy", "/terms", "/cookie-policy"]);
+const localeSegments = new Set<LocaleKey>(["en", "es", "fr", "uk", "ua"]);
+
 function normalizeLocale(locale?: LocaleKey) {
   if (!locale) {
     return defaultLocale as LocaleKey;
   }
   return localeAliases[locale] || locale;
+}
+
+function normalizePathForRobots(path?: string) {
+  if (!path) {
+    return "/";
+  }
+
+  const sanitizedPath = path.replace(/\/+$/, "") || "/";
+  const segments = sanitizedPath.split("/").filter(Boolean);
+
+  if (segments.length === 0) {
+    return "/";
+  }
+
+  const normalizedSegments = localeSegments.has(segments[0] as LocaleKey)
+    ? segments.slice(1)
+    : segments;
+  const normalizedPath = `/${normalizedSegments.join("/")}`;
+
+  return normalizedPath.replace(/\/+$/, "") || "/";
+}
+
+function shouldNoIndex(path?: string) {
+  return legalNoIndexPaths.has(normalizePathForRobots(path));
 }
 
 function resolveLocalizedValue(
@@ -111,11 +138,10 @@ export function buildMetadata({
       description: resolvedDescription || undefined,
       images: resolvedOgImage ? [resolvedOgImage] : undefined,
     },
+    robots: shouldNoIndex(path)
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
   };
-
-  if (seo?.noIndex) {
-    metadata.robots = { index: false, follow: false };
-  }
 
   return metadata;
 }
