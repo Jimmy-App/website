@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowRight, Check, Layers, LayoutGrid, Table2 } from 'lucide-react';
 import {
   LANDING_SECTION_BADGE_CLASS,
@@ -14,6 +15,7 @@ type ProblemCard = {
   body?: string;
   badge?: string;
   ctaLabel?: string;
+  ctaHref?: string;
   uiActionLabel?: string;
   uiStatusLabel?: string;
 };
@@ -27,9 +29,10 @@ type ProblemContent = {
 
 type ProblemSectionProps = {
   content?: ProblemContent | null;
+  ctaHref?: string;
 };
 
-const ProblemSection = ({ content }: ProblemSectionProps) => {
+const ProblemSection = ({ content, ctaHref = '/for-coaches' }: ProblemSectionProps) => {
   const resolvedTitle = content?.title || 'Your expertise deserves better than a';
   const resolvedTitleHighlight = content?.titleHighlight || 'spreadsheet.';
   const resolvedSubtitle =
@@ -53,6 +56,7 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
       body: 'One clean operating system for coaching. Program faster, manage clients easier, and keep everything in one place.',
       badge: 'New',
       ctaLabel: 'See the platform',
+      ctaHref: '/for-coaches',
       uiActionLabel: 'Update Program',
       uiStatusLabel: 'Active clients',
     },
@@ -68,6 +72,7 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
 
   const jimmyBadge = jimmyCard.badge || 'Jimmy';
   const jimmyCtaLabel = jimmyCard.ctaLabel || 'See the platform';
+  const jimmyCtaHref = jimmyCard.ctaHref || ctaHref;
   const jimmyStatusLabel = jimmyCard.uiStatusLabel || 'Active clients';
   const jimmyActionLabel = jimmyCard.uiActionLabel || 'Update Program';
   const highlightRef = useRef<HTMLSpanElement | null>(null);
@@ -289,10 +294,13 @@ const ProblemSection = ({ content }: ProblemSectionProps) => {
                 </span>
               </div>
 
-              <div className="mt-7 inline-flex items-center gap-2 text-base font-semibold text-slate-900">
+              <Link
+                href={jimmyCtaHref}
+                className="mt-7 inline-flex items-center gap-2 text-base font-semibold text-slate-900 transition-colors hover:text-purple-600"
+              >
                 {jimmyCtaLabel}
                 <ArrowRight size={16} />
-              </div>
+              </Link>
             </div>
 
             <div className="order-1 lg:order-2">

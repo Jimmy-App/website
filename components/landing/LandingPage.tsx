@@ -214,7 +214,7 @@ const LandingPage = ({
         currentLocale={currentLocale}
       />
       <Hero content={content?.hero} waitlistLabel={waitlistLabel} brandLabel={brandLabel} />
-      <ProblemSection content={content?.problem} />
+      <ProblemSection content={content?.problem} ctaHref={forCoachesHref} />
       <CoreFeaturesSection content={content?.coachFeatures} ctaHref={forCoachesHref} />
       <ClientExperienceSection content={content?.clientExperience} ctaHref={forClientsHref} />
       <PricingSection
