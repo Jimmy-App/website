@@ -1,21 +1,19 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType } from 'sanity'
 
 export const socialLink = defineType({
-  name: "socialLink",
-  title: "Social Link",
-  type: "object",
+  name: 'socialLink',
+  type: 'object',
   fields: [
     defineField({
-      name: "title",
-      title: "Title",
-      type: "string",
-      validation: (Rule) => Rule.required(),
+      name: 'platform',
+      type: 'string',
+      options: {
+        list: ['twitter', 'instagram', 'facebook', 'linkedin', 'youtube', 'tiktok'],
+      },
     }),
-    defineField({
-      name: "url",
-      title: "URL",
-      type: "url",
-      validation: (Rule) => Rule.required(),
-    }),
+    defineField({ name: 'url', type: 'url' }),
   ],
-});
+  preview: {
+    select: { title: 'platform', subtitle: 'url' },
+  },
+})

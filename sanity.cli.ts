@@ -1,10 +1,9 @@
-import { defineCliConfig } from "sanity/cli";
-
-import { dataset, projectId } from "./sanity/lib/config";
+import { defineCliConfig } from 'sanity/cli'
 
 export default defineCliConfig({
   api: {
-    projectId,
-    dataset,
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   },
-});
+  studioHost: 'jimmy-marketing',
+})

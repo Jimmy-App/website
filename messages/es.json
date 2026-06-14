@@ -1,0 +1,586 @@
+{
+  "nav": {
+    "features": {
+      "label": "Funciones",
+      "forCoaches": "Para Coaches",
+      "forMembers": "Para Miembros",
+      "items": {
+        "workoutBuilder": {
+          "title": "Creador de Entrenos",
+          "subtitle": "Programa bloques estructurados rápido."
+        },
+        "programs": {
+          "title": "Programas y Cursos",
+          "subtitle": "Módulos, lecciones, programas completos."
+        },
+        "communityFeed": {
+          "title": "Feed de Comunidad",
+          "subtitle": "Publicaciones, reacciones, retos."
+        },
+        "messaging": {
+          "title": "Mensajería",
+          "subtitle": "Chat 1:1 y grupal con clientes."
+        },
+        "payments": {
+          "title": "Pagos",
+          "subtitle": "Suscripciones y pagos únicos."
+        },
+        "progressTracking": {
+          "title": "Seguimiento de Progreso",
+          "subtitle": "Récords, cargas, benchmarks."
+        },
+        "brandedApp": {
+          "title": "App Móvil de Marca",
+          "subtitle": "Tu logo, tus colores."
+        },
+        "dailyWorkouts": {
+          "title": "Entrenos Diarios",
+          "subtitle": "Bloques claros, temporizadores, vídeos."
+        },
+        "community": {
+          "title": "Comunidad",
+          "subtitle": "Entrena en grupo, no solo."
+        },
+        "directAccess": {
+          "title": "Acceso Directo",
+          "subtitle": "Chat y check-ins con el coach."
+        },
+        "progressView": {
+          "title": "Vista de Progreso",
+          "subtitle": "Gráficas, rachas, historial de récords."
+        },
+        "easyPayments": {
+          "title": "Pagos Fáciles",
+          "subtitle": "Gestiona tus planes en un solo lugar."
+        }
+      },
+      "cta": {
+        "label": "Plataforma",
+        "title": "Descubre cómo Jimmy simplifica tu vida.",
+        "body": "Tour en vivo de 15 minutos. Aprende a ahorrar más de 10 horas a la semana.",
+        "btn": "Reservar una Demo"
+      }
+    },
+    "resources": {
+      "label": "Recursos",
+      "content": "Contenido",
+      "community": "Comunidad",
+      "items": {
+        "blog": {
+          "title": "Blog",
+          "subtitle": "Artículos para coaches modernos."
+        },
+        "guides": {
+          "title": "Guías",
+          "subtitle": "Playbooks y tutoriales."
+        },
+        "changelog": {
+          "title": "Changelog",
+          "subtitle": "Lo que se ha lanzado recientemente."
+        },
+        "productUpdates": {
+          "title": "Actualizaciones del Producto",
+          "subtitle": "Novedades de funciones resumidas."
+        },
+        "roadmap": {
+          "title": "Roadmap",
+          "subtitle": "Lo que estamos construyendo."
+        },
+        "discord": {
+          "title": "Comunidad Discord",
+          "subtitle": "Espacio privado para coaches de Jimmy."
+        }
+      }
+    },
+    "pricing": "Precios",
+    "affiliate": "Afiliados",
+    "newBadge": "Nuevo",
+    "login": "Iniciar sesión",
+    "getStarted": "Empieza Gratis",
+    "openMenu": "Abrir menú",
+    "close": "Cerrar",
+    "menu": "Navegación",
+    "getStartedShort": "Empezar"
+  },
+  "footer": {
+    "tagline": "Hecho para la <em>libertad.</em>",
+    "product": {
+      "heading": "Producto",
+      "links": {
+        "features": "Funciones",
+        "technology": "Tecnología",
+        "pricing": "Precios",
+        "courseBuilder": "Creador de Cursos"
+      }
+    },
+    "company": {
+      "heading": "Empresa",
+      "links": {
+        "team": "Equipo",
+        "manifesto": "Manifiesto",
+        "faq": "FAQ",
+        "contact": "Contacto"
+      }
+    },
+    "legal": {
+      "heading": "Legal",
+      "links": {
+        "privacy": "Política de privacidad",
+        "terms": "Términos de servicio",
+        "cookies": "Política de cookies"
+      }
+    },
+    "copy": "© 2026 Just Jimmy LLC. Hecho para la libertad."
+  },
+  "hero": {
+    "sectionLabel": "Hero",
+    "badge": "Construido con más de 20 coaches de Hyrox, CrossFit y fitness funcional",
+    "headline": "El Skool del <accent>Fitness.</accent>",
+    "subtitle": "Tus clientes no solo entrenan — pertenecen.",
+    "description": "Jimmy no es una herramienta de gestión. Es la plataforma de retención para coaches modernos — Hyrox, CrossFit, funcional. Entrenamientos estructurados, comunidad, pagos. Menos es más.",
+    "ctaPrimary": "Empieza gratis",
+    "ctaSecondary": "Ver cómo funciona",
+    "trustTrial": "30 días gratis en Club",
+    "trustNoCard": "Sin tarjeta",
+    "trustFreeClients": "3 clientes gratis de por vida",
+    "calloutSkool": "Sin fitness",
+    "calloutWhatsapp": "Sin estructura",
+    "calloutTrainheroic": "Sin comunidad",
+    "productLabel": "Panel del Coach",
+    "productSubtext": "Sigue el impulso de tus clientes, la salud de tus ingresos y el engagement de un vistazo",
+    "productImageAlt": "Panel del Coach de Jimmy",
+    "brandNote": "Hecho para pertenecer."
+  },
+  "features": {
+    "ariaLabel": "Funciones",
+    "eyebrow": "• DESCUBRE JIMMY EN ACCIÓN",
+    "title": "Una plataforma. <accent>Todo</accent> lo que tu coaching necesita.",
+    "tablistLabel": "Pestañas de funciones",
+    "cta": "Pruébalo Ahora",
+    "tabs": {
+      "workout": {
+        "label": "Creador de Entrenos",
+        "title": "Crea bloques de entrenamiento estructurados en segundos.",
+        "subtitle": "EMOM, AMRAP, circuitos, fuerza — todo nativo, todo pensado para coaches que se mueven.",
+        "tags": [
+          "Bloques de Trabajo",
+          "EMOM",
+          "AMRAP",
+          "Circuitos",
+          "Biblioteca de Vídeos"
+        ]
+      },
+      "community": {
+        "label": "Feed de Comunidad",
+        "title": "Tus clientes ya no entrenan solos.",
+        "subtitle": "Un feed de comunidad estilo Skool integrado en tu plataforma de coaching. Publicaciones, reacciones, retos grupales.",
+        "tags": [
+          "Publicaciones",
+          "Reacciones",
+          "Anuncios",
+          "Retos Grupales"
+        ]
+      },
+      "messaging": {
+        "label": "Mensajería 1:1",
+        "title": "Deja de gestionar tu coaching por WhatsApp.",
+        "subtitle": "Chat 1:1 coach-cliente integrado directamente en Jimmy. Texto, fotos, mensajes de voz — todo en un lugar.",
+        "tags": [
+          "Chat 1:1",
+          "Voz",
+          "Fotos y Vídeo",
+          "Chat Grupal"
+        ]
+      },
+      "payments": {
+        "label": "Pagos",
+        "title": "Deja que el sistema lleve tu negocio.",
+        "subtitle": "Pagos Stripe integrados, suscripciones recurrentes y facturación automática mientras entrenas.",
+        "tags": [
+          "Stripe Connect",
+          "Recurrente",
+          "Facturación Automática",
+          "Analíticas"
+        ]
+      },
+      "courses": {
+        "label": "Creador de Cursos",
+        "title": "Crea tus cursos como en Skool.",
+        "subtitle": "Estructura módulos y lecciones en unos clics. Vídeos, PDFs, cuestionarios, progresión desbloqueable.",
+        "tags": [
+          "Módulos",
+          "Lecciones",
+          "Cuestionarios",
+          "Certificados"
+        ]
+      }
+    }
+  },
+  "why": {
+    "ariaLabel": "Por qué Jimmy",
+    "heading": {
+      "line1": "Una app",
+      "line2": "para",
+      "line3": "centralizar",
+      "accent": "todo."
+    },
+    "toggle": {
+      "ariaLabel": "Cambiar vista",
+      "without": "Sin Jimmy",
+      "with": "Con Jimmy"
+    },
+    "desc": {
+      "without": "Coaching desorganizado: herramientas dispersas, cero automatización y tiempo perdido en tareas administrativas en lugar de en tus atletas.",
+      "with": "Todo centralizado en un solo lugar: clientes, programas, pagos y comunicación — en una única plataforma hecha para coaches modernos."
+    },
+    "bullets": {
+      "without": [
+        "Herramientas dispersas: WhatsApp, Excel, PDFs",
+        "Ninguna visibilidad sobre el progreso del cliente",
+        "Pagos gestionados manualmente",
+        "Seguimiento impreciso, a veces inexistente",
+        "Imagen poco profesional para tus clientes",
+        "Tiempo perdido en tareas repetitivas"
+      ],
+      "with": [
+        "Todo en una única plataforma",
+        "Progreso y engagement del cliente, claros",
+        "Pagos Stripe automatizados, sin seguimiento",
+        "Comunicación coach-cliente estructurada",
+        "Experiencia de app premium para los clientes",
+        "Programación inteligente y sincronizada"
+      ]
+    },
+    "preview": {
+      "without": {
+        "card1": {
+          "name": "(Cliente) Marco D.",
+          "desc": "“Oye coach, ¿dónde está mi programa? ¿Me puedes reenviar el PDF y actualizar mi horario?”"
+        },
+        "card2": {
+          "name": "Hoja de Entrenos",
+          "desc": "Entrenamientos para actualizar manualmente, cada día, para cada cliente."
+        },
+        "card3": {
+          "name": "Pagos Manuales",
+          "desc": "Seguimientos, facturas olvidadas, errores — cada pago es una tarea aparte."
+        },
+        "card4": {
+          "name": "Planificación de Sesiones",
+          "desc": "Planificación a mano, entre notas, archivos y mensajes sin automatización."
+        }
+      },
+      "with": {
+        "imgAlt": "Panel de Jimmy — todo en un solo lugar"
+      }
+    }
+  },
+  "steps": {
+    "sectionLabel": "Cómo funciona",
+    "eyebrow": "Configuración exprés",
+    "title": "Lanza tu coaching premium <accent>en 3 pasos.</accent>",
+    "subtitle": "Puedes estar operativo en menos de 10 minutos. Lo prometemos.",
+    "step1": {
+      "title": "Crea tu cuenta gratis",
+      "desc": "Regístrate en 30 segundos. Sin tarjeta. Configura tu perfil de coach, añade tu logo y colores de marca."
+    },
+    "step2": {
+      "title": "Invita a tus primeros clientes",
+      "desc": "Envía un enlace de invitación por WhatsApp o email. Tus clientes descargan la app iOS/Android y se unen en un clic."
+    },
+    "step3": {
+      "title": "Entrena, gana, escala",
+      "desc": "Crea tus programas, anima tu comunidad, cobra vía Stripe. Tú te centras en tu expertise — nosotros nos encargamos del resto."
+    },
+    "cta": "Empieza gratis"
+  },
+  "platform": {
+    "ariaLabel": "Plataforma",
+    "eyebrow": "LA PLATAFORMA",
+    "title": "Todo lo que necesitas. Nada que no.",
+    "subtitle": "Jimmy no es una fábrica de funciones. Hacemos cinco cosas con excelencia — y ahí paramos.",
+    "navLabel": "Funciones de la plataforma",
+    "steps": {
+      "workout": {
+        "name": "Creador de Entrenos",
+        "tagline": "Programa como los mejores coaches del mundo.",
+        "tags": [
+          "Bloques de Trabajo",
+          "EMOM",
+          "AMRAP",
+          "Circuitos",
+          "Biblioteca de Vídeos"
+        ],
+        "preview": {
+          "barTitle": "Upper Body A",
+          "barChip": "Día 1 / 5"
+        }
+      },
+      "community": {
+        "name": "Feed de Comunidad",
+        "tagline": "Tus clientes ya no entrenan solos.",
+        "tags": [
+          "Publicaciones y Reacciones",
+          "Anuncios",
+          "Retos Grupales"
+        ],
+        "preview": {
+          "barTitle": "Comunidad",
+          "barChip": "24 miembros"
+        }
+      },
+      "messaging": {
+        "name": "Mensajería Integrada",
+        "tagline": "Deja de gestionar tu coaching por WhatsApp.",
+        "tags": [
+          "Chat 1:1",
+          "Mensajes de Voz",
+          "Fotos y Vídeo",
+          "Chat Grupal"
+        ],
+        "preview": {
+          "barTitle": "Marco D.",
+          "barChip": "En línea"
+        }
+      },
+      "payments": {
+        "name": "Pagos y Suscripciones",
+        "tagline": "Deja que el sistema lleve tu negocio mientras entrenas.",
+        "tags": [
+          "Stripe Connect",
+          "Recurrente",
+          "Facturación Automática",
+          "Analíticas"
+        ],
+        "preview": {
+          "barTitle": "Pagos",
+          "barChip": "Este mes"
+        }
+      },
+      "courses": {
+        "name": "Creador de Cursos",
+        "tagline": "Crea tus cursos como en Skool.",
+        "tags": [
+          "Módulos y Lecciones",
+          "Vídeos y PDFs",
+          "Progresión Desbloqueable",
+          "Cuestionarios",
+          "Certificados"
+        ],
+        "preview": {
+          "barTitle": "Nutrition Fundamentals",
+          "barChip": "NUEVO"
+        }
+      }
+    }
+  },
+  "tech": {
+    "sectionLabel": "Tecnología",
+    "eyebrow": "TECNOLOGÍA",
+    "headline": "No una app improvisada. <em>Una nativa de verdad.</em>",
+    "body": "Jimmy no es un wrapper web disfrazado ni un proyecto vibe-coded. Es una app móvil de alto rendimiento construida por ingenieros, diseñada para la estabilidad y la escalabilidad. Tus clientes merecen una app tan sólida como tu coaching.",
+    "tile1Title": "Construida para el rendimiento",
+    "tile1Desc": "Tiempos de carga rápidos, navegación fluida y comportamiento offline-friendly para que el coaching nunca se sienta lento.",
+    "tile2Title": "Arquitectura escalable y segura",
+    "tile2Desc": "Backend moderno, infraestructura battle-tested y mejores prácticas para la protección de datos y la fiabilidad.",
+    "tile3Title": "Diseñada para el uso real",
+    "tile3Desc": "Construida con el feedback de coaches activos de Hyrox, CrossFit y fitness funcional — no como una app de plantilla genérica.",
+    "appStoreLabel": "Descargar en el App Store",
+    "appStoreSub": "Descargar en el",
+    "appStoreMain": "App Store",
+    "playStoreLabel": "Disponible en Google Play",
+    "playStoreSub": "Disponible en",
+    "playStoreMain": "Google Play",
+    "visualAlt": "App nativa de Jimmy sostenida en una mano"
+  },
+  "comparison": {
+    "ariaLabel": "Comparativa de competidores",
+    "eyebrow": "PANORAMA COMPETITIVO",
+    "title": "La única plataforma que lo hace todo.",
+    "subtitle": "Cada competidor te obliga a elegir. Jimmy rechaza ese compromiso.",
+    "tableAriaLabel": "Tabla comparativa de funciones",
+    "featureColumnLabel": "Función",
+    "jimmyBadge": "La mejor opción",
+    "competitors": [
+      "Skool",
+      "Trainerize",
+      "TrueCoach",
+      "WhatsApp"
+    ],
+    "features": [
+      "Creador de entrenos estructurado",
+      "Feed de comunidad",
+      "Creador de Cursos (módulos/lecciones)",
+      "App nativa iOS/Android",
+      "Mensajería 1:1 integrada",
+      "Pagos y suscripciones",
+      "Seguimiento de progreso",
+      "Plantillas de entreno"
+    ],
+    "footerLabel": "Cobertura total"
+  },
+  "pricing": {
+    "sectionLabel": "Precios",
+    "promoBadge": "Beta · −15% de por vida",
+    "promoTextBold": "Fija tu precio antes del lanzamiento público",
+    "promoTextRest": "— consérvalo para siempre.",
+    "eyebrow": "Precios",
+    "title": "Precios que escalan con tu lista de clientes.",
+    "subtitle": "Empieza gratis con hasta 3 clientes. A medida que tu negocio crece, CLUB crece contigo — y tu precio beta se mantiene bloqueado de por vida.",
+    "sliderQuestion": "¿Cuántos atletas entrenas?",
+    "sliderHelp": "Arrastra el control para encontrar tu plan y precio.",
+    "currencyLabel": "Divisa",
+    "sliderAriaLabel": "Número de clientes que entrenas",
+    "clients": "clientes",
+    "planFree": "Gratis",
+    "planClub": "Club",
+    "betaBadge": "Beta −15%",
+    "perMonth": "/mes",
+    "forUpTo": "para hasta",
+    "feesLabel": "Comisiones de transacción —",
+    "ctaFree": "Empieza Ahora",
+    "ctaClub": "Empieza — 30 días gratis",
+    "lockNote": "Tu precio beta con −15% está bloqueado de por vida — incluso después del lanzamiento público — mientras tu suscripción esté activa.",
+    "whatsIncluded": "Qué incluye",
+    "freeTag": "El punto de partida perfecto — empieza a entrenar, empieza a ganar.",
+    "clubTag": "Todo lo que necesitas para gestionar y escalar un negocio de coaching real.",
+    "freeFeature1": "Hasta 3 clientes",
+    "freeFeature2": "Creador de Entrenos completo",
+    "freeFeature3": "App móvil para clientes",
+    "freeFeature4": "Mensajería 1:1",
+    "freeFeature5": "Biblioteca de vídeos de ejercicios",
+    "freeFeature6": "Pagos Stripe",
+    "clubFeature1": "Todo en Gratis",
+    "clubFeature2": "Feed de comunidad (estilo Skool)",
+    "clubFeature3": "Creador de Cursos completo",
+    "clubFeature4": "Comunicación grupal",
+    "clubFeature5": "Analíticas e informes de ingresos",
+    "clubFeature6": "Biblioteca de plantillas de entreno",
+    "clubFeature7": "Seguimiento de progreso y récords",
+    "clubFeature8": "Soporte prioritario",
+    "addons": "Complementos",
+    "addon1Name": "Cuentas de Equipo / Gimnasio",
+    "addon1Price": "+€19/mes por coach",
+    "addon2Name": "Asistente IA de Coaching",
+    "addon2Price": "+€19/mes",
+    "addon3Name": "Programa de Referidos",
+    "addon3Price": "30% de comisión recurrente de por vida"
+  },
+  "beta": {
+    "ariaLabel": "Beta Abierta",
+    "badge": "Beta Abierta",
+    "title": "No compras un producto.<br></br>Estás <accent>co-construyendo</accent> una plataforma.",
+    "body": "Jimmy está en Beta. No todas las funciones están disponibles aún — y eso es exactamente por qué ahora es el momento de unirte. <em>Tu feedback da forma al producto. Tus peticiones se convierten en funciones.</em>",
+    "card1": {
+      "title": "Acceso directo al equipo",
+      "desc": "Discord privado con los fundadores. Habla con quienes construyen Jimmy."
+    },
+    "card2": {
+      "title": "Tu feedback = nuestras prioridades",
+      "desc": "Votas qué construimos a continuación. Tus peticiones se convierten en funciones reales."
+    },
+    "card3": {
+      "title": "Nuevas funciones cada semana",
+      "desc": "Roadmap público, changelog semanal. Estado del producto transparente, siempre."
+    }
+  },
+  "team": {
+    "sectionLabel": "El Equipo",
+    "eyebrow": "El Equipo",
+    "title": "Las personas detrás de Jimmy.",
+    "subtitle": "Un equipo pequeño. Una gran visión. Hecho por coaches, para coaches.",
+    "members": [
+      {
+        "name": "Quentin Randis",
+        "role": "Co-fundador y Producto",
+        "bio": "Coach de fitness online durante más de 5 años con 250+ clientes. Audiencia consolidada en fitness moderno (Hyrox, funcional, acondicionamiento atlético). Creó Athletic Reset, Athletic Protocol y Sync.",
+        "location": "Bangkok / Internacional"
+      },
+      {
+        "name": "Nazar Moroz",
+        "role": "Co-fundador y CTO",
+        "bio": "Desarrollador full-stack y lead engineer. Stack: React, Expo, Supabase, Mux, Stripe Connect. Enfoque en arquitectura, rendimiento, sistemas en tiempo real y seguridad. Basado en Valencia, España.",
+        "location": "Valencia, ES"
+      }
+    ],
+    "stats": [
+      {
+        "num": "100%",
+        "heading": "Bootstrapped",
+        "body": "Sin VC, sin presión. Hecho para ti."
+      },
+      {
+        "num": "<24h",
+        "heading": "Respuesta",
+        "body": "Acceso directo a los fundadores en Discord."
+      },
+      {
+        "num": "Semanal",
+        "heading": "Lanzamiento",
+        "body": "Una función nueva lanzada cada semana."
+      }
+    ]
+  },
+  "faq": {
+    "sectionLabel": "Preguntas Frecuentes",
+    "eyebrow": "Preguntas Frecuentes",
+    "title": "Todo lo que te has estado preguntando.",
+    "items": [
+      {
+        "question": "¿Qué es Jimmy exactamente?",
+        "answer": "Jimmy es la plataforma de retención para coaches de fitness modernos. Centraliza entrenamientos estructurados, una comunidad estilo Skool, mensajería 1:1, pagos y cursos en una única app nativa iOS/Android — para que tus clientes no solo entrenen, sino que pertenezcan."
+      },
+      {
+        "question": "¿Mis clientes reciben una app con mi marca?",
+        "answer": "Sí. En el plan Club tus clientes descargan una app premium de marca blanca con tu logo y tus colores. Se ve y se siente como tu propio producto — porque lo es."
+      },
+      {
+        "question": "¿Cuánto cuesta realmente?",
+        "answer": "Empieza gratis con hasta 3 clientes, para siempre. El plan Club arranca en €29/mes (€24,65/mes con el −15% beta bloqueado de por vida) y escala con tu número de clientes. Las comisiones bajan cuando creces."
+      },
+      {
+        "question": "Está en Beta: ¿qué significa en concreto?",
+        "answer": "No todas las funciones están listas aún, y tú tienes asiento de primera fila. Estás en un Discord privado con los fundadores, votas el roadmap y bloqueas −15% de por vida. Nuevas funciones cada semana."
+      },
+      {
+        "question": "¿Mis datos y los de mis clientes están seguros?",
+        "answer": "Sí. Jimmy se basa en una arquitectura escalable y segura con cifrado estándar de la industria y un enfoque privacy-first. Los pagos pasan por Stripe Connect — nunca almacenamos datos de tarjeta."
+      },
+      {
+        "question": "¿Puedo migrar desde Trainerize / TrueCoach / Skool?",
+        "answer": "Por supuesto. Te ayudamos a traer tus clientes, programas y contenido. La mayoría de coaches están listos en menos de 10 minutos — y nuestro equipo está en Discord si necesitas ayuda."
+      }
+    ],
+    "footNote": "¿Tienes más preguntas?",
+    "footLink": "Habla con los fundadores en Discord"
+  },
+  "manifesto": {
+    "sectionLabel": "Nuestro Manifiesto",
+    "label": "Nuestro Manifiesto",
+    "headlineLine1": "El software de fitness gestiona clientes.",
+    "headlineLine2": "Jimmy crea una <em>experiencia.</em>",
+    "headlineLine3": "No es lo mismo.",
+    "body": "Creemos que el futuro del fitness pertenece a los <b>coaches independientes</b> que construyen comunidades comprometidas — no a franquicias sin rostro que entregan PDFs.",
+    "mantra": "<em>Menos es más.</em> Hecho para pertenecer."
+  },
+  "finalCta": {
+    "sectionLabel": "Empieza",
+    "headlinePrefix": "Empieza",
+    "headlineAccent": "gratis",
+    "headlineSuffix": ".",
+    "headlineLine2": "Crece a tu propio ritmo.",
+    "subtitle": "Sin tarjeta. Sin prueba limitada de 14 días. Solo una plataforma hecha para coaches que de verdad quieren escalar.",
+    "ctaPrimary": "Empieza ahora",
+    "ctaSecondary": "Pedir una Demo",
+    "socialProof": "Únete a los coaches que construyen Jimmy con nosotros.",
+    "tags": [
+      "Hyrox",
+      "CrossFit",
+      "Functional Fitness"
+    ],
+    "trustText": "Sin compromiso · Sin tarjeta · <b>−15% de por vida</b> para coaches beta"
+  },
+  "errors": {
+    "notFound": "La página que buscas no existe."
+  }
+}

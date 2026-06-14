@@ -1,0 +1,583 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
+import { useReducedMotion, motion } from 'framer-motion'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+// ── Pricing data ──────────────────────────────────────────────────────────────
+
+type Currency = 'eur' | 'usd'
+
+const CLIENTS = ['3', '10', '25', '50', '100', '200'] as const
+const TICK_LABELS = ['0', '10', '25', '50', '100', '200'] as const
+
+const PRICES: Record<Currency, { sym: string; reg: (number | null)[] }> = {
+  eur: { sym: '€', reg: [null, 29, 49, 79, 99, 149] },
+  usd: { sym: '$', reg: [null, 32, 54, 86, 108, 162] },
+}
+
+function getFees(
+  isFree: boolean,
+  currency: Currency,
+): { stripe: string; jimmy: string } {
+  if (isFree) {
+    return {
+      stripe: currency === 'eur' ? 'Stripe 2.9% + €0.30' : 'Stripe 2.9% + $0.30',
+      jimmy: 'Jimmy 5%',
+    }
+  }
+  return {
+    stripe: currency === 'eur' ? 'Stripe 1.4% + €0.25' : 'Stripe 1.4% + $0.25',
+    jimmy: 'Jimmy 2.5%',
+  }
+}
+
+// ── Plan card feature lists ───────────────────────────────────────────────────
+
+const FREE_FEATURES = [
+  'freeFeature1',
+  'freeFeature2',
+  'freeFeature3',
+  'freeFeature4',
+  'freeFeature5',
+  'freeFeature6',
+] as const
+
+const CLUB_FEATURES = [
+  { key: 'clubFeature1', lead: true },
+  { key: 'clubFeature2', lead: false },
+  { key: 'clubFeature3', lead: false },
+  { key: 'clubFeature4', lead: false },
+  { key: 'clubFeature5', lead: false },
+  { key: 'clubFeature6', lead: false },
+  { key: 'clubFeature7', lead: false },
+  { key: 'clubFeature8', lead: false },
+] as const
+
+// ── Slider thumb + track styles (injected once, idiomatic Tailwind can't do pseudo) ──
+
+const SLIDER_STYLE = `
+.pr-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-purple) calc(14px + var(--pr-p, 0) * (100% - 28px)),
+    var(--color-surface-offset) calc(14px + var(--pr-p, 0) * (100% - 28px))
+  );
+  outline: none;
+  cursor: pointer;
+}
+.pr-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--color-purple);
+  box-shadow: 0 4px 14px rgba(138,50,224,0.42), 0 0 0 6px rgba(138,50,224,0.12);
+  cursor: grab;
+  transition: transform 120ms, box-shadow 160ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pr-slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 4px 16px rgba(138,50,224,0.5), 0 0 0 9px rgba(138,50,224,0.14);
+  }
+}
+.pr-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.08);
+}
+.pr-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--color-purple);
+  box-shadow: 0 4px 14px rgba(138,50,224,0.42), 0 0 0 6px rgba(138,50,224,0.12);
+  cursor: grab;
+}
+.pr-slider::-moz-range-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: transparent;
+}
+.pr-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 7px var(--color-purple);
+}
+@keyframes prBump {
+  0%   { transform: scale(1); }
+  32%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.pr-bump {
+  animation: prBump 300ms cubic-bezier(0.16,1,0.3,1);
+  transform-origin: left center;
+}
+`
+
+// ── CheckIcon SVG (matches prototype's inline svg) ────────────────────────────
+
+function CheckMark() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" className="w-[11px] h-[11px] stroke-[3]">
+      <path d="M3 8.5l3.5 3.5 6.5-7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
+
+export function Pricing() {
+  const t = useTranslations('pricing')
+  const shouldReduceMotion = useReducedMotion()
+
+  const [step, setStep] = useState(1) // default: 10 clients (Club)
+  const [currency, setCurrency] = useState<Currency>('eur')
+  const [bumpKey, setBumpKey] = useState(0)
+  const prevStateRef = useRef({ step, currency })
+  const sliderRef = useRef<HTMLInputElement>(null)
+
+  // Inject slider pseudo-element styles once
+  useEffect(() => {
+    if (document.getElementById('pr-slider-style')) return
+    const el = document.createElement('style')
+    el.id = 'pr-slider-style'
+    el.textContent = SLIDER_STYLE
+    document.head.appendChild(el)
+    return () => {
+      // don't remove — harmless and avoids flicker on HMR
+    }
+  }, [])
+
+  // Sync CSS custom property for track fill
+  useEffect(() => {
+    if (sliderRef.current) {
+      sliderRef.current.style.setProperty('--pr-p', String(step / 5))
+    }
+  }, [step])
+
+  const handleChange = useCallback(
+    (nextStep: number, nextCurrency?: Currency) => {
+      const nc = nextCurrency ?? currency
+      const prev = prevStateRef.current
+      const changed = nextStep !== prev.step || nc !== prev.currency
+      if (changed && !shouldReduceMotion) {
+        setBumpKey((k) => k + 1)
+      }
+      prevStateRef.current = { step: nextStep, currency: nc }
+      setStep(nextStep)
+      if (nextCurrency !== undefined) setCurrency(nextCurrency)
+    },
+    [currency, shouldReduceMotion],
+  )
+
+  // Derived state
+  const c = PRICES[currency]
+  const reg = c.reg[step]
+  const isFree = reg === null
+  const nowText = isFree ? `${c.sym}0` : `${c.sym}${(reg * 0.85).toFixed(2)}`
+  const wasText = isFree ? null : `${c.sym}${reg}`
+  const planLabel = isFree ? t('planFree') : t('planClub')
+  const activeCard: 'free' | 'club' = isFree ? 'free' : 'club'
+  const fees = getFees(isFree, currency)
+
+  // Entrance animation config
+  const fadeRise = {
+    initial: shouldReduceMotion ? {} : { opacity: 0, y: 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: '-60px' },
+  }
+  const easeOut = [0.16, 1, 0.3, 1] as const
+
+  return (
+    <section
+      id="pricing"
+      aria-label={t('sectionLabel')}
+      className="relative overflow-hidden border-t border-border py-[var(--section-pad-y)] scroll-mt-20"
+      style={{ background: 'var(--color-bg)' }}
+    >
+      {/* Radial glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 52% 44% at 50% -6%, rgba(138,50,224,0.11) 0%, transparent 70%)',
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1080px] px-[clamp(1rem,4vw,2.5rem)]">
+
+        {/* ── Promo pill ── */}
+        <motion.div
+          {...fadeRise}
+          transition={{ duration: 0.64, ease: easeOut }}
+          className="mx-auto mb-[clamp(1.5rem,3vw,2.1rem)] flex w-max max-w-full items-center gap-[11px] rounded-full border border-[var(--color-purple-border)] bg-surface px-[18px] py-[7px] pl-[8px] shadow-[0_4px_18px_rgba(138,50,224,0.08)] max-[540px]:flex-col max-[540px]:rounded-[18px] max-[540px]:px-[18px] max-[540px]:py-3 max-[540px]:gap-[7px] max-[540px]:text-center"
+        >
+          <span className="inline-flex items-center gap-[5px] rounded-full bg-purple px-[11px] py-[5px] text-[10.5px] font-extrabold uppercase tracking-[0.06em] text-white whitespace-nowrap">
+            <Zap size={12} strokeWidth={1.75} />
+            {t('promoBadge')}
+          </span>
+          <span className="text-[13.5px] font-medium text-text">
+            <strong className="font-bold">{t('promoTextBold')}</strong>
+            {' '}{t('promoTextRest')}
+          </span>
+        </motion.div>
+
+        {/* ── Header ── */}
+        <motion.header
+          {...fadeRise}
+          transition={{ duration: 0.64, ease: easeOut, delay: 0.04 }}
+          className="mx-auto mb-[clamp(2.2rem,4vw,3rem)] max-w-[660px] text-center"
+        >
+          <span className="mb-4 inline-flex items-center gap-[6px] text-[11px] font-bold uppercase tracking-[0.1em] text-purple before:h-[5px] before:w-[5px] before:rounded-full before:bg-purple before:content-['']">
+            {t('eyebrow')}
+          </span>
+          <h2 className="mb-[0.9rem] font-display text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-[1.05] tracking-[-0.035em] text-text [text-wrap:balance]">
+            {t('title')}
+          </h2>
+          <p className="text-[clamp(1rem,1.5vw,1.125rem)] leading-[1.6] text-text-muted [text-wrap:balance]">
+            {t('subtitle')}
+          </p>
+        </motion.header>
+
+        {/* ── Interactive scaler ── */}
+        <motion.div
+          {...fadeRise}
+          transition={{ duration: 0.72, ease: easeOut, delay: 0.08 }}
+          className="relative grid grid-cols-[1.12fr_0.88fr] overflow-hidden rounded-[28px] border border-border bg-surface shadow-[0_34px_90px_-44px_rgba(26,25,23,0.3),0_2px_10px_rgba(26,25,23,0.04)] max-[820px]:grid-cols-1"
+        >
+          {/* Left: control */}
+          <div className="flex flex-col p-[clamp(1.9rem,3vw,2.9rem)]">
+            {/* Head row */}
+            <div className="mb-[clamp(2.2rem,4vw,3rem)] flex flex-wrap items-start justify-between gap-[16px_18px]">
+              <div className="min-w-0 flex-[1_1_220px]">
+                <div className="mb-[0.4rem] font-display text-[clamp(1.2rem,1.9vw,1.5rem)] font-bold leading-[1.2] tracking-[-0.02em] text-text">
+                  {t('sliderQuestion')}
+                </div>
+                <p className="text-[13.5px] text-text-muted">{t('sliderHelp')}</p>
+              </div>
+
+              {/* Currency switcher */}
+              <div
+                role="group"
+                aria-label={t('currencyLabel')}
+                className="inline-flex shrink-0 rounded-full border border-border bg-surface-2 p-[3px]"
+              >
+                {(['eur', 'usd'] as Currency[]).map((cur) => (
+                  <button
+                    key={cur}
+                    type="button"
+                    onClick={() => handleChange(step, cur)}
+                    className={cn(
+                      'whitespace-nowrap rounded-full px-[13px] py-[6px] font-body text-[12.5px] font-bold transition-[background,color] duration-[160ms] cursor-pointer border-0',
+                      currency === cur
+                        ? 'bg-purple text-white'
+                        : 'bg-transparent text-text-muted hover:text-text',
+                    )}
+                    aria-pressed={currency === cur}
+                  >
+                    {cur === 'eur' ? '€ EUR' : '$ USD'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Slider */}
+            <div className="mt-auto">
+              <input
+                ref={sliderRef}
+                type="range"
+                className="pr-slider"
+                id="pr-slider"
+                min={0}
+                max={5}
+                step={1}
+                value={step}
+                aria-label={t('sliderAriaLabel')}
+                aria-valuetext={`${CLIENTS[step]} ${t('clients')} — ${planLabel}`}
+                onChange={(e) => handleChange(parseInt(e.target.value, 10))}
+              />
+
+              {/* Tick marks */}
+              <div className="relative mt-[14px] h-[30px]">
+                {TICK_LABELS.map((label, i) => {
+                  const isActive = i === step
+                  const leftStyle: Record<number, string> = {
+                    0: '14px',
+                    1: 'calc(14px + 0.2 * (100% - 28px))',
+                    2: 'calc(14px + 0.4 * (100% - 28px))',
+                    3: 'calc(14px + 0.6 * (100% - 28px))',
+                    4: 'calc(14px + 0.8 * (100% - 28px))',
+                    5: 'calc(100% - 14px)',
+                  }
+                  return (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => handleChange(i)}
+                      style={{ left: leftStyle[i] }}
+                      className={cn(
+                        'absolute top-0 -translate-x-1/2 cursor-pointer whitespace-nowrap border-0 bg-transparent pt-[12px] text-[12px] font-semibold transition-colors duration-[160ms]',
+                        'before:absolute before:left-1/2 before:top-0 before:h-[6px] before:w-[2px] before:-translate-x-1/2 before:rounded-[2px] before:transition-[background] before:duration-[160ms] before:content-[""]',
+                        isActive
+                          ? 'text-purple before:bg-purple'
+                          : 'text-text-faint before:bg-border',
+                      )}
+                      aria-label={`${label} ${t('clients')}`}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: result panel */}
+          <div
+            className="relative flex flex-col border-l border-border p-[clamp(1.9rem,3vw,2.7rem)] max-[820px]:border-l-0 max-[820px]:border-t"
+            style={{
+              background: 'linear-gradient(165deg, #F4ECFF 0%, #FBF8FF 58%, var(--color-surface) 100%)',
+            }}
+          >
+            {/* Plan name + beta badge */}
+            <div className="mb-4 flex min-h-[22px] items-center gap-[9px]">
+              <span className="font-display text-[13px] font-extrabold uppercase tracking-[0.12em] text-purple">
+                {planLabel}
+              </span>
+              {!isFree && (
+                <span className="rounded-full bg-purple px-[9px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.05em] text-white">
+                  {t('betaBadge')}
+                </span>
+              )}
+            </div>
+
+            {/* Price */}
+            <div className="mb-[0.35rem] flex flex-nowrap items-center gap-3">
+              <span
+                key={bumpKey}
+                className={cn(
+                  'font-display text-[clamp(2.6rem,5vw,3.7rem)] font-extrabold leading-[0.95] tracking-[-0.04em] text-text tabular-nums whitespace-nowrap',
+                  !shouldReduceMotion && bumpKey > 0 && 'pr-bump',
+                )}
+              >
+                {nowText}
+              </span>
+              <div className="flex min-w-0 flex-col items-start justify-center gap-[2px]">
+                {wasText && (
+                  <span className="text-[17px] font-semibold leading-[1.1] text-text-faint line-through tabular-nums">
+                    {wasText}
+                  </span>
+                )}
+                <span className="text-[15px] font-semibold leading-[1.1] text-text-muted">
+                  {t('perMonth')}
+                </span>
+              </div>
+            </div>
+
+            {/* Sub line */}
+            <div className="mb-[1.3rem] text-[14px] text-text-muted">
+              {t('forUpTo')} {CLIENTS[step]} {t('clients')}
+            </div>
+
+            {/* Fees */}
+            <div className="mb-[1.4rem] border-b border-[var(--color-divider)] border-t py-3 text-[12.5px] leading-[1.5] text-text-muted">
+              {t('feesLabel')}{' '}
+              <strong className="font-bold text-text">{fees.stripe}</strong>
+              {' · '}
+              <strong className="font-bold text-text">{fees.jimmy}</strong>
+            </div>
+
+            {/* CTA */}
+            <button
+              type="button"
+              className="mt-auto inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-purple px-[22px] py-[15px] font-body text-[15px] font-bold text-white shadow-[0_12px_28px_-8px_rgba(138,50,224,0.6)] transition-[background,box-shadow,transform] duration-[180ms] hover:bg-purple-hover hover:shadow-[0_14px_34px_-8px_rgba(138,50,224,0.72)] active:translate-y-px"
+            >
+              <span>{isFree ? t('ctaFree') : t('ctaClub')}</span>
+              <ArrowRight size={17} strokeWidth={1.75} />
+            </button>
+
+            {/* Lock note */}
+            {!isFree && (
+              <p className="mt-3 flex items-start gap-[7px] text-[11.5px] leading-[1.5] text-text-muted">
+                <Lock size={13} strokeWidth={1.75} className="mt-[2px] shrink-0 text-purple" />
+                <span>{t('lockNote')}</span>
+              </p>
+            )}
+          </div>
+        </motion.div>
+
+        {/* ── What's included ── */}
+        <div className="mt-[clamp(2.4rem,5vw,3.4rem)] mb-[1.4rem] text-center">
+          <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-faint">
+            {t('whatsIncluded')}
+          </span>
+        </div>
+
+        <motion.div
+          {...fadeRise}
+          transition={{ duration: 0.64, ease: easeOut, delay: 0.12 }}
+          className="grid grid-cols-2 gap-[clamp(1rem,2vw,1.5rem)] max-[680px]:mx-auto max-[680px]:max-w-[440px] max-[680px]:grid-cols-1"
+        >
+          {/* Free card */}
+          <PlanCard
+            name={t('planFree')}
+            tag={t('freeTag')}
+            isClub={false}
+            isActive={activeCard === 'free'}
+          >
+            {FREE_FEATURES.map((key) => (
+              <FeatureRow key={key} text={t(key)} isClub={false} />
+            ))}
+          </PlanCard>
+
+          {/* Club card */}
+          <PlanCard
+            name={t('planClub')}
+            tag={t('clubTag')}
+            isClub
+            isActive={activeCard === 'club'}
+          >
+            {CLUB_FEATURES.map(({ key, lead }) => (
+              <FeatureRow key={key} text={t(key)} isClub lead={lead} />
+            ))}
+          </PlanCard>
+        </motion.div>
+
+        {/* ── Add-ons ── */}
+        <motion.div
+          {...fadeRise}
+          transition={{ duration: 0.64, ease: easeOut, delay: 0.16 }}
+          className="mt-[clamp(2.2rem,4vw,3.2rem)]"
+        >
+          <div className="mb-[1.3rem] text-center">
+            <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-faint">
+              {t('addons')}
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-[14px] max-[680px]:mx-auto max-[680px]:max-w-[440px] max-[680px]:grid-cols-1">
+            <AddonCard
+              icon={<Users size={20} strokeWidth={1.75} />}
+              name={t('addon1Name')}
+              price={t('addon1Price')}
+            />
+            <AddonCard
+              icon={<Sparkles size={20} strokeWidth={1.75} />}
+              name={t('addon2Name')}
+              price={t('addon2Price')}
+            />
+            <AddonCard
+              icon={<Repeat size={20} strokeWidth={1.75} />}
+              name={t('addon3Name')}
+              price={t('addon3Price')}
+            />
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  )
+}
+
+// ── Sub-components ─────────────────────────────────────────────────────────────
+
+function PlanCard({
+  name,
+  tag,
+  isClub,
+  isActive,
+  children,
+}: {
+  name: string
+  tag: string
+  isClub: boolean
+  isActive: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      className={cn(
+        'relative rounded-[22px] border bg-surface p-[clamp(1.5rem,2.4vw,2rem)] transition-[border-color,box-shadow,transform] duration-[220ms]',
+        isClub
+          ? 'border-[rgba(138,50,224,0.4)] shadow-[0_18px_50px_-30px_rgba(138,50,224,0.4)]'
+          : 'border-border',
+        isActive && isClub && '-translate-y-[2px] shadow-[0_22px_56px_-28px_rgba(138,50,224,0.5)]',
+        isActive && !isClub && '-translate-y-[2px] border-[rgba(138,50,224,0.4)] shadow-[0_18px_50px_-30px_rgba(138,50,224,0.4)]',
+      )}
+    >
+      <div
+        className={cn(
+          'mb-[0.45rem] font-display text-[14px] font-extrabold uppercase tracking-[0.1em]',
+          isClub ? 'text-purple' : 'text-text-muted',
+        )}
+      >
+        {name}
+      </div>
+      <p className="mb-[1.2rem] border-b border-[var(--color-divider)] pb-[1.2rem] text-[14px] leading-[1.5] text-text-muted">
+        {tag}
+      </p>
+      <ul className="flex list-none flex-col gap-[11px]">{children}</ul>
+    </div>
+  )
+}
+
+function FeatureRow({
+  text,
+  isClub,
+  lead = false,
+}: {
+  text: string
+  isClub: boolean
+  lead?: boolean
+}) {
+  return (
+    <li
+      className={cn(
+        'flex items-center gap-[11px] text-[14px]',
+        lead ? 'font-semibold text-text-muted' : 'text-text',
+      )}
+    >
+      <span
+        className={cn(
+          'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full',
+          isClub
+            ? 'bg-purple text-white'
+            : 'bg-[rgba(138,50,224,0.12)] text-purple',
+        )}
+      >
+        <CheckMark />
+      </span>
+      {text}
+    </li>
+  )
+}
+
+function AddonCard({
+  icon,
+  name,
+  price,
+}: {
+  icon: React.ReactNode
+  name: string
+  price: string
+}) {
+  return (
+    <div className="flex items-center gap-[14px] rounded-[16px] border border-border bg-surface px-[18px] py-[16px] transition-[border-color,box-shadow,transform] duration-[180ms] hover:-translate-y-[2px] hover:border-[rgba(138,50,224,0.35)] hover:shadow-[0_8px_24px_rgba(138,50,224,0.09)]">
+      <div className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[rgba(138,50,224,0.1)] text-purple">
+        {icon}
+      </div>
+      <div>
+        <div className="mb-[2px] text-[14px] font-bold text-text">{name}</div>
+        <div className="text-[12.5px] font-medium text-text-muted">{price}</div>
+      </div>
+    </div>
+  )
+}

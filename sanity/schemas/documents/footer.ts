@@ -1,37 +1,36 @@
-import { defineField, defineType } from "sanity";
-
-import { languageField } from "../fields/language";
+import { defineField, defineType } from 'sanity'
 
 export const footer = defineType({
-  name: "footer",
-  title: "Footer",
-  type: "document",
+  name: 'footer',
+  type: 'document',
   fields: [
-    languageField,
     defineField({
-      name: "brandLabel",
-      title: "Brand Label",
-      type: "string",
-      validation: (Rule) => Rule.required(),
+      name: 'columns',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'title', type: 'string' }),
+            defineField({
+              name: 'links',
+              type: 'array',
+              of: [{ type: 'navItem' }],
+            }),
+          ],
+        },
+      ],
     }),
     defineField({
-      name: "copyrightText",
-      title: "Copyright Text",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-      description: "Use {year} to insert the current year.",
+      name: 'socialLinks',
+      type: 'array',
+      of: [{ type: 'socialLink' }],
     }),
+    defineField({ name: 'legalText', type: 'text' }),
+    defineField({ name: 'language', type: 'string', readOnly: true, hidden: true }),
   ],
   preview: {
-    select: {
-      brandLabel: "brandLabel",
-      language: "language",
-    },
-    prepare({ brandLabel, language }) {
-      return {
-        title: brandLabel || "Footer",
-        subtitle: language ? `Locale: ${language}` : "Locale not set",
-      };
-    },
+    select: { subtitle: 'language' },
+    prepare: ({ subtitle }) => ({ title: 'Footer', subtitle }),
   },
-});
+})
