@@ -2,10 +2,13 @@
 
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { Check, X } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+
+// useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
+const useIsoLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -143,6 +146,41 @@ export default function WhyJimmy() {
   const prefersReducedMotion = useReducedMotion()
   const [active, setActive] = useState<State>('without')
 
+  // ── Height morphing ──────────────────────────────────────────────────────
+  // The two states (description + bullets) have different heights. We stack
+  // them, measure the active one, and animate the wrapper's height so the
+  // section grows/shrinks smoothly instead of snapping.
+  const withoutRef = useRef<HTMLDivElement>(null)
+  const withRef = useRef<HTMLDivElement>(null)
+  const [contentHeight, setContentHeight] = useState<number | undefined>(undefined)
+  // Skip the very first height transition (mount should just settle silently).
+  const mounted = useRef(false)
+  useEffect(() => {
+    mounted.current = true
+  }, [])
+
+  useIsoLayoutEffect(() => {
+    const measure = () => {
+      const el = active === 'without' ? withoutRef.current : withRef.current
+      if (el) setContentHeight(el.offsetHeight)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (withoutRef.current) ro.observe(withoutRef.current)
+    if (withRef.current) ro.observe(withRef.current)
+    return () => ro.disconnect()
+  }, [active])
+
+  // Curves: iOS-like drawer easing for the height morph; spring for the pill.
+  const EASE_DRAWER = [0.32, 0.72, 0, 1] as const
+  const heightTransition = {
+    duration: prefersReducedMotion || !mounted.current ? 0 : 0.52,
+    ease: EASE_DRAWER,
+  }
+  const indicatorTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, duration: 0.5, bounce: 0.18 }
+
   // Tool cards for the "without" preview
   const toolCards: ToolCardData[] = [
     {
@@ -173,15 +211,8 @@ export default function WhyJimmy() {
 
   const withoutBullets = t.raw('bullets.without') as string[]
   const withBullets = t.raw('bullets.with') as string[]
-  const currentBullets = active === 'without' ? withoutBullets : withBullets
 
   // Framer-motion variants
-  const fadeVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 },
-  }
-
   const riseVariants = {
     hidden: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 },
     visible: {
@@ -190,8 +221,6 @@ export default function WhyJimmy() {
       transition: { duration: 0.68, ease: [0.16, 1, 0.3, 1] as const },
     },
   }
-
-  const textTransition = { duration: 0.19, ease: 'easeInOut' as const }
 
   return (
     <section
@@ -219,10 +248,11 @@ export default function WhyJimmy() {
             {/* Without state */}
             <div
               className={cn(
-                'absolute inset-0 p-7 flex flex-col transition-opacity duration-[380ms] ease-[ease]',
+                'absolute inset-0 p-7 flex flex-col',
+                'transition-[opacity,transform,filter] duration-[460ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
                 active === 'without'
-                  ? 'opacity-100 pointer-events-auto'
-                  : 'opacity-0 pointer-events-none',
+                  ? 'opacity-100 scale-100 blur-0 pointer-events-auto'
+                  : 'opacity-0 scale-[0.98] blur-[6px] pointer-events-none',
               )}
               aria-hidden={active !== 'without'}
             >
@@ -240,10 +270,11 @@ export default function WhyJimmy() {
             {/* With state */}
             <div
               className={cn(
-                'absolute inset-0 p-7 flex flex-col transition-opacity duration-[380ms] ease-[ease]',
+                'absolute inset-0 p-7 flex flex-col',
+                'transition-[opacity,transform,filter] duration-[460ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
                 active === 'with'
-                  ? 'opacity-100 pointer-events-auto'
-                  : 'opacity-0 pointer-events-none',
+                  ? 'opacity-100 scale-100 blur-0 pointer-events-auto'
+                  : 'opacity-0 scale-[0.98] blur-[6px] pointer-events-none',
               )}
               aria-hidden={active !== 'with'}
             >
@@ -294,7 +325,7 @@ export default function WhyJimmy() {
               </span>
             </h2>
 
-            {/* Toggle pill */}
+            {/* Toggle pill — sliding indicator slides between the two options */}
             <div
               className={cn(
                 'inline-flex items-center self-start',
@@ -303,99 +334,132 @@ export default function WhyJimmy() {
               role="group"
               aria-label={t('toggle.ariaLabel')}
             >
-              {(['without', 'with'] as const).map((state) => (
-                <button
-                  key={state}
-                  onClick={() => setActive(state)}
-                  aria-pressed={active === state}
-                  className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full px-[18px] py-[9px]',
-                    'max-sm:px-[14px] max-sm:py-2 max-sm:text-[13px]',
-                    'font-body text-[14px] font-medium text-text-muted whitespace-nowrap',
-                    'transition-[background,color,box-shadow] duration-[220ms]',
-                    'cursor-pointer',
-                    active === state && [
-                      'bg-surface text-text font-semibold',
-                      'shadow-[0_1px_6px_rgba(0,0,0,0.10),0_1px_2px_rgba(0,0,0,0.06)]',
-                    ],
-                  )}
-                >
-                  {state === 'without' ? (
-                    <svg
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      className="w-[13px] h-[13px] shrink-0"
-                      aria-hidden
-                    >
-                      <path
-                        d="M4 4l8 8M12 4l-8 8"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+              {(['without', 'with'] as const).map((state) => {
+                const isActive = active === state
+                return (
+                  <button
+                    key={state}
+                    onClick={() => setActive(state)}
+                    aria-pressed={isActive}
+                    className={cn(
+                      'relative inline-flex items-center gap-1.5 rounded-full px-[18px] py-[9px]',
+                      'max-sm:px-[14px] max-sm:py-2 max-sm:text-[13px]',
+                      'font-body text-[14px] font-semibold whitespace-nowrap cursor-pointer',
+                      'transition-colors duration-200',
+                      isActive ? 'text-text' : 'text-text-muted hover:text-text',
+                      'active:scale-[0.97] [transition:color_200ms,transform_140ms_ease-out]',
+                    )}
+                  >
+                    {/* Sliding background — shared layoutId animates position */}
+                    {isActive && (
+                      <motion.span
+                        layoutId="why-toggle-indicator"
+                        transition={indicatorTransition}
+                        aria-hidden
+                        className={cn(
+                          'absolute inset-0 -z-0 rounded-full bg-surface',
+                          'shadow-[0_1px_6px_rgba(0,0,0,0.10),0_1px_2px_rgba(0,0,0,0.06)]',
+                        )}
                       />
-                    </svg>
-                  ) : (
-                    <svg
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      className="w-[13px] h-[13px] shrink-0"
-                      aria-hidden
-                    >
-                      <path
-                        d="M3 8.5l3.5 3.5 6.5-7"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                  {t(`toggle.${state}`)}
-                </button>
-              ))}
+                    )}
+                    <span className="relative z-10 inline-flex items-center gap-1.5">
+                      {state === 'without' ? (
+                        <svg
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          className="w-[13px] h-[13px] shrink-0"
+                          aria-hidden
+                        >
+                          <path
+                            d="M4 4l8 8M12 4l-8 8"
+                            stroke="currentColor"
+                            strokeWidth="1.75"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          className="w-[13px] h-[13px] shrink-0"
+                          aria-hidden
+                        >
+                          <path
+                            d="M3 8.5l3.5 3.5 6.5-7"
+                            stroke="currentColor"
+                            strokeWidth="1.75"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                      {t(`toggle.${state}`)}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
 
-            {/* Description — fades on switch */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.p
-                key={`desc-${active}`}
-                variants={fadeVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={textTransition}
-                className="text-[15px] text-text-muted leading-[1.65] mb-7 max-w-[460px]"
-              >
-                {t(`desc.${active}`)}
-              </motion.p>
-            </AnimatePresence>
+            {/*
+              Height-morphing content. Both states are stacked; the active one
+              is in flow (relative), the other is taken out (absolute). The
+              wrapper's height animates to the measured active height so the
+              section grows/shrinks smoothly. overflow-hidden clips the taller
+              state mid-morph. Each state crossfades with a slight rise + blur.
+            */}
+            <motion.div
+              initial={false}
+              animate={{ height: contentHeight ?? 'auto' }}
+              transition={heightTransition}
+              className="relative overflow-hidden"
+            >
+              {(['without', 'with'] as const).map((state) => {
+                const isActive = active === state
+                const bullets = state === 'without' ? withoutBullets : withBullets
+                return (
+                  <div
+                    key={state}
+                    ref={state === 'without' ? withoutRef : withRef}
+                    aria-hidden={!isActive}
+                    className={cn(
+                      'top-0 left-0 w-full',
+                      isActive ? 'relative' : 'absolute pointer-events-none',
+                      'transition-[opacity,transform,filter] duration-[460ms]',
+                      '[transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
+                      isActive
+                        ? 'opacity-100 translate-y-0 blur-0'
+                        : 'opacity-0 translate-y-[10px] blur-[5px]',
+                    )}
+                  >
+                    {/* Description */}
+                    <p className="text-[15px] text-text-muted leading-[1.65] mb-7 max-w-[460px]">
+                      {t(`desc.${state}`)}
+                    </p>
 
-            {/* Dashed divider */}
-            <hr
-              className="border-none h-px mb-7"
-              style={{
-                background:
-                  'repeating-linear-gradient(90deg, var(--color-border) 0, var(--color-border) 6px, transparent 6px, transparent 14px)',
-              }}
-            />
+                    {/* Dashed divider */}
+                    <hr
+                      className="border-none h-px mb-7"
+                      style={{
+                        background:
+                          'repeating-linear-gradient(90deg, var(--color-border) 0, var(--color-border) 6px, transparent 6px, transparent 14px)',
+                      }}
+                    />
 
-            {/* Bullets grid — fades on switch */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={`bullets-${active}`}
-                variants={fadeVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={textTransition}
-                className="grid grid-cols-2 max-sm:grid-cols-1 gap-x-8 gap-y-[1.1rem]"
-              >
-                {currentBullets.map((text, i) => (
-                  <BulletItem key={i} text={text} muted={active === 'without'} />
-                ))}
-              </motion.div>
-            </AnimatePresence>
+                    {/* Bullets grid */}
+                    <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-x-8 gap-y-[1.1rem]">
+                      {bullets.map((text, i) => (
+                        <BulletItem
+                          key={i}
+                          text={text}
+                          muted={state === 'without'}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </motion.div>
 
           </div>
         </motion.div>

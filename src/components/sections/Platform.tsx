@@ -4,10 +4,19 @@ import { useTranslations } from 'next-intl'
 import {
   useReducedMotion,
   motion,
-  AnimatePresence,
   useAnimation,
 } from 'framer-motion'
-import { useEffect, useCallback, useState } from 'react'
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+  useState,
+} from 'react'
+
+// useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
+const useIsoLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 import {
   Users,
   MessageCircle,
@@ -23,7 +32,7 @@ import { cn } from '@/lib/utils'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const DURATION_MS = 4500
+const DURATION_MS = 7000
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
 const RISE = {
   hidden: { opacity: 0, y: 14 },
@@ -130,7 +139,7 @@ function ProgressBar({ active, reducedMotion }: { active: boolean; reducedMotion
 function StateWorkout({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
   const tags = t.raw('steps.workout.tags') as string[]
   return (
-    <div className="absolute inset-0 flex flex-col">
+    <div className="flex flex-col">
       {/* Bar */}
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
         <span className="text-[13.5px] font-bold text-text">{t('steps.workout.preview.barTitle')}</span>
@@ -139,7 +148,7 @@ function StateWorkout({ t }: { t: ReturnType<typeof useTranslations<'platform'>>
         </span>
       </div>
       {/* Body */}
-      <div className="flex-1 p-[11px] flex flex-col gap-[6px] overflow-hidden">
+      <div className="p-[11px] flex flex-col gap-[6px]">
         {/* Exercise row */}
         <div className="flex items-center gap-2 px-[10px] py-2 rounded-[10px] bg-surface-2 border border-border">
           <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-sm bg-purple-light">🏋</div>
@@ -193,14 +202,14 @@ function StateWorkout({ t }: { t: ReturnType<typeof useTranslations<'platform'>>
 function StateCommunity({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
   const tags = t.raw('steps.community.tags') as string[]
   return (
-    <div className="absolute inset-0 flex flex-col">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
         <span className="text-[13.5px] font-bold text-text">{t('steps.community.preview.barTitle')}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
           {t('steps.community.preview.barChip')}
         </span>
       </div>
-      <div className="flex-1 p-[11px] flex flex-col gap-[6px] overflow-hidden">
+      <div className="p-[11px] flex flex-col gap-[6px]">
         {/* Challenge */}
         <div className="flex items-center gap-[9px] px-[11px] py-[9px] rounded-[10px] bg-purple-light border border-[rgba(138,50,224,0.22)]">
           <span className="text-xl flex-shrink-0">🏃</span>
@@ -252,14 +261,14 @@ function StateCommunity({ t }: { t: ReturnType<typeof useTranslations<'platform'
 function StateMessaging({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
   const tags = t.raw('steps.messaging.tags') as string[]
   return (
-    <div className="absolute inset-0 flex flex-col">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
         <span className="text-[13.5px] font-bold text-text">{t('steps.messaging.preview.barTitle')}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
           {t('steps.messaging.preview.barChip')}
         </span>
       </div>
-      <div className="flex-1 p-[11px] flex flex-col gap-[5px] overflow-hidden">
+      <div className="p-[11px] flex flex-col gap-[5px]">
         {/* out bubble */}
         <div className="self-end max-w-[76%] px-[10px] py-2 rounded-xl rounded-br-[3px] bg-purple text-white text-[11.5px] leading-[1.45]">
           Hey Marco, your new program is ready 💪
@@ -300,14 +309,14 @@ function StateMessaging({ t }: { t: ReturnType<typeof useTranslations<'platform'
 function StatePayments({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
   const tags = t.raw('steps.payments.tags') as string[]
   return (
-    <div className="absolute inset-0 flex flex-col">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
         <span className="text-[13.5px] font-bold text-text">{t('steps.payments.preview.barTitle')}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
           {t('steps.payments.preview.barChip')}
         </span>
       </div>
-      <div className="flex-1 p-[11px] flex flex-col gap-[6px] overflow-hidden">
+      <div className="p-[11px] flex flex-col gap-[6px]">
         {/* Revenue card */}
         <div className="px-[11px] py-[10px] rounded-[10px] bg-surface-2 border border-border">
           <div className="text-[9.5px] uppercase tracking-[0.07em] text-text-faint">Monthly revenue</div>
@@ -361,14 +370,14 @@ function StatePayments({ t }: { t: ReturnType<typeof useTranslations<'platform'>
 function StateCourses({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
   const tags = t.raw('steps.courses.tags') as string[]
   return (
-    <div className="absolute inset-0 flex flex-col">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
         <span className="text-[13.5px] font-bold text-text">{t('steps.courses.preview.barTitle')}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
           {t('steps.courses.preview.barChip')}
         </span>
       </div>
-      <div className="flex-1 p-[11px] flex flex-col gap-[6px] overflow-hidden">
+      <div className="p-[11px] flex flex-col gap-[6px]">
         {/* Module 1 label */}
         <div className="text-[10px] font-bold tracking-[0.05em] uppercase text-text-faint px-[2px] pt-[3px] pb-[1px]">
           MODULE 1 — Foundations
@@ -454,6 +463,33 @@ export function Platform() {
     setActive(idx)
   }, [])
 
+  // ── Preview height morphing ───────────────────────────────────────────────
+  // Each preview panel has a different natural height. We stack them, measure
+  // the active one, and animate the container's height so it grows/shrinks
+  // smoothly between cards instead of being a fixed box with dead space.
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [panelHeight, setPanelHeight] = useState<number | undefined>(undefined)
+  const mounted = useRef(false)
+  useEffect(() => {
+    mounted.current = true
+  }, [])
+
+  useIsoLayoutEffect(() => {
+    const measure = () => {
+      const el = panelRefs.current[active]
+      if (el) setPanelHeight(el.offsetHeight)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    panelRefs.current.forEach((el) => el && ro.observe(el))
+    return () => ro.disconnect()
+  }, [active])
+
+  const heightTransition = {
+    duration: reducedMotion || !mounted.current ? 0 : 0.5,
+    ease: [0.32, 0.72, 0, 1] as const,
+  }
+
   // Auto-advance: re-arm on every `active` change; skip entirely when reduced motion
   useEffect(() => {
     if (reducedMotion) return
@@ -462,8 +498,6 @@ export function Platform() {
     }, DURATION_MS)
     return () => clearTimeout(id)
   }, [active, reducedMotion])
-
-  const activeStep = STEPS[active]
 
   return (
     <section
@@ -521,18 +555,34 @@ export function Platform() {
                   onClick={() => activate(i)}
                   aria-pressed={isActive}
                   className={cn(
-                    'flex items-start gap-3 px-3 py-[14px] rounded-[14px] cursor-pointer text-left w-full',
-                    'border-[1.5px] border-transparent',
-                    'transition-[background,border-color,box-shadow] duration-[180ms]',
-                    isActive
-                      ? 'bg-surface border-[rgba(138,50,224,0.22)] shadow-[0_2px_16px_rgba(138,50,224,0.08),0_1px_4px_rgba(0,0,0,0.04)]'
-                      : 'hover:bg-[rgba(138,50,224,0.04)]',
+                    'relative flex items-start gap-3 px-3 py-[14px] rounded-[14px] cursor-pointer text-left w-full',
+                    'transition-colors duration-[180ms]',
+                    !isActive && 'hover:bg-[rgba(138,50,224,0.04)] rounded-[14px]',
+                    'active:scale-[0.99] [transition:background-color_180ms,transform_140ms_ease-out]',
                   )}
                 >
+                  {/* Sliding active highlight — morphs between cards */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="platform-active-card"
+                      transition={
+                        reducedMotion
+                          ? { duration: 0 }
+                          : { type: 'spring', duration: 0.5, bounce: 0.16 }
+                      }
+                      aria-hidden
+                      className={cn(
+                        'absolute inset-0 -z-0 rounded-[14px]',
+                        'bg-surface border-[1.5px] border-[rgba(138,50,224,0.22)]',
+                        'shadow-[0_2px_16px_rgba(138,50,224,0.08),0_1px_4px_rgba(0,0,0,0.04)]',
+                      )}
+                    />
+                  )}
+
                   {/* Icon */}
                   <div
                     className={cn(
-                      'w-9 h-9 rounded-[10px] flex-shrink-0 flex items-center justify-center mt-[1px]',
+                      'relative z-[1] w-9 h-9 rounded-[10px] flex-shrink-0 flex items-center justify-center mt-[1px]',
                       'transition-[background,color] duration-200',
                       isActive
                         ? 'bg-purple-light text-purple'
@@ -543,7 +593,7 @@ export function Platform() {
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 min-w-0">
+                  <div className="relative z-[1] flex-1 min-w-0">
                     <div
                       className={cn(
                         'text-[10px] font-bold tracking-[0.1em] uppercase mb-[2px] transition-colors duration-[180ms]',
@@ -592,26 +642,40 @@ export function Platform() {
 
           {/* ── Right preview ── */}
           <div className="sticky top-[5.5rem] max-[960px]:static">
-            <div
+            <motion.div
+              initial={false}
+              animate={{ height: panelHeight ?? 'auto' }}
+              transition={heightTransition}
               className={cn(
                 'bg-surface border border-border rounded-[22px] overflow-hidden',
                 'shadow-[0_4px_32px_rgba(0,0,0,0.07),0_1px_4px_rgba(0,0,0,0.04)]',
-                'min-h-[480px] relative',
+                'relative',
               )}
             >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStep.id}
-                  className="absolute inset-0"
-                  initial={reducedMotion ? { opacity: 1 } : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={reducedMotion ? { opacity: 1 } : { opacity: 0 }}
-                  transition={reducedMotion ? { duration: 0 } : { duration: 0.34, ease: 'easeInOut' }}
-                >
-                  <PreviewPanel id={activeStep.id} t={t} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
+              {STEPS.map((step, i) => {
+                const isActive = i === active
+                return (
+                  <div
+                    key={step.id}
+                    ref={(el) => {
+                      panelRefs.current[i] = el
+                    }}
+                    aria-hidden={!isActive}
+                    className={cn(
+                      'top-0 left-0 w-full',
+                      isActive ? 'relative' : 'absolute pointer-events-none',
+                      'transition-[opacity,transform,filter] duration-[440ms]',
+                      '[transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
+                      isActive
+                        ? 'opacity-100 translate-y-0 scale-100 blur-0'
+                        : 'opacity-0 translate-y-[10px] scale-[0.985] blur-[6px]',
+                    )}
+                  >
+                    <PreviewPanel id={step.id} t={t} />
+                  </div>
+                )
+              })}
+            </motion.div>
           </div>
 
         </motion.div>

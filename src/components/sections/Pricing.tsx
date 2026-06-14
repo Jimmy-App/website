@@ -1,10 +1,20 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useReducedMotion, motion } from 'framer-motion'
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+} from 'react'
 import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+// useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
+const useIsoLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 // ── Pricing data ──────────────────────────────────────────────────────────────
 
@@ -59,48 +69,55 @@ const CLUB_FEATURES = [
 // ── Slider thumb + track styles (injected once, idiomatic Tailwind can't do pseudo) ──
 
 const SLIDER_STYLE = `
+/* Registered so the fill + thumb position can be transitioned, not snapped. */
+@property --pr-p {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+/* The transition lives on the wrapper; both the track fill and the custom
+   thumb read the (animating) --pr-p, so they glide between steps together. */
+.pr-track-wrap {
+  position: relative;
+  transition: --pr-p 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+}
 .pr-slider {
   -webkit-appearance: none;
   appearance: none;
+  display: block;
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 10px;
   border-radius: 9999px;
   background: linear-gradient(
     90deg,
-    var(--color-purple) calc(14px + var(--pr-p, 0) * (100% - 28px)),
-    var(--color-surface-offset) calc(14px + var(--pr-p, 0) * (100% - 28px))
+    var(--color-purple) calc(14px + var(--pr-p) * (100% - 28px)),
+    var(--color-surface-offset) calc(14px + var(--pr-p) * (100% - 28px))
   );
   outline: none;
   cursor: pointer;
 }
+/* Native thumb is kept (it drives drag/keyboard) but made invisible. */
 .pr-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--color-purple);
-  box-shadow: 0 4px 14px rgba(138,50,224,0.42), 0 0 0 6px rgba(138,50,224,0.12);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   cursor: grab;
-  transition: transform 120ms, box-shadow 160ms;
 }
-@media (hover: hover) and (pointer: fine) {
-  .pr-slider::-webkit-slider-thumb:hover {
-    box-shadow: 0 4px 16px rgba(138,50,224,0.5), 0 0 0 9px rgba(138,50,224,0.14);
-  }
-}
-.pr-slider::-webkit-slider-thumb:active {
-  cursor: grabbing;
-  transform: scale(1.08);
-}
+.pr-slider::-webkit-slider-thumb:active { cursor: grabbing; }
 .pr-slider::-moz-range-thumb {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--color-purple);
-  box-shadow: 0 4px 14px rgba(138,50,224,0.42), 0 0 0 6px rgba(138,50,224,0.12);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   cursor: grab;
 }
 .pr-slider::-moz-range-track {
@@ -108,7 +125,31 @@ const SLIDER_STYLE = `
   border-radius: 9999px;
   background: transparent;
 }
-.pr-slider:focus-visible::-webkit-slider-thumb {
+/* Custom visible thumb — its left is derived from the animating --pr-p. */
+.pr-thumb {
+  position: absolute;
+  top: 50%;
+  left: calc(14px + var(--pr-p) * (100% - 28px));
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--color-purple);
+  box-shadow: 0 4px 14px rgba(138,50,224,0.42), 0 0 0 6px rgba(138,50,224,0.12);
+  transform: translate(-50%, -50%);
+  transition: box-shadow 160ms, transform 120ms;
+  pointer-events: none;
+  z-index: 2;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pr-slider:hover ~ .pr-thumb {
+    box-shadow: 0 4px 16px rgba(138,50,224,0.5), 0 0 0 9px rgba(138,50,224,0.14);
+  }
+}
+.pr-slider:active ~ .pr-thumb {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.pr-slider:focus-visible ~ .pr-thumb {
   box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 7px var(--color-purple);
 }
 @keyframes prBump {
@@ -138,11 +179,33 @@ export function Pricing() {
   const t = useTranslations('pricing')
   const shouldReduceMotion = useReducedMotion()
 
-  const [step, setStep] = useState(1) // default: 10 clients (Club)
+  const [step, setStep] = useState(0) // default: 0 (Free)
   const [currency, setCurrency] = useState<Currency>('eur')
   const [bumpKey, setBumpKey] = useState(0)
   const prevStateRef = useRef({ step, currency })
   const sliderRef = useRef<HTMLInputElement>(null)
+  const trackWrapRef = useRef<HTMLDivElement>(null)
+
+  // ── Card height morphing ──────────────────────────────────────────────────
+  // Crossing the FREE↔CLUB boundary adds/removes the beta badge, the struck-out
+  // price and the lock note, which changes the card's height. We measure the
+  // grid and animate a wrapper's height so the whole card resizes smoothly.
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [cardHeight, setCardHeight] = useState<number | undefined>(undefined)
+  const mounted = useRef(false)
+  useEffect(() => {
+    mounted.current = true
+  }, [])
+
+  useIsoLayoutEffect(() => {
+    const measure = () => {
+      if (cardRef.current) setCardHeight(cardRef.current.offsetHeight)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (cardRef.current) ro.observe(cardRef.current)
+    return () => ro.disconnect()
+  }, [])
 
   // Inject slider pseudo-element styles once
   useEffect(() => {
@@ -156,10 +219,12 @@ export function Pricing() {
     }
   }, [])
 
-  // Sync CSS custom property for track fill
+  // Sync CSS custom property for track fill + thumb position. Set on the
+  // wrapper (which carries the --pr-p transition) so the fill and the custom
+  // thumb glide between steps instead of snapping.
   useEffect(() => {
-    if (sliderRef.current) {
-      sliderRef.current.style.setProperty('--pr-p', String(step / 5))
+    if (trackWrapRef.current) {
+      trackWrapRef.current.style.setProperty('--pr-p', String(step / 5))
     }
   }, [step])
 
@@ -195,6 +260,20 @@ export function Pricing() {
     viewport: { once: true, margin: '-60px' },
   }
   const easeOut = [0.16, 1, 0.3, 1] as const
+
+  // Card height morph: skip the first run (mount should settle silently).
+  const heightTransition = {
+    duration: shouldReduceMotion || !mounted.current ? 0 : 0.5,
+    ease: [0.32, 0.72, 0, 1] as const,
+  }
+  // Appear/disappear of the conditional (CLUB-only) bits.
+  const appear = shouldReduceMotion
+    ? { initial: false, animate: {}, exit: {} }
+    : {
+        initial: { opacity: 0, y: -4 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -4 },
+      }
 
   return (
     <section
@@ -252,7 +331,17 @@ export function Pricing() {
         <motion.div
           {...fadeRise}
           transition={{ duration: 0.72, ease: easeOut, delay: 0.08 }}
-          className="relative grid grid-cols-[1.12fr_0.88fr] overflow-hidden rounded-[28px] border border-border bg-surface shadow-[0_34px_90px_-44px_rgba(26,25,23,0.3),0_2px_10px_rgba(26,25,23,0.04)] max-[820px]:grid-cols-1"
+          className="relative"
+        >
+        <motion.div
+          initial={false}
+          animate={{ height: cardHeight ?? 'auto' }}
+          transition={heightTransition}
+          className="relative overflow-hidden rounded-[28px] border border-border bg-surface shadow-[0_34px_90px_-44px_rgba(26,25,23,0.3),0_2px_10px_rgba(26,25,23,0.04)]"
+        >
+        <div
+          ref={cardRef}
+          className="grid grid-cols-[1.12fr_0.88fr] max-[820px]:grid-cols-1"
         >
           {/* Left: control */}
           <div className="flex flex-col p-[clamp(1.9rem,3vw,2.9rem)]">
@@ -292,19 +381,23 @@ export function Pricing() {
 
             {/* Slider */}
             <div className="mt-auto">
-              <input
-                ref={sliderRef}
-                type="range"
-                className="pr-slider"
-                id="pr-slider"
-                min={0}
-                max={5}
-                step={1}
-                value={step}
-                aria-label={t('sliderAriaLabel')}
-                aria-valuetext={`${CLIENTS[step]} ${t('clients')} — ${planLabel}`}
-                onChange={(e) => handleChange(parseInt(e.target.value, 10))}
-              />
+              <div ref={trackWrapRef} className="pr-track-wrap">
+                <input
+                  ref={sliderRef}
+                  type="range"
+                  className="pr-slider"
+                  id="pr-slider"
+                  min={0}
+                  max={5}
+                  step={1}
+                  value={step}
+                  aria-label={t('sliderAriaLabel')}
+                  aria-valuetext={`${CLIENTS[step]} ${t('clients')} — ${planLabel}`}
+                  onChange={(e) => handleChange(parseInt(e.target.value, 10))}
+                />
+                {/* Custom thumb (glides via the animated --pr-p variable) */}
+                <span aria-hidden="true" className="pr-thumb" />
+              </div>
 
               {/* Tick marks */}
               <div className="relative mt-[14px] h-[30px]">
@@ -353,11 +446,24 @@ export function Pricing() {
               <span className="font-display text-[13px] font-extrabold uppercase tracking-[0.12em] text-purple">
                 {planLabel}
               </span>
-              {!isFree && (
-                <span className="rounded-full bg-purple px-[9px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.05em] text-white">
-                  {t('betaBadge')}
-                </span>
-              )}
+              <AnimatePresence initial={false}>
+                {!isFree && (
+                  <motion.span
+                    key="beta-badge"
+                    initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.7 }}
+                    transition={
+                      shouldReduceMotion
+                        ? { duration: 0 }
+                        : { type: 'spring', duration: 0.4, bounce: 0.34 }
+                    }
+                    className="origin-left rounded-full bg-purple px-[9px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.05em] text-white"
+                  >
+                    {t('betaBadge')}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Price */}
@@ -372,11 +478,24 @@ export function Pricing() {
                 {nowText}
               </span>
               <div className="flex min-w-0 flex-col items-start justify-center gap-[2px]">
-                {wasText && (
-                  <span className="text-[17px] font-semibold leading-[1.1] text-text-faint line-through tabular-nums">
-                    {wasText}
-                  </span>
-                )}
+                <AnimatePresence initial={false}>
+                  {wasText && (
+                    <motion.span
+                      key="was-price"
+                      initial={shouldReduceMotion ? false : { opacity: 0, x: -6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={shouldReduceMotion ? undefined : { opacity: 0, x: -6 }}
+                      transition={
+                        shouldReduceMotion
+                          ? { duration: 0 }
+                          : { duration: 0.26, ease: easeOut }
+                      }
+                      className="text-[17px] font-semibold leading-[1.1] text-text-faint line-through tabular-nums"
+                    >
+                      {wasText}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
                 <span className="text-[15px] font-semibold leading-[1.1] text-text-muted">
                   {t('perMonth')}
                 </span>
@@ -385,7 +504,26 @@ export function Pricing() {
 
             {/* Sub line */}
             <div className="mb-[1.3rem] text-[14px] text-text-muted">
-              {t('forUpTo')} {CLIENTS[step]} {t('clients')}
+              {t('forUpTo')}{' '}
+              <span className="relative inline-flex overflow-hidden align-bottom tabular-nums">
+                {shouldReduceMotion ? (
+                  CLIENTS[step]
+                ) : (
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.span
+                      key={CLIENTS[step]}
+                      initial={{ opacity: 0, y: '0.7em' }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: '-0.7em' }}
+                      transition={{ duration: 0.24, ease: easeOut }}
+                      className="inline-block font-semibold text-text"
+                    >
+                      {CLIENTS[step]}
+                    </motion.span>
+                  </AnimatePresence>
+                )}
+              </span>{' '}
+              {t('clients')}
             </div>
 
             {/* Fees */}
@@ -406,13 +544,26 @@ export function Pricing() {
             </button>
 
             {/* Lock note */}
-            {!isFree && (
-              <p className="mt-3 flex items-start gap-[7px] text-[11.5px] leading-[1.5] text-text-muted">
-                <Lock size={13} strokeWidth={1.75} className="mt-[2px] shrink-0 text-purple" />
-                <span>{t('lockNote')}</span>
-              </p>
-            )}
+            <AnimatePresence initial={false}>
+              {!isFree && (
+                <motion.p
+                  key="lock-note"
+                  {...appear}
+                  transition={
+                    shouldReduceMotion
+                      ? { duration: 0 }
+                      : { duration: 0.28, ease: easeOut }
+                  }
+                  className="mt-3 flex items-start gap-[7px] text-[11.5px] leading-[1.5] text-text-muted"
+                >
+                  <Lock size={13} strokeWidth={1.75} className="mt-[2px] shrink-0 text-purple" />
+                  <span>{t('lockNote')}</span>
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
+        </div>
+        </motion.div>
         </motion.div>
 
         {/* ── What's included ── */}

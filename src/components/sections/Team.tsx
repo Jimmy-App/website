@@ -52,19 +52,6 @@ function IconLinkedIn({ className }: { className?: string }) {
   )
 }
 
-function IconX({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M17.5 3h3l-6.56 7.5L21.75 21h-6.04l-4.73-6.18L5.57 21H2.56l7.02-8.02L2.25 3h6.19l4.28 5.66L17.5 3zm-1.06 16.2h1.67L7.64 4.71H5.85L16.44 19.2z" />
-    </svg>
-  )
-}
-
 // ─── Social button ────────────────────────────────────────────────────────────
 
 function SocialLink({
@@ -206,9 +193,6 @@ function TeamCard({
             </SocialLink>
             <SocialLink href="#" label="LinkedIn">
               <IconLinkedIn className="size-[15px]" />
-            </SocialLink>
-            <SocialLink href="#" label="Twitter / X">
-              <IconX className="size-[15px]" />
             </SocialLink>
           </div>
         </div>

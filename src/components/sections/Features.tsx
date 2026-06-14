@@ -93,7 +93,6 @@ export function Features() {
   const shouldReduceMotion = useReducedMotion()
 
   const [activeIdx, setActiveIdx] = useState(0)
-  const [autoStopped, setAutoStopped] = useState(false)
 
   // Slider pill geometry
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
@@ -119,32 +118,19 @@ export function Features() {
     return () => window.removeEventListener('resize', onResize)
   }, [activeIdx, updateSlider])
 
-  // Auto-advance every 4.2 s (paused on hover / after manual interaction)
-  const hovered = useRef(false)
-  useEffect(() => {
-    if (autoStopped) return
-    const timer = setInterval(() => {
-      if (!hovered.current && !autoStopped) {
-        setActiveIdx((i) => (i + 1) % TABS.length)
-      }
-    }, 4200)
-    return () => clearInterval(timer)
-  }, [autoStopped])
-
-  const activateTab = (idx: number, manual = false) => {
+  const activateTab = (idx: number) => {
     setActiveIdx(idx)
-    if (manual) setAutoStopped(true)
   }
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, idx: number) => {
     if (e.key === 'ArrowRight') {
       e.preventDefault()
-      activateTab((idx + 1) % TABS.length, true)
+      activateTab((idx + 1) % TABS.length)
       tabRefs.current[(idx + 1) % TABS.length]?.focus()
     }
     if (e.key === 'ArrowLeft') {
       e.preventDefault()
-      activateTab((idx - 1 + TABS.length) % TABS.length, true)
+      activateTab((idx - 1 + TABS.length) % TABS.length)
       tabRefs.current[(idx - 1 + TABS.length) % TABS.length]?.focus()
     }
   }
@@ -159,8 +145,6 @@ export function Features() {
       id="features"
       aria-label={t('ariaLabel')}
       className="relative bg-bg overflow-hidden py-[var(--section-pad-y)]"
-      onMouseEnter={() => { hovered.current = true }}
-      onMouseLeave={() => { hovered.current = false }}
     >
       {/* Top border rule */}
       <div className="absolute top-0 inset-x-0 h-px bg-border" aria-hidden />
@@ -250,7 +234,7 @@ export function Features() {
                     ? 'text-white'
                     : 'text-text-muted hover:text-text',
                 )}
-                onClick={() => activateTab(i, true)}
+                onClick={() => activateTab(i)}
                 onKeyDown={(e) => onKeyDown(e, i)}
               >
                 <span
