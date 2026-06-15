@@ -57,6 +57,20 @@ export type Pricing = {
   language?: string;
 };
 
+export type PricingPlans = {
+  _id: string;
+  _type: "pricingPlans";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  tiers?: Array<
+    {
+      _key: string;
+    } & PricingTier
+  >;
+  betaDiscountPct?: number;
+};
+
 export type FaqItem = {
   _type: "faqItem";
   question?: string;
@@ -554,6 +568,9 @@ export type HomePage = {
     whatsIncluded?: string;
     freeTag?: string;
     clubTag?: string;
+    freePerLabel?: string;
+    clubPerPrefix?: string;
+    popularLabel?: string;
     freeFeatures?: Array<string>;
     clubFeatures?: Array<string>;
     addonsLabel?: string;
@@ -561,11 +578,6 @@ export type HomePage = {
       {
         _key: string;
       } & PricingAddon
-    >;
-    tiers?: Array<
-      {
-        _key: string;
-      } & PricingTier
     >;
   };
   beta?: {
@@ -770,6 +782,7 @@ export type AllSanitySchemaTypes =
   | PricingFeatures
   | PricingFeaturesReference
   | Pricing
+  | PricingPlans
   | FaqItem
   | TeamStat
   | SanityImageAssetReference
@@ -857,6 +870,18 @@ export type PRICING_PAGE_QUERY_RESULT = {
     trustSuffix?: string;
   } | null;
   seo: Seo | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: PRICING_PLANS_QUERY
+// Query: *[_type == "pricingPlans"][0]{    tiers[]{ clients, priceEur, priceUsd },    betaDiscountPct  }
+export type PRICING_PLANS_QUERY_RESULT = {
+  tiers: Array<{
+    clients: string | null;
+    priceEur: number | null;
+    priceUsd: number | null;
+  }> | null;
+  betaDiscountPct: number | null;
 } | null;
 
 // Source: sanity/queries/index.ts
@@ -1040,6 +1065,9 @@ export type HOME_QUERY_RESULT = {
     whatsIncluded?: string;
     freeTag?: string;
     clubTag?: string;
+    freePerLabel?: string;
+    clubPerPrefix?: string;
+    popularLabel?: string;
     freeFeatures?: Array<string>;
     clubFeatures?: Array<string>;
     addonsLabel?: string;
@@ -1047,11 +1075,6 @@ export type HOME_QUERY_RESULT = {
       {
         _key: string;
       } & PricingAddon
-    >;
-    tiers?: Array<
-      {
-        _key: string;
-      } & PricingTier
     >;
   } | null;
   beta: {
@@ -1204,6 +1227,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "siteSettings" && language == $locale][0]{\n    siteName,\n    siteDescription,\n    seo,\n    notFound\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "pricingPage" && language == $locale][0]{\n    title,\n    faq,\n    finalCta,\n    seo\n  }\n': PRICING_PAGE_QUERY_RESULT;
+    '\n  *[_type == "pricingPlans"][0]{\n    tiers[]{ clients, priceEur, priceUsd },\n    betaDiscountPct\n  }\n': PRICING_PLANS_QUERY_RESULT;
     '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
     '\n  *[_type == "navigation" && language == $locale][0]{\n    featuresLabel,\n    featuresForCoaches,\n    featuresForMembers,\n    featuresItems[]{ key, title, subtitle, href },\n    featuresCta,\n    resourcesLabel,\n    resourcesContent,\n    resourcesCommunity,\n    resourcesItems[]{ key, title, subtitle, href },\n    pricing,\n    affiliate,\n    newBadge,\n    login,\n    getStarted,\n    getStartedShort,\n    openMenu,\n    close,\n    menu\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "footer" && language == $locale][0]{\n    taglinePrefix,\n    taglineEmphasis,\n    productHeading,\n    productLinks[]{ label, href, external },\n    companyHeading,\n    companyLinks[]{ label, href, external },\n    legalHeading,\n    legalLinks[]{ label, href, external },\n    copy\n  }\n': FOOTER_QUERY_RESULT;

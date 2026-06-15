@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { PricingData } from '@/lib/content'
+import type { PricingData, PricingPlansData } from '@/lib/content'
 
 // useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
 const useIsoLayoutEffect =
@@ -149,7 +149,7 @@ function CheckMark() {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function Pricing({ data }: { data: PricingData }) {
+export function Pricing({ data, plans }: { data: PricingData; plans: PricingPlansData }) {
   const shouldReduceMotion = useReducedMotion()
 
   const [step, setStep] = useState(0) // default: 0 (Free)
@@ -216,20 +216,31 @@ export function Pricing({ data }: { data: PricingData }) {
     [currency, shouldReduceMotion],
   )
 
-  // Derived state — client counts + prices sourced from Sanity tiers
-  const tiers = data.tiers ?? []
+  // Derived state — tiers + discount come from the global pricingPlans singleton.
+  const tiers = plans.tiers ?? []
+  const discount = 1 - (plans.betaDiscountPct ?? 15) / 100
   const sym = SYMBOLS[currency]
+  const priceOf = (i: number) =>
+    currency === 'eur' ? tiers[i]?.priceEur ?? null : tiers[i]?.priceUsd ?? null
   const tier = tiers[step]
   const clientsCount = tier?.clients ?? ''
-  const reg = currency === 'eur' ? tier?.priceEur ?? null : tier?.priceUsd ?? null
+  const reg = priceOf(step)
   const isFree = reg === null
-  const nowText = isFree ? `${sym}0` : `${sym}${(reg * 0.85).toFixed(2)}`
+  const nowText = isFree ? `${sym}0` : `${sym}${(reg * discount).toFixed(2)}`
   const wasText = isFree ? null : `${sym}${reg}`
   // Tick axis: first marker is "0", remaining markers are the paid-tier client counts
   const tickLabels = ['0', ...tiers.slice(1).map((tr) => tr.clients ?? '')]
   const planLabel = isFree ? (data.planFree ?? '') : (data.planClub ?? '')
   const activeCard: 'free' | 'club' = isFree ? 'free' : 'club'
   const fees = getFees(isFree, currency)
+
+  // Plan-card prices (synced to the slider). When the slider is on Free, the
+  // CLUB card previews the entry CLUB tier (index 1).
+  const clubIdx = isFree ? 1 : step
+  const clubReg = priceOf(clubIdx)
+  const freeCardAmt = `${sym}0`
+  const clubCardAmt = clubReg != null ? `${sym}${(clubReg * discount).toFixed(2)}` : `${sym}0`
+  const clubCardClients = tiers[clubIdx]?.clients ?? ''
 
   // Entrance animation config
   const fadeRise = {
@@ -560,6 +571,8 @@ export function Pricing({ data }: { data: PricingData }) {
           <PlanCard
             name={data.planFree ?? ''}
             tag={data.freeTag ?? ''}
+            amt={freeCardAmt}
+            per={data.freePerLabel ?? ''}
             isClub={false}
             isActive={activeCard === 'free'}
           >
@@ -572,6 +585,9 @@ export function Pricing({ data }: { data: PricingData }) {
           <PlanCard
             name={data.planClub ?? ''}
             tag={data.clubTag ?? ''}
+            amt={clubCardAmt}
+            per={`${data.clubPerPrefix ?? ''} ${clubCardClients}`.trim()}
+            popular={data.popularLabel ?? undefined}
             isClub
             isActive={activeCard === 'club'}
           >
@@ -621,12 +637,18 @@ export function Pricing({ data }: { data: PricingData }) {
 function PlanCard({
   name,
   tag,
+  amt,
+  per,
+  popular,
   isClub,
   isActive,
   children,
 }: {
   name: string
   tag: string
+  amt: string
+  per: string
+  popular?: string
   isClub: boolean
   isActive: boolean
   children: React.ReactNode
@@ -642,14 +664,31 @@ function PlanCard({
         isActive && !isClub && '-translate-y-[2px] border-[rgba(138,50,224,0.4)] shadow-[0_18px_50px_-30px_rgba(138,50,224,0.4)]',
       )}
     >
-      <div
-        className={cn(
-          'mb-[0.45rem] font-display text-[14px] font-extrabold uppercase tracking-[0.1em]',
-          isClub ? 'text-purple' : 'text-text-muted',
+      {/* Name + (optional) "Most popular" badge */}
+      <div className="mb-[0.6rem] flex items-center justify-between gap-2">
+        <div
+          className={cn(
+            'font-display text-[14px] font-extrabold uppercase tracking-[0.1em]',
+            isClub ? 'text-purple' : 'text-text-muted',
+          )}
+        >
+          {name}
+        </div>
+        {popular && (
+          <span className="rounded-full border border-purple-border bg-purple-light px-[10px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.06em] text-purple">
+            {popular}
+          </span>
         )}
-      >
-        {name}
       </div>
+
+      {/* Price (synced to the slider) */}
+      <div className="mb-[0.45rem] flex items-baseline gap-[6px]">
+        <span className="font-display text-[2.4rem] font-extrabold leading-none tracking-[-0.04em] text-text tabular-nums">
+          {amt}
+        </span>
+        <span className="text-[14px] font-semibold text-text-muted">{per}</span>
+      </div>
+
       <p className="mb-[1.2rem] border-b border-[var(--color-divider)] pb-[1.2rem] text-[14px] leading-[1.5] text-text-muted">
         {tag}
       </p>

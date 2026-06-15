@@ -1,6 +1,6 @@
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { getHomePage, getNavigation, getFooter } from '../../../sanity/getHomePage'
+import { getHomePage, getNavigation, getFooter, getPricingPlans } from '../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Hero } from '@/components/sections/Hero'
@@ -25,14 +25,16 @@ export default async function HomePage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [home, navigation, footer] = await Promise.all([
+  const [home, navigation, footer, plans] = await Promise.all([
     getHomePage(locale),
     getNavigation(locale),
     getFooter(locale),
+    getPricingPlans(),
   ])
   if (
     !navigation ||
     !footer ||
+    !plans ||
     !home?.hero ||
     !home.features ||
     !home.why ||
@@ -61,7 +63,7 @@ export default async function HomePage({
         <Platform data={home.platform} />
         <Tech data={home.tech} />
         <Comparison data={home.comparison} />
-        <Pricing data={home.pricing} />
+        <Pricing data={home.pricing} plans={plans} />
         <OpenBeta data={home.beta} />
         <Team data={home.team} />
         <Faq data={home.faq} />

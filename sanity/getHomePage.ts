@@ -5,6 +5,7 @@ import {
   NAVIGATION_QUERY,
   FOOTER_QUERY,
   PRICING_PAGE_QUERY,
+  PRICING_PLANS_QUERY,
   SITE_SETTINGS_QUERY,
 } from './queries'
 import type {
@@ -12,6 +13,7 @@ import type {
   NAVIGATION_QUERY_RESULT,
   FOOTER_QUERY_RESULT,
   PRICING_PAGE_QUERY_RESULT,
+  PRICING_PLANS_QUERY_RESULT,
   SITE_SETTINGS_QUERY_RESULT,
 } from '../sanity.types'
 
@@ -48,4 +50,11 @@ export async function getSiteSettings(locale: string): Promise<SITE_SETTINGS_QUE
   cacheLife('hours')
   cacheTag(`siteSettings-${locale}`)
   return client.fetch<SITE_SETTINGS_QUERY_RESULT>(SITE_SETTINGS_QUERY, { locale })
+}
+
+export async function getPricingPlans(): Promise<PRICING_PLANS_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag('pricingPlans')
+  return client.fetch<PRICING_PLANS_QUERY_RESULT>(PRICING_PLANS_QUERY, {})
 }

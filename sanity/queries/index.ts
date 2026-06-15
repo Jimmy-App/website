@@ -18,6 +18,14 @@ export const PRICING_PAGE_QUERY = groq`
   }
 `
 
+// Global, non-localized single source of truth for prices.
+export const PRICING_PLANS_QUERY = groq`
+  *[_type == "pricingPlans"][0]{
+    tiers[]{ clients, priceEur, priceUsd },
+    betaDiscountPct
+  }
+`
+
 export const HOME_QUERY = groq`
   *[_type == "homePage" && language == $locale][0]{
     title,

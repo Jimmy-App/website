@@ -6,12 +6,13 @@ import {
   getNavigation,
   getFooter,
   getPricingPage,
+  getPricingPlans,
 } from '../../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Pricing } from '@/components/sections/Pricing'
 import { Faq } from '@/components/sections/Faq'
-import { FinalCta } from '@/components/sections/FinalCta'
+import { PricingCta } from '@/components/sections/PricingCta'
 
 export const metadata: Metadata = { title: 'Pricing' }
 
@@ -23,17 +24,19 @@ export default async function PricingPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [home, navigation, footer, pricingPage] = await Promise.all([
+  const [home, navigation, footer, pricingPage, plans] = await Promise.all([
     getHomePage(locale),
     getNavigation(locale),
     getFooter(locale),
     getPricingPage(locale),
+    getPricingPlans(),
   ])
 
   if (
     !home?.pricing ||
     !navigation ||
     !footer ||
+    !plans ||
     !pricingPage?.faq ||
     !pricingPage.finalCta
   ) {
@@ -44,10 +47,10 @@ export default async function PricingPage({
     <>
       <Navbar data={navigation} />
       <main>
-        {/* Reused home-page section components, fed page-specific Sanity data */}
-        <Pricing data={home.pricing} />
+        {/* Reused home Pricing section + FAQ; page-specific centered CTA */}
+        <Pricing data={home.pricing} plans={plans} />
         <Faq data={pricingPage.faq} />
-        <FinalCta data={pricingPage.finalCta} />
+        <PricingCta data={pricingPage.finalCta} />
       </main>
       <Footer data={footer} />
     </>

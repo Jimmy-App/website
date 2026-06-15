@@ -7,6 +7,8 @@ import type {
   NAVIGATION_QUERY_RESULT,
   FOOTER_QUERY_RESULT,
   SITE_SETTINGS_QUERY_RESULT,
+  PRICING_PLANS_QUERY_RESULT,
+  PRICING_PAGE_QUERY_RESULT,
 } from '../../sanity.types'
 
 export type HomeData = NonNullable<HOME_QUERY_RESULT>
@@ -30,3 +32,7 @@ export type FooterData = NonNullable<FOOTER_QUERY_RESULT>
 
 export type SiteSettingsData = NonNullable<SITE_SETTINGS_QUERY_RESULT>
 export type NotFoundData = NonNullable<SiteSettingsData['notFound']>
+
+export type PricingPlansData = NonNullable<PRICING_PLANS_QUERY_RESULT>
+export type PricingPageData = NonNullable<PRICING_PAGE_QUERY_RESULT>
+export type FinalCtaContent = NonNullable<PricingPageData['finalCta']>

@@ -303,6 +303,10 @@ export const homePage = defineType({
         defineField({ name: 'whatsIncluded', type: 'string' }),
         defineField({ name: 'freeTag', type: 'string' }),
         defineField({ name: 'clubTag', type: 'string' }),
+        // Plan-card price labels
+        defineField({ name: 'freePerLabel', type: 'string', description: 'e.g. "/month forever"' }),
+        defineField({ name: 'clubPerPrefix', type: 'string', description: 'e.g. "/mo · up to" (client count appended)' }),
+        defineField({ name: 'popularLabel', type: 'string', description: 'e.g. "Most popular" (badge on the Club card)' }),
         defineField({ name: 'freeFeatures', type: 'array', of: [{ type: 'string' }] }),
         defineField({ name: 'clubFeatures', type: 'array', of: [{ type: 'string' }] }),
         defineField({ name: 'addonsLabel', type: 'string' }),
@@ -311,12 +315,7 @@ export const homePage = defineType({
           type: 'array',
           of: [{ type: 'pricingAddon' }],
         }),
-        defineField({
-          name: 'tiers',
-          type: 'array',
-          of: [{ type: 'pricingTier' }],
-          description: 'Price tiers in order: free (clients=3, no price), then club tiers',
-        }),
+        // NOTE: price tiers now live in the global `pricingPlans` singleton.
       ],
     }),
 
