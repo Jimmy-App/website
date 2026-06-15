@@ -144,6 +144,25 @@ export const homePage = defineType({
               type: 'object',
               fields: [
                 defineField({ name: 'imgAlt', type: 'string' }),
+                // In-app illustration ("With Jimmy" state)
+                defineField({ name: 'appName', type: 'string', description: 'App header name, e.g. "Jimmy"' }),
+                defineField({ name: 'appTagline', type: 'string', description: 'e.g. "Everything in one place"' }),
+                defineField({ name: 'syncedLabel', type: 'string', description: 'e.g. "Synced"' }),
+                defineField({
+                  name: 'modules',
+                  type: 'array',
+                  description: 'In-app modules, in the same order as the "without" cards (4 items).',
+                  of: [
+                    {
+                      type: 'object',
+                      fields: [
+                        defineField({ name: 'label', type: 'string' }),
+                        defineField({ name: 'sub', type: 'string' }),
+                      ],
+                      preview: { select: { title: 'label', subtitle: 'sub' } },
+                    },
+                  ],
+                }),
               ],
             }),
           ],

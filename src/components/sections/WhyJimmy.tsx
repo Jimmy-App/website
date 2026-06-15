@@ -81,24 +81,13 @@ function CalendarLogo() {
   )
 }
 
-// External tool → its in-app Jimmy equivalent. Index matches Sanity card1..4.
+// External tool (logo) → its in-app Jimmy equivalent (icon). Presentational,
+// mapped by index to the Sanity cards/modules. Labels/subs come from Sanity.
 const TOOL_SLOTS = [
-  {
-    Logo: WhatsAppLogo,
-    jimmy: { Icon: MessageCircle, label: 'Messaging', sub: '1:1 chat, built in' },
-  },
-  {
-    Logo: ExcelLogo,
-    jimmy: { Icon: Dumbbell, label: 'Workout Builder', sub: 'Structured programs' },
-  },
-  {
-    Logo: PaymentLogo,
-    jimmy: { Icon: CreditCard, label: 'Payments', sub: 'Automatic Stripe billing' },
-  },
-  {
-    Logo: CalendarLogo,
-    jimmy: { Icon: CalendarCheck, label: 'Schedule', sub: 'Synced sessions' },
-  },
+  { Logo: WhatsAppLogo, Icon: MessageCircle },
+  { Logo: ExcelLogo, Icon: Dumbbell },
+  { Logo: PaymentLogo, Icon: CreditCard },
+  { Logo: CalendarLogo, Icon: CalendarCheck },
 ] as const
 
 // Scattered transform per slot for the "without" (messy pile) state.
@@ -113,17 +102,28 @@ const SCATTER = [
 
 // ── Tools morph: chaotic pile (without) → organized Jimmy app (with) ───────────
 
-type Slot = (typeof TOOL_SLOTS)[number] & { name: string; desc: string }
+type Slot = (typeof TOOL_SLOTS)[number] & {
+  name: string
+  desc: string
+  jLabel: string
+  jSub: string
+}
 
 function ToolsMorph({
   active,
   slots,
   withoutLabel,
+  appName,
+  appTagline,
+  syncedLabel,
   reduced,
 }: {
   active: State
   slots: Slot[]
   withoutLabel: string
+  appName: string
+  appTagline: string
+  syncedLabel: string
   reduced: boolean
 }) {
   const isWith = active === 'with'
@@ -170,12 +170,12 @@ function ToolsMorph({
             className="w-[30px] h-[30px] rounded-[8px] shadow-[0_3px_10px_rgba(138,50,224,0.3)]"
           />
           <div className="leading-tight">
-            <div className="text-[13.5px] font-bold text-text">Jimmy</div>
-            <div className="text-[11px] text-text-muted">Everything in one place</div>
+            <div className="text-[13.5px] font-bold text-text">{appName}</div>
+            <div className="text-[11px] text-text-muted">{appTagline}</div>
           </div>
           <span className="ml-auto inline-flex items-center gap-[6px] rounded-full bg-[#E7F7EE] px-[10px] py-[5px] text-[11px] font-bold text-[#15803D]">
             <span className="w-[6px] h-[6px] rounded-full bg-[#22C55E]" />
-            Synced
+            {syncedLabel}
           </span>
         </motion.div>
       </div>
@@ -235,11 +235,11 @@ function ToolsMorph({
                   className="absolute inset-0 flex items-center gap-[12px] px-[14px]"
                 >
                   <div className="w-[38px] h-[38px] shrink-0 rounded-[10px] bg-purple-light text-purple flex items-center justify-center">
-                    <s.jimmy.Icon size={19} strokeWidth={1.9} />
+                    <s.Icon size={19} strokeWidth={1.9} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-[13.5px] font-semibold text-text">{s.jimmy.label}</div>
-                    <div className="text-[11.5px] text-text-muted leading-[1.38]">{s.jimmy.sub}</div>
+                    <div className="text-[13.5px] font-semibold text-text">{s.jLabel}</div>
+                    <div className="text-[11.5px] text-text-muted leading-[1.38]">{s.jSub}</div>
                   </div>
                   <div className="w-[22px] h-[22px] shrink-0 rounded-full bg-[#22C55E] text-white flex items-center justify-center">
                     <Check size={13} strokeWidth={2.6} />
@@ -337,10 +337,13 @@ export default function WhyJimmy({ data }: { data: WhyData }) {
     data.preview?.without?.card3,
     data.preview?.without?.card4,
   ]
+  const withModules = data.preview?.with?.modules ?? []
   const slots: Slot[] = TOOL_SLOTS.map((s, i) => ({
     ...s,
     name: cardData[i]?.name ?? '',
     desc: cardData[i]?.desc ?? '',
+    jLabel: withModules[i]?.label ?? '',
+    jSub: withModules[i]?.sub ?? '',
   }))
 
   const withoutBullets = data.bullets?.without ?? []
@@ -387,6 +390,9 @@ export default function WhyJimmy({ data }: { data: WhyData }) {
               active={active}
               slots={slots}
               withoutLabel={data.toggle?.without ?? ''}
+              appName={data.preview?.with?.appName ?? ''}
+              appTagline={data.preview?.with?.appTagline ?? ''}
+              syncedLabel={data.preview?.with?.syncedLabel ?? ''}
               reduced={!!prefersReducedMotion}
             />
           </div>

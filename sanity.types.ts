@@ -401,6 +401,14 @@ export type HomePage = {
       };
       with?: {
         imgAlt?: string;
+        appName?: string;
+        appTagline?: string;
+        syncedLabel?: string;
+        modules?: Array<{
+          label?: string;
+          sub?: string;
+          _key: string;
+        }>;
       };
     };
   };
@@ -835,6 +843,14 @@ export type HOME_QUERY_RESULT = {
       };
       with?: {
         imgAlt?: string;
+        appName?: string;
+        appTagline?: string;
+        syncedLabel?: string;
+        modules?: Array<{
+          label?: string;
+          sub?: string;
+          _key: string;
+        }>;
       };
     };
   } | null;
