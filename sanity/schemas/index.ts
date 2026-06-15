@@ -15,6 +15,8 @@ import { siteSettings } from './documents/siteSettings'
 import { homePage } from './documents/homePage'
 import { pricingPage } from './documents/pricingPage'
 import { pricingPlans } from './documents/pricingPlans'
+import { affiliatePage } from './documents/affiliatePage'
+import { affiliateSettings } from './documents/affiliateSettings'
 import { navigation } from './documents/navigation'
 import { footer } from './documents/footer'
 import { pricing } from './documents/pricing'
@@ -39,6 +41,8 @@ export const schemaTypes = [
   homePage,
   pricingPage,
   pricingPlans,
+  affiliatePage,
+  affiliateSettings,
   navigation,
   footer,
   pricing,

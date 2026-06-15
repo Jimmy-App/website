@@ -9,6 +9,8 @@ import type {
   SITE_SETTINGS_QUERY_RESULT,
   PRICING_PLANS_QUERY_RESULT,
   PRICING_PAGE_QUERY_RESULT,
+  AFFILIATE_PAGE_QUERY_RESULT,
+  AFFILIATE_SETTINGS_QUERY_RESULT,
 } from '../../sanity.types'
 
 export type HomeData = NonNullable<HOME_QUERY_RESULT>
@@ -36,3 +38,12 @@ export type NotFoundData = NonNullable<SiteSettingsData['notFound']>
 export type PricingPlansData = NonNullable<PRICING_PLANS_QUERY_RESULT>
 export type PricingPageData = NonNullable<PRICING_PAGE_QUERY_RESULT>
 export type FinalCtaContent = NonNullable<PricingPageData['finalCta']>
+
+// ── Affiliate ──────────────────────────────────────────────────────────────────
+export type AffiliatePageData = NonNullable<AFFILIATE_PAGE_QUERY_RESULT>
+export type AffiliateSettingsData = NonNullable<AFFILIATE_SETTINGS_QUERY_RESULT>
+export type AffiliateHeroData = NonNullable<AffiliatePageData['hero']>
+export type AffiliateCalcData = NonNullable<AffiliatePageData['calc']>
+export type AffiliateHowData = NonNullable<AffiliatePageData['how']>
+export type AffiliateWhyData = NonNullable<AffiliatePageData['why']>
+export type AffiliateWhoData = NonNullable<AffiliatePageData['who']>

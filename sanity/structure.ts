@@ -15,6 +15,14 @@ export const structure: StructureResolver = (S) =>
         .child(
           S.document().schemaType('pricingPlans').documentId('pricingPlans'),
         ),
+      S.listItem()
+        .title('Affiliate Page')
+        .child(S.documentTypeList('affiliatePage').title('Affiliate Page (per language)')),
+      S.listItem()
+        .title('Affiliate Settings (calculator)')
+        .child(
+          S.document().schemaType('affiliateSettings').documentId('affiliateSettings'),
+        ),
       S.divider(),
       S.listItem()
         .title('Navigation')

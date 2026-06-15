@@ -555,8 +555,8 @@ function MobileMenu({
           </Link>
 
           {/* Affiliate + NEW */}
-          <a
-            href="#affiliate"
+          <Link
+            href="/affiliate"
             onClick={onClose}
             className={cn(linkCls, rowCls, rowState)}
             style={delay(2)}
@@ -567,7 +567,7 @@ function MobileMenu({
                 {data.newBadge}
               </span>
             </span>
-          </a>
+          </Link>
 
           {/* Resources — large link + accordion */}
           <div className={cn(rowCls, rowState)} style={delay(3)}>
@@ -704,12 +704,12 @@ export function Navbar({ data }: { data: NavigationData }) {
               {data.pricing}
             </Link>
 
-            <a href="#affiliate" className="inline-flex items-center text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
+            <Link href="/affiliate" className="inline-flex items-center text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
               {data.affiliate}
               <span className="ml-[5px] text-[9px] font-bold uppercase tracking-[0.07em] text-purple bg-purple-light border border-purple-border rounded-full px-[6px] py-[2px] leading-none">
                 {data.newBadge}
               </span>
-            </a>
+            </Link>
 
             <NavMegaItem label={data.resourcesLabel ?? ''}>
               <ResourcesMega data={data} />

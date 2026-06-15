@@ -57,6 +57,29 @@ export type Pricing = {
   language?: string;
 };
 
+export type AffiliateSettings = {
+  _id: string;
+  _type: "affiliateSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  rate?: number;
+  sliderMin?: number;
+  sliderMax?: number;
+  sliderDefault?: number;
+  ticks?: Array<number>;
+  eur?: {
+    avg?: number;
+    lo?: number;
+    hi?: number;
+  };
+  usd?: {
+    avg?: number;
+    lo?: number;
+    hi?: number;
+  };
+};
+
 export type PricingPlans = {
   _id: string;
   _type: "pricingPlans";
@@ -226,6 +249,13 @@ export type PricingPageReference = {
   [internalGroqTypeReferenceTo]?: "pricingPage";
 };
 
+export type AffiliatePageReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "affiliatePage";
+};
+
 export type NavigationReference = {
   _ref: string;
   _type: "reference";
@@ -252,6 +282,7 @@ export type InternationalizedArrayReferenceValue = {
   value?:
     | HomePageReference
     | PricingPageReference
+    | AffiliatePageReference
     | NavigationReference
     | FooterReference
     | SiteSettingsReference;
@@ -344,6 +375,132 @@ export type Navigation = {
   close?: string;
   menu?: string;
   language?: string;
+};
+
+export type AffiliatePage = {
+  _id: string;
+  _type: "affiliatePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  language?: string;
+  hero?: {
+    socialProof?: string;
+    eyebrow?: string;
+    headlinePrefix?: string;
+    headlineAccent?: string;
+    headlineSuffix?: string;
+    subtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+  };
+  calc?: {
+    title?: string;
+    helper?: string;
+    coachesSuffix?: string;
+    perMo?: string;
+    estimateLabel?: string;
+    recurringBadge?: string;
+    monthlyLabel?: string;
+    perYearTemplate?: string;
+    basisLabel?: string;
+    basisRangePrefix?: string;
+    basisRangeSuffix?: string;
+    footnote?: string;
+    referralsLabel?: string;
+    perMonthLabel?: string;
+    perMonthTip?: string;
+    perYearLabel?: string;
+    perYearTip?: string;
+    cta?: string;
+    note?: string;
+  };
+  how?: {
+    eyebrow?: string;
+    title?: string;
+    subtitle?: string;
+    steps?: Array<{
+      label?: string;
+      name?: string;
+      tagline?: string;
+      _type: "step";
+      _key: string;
+    }>;
+    labels?: {
+      partnerBarTitle?: string;
+      freeBadge?: string;
+      accountName?: string;
+      accountRole?: string;
+      approved?: string;
+      referralLinkLabel?: string;
+      copy?: string;
+      copied?: string;
+      copiedToast?: string;
+      tagsStep1?: Array<string>;
+      shareBarTitle?: string;
+      liveBadge?: string;
+      linkClicksLabel?: string;
+      clicksBadge?: string;
+      channels?: Array<{
+        name?: string;
+        source?: string;
+        _type: "channel";
+        _key: string;
+      }>;
+      tagsStep2?: Array<string>;
+      commissionsBarTitle?: string;
+      monthBadge?: string;
+      availableLabel?: string;
+      withdraw?: string;
+      newPaymentTemplate?: string;
+      completed?: string;
+      commissionTag?: string;
+      tagsStep3?: Array<string>;
+    };
+  };
+  why?: {
+    eyebrow?: string;
+    title?: string;
+    cards?: Array<{
+      title?: string;
+      body?: string;
+      _type: "card";
+      _key: string;
+    }>;
+  };
+  who?: {
+    title?: string;
+    subtitle?: string;
+    items?: Array<{
+      title?: string;
+      sub?: string;
+      _type: "item";
+      _key: string;
+    }>;
+  };
+  faq?: {
+    eyebrow?: string;
+    title?: string;
+    items?: Array<
+      {
+        _key: string;
+      } & FaqItem
+    >;
+    footNote?: string;
+    footLink?: string;
+  };
+  finalCta?: {
+    headlinePrefix?: string;
+    headlineAccent?: string;
+    headlineSuffix?: string;
+    headlineLine2?: string;
+    subtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+    tags?: Array<string>;
+  };
+  seo?: Seo;
 };
 
 export type PricingPage = {
@@ -782,6 +939,7 @@ export type AllSanitySchemaTypes =
   | PricingFeatures
   | PricingFeaturesReference
   | Pricing
+  | AffiliateSettings
   | PricingPlans
   | FaqItem
   | TeamStat
@@ -800,6 +958,7 @@ export type AllSanitySchemaTypes =
   | InternationalizedArrayReference
   | HomePageReference
   | PricingPageReference
+  | AffiliatePageReference
   | NavigationReference
   | FooterReference
   | SiteSettingsReference
@@ -807,6 +966,7 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | Footer
   | Navigation
+  | AffiliatePage
   | PricingPage
   | HomePage
   | SanityImageCrop
@@ -882,6 +1042,150 @@ export type PRICING_PLANS_QUERY_RESULT = {
     priceUsd: number | null;
   }> | null;
   betaDiscountPct: number | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: AFFILIATE_PAGE_QUERY
+// Query: *[_type == "affiliatePage" && language == $locale][0]{    title,    hero,    calc,    how,    why,    who,    faq,    finalCta,    seo  }
+export type AFFILIATE_PAGE_QUERY_RESULT = {
+  title: string | null;
+  hero: {
+    socialProof?: string;
+    eyebrow?: string;
+    headlinePrefix?: string;
+    headlineAccent?: string;
+    headlineSuffix?: string;
+    subtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+  } | null;
+  calc: {
+    title?: string;
+    helper?: string;
+    coachesSuffix?: string;
+    perMo?: string;
+    estimateLabel?: string;
+    recurringBadge?: string;
+    monthlyLabel?: string;
+    perYearTemplate?: string;
+    basisLabel?: string;
+    basisRangePrefix?: string;
+    basisRangeSuffix?: string;
+    footnote?: string;
+    referralsLabel?: string;
+    perMonthLabel?: string;
+    perMonthTip?: string;
+    perYearLabel?: string;
+    perYearTip?: string;
+    cta?: string;
+    note?: string;
+  } | null;
+  how: {
+    eyebrow?: string;
+    title?: string;
+    subtitle?: string;
+    steps?: Array<{
+      label?: string;
+      name?: string;
+      tagline?: string;
+      _type: "step";
+      _key: string;
+    }>;
+    labels?: {
+      partnerBarTitle?: string;
+      freeBadge?: string;
+      accountName?: string;
+      accountRole?: string;
+      approved?: string;
+      referralLinkLabel?: string;
+      copy?: string;
+      copied?: string;
+      copiedToast?: string;
+      tagsStep1?: Array<string>;
+      shareBarTitle?: string;
+      liveBadge?: string;
+      linkClicksLabel?: string;
+      clicksBadge?: string;
+      channels?: Array<{
+        name?: string;
+        source?: string;
+        _type: "channel";
+        _key: string;
+      }>;
+      tagsStep2?: Array<string>;
+      commissionsBarTitle?: string;
+      monthBadge?: string;
+      availableLabel?: string;
+      withdraw?: string;
+      newPaymentTemplate?: string;
+      completed?: string;
+      commissionTag?: string;
+      tagsStep3?: Array<string>;
+    };
+  } | null;
+  why: {
+    eyebrow?: string;
+    title?: string;
+    cards?: Array<{
+      title?: string;
+      body?: string;
+      _type: "card";
+      _key: string;
+    }>;
+  } | null;
+  who: {
+    title?: string;
+    subtitle?: string;
+    items?: Array<{
+      title?: string;
+      sub?: string;
+      _type: "item";
+      _key: string;
+    }>;
+  } | null;
+  faq: {
+    eyebrow?: string;
+    title?: string;
+    items?: Array<
+      {
+        _key: string;
+      } & FaqItem
+    >;
+    footNote?: string;
+    footLink?: string;
+  } | null;
+  finalCta: {
+    headlinePrefix?: string;
+    headlineAccent?: string;
+    headlineSuffix?: string;
+    headlineLine2?: string;
+    subtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+    tags?: Array<string>;
+  } | null;
+  seo: Seo | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: AFFILIATE_SETTINGS_QUERY
+// Query: *[_type == "affiliateSettings"][0]{    rate, sliderMin, sliderMax, sliderDefault, ticks,    eur{ avg, lo, hi },    usd{ avg, lo, hi }  }
+export type AFFILIATE_SETTINGS_QUERY_RESULT = {
+  rate: number | null;
+  sliderMin: number | null;
+  sliderMax: number | null;
+  sliderDefault: number | null;
+  ticks: Array<number> | null;
+  eur: {
+    avg: number | null;
+    lo: number | null;
+    hi: number | null;
+  } | null;
+  usd: {
+    avg: number | null;
+    lo: number | null;
+    hi: number | null;
+  } | null;
 } | null;
 
 // Source: sanity/queries/index.ts
@@ -1228,6 +1532,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "siteSettings" && language == $locale][0]{\n    siteName,\n    siteDescription,\n    seo,\n    notFound\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "pricingPage" && language == $locale][0]{\n    title,\n    faq,\n    finalCta,\n    seo\n  }\n': PRICING_PAGE_QUERY_RESULT;
     '\n  *[_type == "pricingPlans"][0]{\n    tiers[]{ clients, priceEur, priceUsd },\n    betaDiscountPct\n  }\n': PRICING_PLANS_QUERY_RESULT;
+    '\n  *[_type == "affiliatePage" && language == $locale][0]{\n    title,\n    hero,\n    calc,\n    how,\n    why,\n    who,\n    faq,\n    finalCta,\n    seo\n  }\n': AFFILIATE_PAGE_QUERY_RESULT;
+    '\n  *[_type == "affiliateSettings"][0]{\n    rate, sliderMin, sliderMax, sliderDefault, ticks,\n    eur{ avg, lo, hi },\n    usd{ avg, lo, hi }\n  }\n': AFFILIATE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
     '\n  *[_type == "navigation" && language == $locale][0]{\n    featuresLabel,\n    featuresForCoaches,\n    featuresForMembers,\n    featuresItems[]{ key, title, subtitle, href },\n    featuresCta,\n    resourcesLabel,\n    resourcesContent,\n    resourcesCommunity,\n    resourcesItems[]{ key, title, subtitle, href },\n    pricing,\n    affiliate,\n    newBadge,\n    login,\n    getStarted,\n    getStartedShort,\n    openMenu,\n    close,\n    menu\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "footer" && language == $locale][0]{\n    taglinePrefix,\n    taglineEmphasis,\n    productHeading,\n    productLinks[]{ label, href, external },\n    companyHeading,\n    companyLinks[]{ label, href, external },\n    legalHeading,\n    legalLinks[]{ label, href, external },\n    copy\n  }\n': FOOTER_QUERY_RESULT;

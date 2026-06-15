@@ -7,6 +7,8 @@ import {
   PRICING_PAGE_QUERY,
   PRICING_PLANS_QUERY,
   SITE_SETTINGS_QUERY,
+  AFFILIATE_PAGE_QUERY,
+  AFFILIATE_SETTINGS_QUERY,
 } from './queries'
 import type {
   HOME_QUERY_RESULT,
@@ -15,6 +17,8 @@ import type {
   PRICING_PAGE_QUERY_RESULT,
   PRICING_PLANS_QUERY_RESULT,
   SITE_SETTINGS_QUERY_RESULT,
+  AFFILIATE_PAGE_QUERY_RESULT,
+  AFFILIATE_SETTINGS_QUERY_RESULT,
 } from '../sanity.types'
 
 export async function getHomePage(locale: string): Promise<HOME_QUERY_RESULT> {
@@ -57,4 +61,18 @@ export async function getPricingPlans(): Promise<PRICING_PLANS_QUERY_RESULT> {
   cacheLife('hours')
   cacheTag('pricingPlans')
   return client.fetch<PRICING_PLANS_QUERY_RESULT>(PRICING_PLANS_QUERY, {})
+}
+
+export async function getAffiliatePage(locale: string): Promise<AFFILIATE_PAGE_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`affiliatePage-${locale}`)
+  return client.fetch<AFFILIATE_PAGE_QUERY_RESULT>(AFFILIATE_PAGE_QUERY, { locale })
+}
+
+export async function getAffiliateSettings(): Promise<AFFILIATE_SETTINGS_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag('affiliateSettings')
+  return client.fetch<AFFILIATE_SETTINGS_QUERY_RESULT>(AFFILIATE_SETTINGS_QUERY, {})
 }

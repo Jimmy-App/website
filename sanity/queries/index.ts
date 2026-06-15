@@ -26,6 +26,29 @@ export const PRICING_PLANS_QUERY = groq`
   }
 `
 
+export const AFFILIATE_PAGE_QUERY = groq`
+  *[_type == "affiliatePage" && language == $locale][0]{
+    title,
+    hero,
+    calc,
+    how,
+    why,
+    who,
+    faq,
+    finalCta,
+    seo
+  }
+`
+
+// Global, non-localized calculator numbers.
+export const AFFILIATE_SETTINGS_QUERY = groq`
+  *[_type == "affiliateSettings"][0]{
+    rate, sliderMin, sliderMax, sliderDefault, ticks,
+    eur{ avg, lo, hi },
+    usd{ avg, lo, hi }
+  }
+`
+
 export const HOME_QUERY = groq`
   *[_type == "homePage" && language == $locale][0]{
     title,
