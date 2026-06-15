@@ -102,11 +102,13 @@ const TOOL_SLOTS = [
 ] as const
 
 // Scattered transform per slot for the "without" (messy pile) state.
+// z ascends top→bottom so each card's logo (at its top) stays above the
+// dipping bottom corner of the card before it — logos never get covered.
 const SCATTER = [
-  { x: -12, y: 0, rotate: -4.5, z: 4 },
-  { x: 14, y: 4, rotate: 3.5, z: 3 },
-  { x: -7, y: 8, rotate: -3, z: 2 },
-  { x: 15, y: 6, rotate: 5, z: 1 },
+  { x: -12, y: 0, rotate: -4, z: 1 },
+  { x: 14, y: 5, rotate: 3.5, z: 2 },
+  { x: -7, y: 10, rotate: -3, z: 3 },
+  { x: 15, y: 8, rotate: 4.5, z: 4 },
 ] as const
 
 // ── Tools morph: chaotic pile (without) → organized Jimmy app (with) ───────────
