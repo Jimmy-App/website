@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Check, CalendarDays, Users, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/Button'
 import type { FinalCtaContent } from '@/lib/content'
 
 // Trust items map by index to these icons (No card / 30 days free / 3 clients).
@@ -63,23 +64,23 @@ export function PricingCta({ data }: { data: FinalCtaContent }) {
             </p>
           )}
 
-          {/* CTAs */}
+          {/* CTAs — primary reuses the shared <Button>; secondary is a dark
+              translucent button with the same press effect. */}
           <div className="mt-[clamp(1.6rem,3vw,2rem)] flex flex-wrap items-center justify-center gap-3">
-            <a
+            <Button
               href="#"
-              className={cn(
-                'inline-flex items-center gap-2 rounded-full bg-purple px-[30px] py-[15px] text-[15px] font-semibold text-white',
-                'transition-[background,box-shadow,transform] duration-200 hover:bg-purple-hover hover:-translate-y-[1px] hover:shadow-[0_0_28px_rgba(138,50,224,0.5)]',
-              )}
+              variant="solid"
+              size="lg"
+              className="px-[30px] py-[15px]"
+              icon={<ArrowRight className="size-4" strokeWidth={2} />}
             >
               {data.ctaPrimary}
-              <ArrowRight className="size-4" strokeWidth={2} />
-            </a>
+            </Button>
             <a
               href="#"
               className={cn(
                 'inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/[0.08] px-[28px] py-[15px] text-[15px] font-medium text-white',
-                'transition-colors duration-200 hover:bg-white/[0.14]',
+                'transition-[background,transform] duration-200 hover:bg-white/[0.14] active:scale-[0.97]',
               )}
             >
               {data.ctaSecondary}

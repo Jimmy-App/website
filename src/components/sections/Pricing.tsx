@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/Button'
 import type { PricingData, PricingPlansData } from '@/lib/content'
 
 // useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
@@ -523,14 +524,16 @@ export function Pricing({ data, plans }: { data: PricingData; plans: PricingPlan
               <strong className="font-bold text-text">{fees.jimmy}</strong>
             </div>
 
-            {/* CTA */}
-            <button
+            {/* CTA — shared <Button> (same press/hover effects as the homepage) */}
+            <Button
               type="button"
-              className="mt-auto inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-purple px-[22px] py-[15px] font-body text-[15px] font-bold text-white shadow-[0_12px_28px_-8px_rgba(138,50,224,0.6)] transition-[background,box-shadow,transform] duration-[180ms] hover:bg-purple-hover hover:shadow-[0_14px_34px_-8px_rgba(138,50,224,0.72)] active:translate-y-px"
+              variant="solid"
+              size="lg"
+              className="mt-auto w-full py-[15px] text-[15px] font-bold shadow-[0_12px_28px_-8px_rgba(138,50,224,0.6)] hover:shadow-[0_14px_34px_-8px_rgba(138,50,224,0.72)]"
+              icon={<ArrowRight size={17} strokeWidth={1.75} />}
             >
-              <span>{isFree ? (data.ctaFree ?? '') : (data.ctaClub ?? '')}</span>
-              <ArrowRight size={17} strokeWidth={1.75} />
-            </button>
+              {isFree ? (data.ctaFree ?? '') : (data.ctaClub ?? '')}
+            </Button>
 
             {/* Lock note */}
             <AnimatePresence initial={false}>
@@ -698,20 +701,16 @@ function PlanCard({
       </p>
       <ul className="flex list-none flex-col gap-[11px]">{children}</ul>
 
-      {/* Per-card CTA — wrapper pushes it to the bottom so both align */}
+      {/* Per-card CTA — reuses the shared <Button> (same press/hover effects). */}
       <div className="mt-auto pt-[26px]">
-        <a
+        <Button
           href="#"
-          className={cn(
-            'inline-flex w-full items-center justify-center gap-[7px] rounded-full px-[22px] py-[13px] text-[14.5px] font-semibold',
-            'transition-[background,border-color,box-shadow] duration-200',
-            isClub
-              ? 'border border-purple bg-purple text-white hover:bg-purple-hover hover:shadow-[0_0_24px_rgba(138,50,224,0.4)]'
-              : 'border border-ghost-border bg-surface text-text hover:bg-ghost-hover hover:border-ghost-border-h',
-          )}
+          variant={isClub ? 'solid' : 'ghost'}
+          size="lg"
+          className="w-full text-[14.5px]"
         >
           {ctaLabel}
-        </a>
+        </Button>
       </div>
     </div>
   )
