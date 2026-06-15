@@ -131,10 +131,25 @@ function ToolsMorph({
   const t = (delay: number) =>
     reduced ? { duration: 0 } : { duration: 0.62, ease, delay }
 
+  // On narrow screens the absolute card pile would overflow + clip, so dial the
+  // scatter/sizing down. Detected client-side (illustration is below the fold).
+  const [compact, setCompact] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 700px)')
+    const update = () => setCompact(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
   // Aligned (with) vertical rhythm + the messy (without) scatter, expressed as a
   // transform delta so only `transform`/`opacity` animate (cheap, 60fps).
-  const TOP_WITH = 60
-  const GAP_WITH = 86
+  const TOP_WITH = compact ? 30 : 60
+  const GAP_WITH = compact ? 98 : 86
+  const CARD_H = compact ? 86 : 76
+  const xScale = compact ? 0.28 : 1
+  const rotScale = compact ? 0.5 : 1
+  const stageH = TOP_WITH + (slots.length - 1) * GAP_WITH + CARD_H + 8
 
   return (
     <div className="absolute inset-0 p-6 max-lg:p-5">
@@ -181,7 +196,7 @@ function ToolsMorph({
       </div>
 
       {/* Cards stage */}
-      <div className="relative mt-[6px] h-[372px] max-lg:h-[330px]">
+      <div className="relative mt-[6px]" style={{ height: stageH }}>
         {slots.map((s, i) => {
           const sc = SCATTER[i]
           const topWith = TOP_WITH + i * GAP_WITH
@@ -193,16 +208,17 @@ function ToolsMorph({
               initial={false}
               animate={{
                 y: isWith ? 0 : deltaY,
-                x: isWith ? 0 : sc.x,
-                rotate: isWith ? 0 : sc.rotate,
+                x: isWith ? 0 : sc.x * xScale,
+                rotate: isWith ? 0 : sc.rotate * rotScale,
               }}
               transition={t(isWith ? i * 0.05 : (slots.length - 1 - i) * 0.04)}
               style={{ top: topWith, zIndex: isWith ? i + 1 : sc.z }}
               className="absolute left-0 right-0"
             >
               <div
+                style={{ height: CARD_H }}
                 className={cn(
-                  'relative h-[76px] rounded-[14px] border bg-surface overflow-hidden',
+                  'relative rounded-[14px] border bg-surface overflow-hidden',
                   'transition-[border-color,box-shadow] duration-500',
                   isWith
                     ? 'border-[rgba(138,50,224,0.28)] shadow-[0_6px_18px_-10px_rgba(138,50,224,0.45)]'
@@ -378,7 +394,7 @@ export default function WhyJimmy({ data }: { data: WhyData }) {
           <div
             className={cn(
               'relative rounded-[24px] overflow-hidden border',
-              'min-h-[520px] max-lg:min-h-[460px]',
+              'min-h-[520px]',
               'transition-colors duration-500',
               active === 'with'
                 ? 'bg-purple-light/40 border-[rgba(138,50,224,0.18)]'
