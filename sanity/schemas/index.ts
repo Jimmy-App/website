@@ -13,6 +13,7 @@ import { faqItem } from './objects/faqItem'
 
 import { siteSettings } from './documents/siteSettings'
 import { homePage } from './documents/homePage'
+import { pricingPage } from './documents/pricingPage'
 import { navigation } from './documents/navigation'
 import { footer } from './documents/footer'
 import { pricing } from './documents/pricing'
@@ -35,6 +36,7 @@ export const schemaTypes = [
   // Documents
   siteSettings,
   homePage,
+  pricingPage,
   navigation,
   footer,
   pricing,

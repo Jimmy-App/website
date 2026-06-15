@@ -4,6 +4,16 @@ export const SITE_SETTINGS_QUERY = groq`
   *[_type == "siteSettings" && language == $locale][0]{
     siteName,
     siteDescription,
+    seo,
+    notFound
+  }
+`
+
+export const PRICING_PAGE_QUERY = groq`
+  *[_type == "pricingPage" && language == $locale][0]{
+    title,
+    faq,
+    finalCta,
     seo
   }
 `

@@ -205,6 +205,13 @@ export type HomePageReference = {
   [internalGroqTypeReferenceTo]?: "homePage";
 };
 
+export type PricingPageReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "pricingPage";
+};
+
 export type NavigationReference = {
   _ref: string;
   _type: "reference";
@@ -230,6 +237,7 @@ export type InternationalizedArrayReferenceValue = {
   _type: "internationalizedArrayReferenceValue";
   value?:
     | HomePageReference
+    | PricingPageReference
     | NavigationReference
     | FooterReference
     | SiteSettingsReference;
@@ -244,6 +252,13 @@ export type SiteSettings = {
   siteName?: string;
   siteDescription?: string;
   seo?: Seo;
+  notFound?: {
+    eyebrow?: string;
+    title?: string;
+    lead?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+  };
   language?: string;
 };
 
@@ -315,6 +330,44 @@ export type Navigation = {
   close?: string;
   menu?: string;
   language?: string;
+};
+
+export type PricingPage = {
+  _id: string;
+  _type: "pricingPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  language?: string;
+  faq?: {
+    sectionLabel?: string;
+    eyebrow?: string;
+    title?: string;
+    items?: Array<
+      {
+        _key: string;
+      } & FaqItem
+    >;
+    footNote?: string;
+    footLink?: string;
+  };
+  finalCta?: {
+    sectionLabel?: string;
+    headlinePrefix?: string;
+    headlineAccent?: string;
+    headlineSuffix?: string;
+    headlineLine2?: string;
+    subtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+    socialProof?: string;
+    tags?: Array<string>;
+    trustPrefix?: string;
+    trustBold?: string;
+    trustSuffix?: string;
+  };
+  seo?: Seo;
 };
 
 export type HomePage = {
@@ -733,6 +786,7 @@ export type AllSanitySchemaTypes =
   | TranslationMetadata
   | InternationalizedArrayReference
   | HomePageReference
+  | PricingPageReference
   | NavigationReference
   | FooterReference
   | SiteSettingsReference
@@ -740,6 +794,7 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | Footer
   | Navigation
+  | PricingPage
   | HomePage
   | SanityImageCrop
   | SanityImageHotspot
@@ -755,10 +810,52 @@ export type AllSanitySchemaTypes =
 
 // Source: sanity/queries/index.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings" && language == $locale][0]{    siteName,    siteDescription,    seo  }
+// Query: *[_type == "siteSettings" && language == $locale][0]{    siteName,    siteDescription,    seo,    notFound  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   siteName: string | null;
   siteDescription: string | null;
+  seo: Seo | null;
+  notFound: {
+    eyebrow?: string;
+    title?: string;
+    lead?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+  } | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: PRICING_PAGE_QUERY
+// Query: *[_type == "pricingPage" && language == $locale][0]{    title,    faq,    finalCta,    seo  }
+export type PRICING_PAGE_QUERY_RESULT = {
+  title: string | null;
+  faq: {
+    sectionLabel?: string;
+    eyebrow?: string;
+    title?: string;
+    items?: Array<
+      {
+        _key: string;
+      } & FaqItem
+    >;
+    footNote?: string;
+    footLink?: string;
+  } | null;
+  finalCta: {
+    sectionLabel?: string;
+    headlinePrefix?: string;
+    headlineAccent?: string;
+    headlineSuffix?: string;
+    headlineLine2?: string;
+    subtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+    socialProof?: string;
+    tags?: Array<string>;
+    trustPrefix?: string;
+    trustBold?: string;
+    trustSuffix?: string;
+  } | null;
   seo: Seo | null;
 } | null;
 
@@ -1105,7 +1202,8 @@ export type FOOTER_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings" && language == $locale][0]{\n    siteName,\n    siteDescription,\n    seo\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "siteSettings" && language == $locale][0]{\n    siteName,\n    siteDescription,\n    seo,\n    notFound\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "pricingPage" && language == $locale][0]{\n    title,\n    faq,\n    finalCta,\n    seo\n  }\n': PRICING_PAGE_QUERY_RESULT;
     '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
     '\n  *[_type == "navigation" && language == $locale][0]{\n    featuresLabel,\n    featuresForCoaches,\n    featuresForMembers,\n    featuresItems[]{ key, title, subtitle, href },\n    featuresCta,\n    resourcesLabel,\n    resourcesContent,\n    resourcesCommunity,\n    resourcesItems[]{ key, title, subtitle, href },\n    pricing,\n    affiliate,\n    newBadge,\n    login,\n    getStarted,\n    getStartedShort,\n    openMenu,\n    close,\n    menu\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "footer" && language == $locale][0]{\n    taglinePrefix,\n    taglineEmphasis,\n    productHeading,\n    productLinks[]{ label, href, external },\n    companyHeading,\n    companyLinks[]{ label, href, external },\n    legalHeading,\n    legalLinks[]{ label, href, external },\n    copy\n  }\n': FOOTER_QUERY_RESULT;

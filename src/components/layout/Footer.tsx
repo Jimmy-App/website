@@ -44,6 +44,27 @@ const SOCIAL = [
   { href: '#', label: 'Discord', icon: <IconDiscord /> },
 ]
 
+/* Internal ("/…") hrefs use the locale-aware Link; anchors/externals stay <a>. */
+function FtLink({
+  link,
+}: {
+  link: { label?: string | null; href?: string | null; external?: boolean | null }
+}) {
+  const href = link.href ?? '#'
+  if (href.startsWith('/') && !link.external) {
+    return (
+      <Link href={href} className="ft-col-link">
+        {link.label}
+      </Link>
+    )
+  }
+  return (
+    <a href={href} className="ft-col-link">
+      {link.label}
+    </a>
+  )
+}
+
 /* ── Footer ──────────────────────────────────────────────────────── */
 export function Footer({ data }: { data: FooterData }) {
   return (
@@ -176,7 +197,7 @@ export function Footer({ data }: { data: FooterData }) {
                 {data.productHeading}
               </h4>
               {(data.productLinks ?? []).map((link, i) => (
-                <a key={i} href={link.href ?? '#'} className="ft-col-link">{link.label}</a>
+                <FtLink key={i} link={link} />
               ))}
             </nav>
 
@@ -189,7 +210,7 @@ export function Footer({ data }: { data: FooterData }) {
                 {data.companyHeading}
               </h4>
               {(data.companyLinks ?? []).map((link, i) => (
-                <a key={i} href={link.href ?? '#'} className="ft-col-link">{link.label}</a>
+                <FtLink key={i} link={link} />
               ))}
             </nav>
 
@@ -202,7 +223,7 @@ export function Footer({ data }: { data: FooterData }) {
                 {data.legalHeading}
               </h4>
               {(data.legalLinks ?? []).map((link, i) => (
-                <a key={i} href={link.href ?? '#'} className="ft-col-link">{link.label}</a>
+                <FtLink key={i} link={link} />
               ))}
             </nav>
           </div>

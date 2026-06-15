@@ -7,6 +7,9 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title('Home Page')
         .child(S.documentTypeList('homePage').title('Home Page (per language)')),
+      S.listItem()
+        .title('Pricing Page')
+        .child(S.documentTypeList('pricingPage').title('Pricing Page (per language)')),
       S.divider(),
       S.listItem()
         .title('Navigation')

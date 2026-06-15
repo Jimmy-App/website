@@ -545,14 +545,14 @@ function MobileMenu({
           </div>
 
           {/* Pricing */}
-          <a
-            href="#pricing"
+          <Link
+            href="/pricing"
             onClick={onClose}
             className={cn(linkCls, rowCls, rowState)}
             style={delay(1)}
           >
             {data.pricing}
-          </a>
+          </Link>
 
           {/* Affiliate + NEW */}
           <a
@@ -700,9 +700,9 @@ export function Navbar({ data }: { data: NavigationData }) {
               <FeaturesMega data={data} />
             </NavMegaItem>
 
-            <a href="#pricing" className="text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
+            <Link href="/pricing" className="text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
               {data.pricing}
-            </a>
+            </Link>
 
             <a href="#affiliate" className="inline-flex items-center text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
               {data.affiliate}
