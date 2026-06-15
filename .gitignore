@@ -34,3 +34,7 @@ next-env.d.ts
 
 # Sanity
 .sanity/
+
+# Agent tooling (local only)
+.agents/
+skills-lock.json

@@ -5,23 +5,16 @@ export const structure: StructureResolver = (S) =>
     .title('Content')
     .items([
       S.listItem()
-        .title('Site Settings')
-        .child(S.documentTypeList('siteSettings').title('Site Settings')),
-      S.listItem()
         .title('Home Page')
-        .child(S.documentTypeList('homePage').title('Home Page')),
+        .child(S.documentTypeList('homePage').title('Home Page (per language)')),
       S.divider(),
       S.listItem()
         .title('Navigation')
-        .child(S.documentTypeList('navigation').title('Navigation')),
+        .child(S.documentTypeList('navigation').title('Navigation (per language)')),
       S.listItem()
         .title('Footer')
-        .child(S.documentTypeList('footer').title('Footer')),
-      S.divider(),
+        .child(S.documentTypeList('footer').title('Footer (per language)')),
       S.listItem()
-        .title('Pricing')
-        .child(S.documentTypeList('pricing').title('Pricing')),
-      S.listItem()
-        .title('Pricing Features')
-        .child(S.documentTypeList('pricingFeatures').title('Pricing Features')),
+        .title('Site Settings')
+        .child(S.documentTypeList('siteSettings').title('Site Settings (per language)')),
     ])

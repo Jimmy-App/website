@@ -2,11 +2,12 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { FeatureItem } from '@/components/ui/FeatureItem'
 import { Button } from '@/components/ui/Button'
+import type { NavigationData } from '@/lib/content'
 import {
   ChevronDown,
   Dumbbell,
@@ -37,6 +38,60 @@ const LOCALES = [
   { code: 'es' as const, flag: '/assets/flags/es.svg', label: 'ES', full: 'Español' },
 ]
 
+/* ── Feature & Resource icon maps ───────────────────────────────── */
+const FEATURE_ICONS: Record<string, React.ReactNode> = {
+  workoutBuilder:   <Dumbbell size={16} strokeWidth={1.75} />,
+  programs:         <GraduationCap size={16} strokeWidth={1.75} />,
+  communityFeed:    <Users size={16} strokeWidth={1.75} />,
+  messaging:        <MessageCircle size={16} strokeWidth={1.75} />,
+  payments:         <CreditCard size={16} strokeWidth={1.75} />,
+  progressTracking: <TrendingUp size={16} strokeWidth={1.75} />,
+  brandedApp:       <Smartphone size={16} strokeWidth={1.75} />,
+  dailyWorkouts:    <CalendarCheck size={16} strokeWidth={1.75} />,
+  community:        <HeartHandshake size={16} strokeWidth={1.75} />,
+  directAccess:     <MessagesSquare size={16} strokeWidth={1.75} />,
+  progressView:     <LineChart size={16} strokeWidth={1.75} />,
+  easyPayments:     <Wallet size={16} strokeWidth={1.75} />,
+}
+
+const FEATURE_ICONS_SM: Record<string, React.ReactNode> = {
+  workoutBuilder:   <Dumbbell size={15} strokeWidth={1.75} />,
+  programs:         <GraduationCap size={15} strokeWidth={1.75} />,
+  communityFeed:    <Users size={15} strokeWidth={1.75} />,
+  messaging:        <MessageCircle size={15} strokeWidth={1.75} />,
+  payments:         <CreditCard size={15} strokeWidth={1.75} />,
+  progressTracking: <TrendingUp size={15} strokeWidth={1.75} />,
+  brandedApp:       <Smartphone size={15} strokeWidth={1.75} />,
+  dailyWorkouts:    <CalendarCheck size={15} strokeWidth={1.75} />,
+  community:        <HeartHandshake size={15} strokeWidth={1.75} />,
+  directAccess:     <MessagesSquare size={15} strokeWidth={1.75} />,
+  progressView:     <LineChart size={15} strokeWidth={1.75} />,
+  easyPayments:     <Wallet size={15} strokeWidth={1.75} />,
+}
+
+const RESOURCE_ICONS: Record<string, React.ReactNode> = {
+  blog:           <Newspaper size={16} strokeWidth={1.75} />,
+  guides:         <BookOpen size={16} strokeWidth={1.75} />,
+  changelog:      <GitCommitHorizontal size={16} strokeWidth={1.75} />,
+  productUpdates: <Sparkles size={16} strokeWidth={1.75} />,
+  roadmap:        <Map size={16} strokeWidth={1.75} />,
+  discord:        <MessageSquare size={16} strokeWidth={1.75} />,
+}
+
+const RESOURCE_ICONS_SM: Record<string, React.ReactNode> = {
+  blog:           <Newspaper size={15} strokeWidth={1.75} />,
+  guides:         <BookOpen size={15} strokeWidth={1.75} />,
+  changelog:      <GitCommitHorizontal size={15} strokeWidth={1.75} />,
+  productUpdates: <Sparkles size={15} strokeWidth={1.75} />,
+  roadmap:        <Map size={15} strokeWidth={1.75} />,
+  discord:        <MessageSquare size={15} strokeWidth={1.75} />,
+}
+
+const COACH_KEYS = ['workoutBuilder', 'programs', 'communityFeed', 'messaging', 'payments', 'progressTracking']
+const MEMBER_KEYS = ['brandedApp', 'dailyWorkouts', 'community', 'directAccess', 'progressView', 'easyPayments']
+const RESOURCE_CONTENT_KEYS = ['blog', 'guides', 'changelog']
+const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
+
 /* Rounded flag icon — real SVG flags (emoji flags don't render on Windows/some Android) */
 function Flag({ src }: { src: string }) {
   return (
@@ -52,7 +107,11 @@ function Flag({ src }: { src: string }) {
 }
 
 /* ── MegaMenu: Features ─────────────────────────────────────────── */
-function FeaturesMega({ t }: { t: ReturnType<typeof useTranslations<'nav'>> }) {
+function FeaturesMega({ data }: { data: NavigationData }) {
+  const featuresItems = data.featuresItems ?? []
+  const coachItems = featuresItems.filter((it) => COACH_KEYS.includes(it.key ?? ''))
+  const memberItems = featuresItems.filter((it) => MEMBER_KEYS.includes(it.key ?? ''))
+
   return (
     <div
       className="mega-card rounded-2xl border border-border bg-surface shadow-[var(--shadow-lg)]"
@@ -61,30 +120,34 @@ function FeaturesMega({ t }: { t: ReturnType<typeof useTranslations<'nav'>> }) {
       {/* Col 1: For Coaches */}
       <div style={{ padding: '8px 6px 6px' }}>
         <div className="px-[10px] mb-2 text-[10.5px] font-bold uppercase tracking-[0.11em] text-text-faint">
-          {t('features.forCoaches')}
+          {data.featuresForCoaches}
         </div>
         <div className="flex flex-col gap-px">
-          <FeatureItem icon={<Dumbbell size={16} strokeWidth={1.75} />} title={t('features.items.workoutBuilder.title')} subtitle={t('features.items.workoutBuilder.subtitle')} />
-          <FeatureItem icon={<GraduationCap size={16} strokeWidth={1.75} />} title={t('features.items.programs.title')} subtitle={t('features.items.programs.subtitle')} />
-          <FeatureItem icon={<Users size={16} strokeWidth={1.75} />} title={t('features.items.communityFeed.title')} subtitle={t('features.items.communityFeed.subtitle')} />
-          <FeatureItem icon={<MessageCircle size={16} strokeWidth={1.75} />} title={t('features.items.messaging.title')} subtitle={t('features.items.messaging.subtitle')} />
-          <FeatureItem icon={<CreditCard size={16} strokeWidth={1.75} />} title={t('features.items.payments.title')} subtitle={t('features.items.payments.subtitle')} />
-          <FeatureItem icon={<TrendingUp size={16} strokeWidth={1.75} />} title={t('features.items.progressTracking.title')} subtitle={t('features.items.progressTracking.subtitle')} />
+          {coachItems.map((it) => (
+            <FeatureItem
+              key={it.key}
+              icon={FEATURE_ICONS[it.key ?? ''] ?? null}
+              title={it.title ?? ''}
+              subtitle={it.subtitle ?? ''}
+            />
+          ))}
         </div>
       </div>
 
       {/* Col 2: For Members */}
       <div style={{ padding: '8px 6px 6px', borderLeft: '1px solid var(--color-divider)', paddingLeft: '14px' }}>
         <div className="px-[10px] mb-2 text-[10.5px] font-bold uppercase tracking-[0.11em] text-text-faint">
-          {t('features.forMembers')}
+          {data.featuresForMembers}
         </div>
         <div className="flex flex-col gap-px">
-          <FeatureItem icon={<Smartphone size={16} strokeWidth={1.75} />} title={t('features.items.brandedApp.title')} subtitle={t('features.items.brandedApp.subtitle')} />
-          <FeatureItem icon={<CalendarCheck size={16} strokeWidth={1.75} />} title={t('features.items.dailyWorkouts.title')} subtitle={t('features.items.dailyWorkouts.subtitle')} />
-          <FeatureItem icon={<HeartHandshake size={16} strokeWidth={1.75} />} title={t('features.items.community.title')} subtitle={t('features.items.community.subtitle')} />
-          <FeatureItem icon={<MessagesSquare size={16} strokeWidth={1.75} />} title={t('features.items.directAccess.title')} subtitle={t('features.items.directAccess.subtitle')} />
-          <FeatureItem icon={<LineChart size={16} strokeWidth={1.75} />} title={t('features.items.progressView.title')} subtitle={t('features.items.progressView.subtitle')} />
-          <FeatureItem icon={<Wallet size={16} strokeWidth={1.75} />} title={t('features.items.easyPayments.title')} subtitle={t('features.items.easyPayments.subtitle')} />
+          {memberItems.map((it) => (
+            <FeatureItem
+              key={it.key}
+              icon={FEATURE_ICONS[it.key ?? ''] ?? null}
+              title={it.title ?? ''}
+              subtitle={it.subtitle ?? ''}
+            />
+          ))}
         </div>
       </div>
 
@@ -100,19 +163,19 @@ function FeaturesMega({ t }: { t: ReturnType<typeof useTranslations<'nav'>> }) {
           aria-hidden="true"
         />
         <div className="relative text-[10px] font-bold uppercase tracking-[0.13em] text-purple-on-dark mb-[10px]">
-          {t('features.cta.label')}
+          {data.featuresCta?.label}
         </div>
         <div className="relative font-display text-[1.18rem] font-bold leading-[1.18] tracking-[-0.02em] text-white mb-[9px]">
-          {t('features.cta.title')}
+          {data.featuresCta?.title}
         </div>
         <p className="relative text-[12.5px] leading-[1.5] mb-auto" style={{ color: 'rgba(255,255,255,0.62)' }}>
-          {t('features.cta.body')}
+          {data.featuresCta?.body}
         </p>
         <a
           href="#"
           className="relative mt-4 inline-flex items-center gap-[7px] self-start whitespace-nowrap rounded-full bg-purple px-[18px] py-[10px] text-[13px] font-semibold text-white transition-[background,box-shadow,transform] duration-[var(--dur-fast)] hover:bg-purple-hover hover:shadow-[0_4px_18px_rgba(138,50,224,0.4)] hover:-translate-y-px"
         >
-          {t('features.cta.btn')}
+          {data.featuresCta?.btn}
           <ArrowRight size={14} strokeWidth={1.75} />
         </a>
       </aside>
@@ -121,7 +184,11 @@ function FeaturesMega({ t }: { t: ReturnType<typeof useTranslations<'nav'>> }) {
 }
 
 /* ── MegaMenu: Resources ────────────────────────────────────────── */
-function ResourcesMega({ t }: { t: ReturnType<typeof useTranslations<'nav'>> }) {
+function ResourcesMega({ data }: { data: NavigationData }) {
+  const resourcesItems = data.resourcesItems ?? []
+  const contentItems = resourcesItems.filter((it) => RESOURCE_CONTENT_KEYS.includes(it.key ?? ''))
+  const communityItems = resourcesItems.filter((it) => RESOURCE_COMMUNITY_KEYS.includes(it.key ?? ''))
+
   return (
     <div
       className="rounded-2xl border border-border bg-surface shadow-[var(--shadow-lg)]"
@@ -130,24 +197,34 @@ function ResourcesMega({ t }: { t: ReturnType<typeof useTranslations<'nav'>> }) 
       {/* Col 1: Content */}
       <div style={{ padding: '8px 6px 6px' }}>
         <div className="px-[10px] mb-2 text-[10.5px] font-bold uppercase tracking-[0.11em] text-text-faint">
-          {t('resources.content')}
+          {data.resourcesContent}
         </div>
         <div className="flex flex-col gap-px">
-          <FeatureItem icon={<Newspaper size={16} strokeWidth={1.75} />} title={t('resources.items.blog.title')} subtitle={t('resources.items.blog.subtitle')} />
-          <FeatureItem icon={<BookOpen size={16} strokeWidth={1.75} />} title={t('resources.items.guides.title')} subtitle={t('resources.items.guides.subtitle')} />
-          <FeatureItem icon={<GitCommitHorizontal size={16} strokeWidth={1.75} />} title={t('resources.items.changelog.title')} subtitle={t('resources.items.changelog.subtitle')} />
+          {contentItems.map((it) => (
+            <FeatureItem
+              key={it.key}
+              icon={RESOURCE_ICONS[it.key ?? ''] ?? null}
+              title={it.title ?? ''}
+              subtitle={it.subtitle ?? ''}
+            />
+          ))}
         </div>
       </div>
 
       {/* Col 2: Community */}
       <div style={{ padding: '8px 6px 6px', borderLeft: '1px solid var(--color-divider)', paddingLeft: '14px' }}>
         <div className="px-[10px] mb-2 text-[10.5px] font-bold uppercase tracking-[0.11em] text-text-faint">
-          {t('resources.community')}
+          {data.resourcesCommunity}
         </div>
         <div className="flex flex-col gap-px">
-          <FeatureItem icon={<Sparkles size={16} strokeWidth={1.75} />} title={t('resources.items.productUpdates.title')} subtitle={t('resources.items.productUpdates.subtitle')} />
-          <FeatureItem icon={<Map size={16} strokeWidth={1.75} />} title={t('resources.items.roadmap.title')} subtitle={t('resources.items.roadmap.subtitle')} />
-          <FeatureItem icon={<MessageSquare size={16} strokeWidth={1.75} />} title={t('resources.items.discord.title')} subtitle={t('resources.items.discord.subtitle')} />
+          {communityItems.map((it) => (
+            <FeatureItem
+              key={it.key}
+              icon={RESOURCE_ICONS[it.key ?? ''] ?? null}
+              title={it.title ?? ''}
+              subtitle={it.subtitle ?? ''}
+            />
+          ))}
         </div>
       </div>
     </div>
@@ -328,17 +405,25 @@ function LangDropdown() {
 function MobileMenu({
   open,
   onClose,
-  t,
+  data,
 }: {
   open: boolean
   onClose: () => void
-  t: ReturnType<typeof useTranslations<'nav'>>
+  data: NavigationData
 }) {
   const locale = useLocale()
   const pathname = usePathname()
   const router = useRouter()
   const [featOpen, setFeatOpen] = useState(false)
   const [resOpen, setResOpen] = useState(false)
+
+  const featuresItems = data.featuresItems ?? []
+  const coachItems = featuresItems.filter((it) => COACH_KEYS.includes(it.key ?? ''))
+  const memberItems = featuresItems.filter((it) => MEMBER_KEYS.includes(it.key ?? ''))
+
+  const resourcesItems = data.resourcesItems ?? []
+  const contentItems = resourcesItems.filter((it) => RESOURCE_CONTENT_KEYS.includes(it.key ?? ''))
+  const communityItems = resourcesItems.filter((it) => RESOURCE_COMMUNITY_KEYS.includes(it.key ?? ''))
 
   // Lock body scroll while the menu is open
   useEffect(() => {
@@ -391,7 +476,7 @@ function MobileMenu({
     <div
       role="dialog"
       aria-modal={open}
-      aria-label={t('menu')}
+      aria-label={data.menu ?? ''}
       aria-hidden={!open}
       className={cn(
         'fixed inset-0 z-[80] flex flex-col bg-bg lg:hidden',
@@ -420,7 +505,7 @@ function MobileMenu({
               onClick={() => { setFeatOpen((v) => !v); if (!featOpen) setResOpen(false) }}
               className={cn(linkCls, 'cursor-pointer', featOpen && 'text-purple')}
             >
-              {t('features.label')}
+              {data.featuresLabel}
               <ChevronDown
                 size={22}
                 strokeWidth={2}
@@ -437,34 +522,20 @@ function MobileMenu({
               <div className="overflow-hidden">
                 <div className="grid grid-cols-2 gap-x-5 gap-y-4 pt-4 pb-1">
                   <div>
-                    <div className={groupLabelCls}>{t('features.forCoaches')}</div>
-                    {([
-                      [<Dumbbell key="d" size={15} strokeWidth={1.75} />, t('features.items.workoutBuilder.title')],
-                      [<GraduationCap key="g" size={15} strokeWidth={1.75} />, t('features.items.programs.title')],
-                      [<Users key="u" size={15} strokeWidth={1.75} />, t('features.items.communityFeed.title')],
-                      [<MessageCircle key="mc" size={15} strokeWidth={1.75} />, t('features.items.messaging.title')],
-                      [<CreditCard key="cc" size={15} strokeWidth={1.75} />, t('features.items.payments.title')],
-                      [<TrendingUp key="tu" size={15} strokeWidth={1.75} />, t('features.items.progressTracking.title')],
-                    ] as [React.ReactNode, string][]).map(([icon, label]) => (
-                      <a key={label} href="#" onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{icon}</span>
-                        {label}
+                    <div className={groupLabelCls}>{data.featuresForCoaches}</div>
+                    {coachItems.map((it) => (
+                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
+                        <span className="text-text-faint">{FEATURE_ICONS_SM[it.key ?? ''] ?? null}</span>
+                        {it.title}
                       </a>
                     ))}
                   </div>
                   <div>
-                    <div className={groupLabelCls}>{t('features.forMembers')}</div>
-                    {([
-                      [<Smartphone key="sp" size={15} strokeWidth={1.75} />, t('features.items.brandedApp.title')],
-                      [<CalendarCheck key="cal" size={15} strokeWidth={1.75} />, t('features.items.dailyWorkouts.title')],
-                      [<HeartHandshake key="hh" size={15} strokeWidth={1.75} />, t('features.items.community.title')],
-                      [<MessagesSquare key="ms" size={15} strokeWidth={1.75} />, t('features.items.directAccess.title')],
-                      [<LineChart key="lc" size={15} strokeWidth={1.75} />, t('features.items.progressView.title')],
-                      [<Wallet key="w" size={15} strokeWidth={1.75} />, t('features.items.easyPayments.title')],
-                    ] as [React.ReactNode, string][]).map(([icon, label]) => (
-                      <a key={label} href="#" onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{icon}</span>
-                        {label}
+                    <div className={groupLabelCls}>{data.featuresForMembers}</div>
+                    {memberItems.map((it) => (
+                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
+                        <span className="text-text-faint">{FEATURE_ICONS_SM[it.key ?? ''] ?? null}</span>
+                        {it.title}
                       </a>
                     ))}
                   </div>
@@ -480,7 +551,7 @@ function MobileMenu({
             className={cn(linkCls, rowCls, rowState)}
             style={delay(1)}
           >
-            {t('pricing')}
+            {data.pricing}
           </a>
 
           {/* Affiliate + NEW */}
@@ -491,9 +562,9 @@ function MobileMenu({
             style={delay(2)}
           >
             <span className="inline-flex items-center gap-[10px]">
-              {t('affiliate')}
+              {data.affiliate}
               <span className="rounded-full border border-purple-border bg-purple-light px-[7px] py-[3px] text-[9px] font-bold uppercase leading-none tracking-[0.07em] text-purple">
-                {t('newBadge')}
+                {data.newBadge}
               </span>
             </span>
           </a>
@@ -505,7 +576,7 @@ function MobileMenu({
               onClick={() => { setResOpen((v) => !v); if (!resOpen) setFeatOpen(false) }}
               className={cn(linkCls, 'cursor-pointer', resOpen && 'text-purple')}
             >
-              {t('resources.label')}
+              {data.resourcesLabel}
               <ChevronDown
                 size={22}
                 strokeWidth={2}
@@ -522,28 +593,20 @@ function MobileMenu({
               <div className="overflow-hidden">
                 <div className="grid grid-cols-2 gap-x-5 gap-y-4 pt-4 pb-1">
                   <div>
-                    <div className={groupLabelCls}>{t('resources.content')}</div>
-                    {([
-                      [<Newspaper key="n" size={15} strokeWidth={1.75} />, t('resources.items.blog.title')],
-                      [<BookOpen key="bo" size={15} strokeWidth={1.75} />, t('resources.items.guides.title')],
-                      [<GitCommitHorizontal key="gc" size={15} strokeWidth={1.75} />, t('resources.items.changelog.title')],
-                    ] as [React.ReactNode, string][]).map(([icon, label]) => (
-                      <a key={label} href="#" onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{icon}</span>
-                        {label}
+                    <div className={groupLabelCls}>{data.resourcesContent}</div>
+                    {contentItems.map((it) => (
+                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
+                        <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
+                        {it.title}
                       </a>
                     ))}
                   </div>
                   <div>
-                    <div className={groupLabelCls}>{t('resources.community')}</div>
-                    {([
-                      [<Sparkles key="sp" size={15} strokeWidth={1.75} />, t('resources.items.productUpdates.title')],
-                      [<Map key="m" size={15} strokeWidth={1.75} />, t('resources.items.roadmap.title')],
-                      [<MessageSquare key="msq" size={15} strokeWidth={1.75} />, t('resources.items.discord.title')],
-                    ] as [React.ReactNode, string][]).map(([icon, label]) => (
-                      <a key={label} href="#" onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{icon}</span>
-                        {label}
+                    <div className={groupLabelCls}>{data.resourcesCommunity}</div>
+                    {communityItems.map((it) => (
+                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
+                        <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
+                        {it.title}
                       </a>
                     ))}
                   </div>
@@ -576,10 +639,10 @@ function MobileMenu({
 
           <div className={cn('mt-4 flex flex-col gap-3', rowCls, rowState)} style={delay(5)}>
             <Button variant="ghost" size="md" className="w-full justify-center py-[14px]">
-              {t('login')}
+              {data.login}
             </Button>
             <Button variant="solid" size="md" className="w-full justify-center py-[14px]">
-              {t('getStarted')}
+              {data.getStarted}
             </Button>
           </div>
         </div>
@@ -589,8 +652,7 @@ function MobileMenu({
 }
 
 /* ── Navbar ─────────────────────────────────────────────────────── */
-export function Navbar() {
-  const t = useTranslations('nav')
+export function Navbar({ data }: { data: NavigationData }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -634,23 +696,23 @@ export function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-8 flex-1" aria-label="Primary">
-            <NavMegaItem label={t('features.label')}>
-              <FeaturesMega t={t} />
+            <NavMegaItem label={data.featuresLabel ?? ''}>
+              <FeaturesMega data={data} />
             </NavMegaItem>
 
             <a href="#pricing" className="text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
-              {t('pricing')}
+              {data.pricing}
             </a>
 
             <a href="#affiliate" className="inline-flex items-center text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
-              {t('affiliate')}
+              {data.affiliate}
               <span className="ml-[5px] text-[9px] font-bold uppercase tracking-[0.07em] text-purple bg-purple-light border border-purple-border rounded-full px-[6px] py-[2px] leading-none">
-                {t('newBadge')}
+                {data.newBadge}
               </span>
             </a>
 
-            <NavMegaItem label={t('resources.label')}>
-              <ResourcesMega t={t} />
+            <NavMegaItem label={data.resourcesLabel ?? ''}>
+              <ResourcesMega data={data} />
             </NavMegaItem>
           </nav>
 
@@ -670,10 +732,10 @@ export function Navbar() {
             {/* CTA buttons — hidden on mobile (<= lg) */}
             <div className="hidden lg:flex items-center gap-2">
               <Button variant="ghost" size="sm">
-                {t('login')}
+                {data.login}
               </Button>
               <Button variant="solid" size="sm">
-                {t('getStarted')}
+                {data.getStarted}
               </Button>
             </div>
 
@@ -686,12 +748,12 @@ export function Navbar() {
                 menuOpen && 'pointer-events-none opacity-0',
               )}
             >
-              {t('getStartedShort')}
+              {data.getStartedShort}
             </Button>
 
             {/* Hamburger / close — toggles the full-screen menu */}
             <button
-              aria-label={menuOpen ? t('close') : t('openMenu')}
+              aria-label={menuOpen ? (data.close ?? '') : (data.openMenu ?? '')}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((v) => !v)}
               className={cn(
@@ -725,7 +787,7 @@ export function Navbar() {
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        t={t}
+        data={data}
       />
     </>
   )

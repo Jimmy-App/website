@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
 import {
   useState,
@@ -11,6 +10,7 @@ import {
 } from 'react'
 import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { PricingData } from '@/lib/content'
 
 // useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
 const useIsoLayoutEffect =
@@ -20,13 +20,9 @@ const useIsoLayoutEffect =
 
 type Currency = 'eur' | 'usd'
 
-const CLIENTS = ['3', '10', '25', '50', '100', '200'] as const
-const TICK_LABELS = ['0', '10', '25', '50', '100', '200'] as const
-
-const PRICES: Record<Currency, { sym: string; reg: (number | null)[] }> = {
-  eur: { sym: '€', reg: [null, 29, 49, 79, 99, 149] },
-  usd: { sym: '$', reg: [null, 32, 54, 86, 108, 162] },
-}
+// Currency symbols (locale-independent). Client counts + prices come from
+// Sanity (homePage.pricing.tiers), keyed by slider step.
+const SYMBOLS: Record<Currency, string> = { eur: '€', usd: '$' }
 
 function getFees(
   isFree: boolean,
@@ -43,28 +39,6 @@ function getFees(
     jimmy: 'Jimmy 2.5%',
   }
 }
-
-// ── Plan card feature lists ───────────────────────────────────────────────────
-
-const FREE_FEATURES = [
-  'freeFeature1',
-  'freeFeature2',
-  'freeFeature3',
-  'freeFeature4',
-  'freeFeature5',
-  'freeFeature6',
-] as const
-
-const CLUB_FEATURES = [
-  { key: 'clubFeature1', lead: true },
-  { key: 'clubFeature2', lead: false },
-  { key: 'clubFeature3', lead: false },
-  { key: 'clubFeature4', lead: false },
-  { key: 'clubFeature5', lead: false },
-  { key: 'clubFeature6', lead: false },
-  { key: 'clubFeature7', lead: false },
-  { key: 'clubFeature8', lead: false },
-] as const
 
 // ── Slider thumb + track styles (injected once, idiomatic Tailwind can't do pseudo) ──
 
@@ -175,8 +149,7 @@ function CheckMark() {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function Pricing() {
-  const t = useTranslations('pricing')
+export function Pricing({ data }: { data: PricingData }) {
   const shouldReduceMotion = useReducedMotion()
 
   const [step, setStep] = useState(0) // default: 0 (Free)
@@ -243,13 +216,18 @@ export function Pricing() {
     [currency, shouldReduceMotion],
   )
 
-  // Derived state
-  const c = PRICES[currency]
-  const reg = c.reg[step]
+  // Derived state — client counts + prices sourced from Sanity tiers
+  const tiers = data.tiers ?? []
+  const sym = SYMBOLS[currency]
+  const tier = tiers[step]
+  const clientsCount = tier?.clients ?? ''
+  const reg = currency === 'eur' ? tier?.priceEur ?? null : tier?.priceUsd ?? null
   const isFree = reg === null
-  const nowText = isFree ? `${c.sym}0` : `${c.sym}${(reg * 0.85).toFixed(2)}`
-  const wasText = isFree ? null : `${c.sym}${reg}`
-  const planLabel = isFree ? t('planFree') : t('planClub')
+  const nowText = isFree ? `${sym}0` : `${sym}${(reg * 0.85).toFixed(2)}`
+  const wasText = isFree ? null : `${sym}${reg}`
+  // Tick axis: first marker is "0", remaining markers are the paid-tier client counts
+  const tickLabels = ['0', ...tiers.slice(1).map((tr) => tr.clients ?? '')]
+  const planLabel = isFree ? (data.planFree ?? '') : (data.planClub ?? '')
   const activeCard: 'free' | 'club' = isFree ? 'free' : 'club'
   const fees = getFees(isFree, currency)
 
@@ -278,7 +256,7 @@ export function Pricing() {
   return (
     <section
       id="pricing"
-      aria-label={t('sectionLabel')}
+      aria-label={(data.sectionLabel ?? '')}
       className="relative overflow-hidden border-t border-border py-[var(--section-pad-y)] scroll-mt-20"
       style={{ background: 'var(--color-bg)' }}
     >
@@ -302,11 +280,11 @@ export function Pricing() {
         >
           <span className="inline-flex items-center gap-[5px] rounded-full bg-purple px-[11px] py-[5px] text-[10.5px] font-extrabold uppercase tracking-[0.06em] text-white whitespace-nowrap">
             <Zap size={12} strokeWidth={1.75} />
-            {t('promoBadge')}
+            {(data.promoBadge ?? '')}
           </span>
           <span className="text-[13.5px] font-medium text-text">
-            <strong className="font-bold">{t('promoTextBold')}</strong>
-            {' '}{t('promoTextRest')}
+            <strong className="font-bold">{(data.promoTextBold ?? '')}</strong>
+            {' '}{(data.promoTextRest ?? '')}
           </span>
         </motion.div>
 
@@ -317,13 +295,13 @@ export function Pricing() {
           className="mx-auto mb-[clamp(2.2rem,4vw,3rem)] max-w-[660px] text-center"
         >
           <span className="mb-4 inline-flex items-center gap-[6px] text-[11px] font-bold uppercase tracking-[0.1em] text-purple before:h-[5px] before:w-[5px] before:rounded-full before:bg-purple before:content-['']">
-            {t('eyebrow')}
+            {(data.eyebrow ?? '')}
           </span>
           <h2 className="mb-[0.9rem] font-display text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-[1.05] tracking-[-0.035em] text-text [text-wrap:balance]">
-            {t('title')}
+            {(data.title ?? '')}
           </h2>
           <p className="text-[clamp(1rem,1.5vw,1.125rem)] leading-[1.6] text-text-muted [text-wrap:balance]">
-            {t('subtitle')}
+            {(data.subtitle ?? '')}
           </p>
         </motion.header>
 
@@ -349,15 +327,15 @@ export function Pricing() {
             <div className="mb-[clamp(2.2rem,4vw,3rem)] flex flex-wrap items-start justify-between gap-[16px_18px]">
               <div className="min-w-0 flex-[1_1_220px]">
                 <div className="mb-[0.4rem] font-display text-[clamp(1.2rem,1.9vw,1.5rem)] font-bold leading-[1.2] tracking-[-0.02em] text-text">
-                  {t('sliderQuestion')}
+                  {(data.sliderQuestion ?? '')}
                 </div>
-                <p className="text-[13.5px] text-text-muted">{t('sliderHelp')}</p>
+                <p className="text-[13.5px] text-text-muted">{(data.sliderHelp ?? '')}</p>
               </div>
 
               {/* Currency switcher */}
               <div
                 role="group"
-                aria-label={t('currencyLabel')}
+                aria-label={(data.currencyLabel ?? '')}
                 className="inline-flex shrink-0 rounded-full border border-border bg-surface-2 p-[3px]"
               >
                 {(['eur', 'usd'] as Currency[]).map((cur) => (
@@ -391,8 +369,8 @@ export function Pricing() {
                   max={5}
                   step={1}
                   value={step}
-                  aria-label={t('sliderAriaLabel')}
-                  aria-valuetext={`${CLIENTS[step]} ${t('clients')} — ${planLabel}`}
+                  aria-label={(data.sliderAriaLabel ?? '')}
+                  aria-valuetext={`${clientsCount} ${(data.clients ?? '')} — ${planLabel}`}
                   onChange={(e) => handleChange(parseInt(e.target.value, 10))}
                 />
                 {/* Custom thumb (glides via the animated --pr-p variable) */}
@@ -401,7 +379,7 @@ export function Pricing() {
 
               {/* Tick marks */}
               <div className="relative mt-[14px] h-[30px]">
-                {TICK_LABELS.map((label, i) => {
+                {tickLabels.map((label, i) => {
                   const isActive = i === step
                   const leftStyle: Record<number, string> = {
                     0: '14px',
@@ -424,7 +402,7 @@ export function Pricing() {
                           ? 'text-purple before:bg-purple'
                           : 'text-text-faint before:bg-border',
                       )}
-                      aria-label={`${label} ${t('clients')}`}
+                      aria-label={`${label} ${(data.clients ?? '')}`}
                     >
                       {label}
                     </button>
@@ -460,7 +438,7 @@ export function Pricing() {
                     }
                     className="origin-left rounded-full bg-purple px-[9px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.05em] text-white"
                   >
-                    {t('betaBadge')}
+                    {(data.betaBadge ?? '')}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -497,38 +475,38 @@ export function Pricing() {
                   )}
                 </AnimatePresence>
                 <span className="text-[15px] font-semibold leading-[1.1] text-text-muted">
-                  {t('perMonth')}
+                  {(data.perMonth ?? '')}
                 </span>
               </div>
             </div>
 
             {/* Sub line */}
             <div className="mb-[1.3rem] text-[14px] text-text-muted">
-              {t('forUpTo')}{' '}
+              {(data.forUpTo ?? '')}{' '}
               <span className="relative inline-flex overflow-hidden align-bottom tabular-nums">
                 {shouldReduceMotion ? (
-                  CLIENTS[step]
+                  clientsCount
                 ) : (
                   <AnimatePresence mode="popLayout" initial={false}>
                     <motion.span
-                      key={CLIENTS[step]}
+                      key={clientsCount}
                       initial={{ opacity: 0, y: '0.7em' }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: '-0.7em' }}
                       transition={{ duration: 0.24, ease: easeOut }}
                       className="inline-block font-semibold text-text"
                     >
-                      {CLIENTS[step]}
+                      {clientsCount}
                     </motion.span>
                   </AnimatePresence>
                 )}
               </span>{' '}
-              {t('clients')}
+              {(data.clients ?? '')}
             </div>
 
             {/* Fees */}
             <div className="mb-[1.4rem] border-b border-[var(--color-divider)] border-t py-3 text-[12.5px] leading-[1.5] text-text-muted">
-              {t('feesLabel')}{' '}
+              {(data.feesLabel ?? '')}{' '}
               <strong className="font-bold text-text">{fees.stripe}</strong>
               {' · '}
               <strong className="font-bold text-text">{fees.jimmy}</strong>
@@ -539,7 +517,7 @@ export function Pricing() {
               type="button"
               className="mt-auto inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-purple px-[22px] py-[15px] font-body text-[15px] font-bold text-white shadow-[0_12px_28px_-8px_rgba(138,50,224,0.6)] transition-[background,box-shadow,transform] duration-[180ms] hover:bg-purple-hover hover:shadow-[0_14px_34px_-8px_rgba(138,50,224,0.72)] active:translate-y-px"
             >
-              <span>{isFree ? t('ctaFree') : t('ctaClub')}</span>
+              <span>{isFree ? (data.ctaFree ?? '') : (data.ctaClub ?? '')}</span>
               <ArrowRight size={17} strokeWidth={1.75} />
             </button>
 
@@ -557,7 +535,7 @@ export function Pricing() {
                   className="mt-3 flex items-start gap-[7px] text-[11.5px] leading-[1.5] text-text-muted"
                 >
                   <Lock size={13} strokeWidth={1.75} className="mt-[2px] shrink-0 text-purple" />
-                  <span>{t('lockNote')}</span>
+                  <span>{(data.lockNote ?? '')}</span>
                 </motion.p>
               )}
             </AnimatePresence>
@@ -569,7 +547,7 @@ export function Pricing() {
         {/* ── What's included ── */}
         <div className="mt-[clamp(2.4rem,5vw,3.4rem)] mb-[1.4rem] text-center">
           <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-faint">
-            {t('whatsIncluded')}
+            {(data.whatsIncluded ?? '')}
           </span>
         </div>
 
@@ -580,25 +558,25 @@ export function Pricing() {
         >
           {/* Free card */}
           <PlanCard
-            name={t('planFree')}
-            tag={t('freeTag')}
+            name={data.planFree ?? ''}
+            tag={data.freeTag ?? ''}
             isClub={false}
             isActive={activeCard === 'free'}
           >
-            {FREE_FEATURES.map((key) => (
-              <FeatureRow key={key} text={t(key)} isClub={false} />
+            {(data.freeFeatures ?? []).map((text, i) => (
+              <FeatureRow key={i} text={text} isClub={false} />
             ))}
           </PlanCard>
 
           {/* Club card */}
           <PlanCard
-            name={t('planClub')}
-            tag={t('clubTag')}
+            name={data.planClub ?? ''}
+            tag={data.clubTag ?? ''}
             isClub
             isActive={activeCard === 'club'}
           >
-            {CLUB_FEATURES.map(({ key, lead }) => (
-              <FeatureRow key={key} text={t(key)} isClub lead={lead} />
+            {(data.clubFeatures ?? []).map((text, i) => (
+              <FeatureRow key={i} text={text} isClub lead={i === 0} />
             ))}
           </PlanCard>
         </motion.div>
@@ -611,24 +589,24 @@ export function Pricing() {
         >
           <div className="mb-[1.3rem] text-center">
             <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-faint">
-              {t('addons')}
+              {data.addonsLabel}
             </span>
           </div>
           <div className="grid grid-cols-3 gap-[14px] max-[680px]:mx-auto max-[680px]:max-w-[440px] max-[680px]:grid-cols-1">
             <AddonCard
               icon={<Users size={20} strokeWidth={1.75} />}
-              name={t('addon1Name')}
-              price={t('addon1Price')}
+              name={data.addons?.[0]?.name ?? ''}
+              price={data.addons?.[0]?.price ?? ''}
             />
             <AddonCard
               icon={<Sparkles size={20} strokeWidth={1.75} />}
-              name={t('addon2Name')}
-              price={t('addon2Price')}
+              name={data.addons?.[1]?.name ?? ''}
+              price={data.addons?.[1]?.price ?? ''}
             />
             <AddonCard
               icon={<Repeat size={20} strokeWidth={1.75} />}
-              name={t('addon3Name')}
-              price={t('addon3Price')}
+              name={data.addons?.[2]?.name ?? ''}
+              price={data.addons?.[2]?.price ?? ''}
             />
           </div>
         </motion.div>

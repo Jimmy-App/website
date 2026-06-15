@@ -1,10 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion } from 'framer-motion'
 import Image from 'next/image'
 import { Lock, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { TechData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
@@ -178,9 +178,7 @@ function StoreBadge({
 }
 
 // ─── Tech section — PANEL variant ─────────────────────────────────────────────
-export function Tech() {
-  const t = useTranslations('tech')
-
+export function Tech({ data }: { data: TechData }) {
   const revealHead = useReveal(0)
   const revealTiles = useReveal(90)
   const revealBadges = useReveal(200)
@@ -190,20 +188,20 @@ export function Tech() {
   const visibleTiles: TileItem[] = [
     {
       icon: <Lock size={15} strokeWidth={1.75} />,
-      title: t('tile2Title'),
-      desc: t('tile2Desc'),
+      title: data.tile2Title ?? '',
+      desc: data.tile2Desc ?? '',
     },
     {
       icon: <Users size={15} strokeWidth={1.75} />,
-      title: t('tile3Title'),
-      desc: t('tile3Desc'),
+      title: data.tile3Title ?? '',
+      desc: data.tile3Desc ?? '',
     },
   ]
 
   return (
     <section
       id="tech-section"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative border-t border-border bg-bg',
         // generous vertical padding, no radial glow
@@ -262,7 +260,7 @@ export function Tech() {
               className="mb-[0.6rem] block text-[11px] font-bold uppercase tracking-[0.12em]"
               style={{ color: 'rgba(255,255,255,0.85)' }}
             >
-              {t('eyebrow')}
+              {data.eyebrow}
             </span>
 
             {/* Title */}
@@ -277,21 +275,17 @@ export function Tech() {
                 fontSize: 'clamp(1.85rem, 3.4vw, 2.8rem)',
               }}
             >
-              {t.rich('headline', {
-                em: (chunks) => (
-                  <em
-                    className="not-italic"
-                    style={{
-                      color: '#fff',
-                      textDecoration: 'underline',
-                      textDecorationColor: 'rgba(255,255,255,0.45)',
-                      textUnderlineOffset: '5px',
-                    }}
-                  >
-                    {chunks}
-                  </em>
-                ),
-              })}
+              {data.headlineLead}<em
+                className="not-italic"
+                style={{
+                  color: '#fff',
+                  textDecoration: 'underline',
+                  textDecorationColor: 'rgba(255,255,255,0.45)',
+                  textUnderlineOffset: '5px',
+                }}
+              >
+                {data.headlineAccent}
+              </em>
             </h2>
 
             {/* Body */}
@@ -299,7 +293,7 @@ export function Tech() {
               className="max-w-[480px] leading-[1.7]"
               style={{ color: 'rgba(255,255,255,0.82)', fontSize: '14px' }}
             >
-              {t('body')}
+              {data.body}
             </p>
           </motion.div>
 
@@ -327,16 +321,16 @@ export function Tech() {
           >
             <StoreBadge
               href="#"
-              label={t('appStoreLabel')}
-              sub={t('appStoreSub')}
-              main={t('appStoreMain')}
+              label={data.appStoreLabel ?? ''}
+              sub={data.appStoreSub ?? ''}
+              main={data.appStoreMain ?? ''}
               logo={<AppleLogo />}
             />
             <StoreBadge
               href="#"
-              label={t('playStoreLabel')}
-              sub={t('playStoreSub')}
-              main={t('playStoreMain')}
+              label={data.playStoreLabel ?? ''}
+              sub={data.playStoreSub ?? ''}
+              main={data.playStoreMain ?? ''}
               logo={<PlayLogo />}
             />
           </motion.div>
@@ -361,7 +355,7 @@ export function Tech() {
             */}
             <Image
               src="/assets/hand-mock-hero.png"
-              alt={t('visualAlt')}
+              alt={data.visualAlt ?? ''}
               width={350}
               height={480}
               loading="lazy"

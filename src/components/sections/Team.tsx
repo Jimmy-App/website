@@ -1,10 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion } from 'framer-motion'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { TeamData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 
@@ -203,55 +203,34 @@ function TeamCard({
 
 // ─── Team section ─────────────────────────────────────────────────────────────
 
-export function Team() {
-  const t = useTranslations('team')
+// Hardcoded photo paths (Sanity image fields are not yet URL-resolved in this context)
+const MEMBER_PHOTOS = ['/assets/people/coach-1.png', '/assets/people/coach-2.png']
 
+export function Team({ data }: { data: TeamData }) {
   const revealHeader = useReveal(0)
   const revealStats = useReveal(400)
 
-  const members: MemberData[] = [
-    {
-      idx: '01',
-      name: t('members.0.name'),
-      role: t('members.0.role'),
-      bio: t('members.0.bio'),
-      location: t('members.0.location'),
-      photo: '/assets/people/coach-1.png',
-      initials: 'QR',
-    },
-    {
-      idx: '02',
-      name: t('members.1.name'),
-      role: t('members.1.role'),
-      bio: t('members.1.bio'),
-      location: t('members.1.location'),
-      photo: '/assets/people/coach-2.png',
-      initials: 'NM',
-    },
-  ]
+  const members: MemberData[] = (data.members ?? []).map((m, i) => ({
+    idx: String(i + 1).padStart(2, '0'),
+    name: m.name ?? '',
+    role: m.role ?? '',
+    bio: m.bio ?? '',
+    location: m.location ?? '',
+    photo: MEMBER_PHOTOS[i] ?? '/assets/people/coach-1.png',
+    initials: (m.name ?? '').split(' ').map((w) => w[0] ?? '').join('').slice(0, 2).toUpperCase(),
+  }))
 
-  const stats = [
-    {
-      num: t('stats.0.num'),
-      heading: t('stats.0.heading'),
-      body: t('stats.0.body'),
-    },
-    {
-      num: t('stats.1.num'),
-      heading: t('stats.1.heading'),
-      body: t('stats.1.body'),
-    },
-    {
-      num: t('stats.2.num'),
-      heading: t('stats.2.heading'),
-      body: t('stats.2.body'),
-    },
-  ]
+  const stats = (data.stats ?? []).map((s) => ({
+    _key: s._key,
+    num: s.num ?? '',
+    heading: s.heading ?? '',
+    body: s.body ?? '',
+  }))
 
   return (
     <section
       id="team"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative bg-bg',
         'border-t border-border',
@@ -277,7 +256,7 @@ export function Team() {
               'before:size-[5px] before:rounded-full before:bg-purple before:content-[""]',
             )}
           >
-            {t('eyebrow')}
+            {data.eyebrow}
           </span>
 
           <h2
@@ -286,7 +265,7 @@ export function Team() {
               'mb-[0.85rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-text',
             )}
           >
-            {t('title')}
+            {data.title}
           </h2>
 
           <p
@@ -295,7 +274,7 @@ export function Team() {
               'text-[clamp(0.95rem,1.3vw,1.1rem)] font-normal leading-[1.55] text-text-muted',
             )}
           >
-            {t('subtitle')}
+            {data.subtitle}
           </p>
         </motion.header>
 
@@ -323,7 +302,7 @@ export function Team() {
         >
           {stats.map((stat, i) => (
             <div
-              key={stat.heading}
+              key={stat._key}
               className={cn(
                 'flex items-center gap-3 px-[1.4rem] py-[1.1rem]',
                 i !== 0

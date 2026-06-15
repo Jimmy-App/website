@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
+import type { FaqData } from '@/lib/content'
 import {
   LayoutGrid,
   Palette,
@@ -161,14 +161,13 @@ function FaqItem({
 }
 
 // ─── FAQ section ──────────────────────────────────────────────────────────────
-export function Faq() {
-  const t = useTranslations('faq')
+export function Faq({ data }: { data: FaqData }) {
   const reduced = useReducedMotion()
 
   // First item open by default
   const [openIndex, setOpenIndex] = useState<number>(0)
 
-  const items = t.raw('items') as Array<{ question: string; answer: string }>
+  const items = data.items ?? []
 
   function handleToggle(index: number) {
     // clicking an open item closes it; clicking another opens it
@@ -178,7 +177,7 @@ export function Faq() {
   return (
     <section
       id="faq"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative overflow-hidden border-t border-border bg-bg',
         // Radial purple glow from top
@@ -211,7 +210,7 @@ export function Faq() {
               aria-hidden="true"
               className="size-[5px] rounded-full bg-purple"
             />
-            {t('eyebrow')}
+            {data.eyebrow}
           </p>
 
           {/* Title */}
@@ -221,7 +220,7 @@ export function Faq() {
               'leading-[1.05] tracking-[-0.03em] text-balance',
             )}
           >
-            {t('title')}
+            {data.title}
           </h2>
         </motion.header>
 
@@ -231,10 +230,10 @@ export function Faq() {
             const Icon = ICONS[index]
             return (
               <FaqItem
-                key={index}
+                key={item._key}
                 id={String(index + 1)}
-                question={item.question}
-                answer={item.answer}
+                question={item.question ?? ''}
+                answer={item.answer ?? ''}
                 icon={Icon}
                 isOpen={openIndex === index}
                 onToggle={() => handleToggle(index)}
@@ -259,7 +258,7 @@ export function Faq() {
             'text-sm text-text-muted',
           )}
         >
-          {t('footNote')}{' '}
+          {data.footNote}{' '}
           <a
             href="#"
             className={cn(
@@ -268,7 +267,7 @@ export function Faq() {
               'hover:gap-[9px]',
             )}
           >
-            {t('footLink')}
+            {data.footLink}
             <ArrowRight className="size-[15px]" strokeWidth={1.75} />
           </a>
         </motion.p>

@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import type { FooterData } from '@/lib/content'
 
 /* ── Social icons (inline SVG — no extra deps) ──────────────────── */
 function IconInstagram() {
@@ -45,9 +45,7 @@ const SOCIAL = [
 ]
 
 /* ── Footer ──────────────────────────────────────────────────────── */
-export async function Footer() {
-  const t = await getTranslations('footer')
-
+export function Footer({ data }: { data: FooterData }) {
   return (
     <>
       {/*
@@ -164,53 +162,48 @@ export async function Footer() {
                   color: 'var(--ft-text)',
                 }}
               >
-                {t.rich('tagline', {
-                  em: (chunks) => (
-                    <em style={{ fontStyle: 'normal', color: 'var(--ft-lime)' }}>{chunks}</em>
-                  ),
-                })}
+                {data.taglinePrefix}
+                <em style={{ fontStyle: 'normal', color: 'var(--ft-lime)' }}>{data.taglineEmphasis}</em>
               </p>
             </div>
 
             {/* Product col */}
-            <nav aria-label={t('product.heading')} className="flex flex-col">
+            <nav aria-label={data.productHeading ?? ''} className="flex flex-col">
               <h4
                 className="font-body font-bold uppercase tracking-[0.15em]"
                 style={{ fontSize: '12px', color: 'var(--ft-faint)', marginBottom: '18px' }}
               >
-                {t('product.heading')}
+                {data.productHeading}
               </h4>
-              <a href="#" className="ft-col-link">{t('product.links.features')}</a>
-              <a href="#" className="ft-col-link">{t('product.links.technology')}</a>
-              <a href="#" className="ft-col-link">{t('product.links.pricing')}</a>
-              <a href="#" className="ft-col-link">{t('product.links.courseBuilder')}</a>
+              {(data.productLinks ?? []).map((link, i) => (
+                <a key={i} href={link.href ?? '#'} className="ft-col-link">{link.label}</a>
+              ))}
             </nav>
 
             {/* Company col */}
-            <nav aria-label={t('company.heading')} className="flex flex-col">
+            <nav aria-label={data.companyHeading ?? ''} className="flex flex-col">
               <h4
                 className="font-body font-bold uppercase tracking-[0.15em]"
                 style={{ fontSize: '12px', color: 'var(--ft-faint)', marginBottom: '18px' }}
               >
-                {t('company.heading')}
+                {data.companyHeading}
               </h4>
-              <a href="#" className="ft-col-link">{t('company.links.team')}</a>
-              <a href="#" className="ft-col-link">{t('company.links.manifesto')}</a>
-              <a href="#" className="ft-col-link">{t('company.links.faq')}</a>
-              <a href="#" className="ft-col-link">{t('company.links.contact')}</a>
+              {(data.companyLinks ?? []).map((link, i) => (
+                <a key={i} href={link.href ?? '#'} className="ft-col-link">{link.label}</a>
+              ))}
             </nav>
 
             {/* Legal col */}
-            <nav aria-label={t('legal.heading')} className="flex flex-col">
+            <nav aria-label={data.legalHeading ?? ''} className="flex flex-col">
               <h4
                 className="font-body font-bold uppercase tracking-[0.15em]"
                 style={{ fontSize: '12px', color: 'var(--ft-faint)', marginBottom: '18px' }}
               >
-                {t('legal.heading')}
+                {data.legalHeading}
               </h4>
-              <a href="#" className="ft-col-link">{t('legal.links.privacy')}</a>
-              <a href="#" className="ft-col-link">{t('legal.links.terms')}</a>
-              <a href="#" className="ft-col-link">{t('legal.links.cookies')}</a>
+              {(data.legalLinks ?? []).map((link, i) => (
+                <a key={i} href={link.href ?? '#'} className="ft-col-link">{link.label}</a>
+              ))}
             </nav>
           </div>
 
@@ -224,7 +217,7 @@ export async function Footer() {
             }}
           >
             <p style={{ fontSize: '13.5px', fontWeight: 450, color: 'var(--ft-faint)', letterSpacing: '-0.005em' }}>
-              {t('copy')}
+              {data.copy}
             </p>
 
             <div className="flex items-center gap-[10px]">

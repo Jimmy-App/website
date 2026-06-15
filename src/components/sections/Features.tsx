@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
@@ -14,13 +13,13 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import type { FeaturesData } from '@/lib/content'
 
 // ── Tab metadata (icon, id, screenshot asset) ────────────────────────────────
 
 type TabId = 'workout' | 'community' | 'messaging' | 'payments' | 'courses'
 
-type TabMeta = {
-  id: TabId
+type TabAsset = {
   icon: React.ReactNode
   src: string
   alt: string
@@ -28,48 +27,43 @@ type TabMeta = {
   imgHeight: number
 }
 
-const TABS: TabMeta[] = [
-  {
-    id: 'workout',
+const TAB_ASSETS: Record<TabId, TabAsset> = {
+  workout: {
     icon: <Dumbbell size={14} strokeWidth={1.75} />,
     src: '/assets/screens/workout.png',
     alt: 'Workout Builder interface',
     imgWidth: 390,
     imgHeight: 844,
   },
-  {
-    id: 'community',
+  community: {
     icon: <Users size={14} strokeWidth={1.75} />,
     src: '/assets/screens/home.png',
     alt: 'Community Feed interface',
     imgWidth: 390,
     imgHeight: 844,
   },
-  {
-    id: 'messaging',
+  messaging: {
     icon: <MessageCircle size={14} strokeWidth={1.75} />,
     src: '/assets/screens/chats.png',
     alt: '1:1 Messaging interface',
     imgWidth: 390,
     imgHeight: 844,
   },
-  {
-    id: 'payments',
+  payments: {
     icon: <CreditCard size={14} strokeWidth={1.75} />,
     src: '/assets/screens/dashboard.png',
     alt: 'Payments dashboard',
     imgWidth: 1456,
     imgHeight: 816,
   },
-  {
-    id: 'courses',
+  courses: {
     icon: <GraduationCap size={14} strokeWidth={1.75} />,
     src: '/assets/screens/progress.png',
     alt: 'Course Builder interface',
     imgWidth: 390,
     imgHeight: 844,
   },
-]
+}
 
 // ── Panel icon lookup (larger, in the card) ───────────────────────────────────
 
@@ -88,10 +82,10 @@ const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function Features() {
-  const t = useTranslations('features')
+export function Features({ data }: { data: FeaturesData }) {
   const shouldReduceMotion = useReducedMotion()
 
+  const tabs = data.tabs ?? []
   const [activeIdx, setActiveIdx] = useState(0)
 
   // Slider pill geometry
@@ -125,25 +119,27 @@ export function Features() {
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, idx: number) => {
     if (e.key === 'ArrowRight') {
       e.preventDefault()
-      activateTab((idx + 1) % TABS.length)
-      tabRefs.current[(idx + 1) % TABS.length]?.focus()
+      activateTab((idx + 1) % tabs.length)
+      tabRefs.current[(idx + 1) % tabs.length]?.focus()
     }
     if (e.key === 'ArrowLeft') {
       e.preventDefault()
-      activateTab((idx - 1 + TABS.length) % TABS.length)
-      tabRefs.current[(idx - 1 + TABS.length) % TABS.length]?.focus()
+      activateTab((idx - 1 + tabs.length) % tabs.length)
+      tabRefs.current[(idx - 1 + tabs.length) % tabs.length]?.focus()
     }
   }
 
-  const activeTab = TABS[activeIdx]
+  const activeTab = tabs[activeIdx]
+  const activeTabId = (activeTab?.id ?? '') as TabId
+  const activeTabAsset = TAB_ASSETS[activeTabId]
 
-  // Tags per tab
-  const tags = (t.raw(`tabs.${activeTab.id}.tags`) as string[]) ?? []
+  // Tags for the active tab
+  const tags = activeTab?.tags ?? []
 
   return (
     <section
       id="features"
-      aria-label={t('ariaLabel')}
+      aria-label={data.ariaLabel ?? ''}
       className="relative bg-bg overflow-hidden py-[var(--section-pad-y)]"
     >
       {/* Top border rule */}
@@ -161,7 +157,7 @@ export function Features() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.64, ease: EASE }}
           >
-            {t('eyebrow')}
+            {data.eyebrow}
           </motion.p>
 
           <motion.h2
@@ -172,18 +168,14 @@ export function Features() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.64, ease: EASE, delay: 0.08 }}
           >
-            {t.rich('title', {
-              accent: (chunks) => (
-                <span className="text-purple">{chunks}</span>
-              ),
-            })}
+            {data.titlePrefix}<span className="text-purple">{data.titleAccent}</span>{data.titleSuffix}
           </motion.h2>
         </header>
 
         {/* ── Tab bar ── */}
         <motion.div
           role="tablist"
-          aria-label={t('tablistLabel')}
+          aria-label={data.tablistLabel ?? ''}
           className={cn(
             'relative flex items-stretch',
             'bg-surface-2 border border-border rounded-full',
@@ -210,16 +202,18 @@ export function Features() {
             style={{ left: sliderStyle.left, width: sliderStyle.width }}
           />
 
-          {TABS.map((tab, i) => {
+          {tabs.map((tab, i) => {
             const isActive = i === activeIdx
+            const tabId = (tab.id ?? '') as TabId
+            const tabAsset = TAB_ASSETS[tabId]
             return (
               <button
-                key={tab.id}
+                key={tab._key}
                 ref={(el) => { tabRefs.current[i] = el }}
                 role="tab"
-                id={`tab-${tab.id}`}
+                id={`tab-${tab.id ?? i}`}
                 aria-selected={isActive}
-                aria-controls={`panel-${tab.id}`}
+                aria-controls={`panel-${tab.id ?? i}`}
                 tabIndex={isActive ? 0 : -1}
                 className={cn(
                   'relative z-10 flex-1 inline-flex items-center justify-center gap-[6px]',
@@ -243,9 +237,9 @@ export function Features() {
                     isActive ? 'text-white/85' : 'text-text-faint group-hover:text-text-muted',
                   )}
                 >
-                  {tab.icon}
+                  {tabAsset?.icon}
                 </span>
-                {t(`tabs.${tab.id}.label`)}
+                {tab.label}
               </button>
             )
           })}
@@ -254,97 +248,101 @@ export function Features() {
         {/* ── Tab panels ── */}
         <div aria-live="polite" className="relative">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab.id}
-              id={`panel-${activeTab.id}`}
-              role="tabpanel"
-              aria-labelledby={`tab-${activeTab.id}`}
-              className={cn(
-                'grid grid-cols-2 gap-10 items-center',
-                'bg-surface border border-border rounded-2xl p-10',
-                'min-h-[400px] relative overflow-hidden',
-                'shadow-[var(--shadow-md)]',
-                // Mobile
-                'max-md:grid-cols-1 max-sm:p-6 max-sm:gap-6 max-sm:rounded-2xl',
-              )}
-              initial={shouldReduceMotion ? {} : { opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={shouldReduceMotion ? {} : { opacity: 0, x: -6 }}
-              transition={
-                shouldReduceMotion
-                  ? { duration: 0 }
-                  : { duration: 0.23, ease: [0.16, 1, 0.3, 1] }
-              }
-            >
-              {/* Ambient glow accent */}
-              <div
-                aria-hidden="true"
-                className="absolute -top-20 -right-20 w-[280px] h-[280px] rounded-full pointer-events-none"
-                style={{
-                  background:
-                    'radial-gradient(circle, rgba(138,50,224,0.06) 0%, transparent 70%)',
-                }}
-              />
-
-              {/* ── Text column ── */}
-              <div className="flex flex-col gap-5 relative z-10">
-                {/* Icon wrap */}
-                <div className="w-12 h-12 flex items-center justify-center bg-purple-light rounded-xl flex-shrink-0 text-purple">
-                  {PANEL_ICONS[activeTab.id]}
-                </div>
-
-                {/* Title */}
-                <h3 className="font-display text-h3 font-bold text-text [letter-spacing:var(--tracking-tight)] [line-height:var(--leading-snug)] max-w-[360px]">
-                  {t(`tabs.${activeTab.id}.title`)}
-                </h3>
-
-                {/* Subtitle / desc */}
-                <p className="text-body text-text-muted [line-height:1.6] max-w-[400px]">
-                  {t(`tabs.${activeTab.id}.subtitle`)}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-[7px]">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[12px] font-medium text-text-muted bg-surface-2 border border-border rounded-full px-3 py-1"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* CTA */}
-                <Button
-                  variant="solid"
-                  size="sm"
-                  icon={<ArrowRight size={14} strokeWidth={1.75} />}
-                  className="self-start"
-                  href="#"
-                >
-                  {t('cta')}
-                </Button>
-              </div>
-
-              {/* ── Preview column ── */}
-              <div
+            {activeTab && (
+              <motion.div
+                key={activeTab._key}
+                id={`panel-${activeTab.id ?? activeIdx}`}
+                role="tabpanel"
+                aria-labelledby={`tab-${activeTab.id ?? activeIdx}`}
                 className={cn(
-                  'rounded-xl overflow-hidden bg-surface-2 border border-border',
-                  'flex items-center justify-center',
-                  'min-h-[300px] max-md:min-h-[220px]',
+                  'grid grid-cols-2 gap-10 items-center',
+                  'bg-surface border border-border rounded-2xl p-10',
+                  'min-h-[400px] relative overflow-hidden',
+                  'shadow-[var(--shadow-md)]',
+                  // Mobile
+                  'max-md:grid-cols-1 max-sm:p-6 max-sm:gap-6 max-sm:rounded-2xl',
                 )}
+                initial={shouldReduceMotion ? {} : { opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={shouldReduceMotion ? {} : { opacity: 0, x: -6 }}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : { duration: 0.23, ease: [0.16, 1, 0.3, 1] }
+                }
               >
-                <Image
-                  src={activeTab.src}
-                  alt={activeTab.alt}
-                  width={activeTab.imgWidth}
-                  height={activeTab.imgHeight}
-                  className="w-full h-full object-contain object-center max-h-[360px] block"
-                  loading="lazy"
+                {/* Ambient glow accent */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -top-20 -right-20 w-[280px] h-[280px] rounded-full pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(circle, rgba(138,50,224,0.06) 0%, transparent 70%)',
+                  }}
                 />
-              </div>
-            </motion.div>
+
+                {/* ── Text column ── */}
+                <div className="flex flex-col gap-5 relative z-10">
+                  {/* Icon wrap */}
+                  <div className="w-12 h-12 flex items-center justify-center bg-purple-light rounded-xl flex-shrink-0 text-purple">
+                    {PANEL_ICONS[activeTabId]}
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-display text-h3 font-bold text-text [letter-spacing:var(--tracking-tight)] [line-height:var(--leading-snug)] max-w-[360px]">
+                    {activeTab.title}
+                  </h3>
+
+                  {/* Subtitle / desc */}
+                  <p className="text-body text-text-muted [line-height:1.6] max-w-[400px]">
+                    {activeTab.subtitle}
+                  </p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-[7px]">
+                    {tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[12px] font-medium text-text-muted bg-surface-2 border border-border rounded-full px-3 py-1"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <Button
+                    variant="solid"
+                    size="sm"
+                    icon={<ArrowRight size={14} strokeWidth={1.75} />}
+                    className="self-start"
+                    href="#"
+                  >
+                    {data.cta}
+                  </Button>
+                </div>
+
+                {/* ── Preview column ── */}
+                {activeTabAsset && (
+                  <div
+                    className={cn(
+                      'rounded-xl overflow-hidden bg-surface-2 border border-border',
+                      'flex items-center justify-center',
+                      'min-h-[300px] max-md:min-h-[220px]',
+                    )}
+                  >
+                    <Image
+                      src={activeTabAsset.src}
+                      alt={activeTabAsset.alt}
+                      width={activeTabAsset.imgWidth}
+                      height={activeTabAsset.imgHeight}
+                      className="w-full h-full object-contain object-center max-h-[360px] block"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 

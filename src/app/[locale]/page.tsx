@@ -1,4 +1,6 @@
 import { setRequestLocale } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { getHomePage, getNavigation, getFooter } from '../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Hero } from '@/components/sections/Hero'
@@ -23,25 +25,50 @@ export default async function HomePage({
   const { locale } = await params
   setRequestLocale(locale)
 
+  const [home, navigation, footer] = await Promise.all([
+    getHomePage(locale),
+    getNavigation(locale),
+    getFooter(locale),
+  ])
+  if (
+    !navigation ||
+    !footer ||
+    !home?.hero ||
+    !home.features ||
+    !home.why ||
+    !home.steps ||
+    !home.platform ||
+    !home.tech ||
+    !home.comparison ||
+    !home.pricing ||
+    !home.beta ||
+    !home.team ||
+    !home.faq ||
+    !home.manifesto ||
+    !home.finalCta
+  ) {
+    notFound()
+  }
+
   return (
     <>
-      <Navbar />
+      <Navbar data={navigation} />
       <main>
-        <Hero />
-        <Features />
-        <WhyJimmy />
-        <Steps />
-        <Platform />
-        <Tech />
-        <Comparison />
-        <Pricing />
-        <OpenBeta />
-        <Team />
-        <Faq />
-        <Manifesto />
-        <FinalCta />
+        <Hero data={home.hero} />
+        <Features data={home.features} />
+        <WhyJimmy data={home.why} />
+        <Steps data={home.steps} />
+        <Platform data={home.platform} />
+        <Tech data={home.tech} />
+        <Comparison data={home.comparison} />
+        <Pricing data={home.pricing} />
+        <OpenBeta data={home.beta} />
+        <Team data={home.team} />
+        <Faq data={home.faq} />
+        <Manifesto data={home.manifesto} />
+        <FinalCta data={home.finalCta} />
       </main>
-      <Footer />
+      <Footer data={footer} />
     </>
   )
 }

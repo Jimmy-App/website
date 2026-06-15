@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion } from 'framer-motion'
 import Image from 'next/image'
 import {
@@ -13,6 +12,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { cn } from '@/lib/utils'
+import type { HeroData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
@@ -91,9 +91,7 @@ function TrustChip({
 }
 
 // ─── Hero section ─────────────────────────────────────────────────────────────
-export function Hero() {
-  const t = useTranslations('hero')
-
+export function Hero({ data }: { data: HeroData }) {
   const revealBadge = useReveal(100)
   const revealTitle = useReveal(200)
   const revealSubtitle = useReveal(300)
@@ -105,7 +103,7 @@ export function Hero() {
   return (
     <section
       id="hero"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative flex min-h-svh flex-col items-center',
         // Navbar offset + section top padding
@@ -132,7 +130,7 @@ export function Hero() {
             }
           >
             <span className="eyebrow text-balance max-sm:whitespace-normal max-sm:text-[10px] max-sm:leading-[1.45] max-sm:tracking-[0.05em]">
-              {t('badge')}
+              {data.badge}
             </span>
           </Chip>
         </motion.div>
@@ -146,11 +144,8 @@ export function Hero() {
             'mb-[var(--space-5)] text-balance',
           )}
         >
-          {t.rich('headline', {
-            accent: (chunks) => (
-              <span className="text-purple">{chunks}</span>
-            ),
-          })}
+          {data.headlinePrefix}
+          <span className="text-purple">{data.headlineAccent}</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -162,7 +157,7 @@ export function Hero() {
             'mb-[var(--space-6)] text-balance',
           )}
         >
-          {t('subtitle')}
+          {data.subtitle}
         </motion.p>
 
         {/* Description paragraph */}
@@ -173,7 +168,7 @@ export function Hero() {
             'text-lead font-normal leading-[var(--leading-relaxed)] text-text-muted',
           )}
         >
-          {t('description')}
+          {data.description}
         </motion.p>
 
         {/* CTA row */}
@@ -190,7 +185,7 @@ export function Hero() {
             }
             className="max-sm:w-full max-sm:justify-center"
           >
-            {t('ctaPrimary')}
+            {data.ctaPrimary}
           </Button>
           <Button
             href="#"
@@ -198,7 +193,7 @@ export function Hero() {
             size="lg"
             className="max-sm:w-full max-sm:justify-center"
           >
-            {t('ctaSecondary')}
+            {data.ctaSecondary}
           </Button>
         </motion.div>
 
@@ -209,15 +204,15 @@ export function Hero() {
         >
           <TrustChip
             icon={<CalendarDays strokeWidth={1.75} />}
-            label={t('trustTrial')}
+            label={data.trustTrial ?? ''}
           />
           <TrustChip
             icon={<CreditCard strokeWidth={1.75} />}
-            label={t('trustNoCard')}
+            label={data.trustNoCard ?? ''}
           />
           <TrustChip
             icon={<Users strokeWidth={1.75} />}
-            label={t('trustFreeClients')}
+            label={data.trustFreeClients ?? ''}
           />
         </motion.div>
       </div>
@@ -232,9 +227,9 @@ export function Hero() {
           'max-sm:flex-col max-sm:items-center',
         )}
       >
-        <Callout brand="Skool" miss={t('calloutSkool')} delayMs={620} />
-        <Callout brand="WhatsApp" miss={t('calloutWhatsapp')} delayMs={720} />
-        <Callout brand="TrainHeroic" miss={t('calloutTrainheroic')} delayMs={820} />
+        <Callout brand="Skool" miss={data.calloutSkool ?? ''} delayMs={620} />
+        <Callout brand="WhatsApp" miss={data.calloutWhatsapp ?? ''} delayMs={720} />
+        <Callout brand="TrainHeroic" miss={data.calloutTrainheroic ?? ''} delayMs={820} />
       </div>
 
       {/* ── Product showcase ───────────────────────────────────────────── */}
@@ -245,10 +240,10 @@ export function Hero() {
         {/* Meta label */}
         <div className="mb-[var(--space-5)] text-center">
           <span className="eyebrow mb-[var(--space-2)] block text-purple">
-            {t('productLabel')}
+            {data.productLabel}
           </span>
           <span className="block text-xs text-text-muted">
-            {t('productSubtext')}
+            {data.productSubtext}
           </span>
         </div>
 
@@ -269,7 +264,7 @@ export function Hero() {
           */}
           <Image
             src="/assets/screens/dashboard.png"
-            alt={t('productImageAlt')}
+            alt={data.productImageAlt ?? ''}
             width={1456}
             height={816}
             priority
@@ -279,7 +274,7 @@ export function Hero() {
 
         {/* Italic brand note */}
         <p className="mt-[var(--space-4)] text-center font-display text-xs italic text-text-faint">
-          {t('brandNote')}
+          {data.brandNote}
         </p>
       </motion.div>
     </section>

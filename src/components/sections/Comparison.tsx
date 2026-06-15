@@ -1,9 +1,11 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
 import Image from 'next/image'
 import { Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { ComparisonData } from '@/lib/content'
 
-// ── Data: competitors + feature matrix ───────────────────────────────────────
+// ── Data: feature matrix ──────────────────────────────────────────────────────
 
 /**
  * Columns: [Jimmy, Skool, Trainerize, TrueCoach, WhatsApp]
@@ -66,17 +68,15 @@ function MarkNo() {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export async function Comparison() {
-  const t = await getTranslations('comparison')
-
-  const competitors = t.raw('competitors') as string[]
-  const features = t.raw('features') as string[]
+export function Comparison({ data }: { data: ComparisonData }) {
+  const competitors = data.competitors ?? []
+  const features = data.features ?? []
   const scores = SCORES
 
   return (
     <section
       id="comparison"
-      aria-label={t('ariaLabel')}
+      aria-label={data.ariaLabel ?? ''}
       className="relative bg-surface-2 border-t border-border overflow-hidden py-[var(--section-pad-y)]"
     >
       {/* Ambient radial glow */}
@@ -99,14 +99,14 @@ export async function Comparison() {
               aria-hidden="true"
               className="w-[5px] h-[5px] rounded-full bg-purple inline-block"
             />
-            {t('eyebrow')}
+            {data.eyebrow}
           </p>
 
           <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] font-extrabold text-text tracking-[-0.035em] leading-[1.05] mb-4 text-balance">
-            {t('title')}
+            {data.title}
           </h2>
           <p className="text-[clamp(1rem,1.5vw,1.125rem)] text-text-muted leading-[1.6] text-balance">
-            {t('subtitle')}
+            {data.subtitle}
           </p>
         </header>
 
@@ -135,7 +135,7 @@ export async function Comparison() {
           */}
           <div
             role="table"
-            aria-label={t('tableAriaLabel')}
+            aria-label={data.tableAriaLabel ?? ''}
             className={cn(
               'grid min-w-[760px] max-[860px]:min-w-[680px] relative',
               '[grid-template-columns:minmax(200px,1.6fr)_repeat(5,minmax(102px,1fr))]',
@@ -155,7 +155,7 @@ export async function Comparison() {
                 'max-[860px]:sticky max-[860px]:left-0 max-[860px]:z-[3] max-[860px]:bg-surface',
               )}
             >
-              {t('featureColumnLabel')}
+              {data.featureColumnLabel}
             </div>
 
             {/* Jimmy header cell */}
@@ -282,7 +282,7 @@ export async function Comparison() {
                   'max-[860px]:sticky max-[860px]:left-0 max-[860px]:z-[3]',
                 )}
               >
-                {t('footerLabel')}
+                {data.footerLabel}
               </div>
 
               {/* Jimmy score */}

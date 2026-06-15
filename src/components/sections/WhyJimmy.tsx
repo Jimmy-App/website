@@ -1,10 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import type { WhyData } from '@/lib/content'
 
 // useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
 const useIsoLayoutEffect =
@@ -141,8 +141,7 @@ function BulletItem({ text, muted }: { text: string; muted: boolean }) {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export default function WhyJimmy() {
-  const t = useTranslations('why')
+export default function WhyJimmy({ data }: { data: WhyData }) {
   const prefersReducedMotion = useReducedMotion()
   const [active, setActive] = useState<State>('without')
 
@@ -186,31 +185,31 @@ export default function WhyJimmy() {
     {
       emoji: '💬',
       bg: '#E8F5E9',
-      name: t('preview.without.card1.name'),
-      desc: t('preview.without.card1.desc'),
+      name: data.preview?.without?.card1?.name ?? '',
+      desc: data.preview?.without?.card1?.desc ?? '',
     },
     {
       emoji: '📊',
       bg: '#E3F2FD',
-      name: t('preview.without.card2.name'),
-      desc: t('preview.without.card2.desc'),
+      name: data.preview?.without?.card2?.name ?? '',
+      desc: data.preview?.without?.card2?.desc ?? '',
     },
     {
       emoji: '💳',
       bg: '#FFF8E1',
-      name: t('preview.without.card3.name'),
-      desc: t('preview.without.card3.desc'),
+      name: data.preview?.without?.card3?.name ?? '',
+      desc: data.preview?.without?.card3?.desc ?? '',
     },
     {
       emoji: '📅',
       bg: '#FCE4EC',
-      name: t('preview.without.card4.name'),
-      desc: t('preview.without.card4.desc'),
+      name: data.preview?.without?.card4?.name ?? '',
+      desc: data.preview?.without?.card4?.desc ?? '',
     },
   ]
 
-  const withoutBullets = t.raw('bullets.without') as string[]
-  const withBullets = t.raw('bullets.with') as string[]
+  const withoutBullets = data.bullets?.without ?? []
+  const withBullets = data.bullets?.with ?? []
 
   // Framer-motion variants
   const riseVariants = {
@@ -225,7 +224,7 @@ export default function WhyJimmy() {
   return (
     <section
       id="why-jimmy"
-      aria-label={t('ariaLabel')}
+      aria-label={data.ariaLabel ?? ''}
       className="bg-bg border-t border-border py-[var(--section-pad-y)]"
     >
       <div className="max-w-[1200px] mx-auto px-[clamp(1rem,4vw,2.5rem)]">
@@ -258,7 +257,7 @@ export default function WhyJimmy() {
             >
               <PreviewTab
                 variant="without"
-                label={t('toggle.without')}
+                label={data.toggle?.without ?? ''}
               />
               <div className="flex flex-col gap-[0.55rem]">
                 {toolCards.map((card, i) => (
@@ -278,11 +277,11 @@ export default function WhyJimmy() {
               )}
               aria-hidden={active !== 'with'}
             >
-              <PreviewTab variant="with" label={t('toggle.with')} />
+              <PreviewTab variant="with" label={data.toggle?.with ?? ''} />
               <div className="flex-1 rounded-[12px] overflow-hidden border border-border bg-surface min-h-0">
                 <Image
                   src="/assets/screens/dashboard.png"
-                  alt={t('preview.with.imgAlt')}
+                  alt={data.preview?.with?.imgAlt ?? ''}
                   width={780}
                   height={520}
                   className="w-full h-full object-cover object-top-left block"
@@ -303,7 +302,7 @@ export default function WhyJimmy() {
                 'mb-7',
               )}
             >
-              {t('heading.line1')}{' '}
+              {data.heading?.line1}{' '}
               <Image
                 src="/assets/logo/logo.svg"
                 alt=""
@@ -317,11 +316,11 @@ export default function WhyJimmy() {
                   'mx-[0.08em]',
                 )}
               />{' '}
-              {t('heading.line2')}{' '}
+              {data.heading?.line2}{' '}
               <br />
               <span className="whitespace-nowrap">
-                {t('heading.line3')}{' '}
-                <span className="text-purple">{t('heading.accent')}</span>
+                {data.heading?.line3}{' '}
+                <span className="text-purple">{data.heading?.accent}</span>
               </span>
             </h2>
 
@@ -332,7 +331,7 @@ export default function WhyJimmy() {
                 'bg-surface-2 border border-border rounded-full p-1 gap-0.5 mb-6',
               )}
               role="group"
-              aria-label={t('toggle.ariaLabel')}
+              aria-label={data.toggle?.ariaLabel ?? ''}
             >
               {(['without', 'with'] as const).map((state) => {
                 const isActive = active === state
@@ -394,7 +393,7 @@ export default function WhyJimmy() {
                           />
                         </svg>
                       )}
-                      {t(`toggle.${state}`)}
+                      {state === 'without' ? (data.toggle?.without ?? '') : (data.toggle?.with ?? '')}
                     </span>
                   </button>
                 )
@@ -434,7 +433,7 @@ export default function WhyJimmy() {
                   >
                     {/* Description */}
                     <p className="text-[15px] text-text-muted leading-[1.65] mb-7 max-w-[460px]">
-                      {t(`desc.${state}`)}
+                      {state === 'without' ? data.desc?.without : data.desc?.with}
                     </p>
 
                     {/* Dashed divider */}

@@ -1,10 +1,11 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion } from 'framer-motion'
 import { MessagesSquare, Vote, Rocket, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
+import { PortableInline } from '@/lib/PortableInline'
+import type { BetaData } from '@/lib/content'
 
 // ── Motion config ─────────────────────────────────────────────────────────────
 
@@ -214,8 +215,7 @@ function BetaIcon({
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function OpenBeta() {
-  const t = useTranslations('beta')
+export function OpenBeta({ data }: { data: BetaData }) {
   const shouldReduceMotion = useReducedMotion()
 
   const animate = !shouldReduceMotion
@@ -223,7 +223,7 @@ export function OpenBeta() {
   return (
     <section
       id="open-beta"
-      aria-label={t('ariaLabel')}
+      aria-label={data.ariaLabel ?? ''}
       className="relative bg-bg overflow-hidden border-t border-border"
     >
       {/* Radial gradient haze */}
@@ -255,7 +255,7 @@ export function OpenBeta() {
 
         {/* ── Header ── */}
         <motion.header
-          className="max-w-[720px] mb-[clamp(2.5rem,5vw,3.75rem)]"
+          className="max-w-[1100px] mb-[clamp(2.5rem,5vw,3.75rem)]"
           variants={animate ? RISE : undefined}
           initial={animate ? 'hidden' : undefined}
           whileInView={animate ? 'show' : undefined}
@@ -280,25 +280,27 @@ export function OpenBeta() {
               }
             `}</style>
             <span className="text-[11.5px] font-extrabold tracking-[0.16em] uppercase text-purple">
-              {t('badge')}
+              {data.badge}
             </span>
           </div>
 
           <h2 className="font-display text-[clamp(2.1rem,4.6vw,3.6rem)] font-extrabold leading-[1.04] tracking-[-0.035em] text-text mb-[1.4rem] text-balance">
-            {t.rich('title', {
-              accent: (chunks) => (
-                <span className="text-purple">{chunks}</span>
-              ),
-              br: () => <br />,
-            })}
+            {data.titleLine1}
+            <br />
+            {data.titleLine2Prefix}
+            <span className="text-purple">{data.titleLine2Accent}</span>
+            {data.titleLine2Suffix}
           </h2>
 
           <p className="text-[clamp(1rem,1.5vw,1.18rem)] leading-[1.65] text-text-muted max-w-[640px] text-pretty">
-            {t.rich('body', {
-              em: (chunks) => (
-                <span className="text-text font-semibold">{chunks}</span>
-              ),
-            })}
+            <PortableInline
+              value={data.body}
+              marks={{
+                em: (chunk) => (
+                  <span className="text-text font-semibold">{chunk}</span>
+                ),
+              }}
+            />
           </p>
         </motion.header>
 
@@ -329,10 +331,10 @@ export function OpenBeta() {
                   <MessagesSquare size={19} strokeWidth={1.75} />
                 </BetaIcon>
                 <h3 className="font-display text-[1.2rem] font-bold tracking-[-0.02em] leading-[1.2] text-text mb-[0.4rem]">
-                  {t('card1.title')}
+                  {data.card1?.title}
                 </h3>
                 <p className="text-[13.5px] leading-[1.55] text-text-muted">
-                  {t('card1.desc')}
+                  {data.card1?.desc}
                 </p>
               </div>
             </Card>
@@ -364,10 +366,10 @@ export function OpenBeta() {
                   <Vote size={19} strokeWidth={1.75} />
                 </BetaIcon>
                 <h3 className="font-display text-[1.2rem] font-bold tracking-[-0.02em] leading-[1.2] text-text mb-[0.4rem]">
-                  {t('card2.title')}
+                  {data.card2?.title}
                 </h3>
                 <p className="text-[13.5px] leading-[1.55] text-text-muted">
-                  {t('card2.desc')}
+                  {data.card2?.desc}
                 </p>
               </div>
             </Card>
@@ -397,10 +399,10 @@ export function OpenBeta() {
                   <Rocket size={19} strokeWidth={1.75} />
                 </BetaIcon>
                 <h3 className="font-display text-[1.2rem] font-bold tracking-[-0.02em] leading-[1.2] text-text mb-[0.4rem]">
-                  {t('card3.title')}
+                  {data.card3?.title}
                 </h3>
                 <p className="text-[13.5px] leading-[1.55] text-text-muted">
-                  {t('card3.desc')}
+                  {data.card3?.desc}
                 </p>
               </div>
             </Card>

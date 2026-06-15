@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import {
   useReducedMotion,
   motion,
@@ -29,6 +28,7 @@ import {
   PlayCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { PlatformData } from '@/lib/content'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -43,18 +43,16 @@ const RISE = {
 
 type StepId = 'workout' | 'community' | 'messaging' | 'payments' | 'courses'
 
-type StepMeta = {
-  id: StepId
+// ── Static icon + label per step id ──────────────────────────────────────────
+
+type StepStaticMeta = {
   label: string
   icon: React.ReactNode
   isNew?: true
 }
 
-// ── Step list ─────────────────────────────────────────────────────────────────
-
-const STEPS: StepMeta[] = [
-  {
-    id: 'workout',
+const STEP_META: Record<StepId, StepStaticMeta> = {
+  workout: {
     label: 'FEATURE 01',
     icon: (
       <svg
@@ -72,28 +70,28 @@ const STEPS: StepMeta[] = [
       </svg>
     ),
   },
-  {
-    id: 'community',
+  community: {
     label: 'FEATURE 02',
     icon: <Users size={16} strokeWidth={2} />,
   },
-  {
-    id: 'messaging',
+  messaging: {
     label: 'FEATURE 03',
     icon: <MessageCircle size={16} strokeWidth={2} />,
   },
-  {
-    id: 'payments',
+  payments: {
     label: 'FEATURE 04',
     icon: <CreditCard size={16} strokeWidth={2} />,
   },
-  {
-    id: 'courses',
+  courses: {
     label: 'FEATURE 05',
     icon: <GraduationCap size={16} strokeWidth={2} />,
     isNew: true,
   },
-]
+}
+
+// ── Step data type (from Sanity, single item in the array) ───────────────────
+
+type StepData = NonNullable<PlatformData['steps']>[number]
 
 // ── Progress bar (per-item, animates width 0→100%) ────────────────────────────
 
@@ -136,15 +134,15 @@ function ProgressBar({ active, reducedMotion }: { active: boolean; reducedMotion
 
 // ── Preview panels ─────────────────────────────────────────────────────────────
 
-function StateWorkout({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
-  const tags = t.raw('steps.workout.tags') as string[]
+function StateWorkout({ step }: { step: StepData }) {
+  const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
       {/* Bar */}
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
-        <span className="text-[13.5px] font-bold text-text">{t('steps.workout.preview.barTitle')}</span>
+        <span className="text-[13.5px] font-bold text-text">{step.preview?.barTitle}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
-          {t('steps.workout.preview.barChip')}
+          {step.preview?.barChip}
         </span>
       </div>
       {/* Body */}
@@ -199,14 +197,14 @@ function StateWorkout({ t }: { t: ReturnType<typeof useTranslations<'platform'>>
   )
 }
 
-function StateCommunity({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
-  const tags = t.raw('steps.community.tags') as string[]
+function StateCommunity({ step }: { step: StepData }) {
+  const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
-        <span className="text-[13.5px] font-bold text-text">{t('steps.community.preview.barTitle')}</span>
+        <span className="text-[13.5px] font-bold text-text">{step.preview?.barTitle}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
-          {t('steps.community.preview.barChip')}
+          {step.preview?.barChip}
         </span>
       </div>
       <div className="p-[11px] flex flex-col gap-[6px]">
@@ -258,14 +256,14 @@ function StateCommunity({ t }: { t: ReturnType<typeof useTranslations<'platform'
   )
 }
 
-function StateMessaging({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
-  const tags = t.raw('steps.messaging.tags') as string[]
+function StateMessaging({ step }: { step: StepData }) {
+  const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
-        <span className="text-[13.5px] font-bold text-text">{t('steps.messaging.preview.barTitle')}</span>
+        <span className="text-[13.5px] font-bold text-text">{step.preview?.barTitle}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
-          {t('steps.messaging.preview.barChip')}
+          {step.preview?.barChip}
         </span>
       </div>
       <div className="p-[11px] flex flex-col gap-[5px]">
@@ -306,14 +304,14 @@ function StateMessaging({ t }: { t: ReturnType<typeof useTranslations<'platform'
   )
 }
 
-function StatePayments({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
-  const tags = t.raw('steps.payments.tags') as string[]
+function StatePayments({ step }: { step: StepData }) {
+  const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
-        <span className="text-[13.5px] font-bold text-text">{t('steps.payments.preview.barTitle')}</span>
+        <span className="text-[13.5px] font-bold text-text">{step.preview?.barTitle}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
-          {t('steps.payments.preview.barChip')}
+          {step.preview?.barChip}
         </span>
       </div>
       <div className="p-[11px] flex flex-col gap-[6px]">
@@ -367,14 +365,14 @@ function StatePayments({ t }: { t: ReturnType<typeof useTranslations<'platform'>
   )
 }
 
-function StateCourses({ t }: { t: ReturnType<typeof useTranslations<'platform'>> }) {
-  const tags = t.raw('steps.courses.tags') as string[]
+function StateCourses({ step }: { step: StepData }) {
+  const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between px-4 py-[13px] border-b border-border flex-shrink-0">
-        <span className="text-[13.5px] font-bold text-text">{t('steps.courses.preview.barTitle')}</span>
+        <span className="text-[13.5px] font-bold text-text">{step.preview?.barTitle}</span>
         <span className="text-[10px] font-bold tracking-[0.04em] px-[9px] py-[3px] rounded-full bg-purple-light text-purple whitespace-nowrap">
-          {t('steps.courses.preview.barChip')}
+          {step.preview?.barChip}
         </span>
       </div>
       <div className="p-[11px] flex flex-col gap-[6px]">
@@ -436,26 +434,26 @@ function StateCourses({ t }: { t: ReturnType<typeof useTranslations<'platform'>>
 
 function PreviewPanel({
   id,
-  t,
+  step,
 }: {
   id: StepId
-  t: ReturnType<typeof useTranslations<'platform'>>
+  step: StepData
 }) {
   switch (id) {
-    case 'workout':    return <StateWorkout    t={t} />
-    case 'community':  return <StateCommunity  t={t} />
-    case 'messaging':  return <StateMessaging  t={t} />
-    case 'payments':   return <StatePayments   t={t} />
-    case 'courses':    return <StateCourses    t={t} />
+    case 'workout':    return <StateWorkout    step={step} />
+    case 'community':  return <StateCommunity  step={step} />
+    case 'messaging':  return <StateMessaging  step={step} />
+    case 'payments':   return <StatePayments   step={step} />
+    case 'courses':    return <StateCourses    step={step} />
   }
 }
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function Platform() {
-  const t = useTranslations('platform')
+export function Platform({ data }: { data: PlatformData }) {
   const reducedMotion = useReducedMotion() ?? false
 
+  const steps = data.steps ?? []
   const [active, setActive] = useState(0)
 
   // Click handler — jump to a step immediately
@@ -494,15 +492,15 @@ export function Platform() {
   useEffect(() => {
     if (reducedMotion) return
     const id = setTimeout(() => {
-      setActive((cur) => (cur + 1) % STEPS.length)
+      setActive((cur) => (cur + 1) % steps.length)
     }, DURATION_MS)
     return () => clearTimeout(id)
-  }, [active, reducedMotion])
+  }, [active, reducedMotion, steps.length])
 
   return (
     <section
       id="platform"
-      aria-label={t('ariaLabel')}
+      aria-label={data.ariaLabel ?? ''}
       className="bg-surface-2 border-t border-border py-[var(--section-pad-y)]"
     >
       <div className="container-content">
@@ -521,13 +519,13 @@ export function Platform() {
               aria-hidden="true"
               className="inline-block h-[5px] w-[5px] rounded-full bg-purple"
             />
-            {t('eyebrow')}
+            {data.eyebrow}
           </span>
           <h2 className="font-display text-display font-extrabold text-text [letter-spacing:-0.04em] [line-height:1.05] mb-[0.8rem] [text-wrap:balance]">
-            {t('title')}
+            {data.title}
           </h2>
           <p className="text-[16px] text-text-muted leading-[1.6] max-w-[500px] mx-auto">
-            {t('subtitle')}
+            {data.subtitle}
           </p>
         </motion.header>
 
@@ -546,12 +544,14 @@ export function Platform() {
         >
 
           {/* ── Left nav ── */}
-          <nav aria-label={t('navLabel')} className="flex flex-col gap-[3px]">
-            {STEPS.map((step, i) => {
+          <nav aria-label={data.navLabel ?? ''} className="flex flex-col gap-[3px]">
+            {steps.map((step, i) => {
               const isActive = i === active
+              const stepId = (step.id ?? '') as StepId
+              const meta = STEP_META[stepId]
               return (
                 <button
-                  key={step.id}
+                  key={step._key}
                   onClick={() => activate(i)}
                   aria-pressed={isActive}
                   className={cn(
@@ -589,7 +589,7 @@ export function Platform() {
                         : 'bg-surface-offset text-text-faint',
                     )}
                   >
-                    {step.icon}
+                    {meta?.icon}
                   </div>
 
                   {/* Content */}
@@ -600,7 +600,7 @@ export function Platform() {
                         isActive ? 'text-purple' : 'text-text-faint',
                       )}
                     >
-                      {step.label}
+                      {meta?.label}
                     </div>
                     <div
                       className={cn(
@@ -609,7 +609,7 @@ export function Platform() {
                         isActive ? 'text-text' : 'text-text-muted',
                       )}
                     >
-                      {t(`steps.${step.id}.name`)}
+                      {step.name}
                     </div>
                     <div
                       className={cn(
@@ -617,11 +617,11 @@ export function Platform() {
                         isActive ? 'text-text-muted' : 'text-text-faint',
                       )}
                     >
-                      {t(`steps.${step.id}.tagline`)}
+                      {step.tagline}
                     </div>
 
                     {/* Badges (courses only) */}
-                    {step.isNew && (
+                    {meta?.isNew && (
                       <div className="flex gap-1 mt-[5px]">
                         <span className="text-[9px] font-bold tracking-[0.06em] uppercase px-[6px] py-[1px] rounded-full bg-purple-light text-purple border border-[rgba(138,50,224,0.22)]">
                           NEW
@@ -652,11 +652,12 @@ export function Platform() {
                 'relative',
               )}
             >
-              {STEPS.map((step, i) => {
+              {steps.map((step, i) => {
                 const isActive = i === active
+                const stepId = (step.id ?? '') as StepId
                 return (
                   <div
-                    key={step.id}
+                    key={step._key}
                     ref={(el) => {
                       panelRefs.current[i] = el
                     }}
@@ -671,7 +672,7 @@ export function Platform() {
                         : 'opacity-0 translate-y-[10px] scale-[0.985] blur-[6px]',
                     )}
                   >
-                    <PreviewPanel id={step.id} t={t} />
+                    <PreviewPanel id={stepId} step={step} />
                   </div>
                 )
               })}

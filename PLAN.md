@@ -264,12 +264,12 @@ Never put framer-motion in a Server Component file.
 
 ```bash
 # Sanity (public)
-NEXT_PUBLIC_SANITY_PROJECT_ID=REPLACE_ME
+NEXT_PUBLIC_SANITY_PROJECT_ID=rpeljbjz
 NEXT_PUBLIC_SANITY_DATASET=production
 
 # Sanity (server)
 SANITY_API_VERSION=2024-02-01
-SANITY_API_TOKEN=            # read token for SSR fetches (add later)
+SANITY_API_TOKEN=            # read token for SSR fetches (add in .env.local, never commit)
 SANITY_WEBHOOK_SECRET=       # validates revalidation webhook
 
 # Site

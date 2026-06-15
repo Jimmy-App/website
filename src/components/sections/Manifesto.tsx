@@ -1,9 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
-import { useTranslations } from 'next-intl'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { PortableInline } from '@/lib/PortableInline'
+import type { ManifestoData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
@@ -73,8 +74,7 @@ function HeadlineLine({
 }
 
 // ─── Manifesto section ────────────────────────────────────────────────────────
-export function Manifesto() {
-  const t = useTranslations('manifesto')
+export function Manifesto({ data }: { data: ManifestoData }) {
   const reduced = useReducedMotion()
 
   // Use a single sentinel ref at the top of the section
@@ -94,7 +94,7 @@ export function Manifesto() {
     <section
       ref={sectionRef}
       id="manifesto"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative isolate flex min-h-svh items-center overflow-hidden',
         // Mobile: don't force full-viewport height (avoids the large empty gap below)
@@ -179,7 +179,7 @@ export function Manifesto() {
             'before:bg-[#C49BF2] before:[box-shadow:0_0_10px_rgba(196,155,242,0.9)]',
           )}
         >
-          {t('label')}
+          {data.label}
           {/* Rule after label — hidden on mobile (looks off when centered) */}
           <span
             aria-hidden="true"
@@ -202,27 +202,24 @@ export function Manifesto() {
         >
           {/* Line 1 */}
           <HeadlineLine delay={0.06} visible={isInView}>
-            {t('headlineLine1')}
+            {data.headlineLine1}
           </HeadlineLine>
 
           {/* Line 2 — with italic "experience" + drawn underline */}
           <HeadlineLine delay={0.18} visible={isInView}>
-            {t.rich('headlineLine2', {
-              em: (chunks) => (
-                <span
-                  className="relative italic text-[#DABDFF]"
-                  style={{ textShadow: '0 0 32px rgba(176,120,255,0.5)' }}
-                >
-                  {chunks}
-                  <DrawnUnderline visible={isInView} />
-                </span>
-              ),
-            })}
+            {data.headlineLine2Prefix}
+            <span
+              className="relative italic text-[#DABDFF]"
+              style={{ textShadow: '0 0 32px rgba(176,120,255,0.5)' }}
+            >
+              {data.headlineLine2Accent}
+              <DrawnUnderline visible={isInView} />
+            </span>
           </HeadlineLine>
 
           {/* Line 3 — dimmed coda */}
           <HeadlineLine delay={0.32} visible={isInView} dim>
-            {t('headlineLine3')}
+            {data.headlineLine3}
           </HeadlineLine>
         </h2>
 
@@ -259,13 +256,16 @@ export function Manifesto() {
             >
               &ldquo;
             </span>
-            {t.rich('body', {
-              b: (chunks) => (
-                <b className="font-semibold text-[#F6F3EE] not-italic">
-                  {chunks}
-                </b>
-              ),
-            })}
+            <PortableInline
+              value={data.body}
+              marks={{
+                strong: (chunk) => (
+                  <b className="font-semibold text-[#F6F3EE] not-italic">
+                    {chunk}
+                  </b>
+                ),
+              }}
+            />
             {/* Closing quotation mark */}
             <span
               aria-hidden="true"
@@ -299,16 +299,13 @@ export function Manifesto() {
                   'linear-gradient(90deg, transparent, rgba(196,155,242,0.7))',
               }}
             />
-            {t.rich('mantra', {
-              em: (chunks) => (
-                <em
-                  className="not-italic text-[#D2B3F7]"
-                  style={{ textShadow: '0 0 22px rgba(176,120,255,0.45)' }}
-                >
-                  {chunks}
-                </em>
-              ),
-            })}
+            <em
+              className="not-italic text-[#D2B3F7]"
+              style={{ textShadow: '0 0 22px rgba(176,120,255,0.45)' }}
+            >
+              {data.mantraEmphasis}
+            </em>
+            {data.mantraRest}
           </motion.div>
         </div>
       </div>

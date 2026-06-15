@@ -1,0 +1,29 @@
+import { cacheLife, cacheTag } from 'next/cache'
+import { client } from './client'
+import { HOME_QUERY, NAVIGATION_QUERY, FOOTER_QUERY } from './queries'
+import type {
+  HOME_QUERY_RESULT,
+  NAVIGATION_QUERY_RESULT,
+  FOOTER_QUERY_RESULT,
+} from '../sanity.types'
+
+export async function getHomePage(locale: string): Promise<HOME_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`homePage-${locale}`)
+  return client.fetch<HOME_QUERY_RESULT>(HOME_QUERY, { locale })
+}
+
+export async function getNavigation(locale: string): Promise<NAVIGATION_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`navigation-${locale}`)
+  return client.fetch<NAVIGATION_QUERY_RESULT>(NAVIGATION_QUERY, { locale })
+}
+
+export async function getFooter(locale: string): Promise<FOOTER_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`footer-${locale}`)
+  return client.fetch<FOOTER_QUERY_RESULT>(FOOTER_QUERY, { locale })
+}

@@ -4,29 +4,44 @@ export const footer = defineType({
   name: 'footer',
   type: 'document',
   fields: [
+    // "Built for <em>freedom.</em>" → taglinePrefix + taglineEmphasis
+    defineField({ name: 'taglinePrefix', type: 'string', description: 'e.g. "Built for "' }),
+    defineField({ name: 'taglineEmphasis', type: 'string', description: 'e.g. "freedom."' }),
+
+    // Product column
     defineField({
-      name: 'columns',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({ name: 'title', type: 'string' }),
-            defineField({
-              name: 'links',
-              type: 'array',
-              of: [{ type: 'navItem' }],
-            }),
-          ],
-        },
-      ],
+      name: 'productHeading',
+      type: 'string',
     }),
     defineField({
-      name: 'socialLinks',
+      name: 'productLinks',
       type: 'array',
-      of: [{ type: 'socialLink' }],
+      of: [{ type: 'navItem' }],
     }),
-    defineField({ name: 'legalText', type: 'text' }),
+
+    // Company column
+    defineField({
+      name: 'companyHeading',
+      type: 'string',
+    }),
+    defineField({
+      name: 'companyLinks',
+      type: 'array',
+      of: [{ type: 'navItem' }],
+    }),
+
+    // Legal column
+    defineField({
+      name: 'legalHeading',
+      type: 'string',
+    }),
+    defineField({
+      name: 'legalLinks',
+      type: 'array',
+      of: [{ type: 'navItem' }],
+    }),
+
+    defineField({ name: 'copy', type: 'string' }),
     defineField({ name: 'language', type: 'string', readOnly: true, hidden: true }),
   ],
   preview: {

@@ -1,11 +1,11 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useReducedMotion, motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import type { StepsData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
@@ -306,9 +306,7 @@ function StepCard({
 }
 
 // ─── Steps section ────────────────────────────────────────────────────────────
-export function Steps() {
-  const t = useTranslations('steps')
-
+export function Steps({ data }: { data: StepsData }) {
   const { ref: hdRef, motionProps: hdMotion } = useScrollReveal(0)
 
   const ctaRef = useRef<HTMLDivElement>(null)
@@ -325,7 +323,7 @@ export function Steps() {
   return (
     <section
       id="steps-section"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className="border-t border-border bg-bg py-[var(--section-pad-y)]"
     >
       <div className="container-content">
@@ -337,7 +335,7 @@ export function Steps() {
           className="mb-[clamp(2.5rem,5vw,3.5rem)] text-center"
         >
           <span className="eyebrow mb-[0.9rem] block text-purple">
-            · {t('eyebrow')}
+            · {data.eyebrow}
           </span>
           <h2
             className={cn(
@@ -345,13 +343,9 @@ export function Steps() {
               'mb-[0.8rem] leading-[1.07] tracking-[var(--tracking-display)] text-balance',
             )}
           >
-            {t.rich('title', {
-              accent: (chunks) => (
-                <em className="italic text-purple whitespace-nowrap">{chunks}</em>
-              ),
-            })}
+            {data.titlePrefix}<em className="italic text-purple whitespace-nowrap">{data.titleAccent}</em>
           </h2>
-          <p className="text-[16px] leading-[1.6] text-text-muted">{t('subtitle')}</p>
+          <p className="text-[16px] leading-[1.6] text-text-muted">{data.subtitle}</p>
         </motion.header>
 
         {/* Cards grid */}
@@ -361,8 +355,8 @@ export function Steps() {
           <StepCard
             tone="light"
             stepNum="01"
-            title={t('step1.title')}
-            desc={t('step1.desc')}
+            title={data.step1?.title ?? ''}
+            desc={data.step1?.desc ?? ''}
             delayMs={0}
           >
             <Step1Mock />
@@ -372,8 +366,8 @@ export function Steps() {
           <StepCard
             tone="light"
             stepNum="02"
-            title={t('step2.title')}
-            desc={t('step2.desc')}
+            title={data.step2?.title ?? ''}
+            desc={data.step2?.desc ?? ''}
             delayMs={90}
           >
             <Step2Mock />
@@ -383,8 +377,8 @@ export function Steps() {
           <StepCard
             tone="dark"
             stepNum="03"
-            title={t('step3.title')}
-            desc={t('step3.desc')}
+            title={data.step3?.title ?? ''}
+            desc={data.step3?.desc ?? ''}
             delayMs={180}
           >
             <Step3Mock />
@@ -403,7 +397,7 @@ export function Steps() {
             size="lg"
             icon={<ArrowRight className="size-[15px]" strokeWidth={1.75} />}
           >
-            {t('cta')}
+            {data.cta}
           </Button>
         </motion.div>
 

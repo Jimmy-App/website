@@ -1,11 +1,11 @@
 'use client'
 
 import { useRef } from 'react'
-import { useTranslations } from 'next-intl'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { ArrowRight, CalendarDays, Check } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import type { FinalCtaData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
@@ -121,8 +121,7 @@ function TrustPill({ children }: { children: React.ReactNode }) {
 }
 
 // ─── FinalCta section ─────────────────────────────────────────────────────────
-export function FinalCta() {
-  const t = useTranslations('finalCta')
+export function FinalCta({ data }: { data: FinalCtaData }) {
   const reduced = useReducedMotion()
 
   const sectionRef = useRef<HTMLElement>(null)
@@ -139,13 +138,11 @@ export function FinalCta() {
         }
   }
 
-  const tags = t.raw('tags') as string[]
-
   return (
     <section
       ref={sectionRef}
       id="final-cta"
-      aria-label={t('sectionLabel')}
+      aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative isolate overflow-hidden bg-bg',
         'py-[clamp(3rem,6vh,4.75rem)] px-[clamp(1.25rem,5vw,3rem)]',
@@ -199,16 +196,16 @@ export function FinalCta() {
             >
               {/* Line 1 — "Start for free." */}
               <span className="block">
-                {t('headlinePrefix')}{' '}
+                {data.headlinePrefix}{' '}
                 <span className="relative inline-block whitespace-nowrap text-purple">
-                  {t('headlineAccent')}
+                  {data.headlineAccent}
                   <DrawnUnderline visible={isInView} />
                 </span>
-                {t('headlineSuffix')}
+                {data.headlineSuffix}
               </span>
               {/* Line 2 — muted coda */}
               <span className="block text-text-muted">
-                {t('headlineLine2')}
+                {data.headlineLine2}
               </span>
             </h2>
 
@@ -220,7 +217,7 @@ export function FinalCta() {
                 'text-pretty',
               )}
             >
-              {t('subtitle')}
+              {data.subtitle}
             </p>
 
             {/* CTA row */}
@@ -253,7 +250,7 @@ export function FinalCta() {
                   'max-[520px]:w-full max-[520px]:justify-center',
                 )}
               >
-                {t('ctaPrimary')}
+                {data.ctaPrimary}
               </Button>
 
               {/* Secondary — ghost with purple calendar icon before text */}
@@ -271,7 +268,7 @@ export function FinalCta() {
                   className="size-[17px] text-purple transition-transform duration-[220ms] group-hover:scale-110 group-hover:-rotate-3"
                   strokeWidth={1.75}
                 />
-                {t('ctaSecondary')}
+                {data.ctaSecondary}
               </Button>
             </div>
           </motion.div>
@@ -298,12 +295,12 @@ export function FinalCta() {
 
             {/* Social-proof line */}
             <p className="text-[15.5px] font-medium leading-[1.5] text-text max-w-[320px]">
-              {t('socialProof')}
+              {data.socialProof}
             </p>
 
             {/* Discipline tags */}
             <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
+              {(data.tags ?? []).map((tag) => (
                 <span
                   key={tag}
                   className={cn(
@@ -329,11 +326,7 @@ export function FinalCta() {
           )}
         >
           <TrustPill>
-            {t.rich('trustText', {
-              b: (chunks) => (
-                <b className="font-bold text-[#6D1FB8]">{chunks}</b>
-              ),
-            })}
+            {data.trustPrefix}<b className="font-bold text-[#6D1FB8]">{data.trustBold}</b>{data.trustSuffix}
           </TrustPill>
         </motion.div>
       </div>
