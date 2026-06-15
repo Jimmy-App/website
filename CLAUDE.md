@@ -11,7 +11,7 @@ Use these slash commands for guidance:
 
 ## Key Paths
 - `src/app/[locale]/` — public pages (always with locale prefix)
-- `src/app/studio/` — Sanity Studio (no locale, excluded from proxy.ts)
+- `src/app/studio/` — Sanity Studio (no locale, excluded from middleware.ts)
 - `src/components/` — components (structure per PLAN.md)
 - `sanity/schemas/` — one schema = one file
 - `sanity/queries/` — all GROQ queries here
@@ -27,7 +27,7 @@ Conditional classes via `cn()` from `@/lib/utils`.
 
 **i18n** — all UI text via `getTranslations()` (server) or `useTranslations()` (client).
 New keys go into ALL 3 messages/ files immediately.
-Studio `/studio` excluded from proxy.ts matcher.
+Studio `/studio` excluded from middleware.ts matcher.
 
 **Components** — Server Components by default.
 `use client` only at the leaf where interactivity is required.
