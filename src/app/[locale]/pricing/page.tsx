@@ -48,7 +48,7 @@ export default async function PricingPage({
       <Navbar data={navigation} />
       <main>
         {/* Reused home Pricing section + FAQ; page-specific centered CTA */}
-        <Pricing data={home.pricing} plans={plans} />
+        <Pricing data={home.pricing} plans={plans} page />
         <Faq data={pricingPage.faq} />
         <PricingCta data={pricingPage.finalCta} />
       </main>

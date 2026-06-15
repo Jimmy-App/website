@@ -150,7 +150,16 @@ function CheckMark() {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function Pricing({ data, plans }: { data: PricingData; plans: PricingPlansData }) {
+export function Pricing({
+  data,
+  plans,
+  page = false,
+}: {
+  data: PricingData
+  plans: PricingPlansData
+  /** When true, render as a standalone page hero: clear the fixed navbar and drop the top border. */
+  page?: boolean
+}) {
   const shouldReduceMotion = useReducedMotion()
 
   const [step, setStep] = useState(0) // default: 0 (Free)
@@ -269,7 +278,12 @@ export function Pricing({ data, plans }: { data: PricingData; plans: PricingPlan
     <section
       id="pricing"
       aria-label={(data.sectionLabel ?? '')}
-      className="relative overflow-hidden border-t border-border py-[var(--section-pad-y)] scroll-mt-20"
+      className={cn(
+        'relative overflow-hidden scroll-mt-20 pb-[var(--section-pad-y)]',
+        page
+          ? 'pt-[calc(var(--navbar-height)+clamp(1.5rem,5vw,3rem))]'
+          : 'border-t border-border pt-[var(--section-pad-y)]',
+      )}
       style={{ background: 'var(--color-bg)' }}
     >
       {/* Radial glow */}

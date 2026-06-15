@@ -25,7 +25,7 @@ export function NotFoundContent({
   const home = `/${locale}`
 
   return (
-    <main className="relative isolate flex min-h-[78dvh] flex-col items-center justify-center overflow-hidden px-6 py-[clamp(2rem,5vw,5.5rem)] text-center">
+    <main className="relative isolate flex min-h-[78dvh] flex-col items-center justify-center overflow-hidden px-6 pt-[calc(var(--navbar-height)+clamp(1.5rem,5vw,3rem))] pb-[clamp(2.5rem,6vw,5.5rem)] text-center">
       {/* Atmosphere */}
       <div
         aria-hidden
