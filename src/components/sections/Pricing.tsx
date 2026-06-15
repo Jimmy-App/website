@@ -573,6 +573,7 @@ export function Pricing({ data, plans }: { data: PricingData; plans: PricingPlan
             tag={data.freeTag ?? ''}
             amt={freeCardAmt}
             per={data.freePerLabel ?? ''}
+            ctaLabel={data.ctaFree ?? ''}
             isClub={false}
             isActive={activeCard === 'free'}
           >
@@ -588,6 +589,7 @@ export function Pricing({ data, plans }: { data: PricingData; plans: PricingPlan
             amt={clubCardAmt}
             per={`${data.clubPerPrefix ?? ''} ${clubCardClients}`.trim()}
             popular={data.popularLabel ?? undefined}
+            ctaLabel={data.ctaClub ?? ''}
             isClub
             isActive={activeCard === 'club'}
           >
@@ -640,6 +642,7 @@ function PlanCard({
   amt,
   per,
   popular,
+  ctaLabel,
   isClub,
   isActive,
   children,
@@ -649,6 +652,7 @@ function PlanCard({
   amt: string
   per: string
   popular?: string
+  ctaLabel: string
   isClub: boolean
   isActive: boolean
   children: React.ReactNode
@@ -656,7 +660,7 @@ function PlanCard({
   return (
     <div
       className={cn(
-        'relative rounded-[22px] border bg-surface p-[clamp(1.5rem,2.4vw,2rem)] transition-[border-color,box-shadow,transform] duration-[220ms]',
+        'relative flex flex-col rounded-[22px] border bg-surface p-[clamp(1.5rem,2.4vw,2rem)] transition-[border-color,box-shadow,transform] duration-[220ms]',
         isClub
           ? 'border-[rgba(138,50,224,0.4)] shadow-[0_18px_50px_-30px_rgba(138,50,224,0.4)]'
           : 'border-border',
@@ -693,6 +697,22 @@ function PlanCard({
         {tag}
       </p>
       <ul className="flex list-none flex-col gap-[11px]">{children}</ul>
+
+      {/* Per-card CTA — wrapper pushes it to the bottom so both align */}
+      <div className="mt-auto pt-[26px]">
+        <a
+          href="#"
+          className={cn(
+            'inline-flex w-full items-center justify-center gap-[7px] rounded-full px-[22px] py-[13px] text-[14.5px] font-semibold',
+            'transition-[background,border-color,box-shadow] duration-200',
+            isClub
+              ? 'border border-purple bg-purple text-white hover:bg-purple-hover hover:shadow-[0_0_24px_rgba(138,50,224,0.4)]'
+              : 'border border-ghost-border bg-surface text-text hover:bg-ghost-hover hover:border-ghost-border-h',
+          )}
+        >
+          {ctaLabel}
+        </a>
+      </div>
     </div>
   )
 }
