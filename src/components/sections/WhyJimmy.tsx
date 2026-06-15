@@ -3,6 +3,13 @@
 import Image from 'next/image'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import {
+  MessageCircle,
+  Dumbbell,
+  CreditCard,
+  CalendarCheck,
+  Check,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { WhyData } from '@/lib/content'
 
@@ -14,92 +21,232 @@ const useIsoLayoutEffect =
 
 type State = 'without' | 'with'
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+// ── Brand / tool logos (inline SVG — no external assets) ───────────────────────
 
-/** Small pill badge displayed inside the preview card */
-function PreviewTab({
-  variant,
-  label,
-}: {
-  variant: 'without' | 'with'
-  label: string
-}) {
+function ExcelLogo() {
   return (
-    <div
-      className={cn(
-        'inline-flex items-center gap-[7px] self-start shrink-0',
-        'bg-surface border border-border rounded-full px-[14px] py-[7px]',
-        'font-body text-[13px] font-semibold mb-5',
-        'shadow-[0_1px_4px_rgba(0,0,0,0.06)]',
-        variant === 'without' ? 'text-text-muted' : 'text-purple',
-      )}
-    >
-      {variant === 'without' ? (
-        // X icon
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          className="w-[13px] h-[13px] shrink-0"
-          aria-hidden
-        >
-          <path
-            d="M4 4l8 8M12 4l-8 8"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ) : (
-        // Check icon
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          className="w-[13px] h-[13px] shrink-0"
-          aria-hidden
-        >
-          <path
-            d="M3 8.5l3.5 3.5 6.5-7"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )}
-      {label}
-    </div>
+    <svg viewBox="0 0 32 32" className="w-full h-full" aria-hidden>
+      <rect x="3" y="5" width="26" height="22" rx="3" fill="#1D6F42" />
+      <rect x="3" y="5" width="13" height="22" rx="3" fill="#21A366" />
+      <path
+        d="M8.6 11.2l3 4.8-3 4.8h2.3l1.9-3.2 1.9 3.2h2.4l-3.1-4.8 3-4.8h-2.3l-1.8 3.1-1.8-3.1z"
+        fill="#fff"
+      />
+      <rect x="18.5" y="9" width="8" height="3.4" rx="1" fill="#fff" opacity="0.92" />
+      <rect x="18.5" y="14.3" width="8" height="3.4" rx="1" fill="#fff" opacity="0.92" />
+      <rect x="18.5" y="19.6" width="8" height="3.4" rx="1" fill="#fff" opacity="0.92" />
+    </svg>
   )
 }
 
-// ── Tool card data type ───────────────────────────────────────────────────────
-
-type ToolCardData = {
-  emoji: string
-  bg: string
-  name: string
-  desc: string
+function WhatsAppLogo() {
+  return (
+    <svg viewBox="0 0 32 32" className="w-full h-full" aria-hidden>
+      <circle cx="16" cy="16" r="13" fill="#25D366" />
+      <path
+        d="M16 8.4a7.5 7.5 0 0 0-6.4 11.4L8.4 23.6l3.9-1.2A7.5 7.5 0 1 0 16 8.4Zm4.4 10.6c-.18.5-1.06.96-1.47 1-.38.04-.86.06-1.39-.09a12.6 12.6 0 0 1-1.26-.47 9.8 9.8 0 0 1-3.76-3.32c-.28-.38-.74-1.13-.74-2.16 0-1.03.54-1.53.73-1.74a.77.77 0 0 1 .56-.26h.4c.13 0 .3-.05.47.36.18.42.6 1.46.65 1.56.05.1.08.23.02.36-.06.13-.1.21-.19.32l-.28.33c-.09.1-.18.2-.08.39.1.18.46.76 1 1.23.69.61 1.27.8 1.45.9.18.09.29.07.4-.04.1-.13.46-.54.58-.72.12-.18.24-.15.4-.09.17.06 1.06.5 1.24.59.18.09.3.13.35.21.04.08.04.45-.14.95Z"
+        fill="#fff"
+      />
+    </svg>
+  )
 }
 
-function ToolCard({ emoji, bg, name, desc }: ToolCardData) {
+function PaymentLogo() {
   return (
-    <div
-      className={cn(
-        'bg-surface border border-border rounded-[14px] p-[0.8rem_0.9rem]',
-        'flex items-start gap-[11px]',
-        'shadow-[0_1px_3px_rgba(0,0,0,0.04)]',
-      )}
-    >
-      <div
-        className="w-[38px] h-[38px] rounded-[9px] shrink-0 flex items-center justify-center text-[19px]"
-        style={{ background: bg }}
-        aria-hidden
-      >
-        {emoji}
+    <svg viewBox="0 0 32 32" className="w-full h-full" aria-hidden>
+      <rect x="3" y="7" width="26" height="18" rx="3.4" fill="#E2E5EA" />
+      <rect x="3" y="11" width="26" height="3.6" fill="#9AA1AD" />
+      <rect x="6.5" y="18.5" width="9" height="2.6" rx="1.3" fill="#B6BCC6" />
+      <circle cx="24" cy="22" r="6" fill="#F59E0B" />
+      <rect x="23" y="18.4" width="2" height="4.4" rx="1" fill="#fff" />
+      <circle cx="24" cy="24.6" r="1.05" fill="#fff" />
+    </svg>
+  )
+}
+
+function CalendarLogo() {
+  return (
+    <svg viewBox="0 0 32 32" className="w-full h-full" aria-hidden>
+      <rect x="4" y="6" width="24" height="22" rx="3.4" fill="#E2E5EA" />
+      <rect x="4" y="6" width="24" height="6" rx="3.4" fill="#9AA1AD" />
+      <rect x="9" y="3.5" width="2.6" height="5" rx="1.3" fill="#6B7280" />
+      <rect x="20.4" y="3.5" width="2.6" height="5" rx="1.3" fill="#6B7280" />
+      <path
+        d="M12.5 16.5l7 7M19.5 16.5l-7 7"
+        stroke="#EF4444"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+// External tool → its in-app Jimmy equivalent. Index matches Sanity card1..4.
+const TOOL_SLOTS = [
+  {
+    Logo: WhatsAppLogo,
+    jimmy: { Icon: MessageCircle, label: 'Messaging', sub: '1:1 chat, built in' },
+  },
+  {
+    Logo: ExcelLogo,
+    jimmy: { Icon: Dumbbell, label: 'Workout Builder', sub: 'Structured programs' },
+  },
+  {
+    Logo: PaymentLogo,
+    jimmy: { Icon: CreditCard, label: 'Payments', sub: 'Automatic Stripe billing' },
+  },
+  {
+    Logo: CalendarLogo,
+    jimmy: { Icon: CalendarCheck, label: 'Schedule', sub: 'Synced sessions' },
+  },
+] as const
+
+// Scattered transform per slot for the "without" (messy pile) state.
+const SCATTER = [
+  { x: -12, y: 0, rotate: -4.5, z: 4 },
+  { x: 14, y: 4, rotate: 3.5, z: 3 },
+  { x: -7, y: 8, rotate: -3, z: 2 },
+  { x: 15, y: 6, rotate: 5, z: 1 },
+] as const
+
+// ── Tools morph: chaotic pile (without) → organized Jimmy app (with) ───────────
+
+type Slot = (typeof TOOL_SLOTS)[number] & { name: string; desc: string }
+
+function ToolsMorph({
+  active,
+  slots,
+  withoutLabel,
+  reduced,
+}: {
+  active: State
+  slots: Slot[]
+  withoutLabel: string
+  reduced: boolean
+}) {
+  const isWith = active === 'with'
+  const ease = [0.16, 1, 0.3, 1] as const
+  const t = (delay: number) =>
+    reduced ? { duration: 0 } : { duration: 0.62, ease, delay }
+
+  // Aligned (with) vertical rhythm + the messy (without) scatter, expressed as a
+  // transform delta so only `transform`/`opacity` animate (cheap, 60fps).
+  const TOP_WITH = 60
+  const GAP_WITH = 86
+
+  return (
+    <div className="absolute inset-0 p-6 max-lg:p-5">
+      {/* Top bar — "Without Jimmy" pill ⇄ Jimmy app header (crossfade) */}
+      <div className="relative h-[42px]">
+        <motion.div
+          animate={{ opacity: isWith ? 0 : 1 }}
+          transition={t(0)}
+          className={cn(
+            'absolute left-0 top-0 inline-flex items-center gap-[7px]',
+            'bg-surface border border-border rounded-full px-[13px] py-[7px]',
+            'text-[13px] font-semibold text-text-muted shadow-[0_1px_4px_rgba(0,0,0,0.06)]',
+          )}
+        >
+          <svg viewBox="0 0 16 16" fill="none" className="w-[12px] h-[12px]" aria-hidden>
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+          </svg>
+          {withoutLabel}
+        </motion.div>
+
+        <motion.div
+          animate={{ opacity: isWith ? 1 : 0, y: isWith ? 0 : -6 }}
+          transition={t(isWith ? 0.05 : 0)}
+          aria-hidden={!isWith}
+          className="absolute inset-x-0 top-0 flex items-center gap-[10px]"
+        >
+          <Image
+            src="/assets/logo/logo.svg"
+            alt=""
+            width={30}
+            height={30}
+            aria-hidden
+            className="w-[30px] h-[30px] rounded-[8px] shadow-[0_3px_10px_rgba(138,50,224,0.3)]"
+          />
+          <div className="leading-tight">
+            <div className="text-[13.5px] font-bold text-text">Jimmy</div>
+            <div className="text-[11px] text-text-muted">Everything in one place</div>
+          </div>
+          <span className="ml-auto inline-flex items-center gap-[6px] rounded-full bg-[#E7F7EE] px-[10px] py-[5px] text-[11px] font-bold text-[#15803D]">
+            <span className="w-[6px] h-[6px] rounded-full bg-[#22C55E]" />
+            Synced
+          </span>
+        </motion.div>
       </div>
-      <div>
-        <div className="text-[13px] font-semibold text-text mb-[2px]">{name}</div>
-        <div className="text-[11.5px] text-text-muted leading-[1.4]">{desc}</div>
+
+      {/* Cards stage */}
+      <div className="relative mt-[6px] h-[372px] max-lg:h-[330px]">
+        {slots.map((s, i) => {
+          const sc = SCATTER[i]
+          const topWith = TOP_WITH + i * GAP_WITH
+          // messy pile sits higher + tighter, so cards overlap into a heap
+          const deltaY = 10 + sc.y - i * 15
+          return (
+            <motion.div
+              key={i}
+              initial={false}
+              animate={{
+                y: isWith ? 0 : deltaY,
+                x: isWith ? 0 : sc.x,
+                rotate: isWith ? 0 : sc.rotate,
+              }}
+              transition={t(isWith ? i * 0.05 : (slots.length - 1 - i) * 0.04)}
+              style={{ top: topWith, zIndex: isWith ? i + 1 : sc.z }}
+              className="absolute left-0 right-0"
+            >
+              <div
+                className={cn(
+                  'relative h-[76px] rounded-[14px] border bg-surface overflow-hidden',
+                  'transition-[border-color,box-shadow] duration-500',
+                  isWith
+                    ? 'border-[rgba(138,50,224,0.28)] shadow-[0_6px_18px_-10px_rgba(138,50,224,0.45)]'
+                    : 'border-border shadow-[0_2px_8px_rgba(0,0,0,0.06)]',
+                )}
+              >
+                {/* External tool (without) */}
+                <motion.div
+                  animate={{ opacity: isWith ? 0 : 1 }}
+                  transition={t(0)}
+                  aria-hidden={isWith}
+                  className="absolute inset-0 flex items-center gap-[12px] px-[14px]"
+                >
+                  <div className="w-[38px] h-[38px] shrink-0">
+                    <s.Logo />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-semibold text-text truncate">{s.name}</div>
+                    <div className="text-[11.5px] text-text-muted leading-[1.38] line-clamp-2">
+                      {s.desc}
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Jimmy module (with) */}
+                <motion.div
+                  animate={{ opacity: isWith ? 1 : 0 }}
+                  transition={t(isWith ? 0.08 : 0)}
+                  aria-hidden={!isWith}
+                  className="absolute inset-0 flex items-center gap-[12px] px-[14px]"
+                >
+                  <div className="w-[38px] h-[38px] shrink-0 rounded-[10px] bg-purple-light text-purple flex items-center justify-center">
+                    <s.jimmy.Icon size={19} strokeWidth={1.9} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13.5px] font-semibold text-text">{s.jimmy.label}</div>
+                    <div className="text-[11.5px] text-text-muted leading-[1.38]">{s.jimmy.sub}</div>
+                  </div>
+                  <div className="w-[22px] h-[22px] shrink-0 rounded-full bg-[#22C55E] text-white flex items-center justify-center">
+                    <Check size={13} strokeWidth={2.6} />
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          )
+        })}
       </div>
     </div>
   )
@@ -180,33 +327,19 @@ export default function WhyJimmy({ data }: { data: WhyData }) {
     ? { duration: 0 }
     : { type: 'spring' as const, duration: 0.5, bounce: 0.18 }
 
-  // Tool cards for the "without" preview
-  const toolCards: ToolCardData[] = [
-    {
-      emoji: '💬',
-      bg: '#E8F5E9',
-      name: data.preview?.without?.card1?.name ?? '',
-      desc: data.preview?.without?.card1?.desc ?? '',
-    },
-    {
-      emoji: '📊',
-      bg: '#E3F2FD',
-      name: data.preview?.without?.card2?.name ?? '',
-      desc: data.preview?.without?.card2?.desc ?? '',
-    },
-    {
-      emoji: '💳',
-      bg: '#FFF8E1',
-      name: data.preview?.without?.card3?.name ?? '',
-      desc: data.preview?.without?.card3?.desc ?? '',
-    },
-    {
-      emoji: '📅',
-      bg: '#FCE4EC',
-      name: data.preview?.without?.card4?.name ?? '',
-      desc: data.preview?.without?.card4?.desc ?? '',
-    },
+  // External tools (without) merged with their Jimmy module (with).
+  // Names/descriptions come from Sanity (preview.without.card1..4).
+  const cardData = [
+    data.preview?.without?.card1,
+    data.preview?.without?.card2,
+    data.preview?.without?.card3,
+    data.preview?.without?.card4,
   ]
+  const slots: Slot[] = TOOL_SLOTS.map((s, i) => ({
+    ...s,
+    name: cardData[i]?.name ?? '',
+    desc: cardData[i]?.desc ?? '',
+  }))
 
   const withoutBullets = data.bullets?.without ?? []
   const withBullets = data.bullets?.with ?? []
@@ -236,59 +369,24 @@ export default function WhyJimmy({ data }: { data: WhyData }) {
           variants={riseVariants}
         >
 
-          {/* ── LEFT: Preview card ──────────────────────────────── */}
+          {/* ── LEFT: Preview card (chaos → organized Jimmy app) ── */}
           <div
             className={cn(
-              'relative bg-surface-2 border border-border rounded-[24px] overflow-hidden',
-              'min-h-[560px] max-lg:min-h-[420px]',
+              'relative rounded-[24px] overflow-hidden border',
+              'min-h-[520px] max-lg:min-h-[460px]',
+              'transition-colors duration-500',
+              active === 'with'
+                ? 'bg-purple-light/40 border-[rgba(138,50,224,0.18)]'
+                : 'bg-surface-2 border-border',
               'shadow-[0_4px_32px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.03)]',
             )}
           >
-            {/* Without state */}
-            <div
-              className={cn(
-                'absolute inset-0 p-7 flex flex-col',
-                'transition-[opacity,transform,filter] duration-[460ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
-                active === 'without'
-                  ? 'opacity-100 scale-100 blur-0 pointer-events-auto'
-                  : 'opacity-0 scale-[0.98] blur-[6px] pointer-events-none',
-              )}
-              aria-hidden={active !== 'without'}
-            >
-              <PreviewTab
-                variant="without"
-                label={data.toggle?.without ?? ''}
-              />
-              <div className="flex flex-col gap-[0.55rem]">
-                {toolCards.map((card, i) => (
-                  <ToolCard key={i} {...card} />
-                ))}
-              </div>
-            </div>
-
-            {/* With state */}
-            <div
-              className={cn(
-                'absolute inset-0 p-7 flex flex-col',
-                'transition-[opacity,transform,filter] duration-[460ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
-                active === 'with'
-                  ? 'opacity-100 scale-100 blur-0 pointer-events-auto'
-                  : 'opacity-0 scale-[0.98] blur-[6px] pointer-events-none',
-              )}
-              aria-hidden={active !== 'with'}
-            >
-              <PreviewTab variant="with" label={data.toggle?.with ?? ''} />
-              <div className="flex-1 rounded-[12px] overflow-hidden border border-border bg-surface min-h-0">
-                <Image
-                  src="/assets/screens/dashboard.png"
-                  alt={data.preview?.with?.imgAlt ?? ''}
-                  width={780}
-                  height={520}
-                  className="w-full h-full object-cover object-top-left block"
-                  loading="lazy"
-                />
-              </div>
-            </div>
+            <ToolsMorph
+              active={active}
+              slots={slots}
+              withoutLabel={data.toggle?.without ?? ''}
+              reduced={!!prefersReducedMotion}
+            />
           </div>
 
           {/* ── RIGHT: Content ──────────────────────────────────── */}
