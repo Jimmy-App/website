@@ -4,6 +4,7 @@ import {
   useReducedMotion,
   motion,
   useAnimation,
+  useInView,
 } from 'framer-motion'
 import {
   useEffect,
@@ -21,13 +22,13 @@ import {
   MessageCircle,
   CreditCard,
   GraduationCap,
-  Clock,
-  CheckCircle2,
-  Lock,
-  TrendingUp,
-  PlayCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { WorkoutBuilderDemo } from '@/components/sections/WorkoutBuilderDemo'
+import { CommunityFeedDemo } from '@/components/sections/CommunityFeedDemo'
+import { MessagingDemo } from '@/components/sections/MessagingDemo'
+import { PaymentsDemo } from '@/components/sections/PaymentsDemo'
+import { CourseBuilderDemo } from '@/components/sections/CourseBuilderDemo'
 import type { PlatformData } from '@/lib/content'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -95,11 +96,19 @@ type StepData = NonNullable<PlatformData['steps']>[number]
 
 // ── Progress bar (per-item, animates width 0→100%) ────────────────────────────
 
-function ProgressBar({ active, reducedMotion }: { active: boolean; reducedMotion: boolean }) {
+function ProgressBar({
+  active,
+  reducedMotion,
+  inView,
+}: {
+  active: boolean
+  reducedMotion: boolean
+  inView: boolean
+}) {
   const controls = useAnimation()
 
   useEffect(() => {
-    if (!active) {
+    if (!active || !inView) {
       controls.set({ width: '0%' })
       return
     }
@@ -115,7 +124,7 @@ function ProgressBar({ active, reducedMotion }: { active: boolean; reducedMotion
     return () => {
       controls.stop()
     }
-  }, [active, controls, reducedMotion])
+  }, [active, controls, reducedMotion, inView])
 
   return (
     <div
@@ -134,7 +143,7 @@ function ProgressBar({ active, reducedMotion }: { active: boolean; reducedMotion
 
 // ── Preview panels ─────────────────────────────────────────────────────────────
 
-function StateWorkout({ step }: { step: StepData }) {
+function StateWorkout({ step, active }: { step: StepData; active: boolean }) {
   const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
@@ -145,45 +154,9 @@ function StateWorkout({ step }: { step: StepData }) {
           {step.preview?.barChip}
         </span>
       </div>
-      {/* Body */}
-      <div className="p-[11px] flex flex-col gap-[6px]">
-        {/* Exercise row */}
-        <div className="flex items-center gap-2 px-[10px] py-2 rounded-[10px] bg-surface-2 border border-border">
-          <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-sm bg-purple-light">🏋</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[12px] font-semibold text-text">Bench Press</div>
-            <div className="text-[10.5px] text-text-faint">4 sets × 8 reps</div>
-          </div>
-          <span className="text-[10px] font-bold px-[7px] py-[2px] rounded-full bg-purple-light text-purple whitespace-nowrap flex-shrink-0">85% 1RM</span>
-        </div>
-        <div className="flex items-center gap-2 px-[10px] py-2 rounded-[10px] bg-surface-2 border border-border">
-          <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-sm bg-purple-light">💪</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[12px] font-semibold text-text">Pull-up</div>
-            <div className="text-[10.5px] text-text-faint">3 sets × AMRAP</div>
-          </div>
-          <span className="text-[10px] font-bold px-[7px] py-[2px] rounded-full bg-purple-light text-purple whitespace-nowrap flex-shrink-0">BW</span>
-        </div>
-        {/* Block row */}
-        <div className="flex items-center gap-[7px] px-[10px] py-[7px] rounded-[10px] text-[11.5px] font-bold bg-purple-light text-purple">
-          <Clock size={13} strokeWidth={1.5} />
-          EMOM × 12 min
-        </div>
-        {/* Block exercises */}
-        <div className="flex items-center gap-2 px-[10px] py-2 rounded-[10px] bg-surface-2 border border-border border-l-2 border-l-purple">
-          <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-sm bg-purple-light">🔥</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[12px] font-semibold text-text">Burpees</div>
-            <div className="text-[10.5px] text-text-faint">× 10 reps</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 px-[10px] py-2 rounded-[10px] bg-surface-2 border border-border border-l-2 border-l-purple">
-          <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-sm bg-purple-light">⬆</div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[12px] font-semibold text-text">Box Jump</div>
-            <div className="text-[10.5px] text-text-faint">× 15 reps</div>
-          </div>
-        </div>
+      {/* Body — animated drag-and-drop builder (same demo as the Features tab) */}
+      <div className="p-[11px]">
+        <WorkoutBuilderDemo embedded active={active} />
       </div>
       {/* Tags */}
       <div className="flex flex-wrap gap-[5px] px-3 py-[9px] border-t border-border flex-shrink-0">
@@ -197,7 +170,7 @@ function StateWorkout({ step }: { step: StepData }) {
   )
 }
 
-function StateCommunity({ step }: { step: StepData }) {
+function StateCommunity({ step, active }: { step: StepData; active: boolean }) {
   const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
@@ -207,43 +180,9 @@ function StateCommunity({ step }: { step: StepData }) {
           {step.preview?.barChip}
         </span>
       </div>
-      <div className="p-[11px] flex flex-col gap-[6px]">
-        {/* Challenge */}
-        <div className="flex items-center gap-[9px] px-[11px] py-[9px] rounded-[10px] bg-purple-light border border-[rgba(138,50,224,0.22)]">
-          <span className="text-xl flex-shrink-0">🏃</span>
-          <div className="flex-1">
-            <div className="text-[12px] font-bold text-text">Week Challenge: 5K Run</div>
-            <div className="text-[10.5px] text-text-muted">Ends Friday • 18 joined</div>
-          </div>
-          <span className="text-[10.5px] font-bold bg-purple text-white rounded-full px-[9px] py-[3px] flex-shrink-0 whitespace-nowrap">Join</span>
-        </div>
-        {/* Post 1 */}
-        <div className="px-[11px] py-[9px] rounded-[10px] bg-surface-2 border border-border">
-          <div className="flex items-center gap-[6px] mb-1">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0 bg-[#2563EB]">M</div>
-            <span className="text-[11px] font-semibold text-text">Marco D.</span>
-            <span className="text-[10px] text-text-faint ml-auto">2h ago</span>
-          </div>
-          <p className="text-[11.5px] text-text-muted leading-[1.5] mb-[6px]">PR on squats today! 185kg 💪 New personal best!</p>
-          <div className="flex gap-[5px]">
-            <span className="inline-flex items-center gap-[2px] bg-surface border border-border rounded-full px-[6px] py-[2px] text-[10.5px] text-text-muted">❤️ 12</span>
-            <span className="inline-flex items-center gap-[2px] bg-surface border border-border rounded-full px-[6px] py-[2px] text-[10.5px] text-text-muted">💪 8</span>
-            <span className="inline-flex items-center gap-[2px] bg-surface border border-border rounded-full px-[6px] py-[2px] text-[10.5px] text-text-muted">💬 3</span>
-          </div>
-        </div>
-        {/* Post 2 */}
-        <div className="px-[11px] py-[9px] rounded-[10px] bg-surface-2 border border-border">
-          <div className="flex items-center gap-[6px] mb-1">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0 bg-[#16A34A]">S</div>
-            <span className="text-[11px] font-semibold text-text">Sara M.</span>
-            <span className="text-[10px] text-text-faint ml-auto">5h ago</span>
-          </div>
-          <p className="text-[11.5px] text-text-muted leading-[1.5] mb-[6px]">Week 2 complete. Let's go! 🔥</p>
-          <div className="flex gap-[5px]">
-            <span className="inline-flex items-center gap-[2px] bg-surface border border-border rounded-full px-[6px] py-[2px] text-[10.5px] text-text-muted">❤️ 9</span>
-            <span className="inline-flex items-center gap-[2px] bg-surface border border-border rounded-full px-[6px] py-[2px] text-[10.5px] text-text-muted">💪 14</span>
-          </div>
-        </div>
+      {/* Body — animated live community feed */}
+      <div className="p-[11px]">
+        <CommunityFeedDemo embedded active={active} />
       </div>
       <div className="flex flex-wrap gap-[5px] px-3 py-[9px] border-t border-border flex-shrink-0">
         {tags.map((tag) => (
@@ -256,7 +195,7 @@ function StateCommunity({ step }: { step: StepData }) {
   )
 }
 
-function StateMessaging({ step }: { step: StepData }) {
+function StateMessaging({ step, active }: { step: StepData; active: boolean }) {
   const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
@@ -266,32 +205,9 @@ function StateMessaging({ step }: { step: StepData }) {
           {step.preview?.barChip}
         </span>
       </div>
-      <div className="p-[11px] flex flex-col gap-[5px]">
-        {/* out bubble */}
-        <div className="self-end max-w-[76%] px-[10px] py-2 rounded-xl rounded-br-[3px] bg-purple text-white text-[11.5px] leading-[1.45]">
-          Hey Marco, your new program is ready 💪
-        </div>
-        <div className="text-[10px] text-text-faint self-end">09:41 ✓✓</div>
-        {/* in bubble */}
-        <div className="self-start max-w-[76%] px-[10px] py-2 rounded-xl rounded-bl-[3px] bg-surface-2 border border-border text-text text-[11.5px] leading-[1.45]">
-          Amazing! One question about the EMOM block—
-        </div>
-        {/* voice */}
-        <div className="self-start max-w-[72%] flex items-center gap-[7px] px-[10px] py-[7px] rounded-xl rounded-bl-[3px] bg-surface-2 border border-border">
-          <div className="w-5 h-5 rounded-full flex items-center justify-center bg-purple text-white flex-shrink-0">
-            <PlayCircle size={10} strokeWidth={2} />
-          </div>
-          <div className="flex-1 flex items-center gap-[1.5px] h-4">
-            {[60, 100, 40, 80, 55, 90, 35, 70].map((h, i) => (
-              <div key={i} className="flex-1 rounded-[2px] bg-border" style={{ height: `${h}%` }} />
-            ))}
-          </div>
-          <span className="text-[10px] text-text-faint whitespace-nowrap">0:24</span>
-        </div>
-        {/* out bubble */}
-        <div className="self-end max-w-[76%] px-[10px] py-2 rounded-xl rounded-br-[3px] bg-purple text-white text-[11.5px] leading-[1.45]">
-          Sure! Check this modification 🎯
-        </div>
+      {/* Body — animated live 1:1 chat */}
+      <div className="p-[11px]">
+        <MessagingDemo embedded active={active} />
       </div>
       <div className="flex flex-wrap gap-[5px] px-3 py-[9px] border-t border-border flex-shrink-0">
         {tags.map((tag) => (
@@ -304,7 +220,7 @@ function StateMessaging({ step }: { step: StepData }) {
   )
 }
 
-function StatePayments({ step }: { step: StepData }) {
+function StatePayments({ step, active }: { step: StepData; active: boolean }) {
   const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
@@ -314,39 +230,11 @@ function StatePayments({ step }: { step: StepData }) {
           {step.preview?.barChip}
         </span>
       </div>
-      <div className="p-[11px] flex flex-col gap-[6px]">
-        {/* Revenue card */}
-        <div className="px-[11px] py-[10px] rounded-[10px] bg-surface-2 border border-border">
-          <div className="text-[9.5px] uppercase tracking-[0.07em] text-text-faint">Monthly revenue</div>
-          <div className="font-display text-[1.7rem] font-extrabold [letter-spacing:-0.04em] text-text leading-[1.1]">€3,840</div>
-          <div className="inline-flex items-center gap-[3px] bg-[#DCFCE7] text-[#166534] rounded-full px-[7px] py-[2px] mt-1 text-[10px] font-semibold">
-            <TrendingUp size={9} strokeWidth={1.4} />
-            +28% vs last month
-          </div>
-        </div>
-        {/* Subscribers */}
-        {[
-          { initials: 'M', name: 'Marco D.', plan: 'Monthly', amount: '€89', bg: '#2563EB' },
-          { initials: 'S', name: 'Sara M.', plan: 'Monthly', amount: '€89', bg: '#16A34A' },
-          { initials: 'J', name: 'John B.', plan: 'Annual', amount: '€59', bg: '#8a32e0' },
-        ].map(({ initials, name, plan, amount, bg }) => (
-          <div key={name} className="flex items-center gap-[7px] px-[9px] py-[7px] rounded-[9px] bg-surface border border-border">
-            <div
-              className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[8.5px] font-bold text-white flex-shrink-0"
-              style={{ background: bg }}
-            >
-              {initials}
-            </div>
-            <span className="text-[11.5px] font-semibold text-text flex-1">{name}</span>
-            <span className="text-[10px] text-text-faint">{plan}</span>
-            <span className="text-[12px] font-bold text-text">{amount}</span>
-            <div className="w-[14px] h-[14px] rounded-full bg-[#22C55E] flex items-center justify-center flex-shrink-0">
-              <CheckCircle2 size={8} strokeWidth={2} className="text-white" />
-            </div>
-          </div>
-        ))}
+      {/* Body — payments fly in as notifications + revenue chart grows */}
+      <div className="p-[11px] flex flex-col gap-[10px]">
+        <PaymentsDemo embedded active={active} />
         {/* Stripe badge */}
-        <div className="flex items-center justify-center gap-[5px] text-[10.5px] text-text-faint pt-[3px]">
+        <div className="flex items-center justify-center gap-[5px] text-[10.5px] text-text-faint">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <rect width="12" height="12" rx="2.5" fill="#635BFF" />
             <path d="M6 2.5c-1.2 0-1.8.6-1.8 1.4 0 1.9 3 1.3 3 2.6 0 .6-.5 1-1.3 1-.7 0-1.4-.3-1.8-.8L3.4 8c.5.5 1.4.9 2.4.9 1.4 0 2.2-.7 2.2-1.7 0-1.8-3-1.3-3-2.5 0-.5.4-.9 1.1-.9.6 0 1.1.3 1.5.6l.6-.8C8.8 3.1 7.9 2.5 6 2.5z" fill="#fff" />
@@ -365,7 +253,7 @@ function StatePayments({ step }: { step: StepData }) {
   )
 }
 
-function StateCourses({ step }: { step: StepData }) {
+function StateCourses({ step, active }: { step: StepData; active: boolean }) {
   const tags = step.tags ?? []
   return (
     <div className="flex flex-col">
@@ -375,49 +263,9 @@ function StateCourses({ step }: { step: StepData }) {
           {step.preview?.barChip}
         </span>
       </div>
-      <div className="p-[11px] flex flex-col gap-[6px]">
-        {/* Module 1 label */}
-        <div className="text-[10px] font-bold tracking-[0.05em] uppercase text-text-faint px-[2px] pt-[3px] pb-[1px]">
-          MODULE 1 — Foundations
-        </div>
-        {/* Done lessons */}
-        <div className="flex items-center gap-[7px] px-2 py-[6px] rounded-lg text-[11.5px] text-text-muted">
-          <CheckCircle2 size={12} strokeWidth={1.75} className="text-text-faint flex-shrink-0" />
-          <span>Lesson 1: Macros explained</span>
-        </div>
-        <div className="flex items-center gap-[7px] px-2 py-[6px] rounded-lg text-[11.5px] text-text-muted">
-          <CheckCircle2 size={12} strokeWidth={1.75} className="text-text-faint flex-shrink-0" />
-          <span>Lesson 2: Calorie tracking</span>
-        </div>
-        {/* Active lesson */}
-        <div className="flex items-center gap-[7px] px-2 py-[6px] rounded-lg text-[11.5px] font-semibold text-text bg-purple-light border border-[rgba(138,50,224,0.22)]">
-          <span className="text-[12px] text-purple flex-shrink-0">▶</span>
-          <span>Lesson 3: Meal timing</span>
-        </div>
-        {/* Module 2 label */}
-        <div className="text-[10px] font-bold tracking-[0.05em] uppercase text-text-faint px-[2px] pt-[3px] pb-[1px]">
-          MODULE 2 — Advanced
-        </div>
-        {/* Locked lessons */}
-        <div className="flex items-center gap-[7px] px-2 py-[6px] rounded-lg text-[11.5px] text-text-faint">
-          <Lock size={11} strokeWidth={1.75} className="flex-shrink-0" />
-          <span>Lesson 4: Supplements</span>
-        </div>
-        <div className="flex items-center gap-[7px] px-2 py-[6px] rounded-lg text-[11.5px] text-text-faint">
-          <Lock size={11} strokeWidth={1.75} className="flex-shrink-0" />
-          <span>Lesson 5: Periodization</span>
-        </div>
-        {/* Content type buttons */}
-        <div className="flex gap-[5px] pt-[3px]">
-          {['▶ Video', '📄 PDF', '❓ Quiz'].map((btn) => (
-            <div
-              key={btn}
-              className="flex-1 px-1 py-[6px] rounded-lg text-center text-[11px] font-semibold bg-surface border border-border text-text-muted"
-            >
-              {btn}
-            </div>
-          ))}
-        </div>
+      {/* Body — Skool-style course builder assembling the curriculum */}
+      <div className="p-[11px]">
+        <CourseBuilderDemo embedded active={active} />
       </div>
       <div className="flex flex-wrap gap-[5px] px-3 py-[9px] border-t border-border flex-shrink-0">
         {tags.map((tag) => (
@@ -435,16 +283,18 @@ function StateCourses({ step }: { step: StepData }) {
 function PreviewPanel({
   id,
   step,
+  active,
 }: {
   id: StepId
   step: StepData
+  active: boolean
 }) {
   switch (id) {
-    case 'workout':    return <StateWorkout    step={step} />
-    case 'community':  return <StateCommunity  step={step} />
-    case 'messaging':  return <StateMessaging  step={step} />
-    case 'payments':   return <StatePayments   step={step} />
-    case 'courses':    return <StateCourses    step={step} />
+    case 'workout':    return <StateWorkout    step={step} active={active} />
+    case 'community':  return <StateCommunity  step={step} active={active} />
+    case 'messaging':  return <StateMessaging  step={step} active={active} />
+    case 'payments':   return <StatePayments   step={step} active={active} />
+    case 'courses':    return <StateCourses    step={step} active={active} />
   }
 }
 
@@ -455,6 +305,12 @@ export function Platform({ data }: { data: PlatformData }) {
 
   const steps = data.steps ?? []
   const [active, setActive] = useState(0)
+
+  // Auto-advance + progress only run while the section is on screen. The
+  // section is tall, so use 'some' (any part visible) — a fractional `amount`
+  // can be unreachable for elements taller than the viewport.
+  const sectionRef = useRef<HTMLElement>(null)
+  const inView = useInView(sectionRef, { amount: 'some' })
 
   // Click handler — jump to a step immediately
   const activate = useCallback((idx: number) => {
@@ -488,17 +344,19 @@ export function Platform({ data }: { data: PlatformData }) {
     ease: [0.32, 0.72, 0, 1] as const,
   }
 
-  // Auto-advance: re-arm on every `active` change; skip entirely when reduced motion
+  // Auto-advance: re-arm on every `active` change; skip when reduced motion or
+  // when the section is scrolled out of view.
   useEffect(() => {
-    if (reducedMotion) return
+    if (reducedMotion || !inView) return
     const id = setTimeout(() => {
       setActive((cur) => (cur + 1) % steps.length)
     }, DURATION_MS)
     return () => clearTimeout(id)
-  }, [active, reducedMotion, steps.length])
+  }, [active, reducedMotion, steps.length, inView])
 
   return (
     <section
+      ref={sectionRef}
       id="platform"
       aria-label={data.ariaLabel ?? ''}
       className="bg-surface-2 border-t border-border py-[var(--section-pad-y)]"
@@ -633,7 +491,7 @@ export function Platform({ data }: { data: PlatformData }) {
                     )}
 
                     {/* Progress bar */}
-                    <ProgressBar active={isActive} reducedMotion={reducedMotion} />
+                    <ProgressBar active={isActive} reducedMotion={reducedMotion} inView={inView} />
                   </div>
                 </button>
               )
@@ -672,7 +530,7 @@ export function Platform({ data }: { data: PlatformData }) {
                         : 'opacity-0 translate-y-[10px] scale-[0.985] blur-[6px]',
                     )}
                   >
-                    <PreviewPanel id={stepId} step={step} />
+                    <PreviewPanel id={stepId} step={step} active={isActive} />
                   </div>
                 )
               })}

@@ -13,6 +13,11 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import { WorkoutBuilderDemo } from '@/components/sections/WorkoutBuilderDemo'
+import { CommunityFeedDemo } from '@/components/sections/CommunityFeedDemo'
+import { MessagingDemo } from '@/components/sections/MessagingDemo'
+import { PaymentsDemo } from '@/components/sections/PaymentsDemo'
+import { CourseBuilderDemo } from '@/components/sections/CourseBuilderDemo'
 import type { FeaturesData } from '@/lib/content'
 
 // ── Tab metadata (icon, id, screenshot asset) ────────────────────────────────
@@ -323,23 +328,47 @@ export function Features({ data }: { data: FeaturesData }) {
                 </div>
 
                 {/* ── Preview column ── */}
-                {activeTabAsset && (
-                  <div
-                    className={cn(
-                      'rounded-xl overflow-hidden bg-surface-2 border border-border',
-                      'flex items-center justify-center',
-                      'min-h-[300px] max-md:min-h-[220px]',
-                    )}
-                  >
-                    <Image
-                      src={activeTabAsset.src}
-                      alt={activeTabAsset.alt}
-                      width={activeTabAsset.imgWidth}
-                      height={activeTabAsset.imgHeight}
-                      className="w-full h-full object-contain object-center max-h-[360px] block"
-                      loading="lazy"
-                    />
+                {/* Workout + Community tabs get animated demos; the other tabs
+                    keep their static screenshot. */}
+                {activeTabId === 'workout' ? (
+                  <div className="rounded-xl border border-border bg-surface-2 min-h-[360px] max-md:min-h-[320px] overflow-hidden">
+                    <WorkoutBuilderDemo />
                   </div>
+                ) : activeTabId === 'community' ? (
+                  <div className="flex items-center rounded-xl border border-border bg-surface-2 min-h-[360px] max-md:min-h-[320px] overflow-hidden p-4">
+                    <CommunityFeedDemo embedded />
+                  </div>
+                ) : activeTabId === 'messaging' ? (
+                  <div className="flex items-center rounded-xl border border-border bg-surface-2 min-h-[360px] max-md:min-h-[320px] overflow-hidden p-4">
+                    <MessagingDemo embedded />
+                  </div>
+                ) : activeTabId === 'payments' ? (
+                  <div className="flex items-center rounded-xl border border-border bg-surface-2 min-h-[360px] max-md:min-h-[320px] overflow-hidden p-4">
+                    <PaymentsDemo embedded />
+                  </div>
+                ) : activeTabId === 'courses' ? (
+                  <div className="flex items-center rounded-xl border border-border bg-surface-2 min-h-[360px] max-md:min-h-[320px] overflow-hidden p-4">
+                    <CourseBuilderDemo embedded />
+                  </div>
+                ) : (
+                  activeTabAsset && (
+                    <div
+                      className={cn(
+                        'rounded-xl overflow-hidden bg-surface-2 border border-border',
+                        'flex items-center justify-center',
+                        'min-h-[300px] max-md:min-h-[220px]',
+                      )}
+                    >
+                      <Image
+                        src={activeTabAsset.src}
+                        alt={activeTabAsset.alt}
+                        width={activeTabAsset.imgWidth}
+                        height={activeTabAsset.imgHeight}
+                        className="w-full h-full object-contain object-center max-h-[360px] block"
+                        loading="lazy"
+                      />
+                    </div>
+                  )
                 )}
               </motion.div>
             )}
