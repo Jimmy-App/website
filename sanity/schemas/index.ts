@@ -23,7 +23,6 @@ import { navigation } from './documents/navigation'
 import { footer } from './documents/footer'
 import { pricing } from './documents/pricing'
 import { pricingFeatures } from './documents/pricingFeatures'
-import { author } from './documents/author'
 import { post } from './documents/post'
 
 export const schemaTypes = [
@@ -53,6 +52,5 @@ export const schemaTypes = [
   footer,
   pricing,
   pricingFeatures,
-  author,
   post,
 ]

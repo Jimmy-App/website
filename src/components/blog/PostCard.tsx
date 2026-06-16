@@ -40,20 +40,6 @@ export type CardPost = {
   coverUrl?: string | null
 }
 
-export function Avatar({ initials, className }: { initials: string; className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={cn(
-        'grid size-[26px] flex-none place-items-center rounded-full bg-purple-light text-[10px] font-bold text-purple ring-1 ring-purple-border',
-        className,
-      )}
-    >
-      {initials}
-    </span>
-  )
-}
-
 function CatPill({ category, label }: { category: CategoryKey; label: string }) {
   const { pill } = CATEGORY_META[category]
   return (

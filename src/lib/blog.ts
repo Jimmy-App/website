@@ -17,14 +17,6 @@ export const CATEGORY_ORDER: CategoryKey[] = [
 
 export type PostBody = NonNullable<NonNullable<POST_QUERY_RESULT>['body']>
 
-/** Avatar initials from a display name, e.g. "Jordan Maris" → "JM". */
-export function initialsOf(name: string | null | undefined, explicit?: string | null): string {
-  if (explicit && explicit.trim()) return explicit.trim().slice(0, 3).toUpperCase()
-  const words = (name ?? '').trim().split(/\s+/).filter(Boolean)
-  if (!words.length) return '·'
-  return (words[0][0] + (words[1]?.[0] ?? '')).toUpperCase()
-}
-
 /** Stable, URL-safe id for a heading (used for in-page anchors + TOC). */
 export function slugifyHeading(text: string): string {
   return text

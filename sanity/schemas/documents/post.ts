@@ -31,12 +31,6 @@ export const post = defineType({
       options: { list: CATEGORIES, layout: 'dropdown' },
       validation: (R) => R.required(),
     }),
-    defineField({
-      name: 'author',
-      type: 'reference',
-      to: [{ type: 'author' }],
-      validation: (R) => R.required(),
-    }),
     defineField({ name: 'excerpt', type: 'text', rows: 3, validation: (R) => R.required() }),
     defineField({ name: 'lead', type: 'text', rows: 3, description: 'Longer dek shown on the article head.' }),
     defineField({ name: 'publishedAt', type: 'datetime', validation: (R) => R.required() }),
@@ -102,11 +96,7 @@ export const post = defineType({
     },
   ],
   preview: {
-    select: { title: 'title', category: 'category', media: 'coverImage', author: 'author.name' },
-    prepare: ({ title, category, media, author }) => ({
-      title,
-      subtitle: [category, author].filter(Boolean).join(' · '),
-      media,
-    }),
+    select: { title: 'title', category: 'category', media: 'coverImage' },
+    prepare: ({ title, category, media }) => ({ title, subtitle: category, media }),
   },
 })

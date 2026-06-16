@@ -97,14 +97,6 @@ const GENERIC = [
   { type: 'p', text: 'Progress tracking, structured client comms and a Skool-style community feed live in one place — so the system runs whether or not you’re thinking about it that week.' },
 ]
 
-const authors = [
-  { _id: 'author-jordan', name: 'Jordan Maris', role: 'Head of Coach Success at Jimmy', initials: 'JM', bio: 'Jordan spends his weeks deep in the workflows of coaches building real businesses — and writes up what’s actually working on the gym floor.' },
-  { _id: 'author-sam', name: 'Sam Adeyemi', role: 'Coaching editor at Jimmy', initials: 'SA' },
-  { _id: 'author-riley', name: 'Riley Khan', role: 'Business editor at Jimmy', initials: 'RK' },
-  { _id: 'author-team', name: 'Team Jimmy', role: 'Product team', initials: 'TJ' },
-].map((a) => ({ ...a, _type: 'author' }))
-
-const ref = (id) => ({ _type: 'reference', _ref: id })
 
 const posts = [
   { slug: 'marta-halved-churn-90-days', category: 'stories', author: 'author-jordan', date: '2026-06-11T09:00:00Z', readMin: 10, featured: true,
@@ -142,7 +134,6 @@ const posts = [
   title: p.title,
   slug: { _type: 'slug', current: p.slug },
   category: p.category,
-  author: ref(p.author),
   excerpt: p.excerpt,
   ...(p.lead ? { lead: p.lead } : {}),
   publishedAt: p.date,
@@ -163,8 +154,6 @@ async function mutate(docs) {
   return json
 }
 
-const r1 = await mutate(authors)
-console.log(`✓ authors: ${r1.results.length}`)
 const r2 = await mutate(posts)
 console.log(`✓ posts: ${r2.results.length}`)
 console.log('done')

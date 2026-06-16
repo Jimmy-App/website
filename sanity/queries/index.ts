@@ -118,8 +118,7 @@ const POST_CARD = `
   readMin,
   featured,
   pick,
-  coverImage,
-  author->{ name, role, initials }
+  coverImage
 `
 
 export const POSTS_QUERY = groq`
@@ -133,7 +132,6 @@ export const POST_QUERY = groq`
     ${POST_CARD},
     lead,
     coverImage{ ..., alt },
-    author->{ name, role, bio, initials, image },
     body[]{
       ...,
       _type == "image" => { ..., asset, alt, caption }

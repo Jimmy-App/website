@@ -20,13 +20,6 @@ export type Preview = {
   barChip?: string;
 };
 
-export type AuthorReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "author";
-};
-
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -43,7 +36,6 @@ export type Post = {
   title?: string;
   slug?: Slug;
   category?: "stories" | "retention" | "training" | "business" | "product";
-  author?: AuthorReference;
   excerpt?: string;
   lead?: string;
   publishedAt?: string;
@@ -130,25 +122,6 @@ export type Slug = {
   _type: "slug";
   current?: string;
   source?: string;
-};
-
-export type Author = {
-  _id: string;
-  _type: "author";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  role?: string;
-  bio?: string;
-  initials?: string;
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
 };
 
 export type PricingFeatures = {
@@ -1038,14 +1011,12 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | Preview
-  | AuthorReference
   | SanityImageAssetReference
   | Post
   | Seo
   | SanityImageCrop
   | SanityImageHotspot
   | Slug
-  | Author
   | PricingFeatures
   | PricingFeaturesReference
   | Pricing
@@ -1634,7 +1605,7 @@ export type FOOTER_QUERY_RESULT = {
 
 // Source: sanity/queries/index.ts
 // Variable: POSTS_QUERY
-// Query: *[_type == "post" && defined(slug.current)]|order(publishedAt desc){      "slug": slug.current,  category,  title,  excerpt,  publishedAt,  readMin,  featured,  pick,  coverImage,  author->{ name, role, initials }  }
+// Query: *[_type == "post" && defined(slug.current)]|order(publishedAt desc){      "slug": slug.current,  category,  title,  excerpt,  publishedAt,  readMin,  featured,  pick,  coverImage  }
 export type POSTS_QUERY_RESULT = Array<{
   slug: string | null;
   category:
@@ -1658,16 +1629,11 @@ export type POSTS_QUERY_RESULT = Array<{
     alt?: string;
     _type: "image";
   } | null;
-  author: {
-    name: string | null;
-    role: string | null;
-    initials: string | null;
-  } | null;
 }>;
 
 // Source: sanity/queries/index.ts
 // Variable: POST_QUERY
-// Query: *[_type == "post" && slug.current == $slug][0]{      "slug": slug.current,  category,  title,  excerpt,  publishedAt,  readMin,  featured,  pick,  coverImage,  author->{ name, role, initials },    lead,    coverImage{ ..., alt },    author->{ name, role, bio, initials, image },    body[]{      ...,      _type == "image" => { ..., asset, alt, caption }    }  }
+// Query: *[_type == "post" && slug.current == $slug][0]{      "slug": slug.current,  category,  title,  excerpt,  publishedAt,  readMin,  featured,  pick,  coverImage,    lead,    coverImage{ ..., alt },    body[]{      ...,      _type == "image" => { ..., asset, alt, caption }    }  }
 export type POST_QUERY_RESULT = {
   slug: string | null;
   category:
@@ -1690,19 +1656,6 @@ export type POST_QUERY_RESULT = {
     crop?: SanityImageCrop;
     alt: string | null;
     _type: "image";
-  } | null;
-  author: {
-    name: string | null;
-    role: string | null;
-    bio: string | null;
-    initials: string | null;
-    image: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
   } | null;
   lead: string | null;
   body: Array<
@@ -1769,8 +1722,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
     '\n  *[_type == "navigation" && language == $locale][0]{\n    featuresLabel,\n    featuresForCoaches,\n    featuresForMembers,\n    featuresItems[]{ key, title, subtitle, href },\n    featuresCta,\n    resourcesLabel,\n    resourcesContent,\n    resourcesCommunity,\n    resourcesItems[]{ key, title, subtitle, href },\n    pricing,\n    affiliate,\n    newBadge,\n    login,\n    getStarted,\n    getStartedShort,\n    openMenu,\n    close,\n    menu\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "footer" && language == $locale][0]{\n    taglinePrefix,\n    taglineEmphasis,\n    productHeading,\n    productLinks[]{ label, href, external },\n    companyHeading,\n    companyLinks[]{ label, href, external },\n    legalHeading,\n    legalLinks[]{ label, href, external },\n    copy\n  }\n': FOOTER_QUERY_RESULT;
-    '\n  *[_type == "post" && defined(slug.current)]|order(publishedAt desc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage,\n  author->{ name, role, initials }\n\n  }\n': POSTS_QUERY_RESULT;
-    '\n  *[_type == "post" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage,\n  author->{ name, role, initials }\n,\n    lead,\n    coverImage{ ..., alt },\n    author->{ name, role, bio, initials, image },\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption }\n    }\n  }\n': POST_QUERY_RESULT;
+    '\n  *[_type == "post" && defined(slug.current)]|order(publishedAt desc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage\n\n  }\n': POSTS_QUERY_RESULT;
+    '\n  *[_type == "post" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage\n,\n    lead,\n    coverImage{ ..., alt },\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption }\n    }\n  }\n': POST_QUERY_RESULT;
     '\n  *[_type == "post" && defined(slug.current)]{ "slug": slug.current }\n': POST_SLUGS_QUERY_RESULT;
   }
 }
