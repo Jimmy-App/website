@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { ArrowRight, Search, SearchX, X } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
@@ -10,10 +11,7 @@ import { BlogCover } from './BlogCover'
 import { PostCard, type CardPost } from './PostCard'
 
 const CATS: ('all' | CategoryKey)[] = ['all', 'stories', 'retention', 'training', 'business', 'product']
-
-// CSS entrance delay — plays via the `.blog-reveal` keyframe (no JS needed), so
-// content is visible immediately and the page stays light to hydrate.
-const rise = (d = 0): CSSProperties => ({ animationDelay: `${Math.round(d * 1000)}ms` })
+const EASE = [0.16, 1, 0.3, 1] as const
 
 export function BlogIndex({
   featured,
@@ -25,6 +23,7 @@ export function BlogIndex({
   posts: CardPost[] // non-featured
 }) {
   const t = useTranslations('blog')
+  const reduce = useReducedMotion() ?? false
   const [active, setActive] = useState<'all' | CategoryKey>('all')
   const [query, setQuery] = useState('')
   const [focused, setFocused] = useState(false)
@@ -60,6 +59,13 @@ export function BlogIndex({
   const searching = q.length > 0
   const showMagazine = active === 'all' && !searching
 
+  const reveal = (d = 0) => ({
+    initial: reduce ? undefined : { opacity: 0, y: 18 },
+    whileInView: reduce ? undefined : { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: { duration: 0.55, ease: EASE, delay: d },
+  })
+
   return (
     <>
       {/* ── Hero ── */}
@@ -70,29 +76,29 @@ export function BlogIndex({
           style={{ background: 'radial-gradient(circle, rgba(138,50,224,0.18), transparent 70%)' }}
         />
         <div className="relative mx-auto max-w-[1120px] px-[clamp(20px,5vw,40px)] pb-[clamp(2.5rem,5vw,3.5rem)] pt-[calc(var(--navbar-height)+clamp(1.75rem,5vw,3rem))]">
-          <span
-            style={rise(0)}
-            className="blog-reveal eyebrow mb-4 inline-flex items-center gap-[6px] text-purple before:size-[5px] before:rounded-full before:bg-purple before:content-['']"
+          <motion.span
+            {...reveal(0)}
+            className="eyebrow mb-4 inline-flex items-center gap-[6px] text-purple before:size-[5px] before:rounded-full before:bg-purple before:content-['']"
           >
             {t('eyebrow')}
-          </span>
-          <h1
-            style={rise(0.06)}
-            className="blog-reveal max-w-[18ch] font-display text-[clamp(2.4rem,5.5vw,4rem)] font-extrabold leading-[1.04] tracking-[var(--tracking-display)] text-text text-balance"
+          </motion.span>
+          <motion.h1
+            {...reveal(0.06)}
+            className="max-w-[18ch] font-display text-[clamp(2.4rem,5.5vw,4rem)] font-extrabold leading-[1.04] tracking-[var(--tracking-display)] text-text text-balance"
           >
             {t('titlePrefix')}
             <span className="text-purple">{t('titleAccent')}</span>
             {t('titleSuffix')}
-          </h1>
-          <p
-            style={rise(0.12)}
-            className="blog-reveal mt-5 max-w-[60ch] text-[clamp(1rem,1.6vw,1.15rem)] leading-[1.6] text-text-muted"
+          </motion.h1>
+          <motion.p
+            {...reveal(0.12)}
+            className="mt-5 max-w-[60ch] text-[clamp(1rem,1.6vw,1.15rem)] leading-[1.6] text-text-muted"
           >
             {t('subtitle')}
-          </p>
+          </motion.p>
 
           {/* Search */}
-          <div style={rise(0.18)} className="blog-reveal mt-7 max-w-[460px]">
+          <motion.div {...reveal(0.18)} className="mt-7 max-w-[460px]">
             <div
               className={cn(
                 'group flex h-[52px] items-center gap-2.5 rounded-full border bg-surface pl-[18px] pr-2',
@@ -121,35 +127,47 @@ export function BlogIndex({
                 aria-label={t('searchPlaceholder')}
                 className="h-full flex-1 bg-transparent text-[15px] text-text outline-none placeholder:text-text-faint [&::-webkit-search-cancel-button]:appearance-none"
               />
-              {query ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setQuery('')
-                    inputRef.current?.focus()
-                  }}
-                  aria-label={t('clearSearch')}
-                  className="grid size-8 shrink-0 place-items-center rounded-full text-text-muted transition-colors duration-150 hover:bg-surface-2 hover:text-text active:scale-90"
-                >
-                  <X className="size-[17px]" strokeWidth={2} />
-                </button>
-              ) : (
-                <kbd
-                  aria-hidden
-                  className="mr-1.5 hidden select-none rounded-[7px] border border-border bg-surface-2 px-2 py-[3px] font-body text-[12px] font-semibold leading-none text-text-faint sm:block"
-                >
-                  /
-                </kbd>
-              )}
+              <AnimatePresence mode="wait" initial={false}>
+                {query ? (
+                  <motion.button
+                    key="clear"
+                    type="button"
+                    onClick={() => {
+                      setQuery('')
+                      inputRef.current?.focus()
+                    }}
+                    aria-label={t('clearSearch')}
+                    initial={reduce ? false : { opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={reduce ? undefined : { opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.14, ease: EASE }}
+                    className="grid size-8 shrink-0 place-items-center rounded-full text-text-muted transition-colors duration-150 hover:bg-surface-2 hover:text-text active:scale-90"
+                  >
+                    <X className="size-[17px]" strokeWidth={2} />
+                  </motion.button>
+                ) : (
+                  <motion.kbd
+                    key="hint"
+                    aria-hidden
+                    initial={reduce ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={reduce ? undefined : { opacity: 0 }}
+                    transition={{ duration: 0.14 }}
+                    className="mr-1.5 hidden select-none rounded-[7px] border border-border bg-surface-2 px-2 py-[3px] font-body text-[12px] font-semibold leading-none text-text-faint sm:block"
+                  >
+                    /
+                  </motion.kbd>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
           {/* Filter chips */}
-          <div
-            style={rise(0.24)}
+          <motion.div
+            {...reveal(0.24)}
             role="group"
             aria-label={t('eyebrow')}
-            className="blog-reveal mt-4 flex flex-wrap gap-2"
+            className="mt-4 flex flex-wrap gap-2"
           >
             {CATS.map((c) => {
               const isActive = c === active
@@ -171,7 +189,7 @@ export function BlogIndex({
                 </button>
               )
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -181,26 +199,26 @@ export function BlogIndex({
             {/* Featured + picks */}
             <SectionHeading>{t('featured')}</SectionHeading>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.5fr_1fr]">
-              <div className="blog-reveal" style={rise(0)}>
+              <motion.div {...reveal(0)}>
                 <FeaturedCard
                   post={featured}
                   catLabel={catLabel(featured.category)}
                   minLabel={minLabel(featured)}
                   readLabel={t('readStory')}
                 />
-              </div>
+              </motion.div>
               <aside className="flex flex-col gap-2.5" aria-label={t('featured')}>
                 {picks.map((p, i) => (
-                  <div key={p.slug} className="blog-reveal" style={rise(0.06 + i * 0.06)}>
+                  <motion.div key={p.slug} {...reveal(0.06 + i * 0.06)}>
                     <PickItem post={p} catLabel={catLabel(p.category)} minLabel={minLabel(p)} />
-                  </div>
+                  </motion.div>
                 ))}
               </aside>
             </div>
 
             {/* Latest grid */}
             <SectionHeading className="mt-[clamp(2.5rem,5vw,4rem)]">{t('latest')}</SectionHeading>
-            <CardGrid posts={posts} catLabel={catLabel} minLabel={minLabel} animate />
+            <CardGrid posts={posts} catLabel={catLabel} minLabel={minLabel} reveal={reveal} />
           </>
         ) : (
           <>
@@ -235,6 +253,7 @@ export function BlogIndex({
                 posts={results}
                 catLabel={catLabel}
                 minLabel={minLabel}
+                reveal={reveal}
                 query={searching ? q : undefined}
               />
             ) : (
@@ -242,6 +261,7 @@ export function BlogIndex({
                 title={t('noResultsTitle')}
                 body={t('noResultsBody')}
                 clearLabel={t('clearAll')}
+                reduce={reduce}
                 onClear={() => {
                   setQuery('')
                   setActive('all')
@@ -272,25 +292,21 @@ function CardGrid({
   posts,
   catLabel,
   minLabel,
+  reveal,
   query,
-  animate,
 }: {
   posts: CardPost[]
   catLabel: (c: CategoryKey) => string
   minLabel: (p: CardPost) => string
+  reveal: (d?: number) => object
   query?: string
-  animate?: boolean
 }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {posts.map((p, i) => (
-        <div
-          key={p.slug}
-          className={animate ? 'blog-reveal' : undefined}
-          style={animate ? rise((i % 3) * 0.06) : undefined}
-        >
+        <motion.div key={p.slug} {...reveal((i % 3) * 0.06)}>
           <PostCard post={p} catLabel={catLabel(p.category)} minLabel={minLabel(p)} query={query} />
-        </div>
+        </motion.div>
       ))}
     </div>
   )
@@ -301,14 +317,21 @@ function EmptyState({
   body,
   clearLabel,
   onClear,
+  reduce,
 }: {
   title: string
   body: string
   clearLabel: string
   onClear: () => void
+  reduce: boolean
 }) {
   return (
-    <div className="blog-reveal mx-auto flex max-w-[440px] flex-col items-center rounded-[20px] border border-dashed border-border bg-surface/50 px-8 py-[clamp(40px,7vw,64px)] text-center">
+    <motion.div
+      initial={reduce ? false : { opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: EASE }}
+      className="mx-auto flex max-w-[440px] flex-col items-center rounded-[20px] border border-dashed border-border bg-surface/50 px-8 py-[clamp(40px,7vw,64px)] text-center"
+    >
       <span className="mb-4 grid size-14 place-items-center rounded-full bg-purple-light text-purple">
         <SearchX className="size-6" strokeWidth={1.8} />
       </span>
@@ -321,7 +344,7 @@ function EmptyState({
       >
         {clearLabel}
       </button>
-    </div>
+    </motion.div>
   )
 }
 

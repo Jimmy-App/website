@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -8,11 +9,18 @@ import { cn } from '@/lib/utils'
 /** "The Locker Room" newsletter block. Visual-only for now (no backend). */
 export function BlogNewsletter() {
   const t = useTranslations('blog.newsletter')
+  const reduce = useReducedMotion() ?? false
   const [done, setDone] = useState(false)
 
   return (
     <section className="px-[clamp(20px,5vw,40px)] pb-[clamp(3rem,6vw,5rem)]">
-      <div className="blog-reveal relative mx-auto max-w-[760px] overflow-hidden rounded-[24px] border border-purple-border bg-surface px-[clamp(24px,4vw,48px)] py-[clamp(28px,4vw,44px)] text-center shadow-[var(--shadow-md)]">
+      <motion.div
+        initial={reduce ? undefined : { opacity: 0, y: 20 }}
+        whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative mx-auto max-w-[760px] overflow-hidden rounded-[24px] border border-purple-border bg-surface px-[clamp(24px,4vw,48px)] py-[clamp(28px,4vw,44px)] text-center shadow-[var(--shadow-md)]"
+      >
         <div
           aria-hidden
           className="pointer-events-none absolute -top-[40%] left-1/2 h-[300px] w-[560px] -translate-x-1/2 rounded-full opacity-70 blur-[80px]"
@@ -65,7 +73,7 @@ export function BlogNewsletter() {
 
           <p className="mt-3.5 text-[12px] text-text-faint">{t('fine')}</p>
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }
