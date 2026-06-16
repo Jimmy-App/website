@@ -414,13 +414,16 @@ export default function WhyJimmy({ data }: { data: WhyData }) {
           </div>
 
           {/* ── RIGHT: Content ──────────────────────────────────── */}
-          <div className="flex flex-col">
+          {/* @container: size the heading to the COLUMN width (cqi), not the
+              viewport — so each line of the headline always fits on one line and
+              the copy lands on the intended 2 lines regardless of breakpoint. */}
+          <div className="@container flex flex-col">
 
             {/* Heading with inline logo mark */}
             <h2
               className={cn(
                 'font-display font-extrabold text-text',
-                'text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.06] tracking-[-0.035em]',
+                'text-[clamp(1.8rem,7cqi,3.4rem)] leading-[1.06] tracking-[-0.035em]',
                 'mb-7',
               )}
             >
