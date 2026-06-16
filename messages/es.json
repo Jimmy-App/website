@@ -2,6 +2,34 @@
   "errors": {
     "notFound": "La página que buscas no existe."
   },
+  "guides": {
+    "eyebrow": "Jimmy Guides",
+    "title": "Todo lo que necesitas para hacer coaching con confianza.",
+    "subtitle": "Guías paso a paso para configurar tu plataforma, programar entrenamientos, hacer crecer tu comunidad y cobrar — todo en un solo lugar.",
+    "searchPlaceholder": "Buscar guías…",
+    "browseGuides": "Explorar guías",
+    "noResults": "Ninguna guía coincide.",
+    "onThisPage": "En esta página",
+    "reading": "Leyendo",
+    "wasHelpful": "¿Te resultó útil esta guía?",
+    "yes": "Sí",
+    "no": "No",
+    "thanks": "¡Gracias por tu opinión!",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "popularTitle": "Guías populares",
+    "breadcrumb": "Guías",
+    "level": {
+      "Beginner": "Principiante",
+      "Intermediate": "Intermedio",
+      "Advanced": "Avanzado"
+    },
+    "minRead": "{n} min de lectura",
+    "updated": "Actualizado el {date}",
+    "ctaTitle": "¿Listo para construir tu negocio de coaching?",
+    "ctaBody": "Empieza gratis — tu app, tus clientes, tus ingresos.",
+    "ctaBtn": "Empezar gratis"
+  },
   "blog": {
     "eyebrow": "El blog de Jimmy",
     "titlePrefix": "Playbooks para coaches que conservan a sus ",

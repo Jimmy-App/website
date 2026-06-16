@@ -94,7 +94,7 @@ const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
 
 // Resource items that map to a real (locale-aware) app route. Others stay as
 // their Sanity href (placeholder "#" until those pages exist).
-const RESOURCE_ROUTES: Record<string, string> = { blog: '/blog' }
+const RESOURCE_ROUTES: Record<string, string> = { blog: '/blog', guides: '/guides' }
 const resourceHref = (key?: string | null): string | undefined => RESOURCE_ROUTES[key ?? '']
 
 type ResItem = { key?: string | null; href?: string | null; title?: string | null }

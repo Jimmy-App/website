@@ -142,3 +142,49 @@ export const POST_QUERY = groq`
 export const POST_SLUGS_QUERY = groq`
   *[_type == "post" && defined(slug.current)]{ "slug": slug.current }
 `
+
+// ── Guides ───────────────────────────────────────────────────────────────────
+// Guides are not localized (English content on all locales); the page chrome is
+// localized via next-intl. Card projection omits `body` to keep the list light.
+const GUIDE_CARD = `
+  "slug": slug.current,
+  category,
+  title,
+  lead,
+  level,
+  readMin,
+  updatedAt,
+  popular,
+  order
+`
+
+export const GUIDES_QUERY = groq`
+  *[_type == "guide" && defined(slug.current)] | order(category asc, order asc){
+    ${GUIDE_CARD}
+  }
+`
+
+export const GUIDE_QUERY = groq`
+  *[_type == "guide" && slug.current == $slug][0]{
+    ${GUIDE_CARD},
+    seo,
+    body[]{
+      ...,
+      _type == "image" => { ..., asset, alt, caption },
+      _type == "guideSteps" => {
+        ...,
+        items[]{
+          title,
+          body[]{
+            ...,
+            _type == "image" => { ..., asset, alt, caption }
+          }
+        }
+      }
+    }
+  }
+`
+
+export const GUIDE_SLUGS_QUERY = groq`
+  *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }
+`

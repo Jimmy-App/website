@@ -2,6 +2,34 @@
   "errors": {
     "notFound": "La page que tu recherches n’existe pas."
   },
+  "guides": {
+    "eyebrow": "Jimmy Guides",
+    "title": "Tout ce dont tu as besoin pour coacher avec confiance.",
+    "subtitle": "Des guides pas-à-pas pour configurer ta plateforme, programmer, développer ta communauté et te faire payer — tout au même endroit.",
+    "searchPlaceholder": "Rechercher des guides…",
+    "browseGuides": "Parcourir les guides",
+    "noResults": "Aucun guide ne correspond.",
+    "onThisPage": "Sur cette page",
+    "reading": "Lecture",
+    "wasHelpful": "Ce guide t'a-t-il été utile ?",
+    "yes": "Oui",
+    "no": "Non",
+    "thanks": "Merci pour ton retour !",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "popularTitle": "Guides populaires",
+    "breadcrumb": "Guides",
+    "level": {
+      "Beginner": "Débutant",
+      "Intermediate": "Intermédiaire",
+      "Advanced": "Avancé"
+    },
+    "minRead": "{n} min de lecture",
+    "updated": "Mis à jour le {date}",
+    "ctaTitle": "Prêt à construire ton activité de coaching ?",
+    "ctaBody": "Commence gratuitement — ton app, tes clients, tes revenus.",
+    "ctaBtn": "Commencer gratuitement"
+  },
   "blog": {
     "eyebrow": "Le blog Jimmy",
     "titlePrefix": "Des playbooks pour les coachs qui gardent leurs ",

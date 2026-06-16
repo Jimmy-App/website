@@ -27,6 +27,110 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type Guide = {
+  _id: string;
+  _type: "guide";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  category?:
+    | "getting-started"
+    | "branded-app"
+    | "programming"
+    | "community"
+    | "payments"
+    | "retention";
+  level?: "Beginner" | "Intermediate" | "Advanced";
+  readMin?: number;
+  updatedAt?: string;
+  lead?: string;
+  popular?: boolean;
+  order?: number;
+  body?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h2" | "h3";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | ({
+        _key: string;
+      } & GuideCallout)
+    | ({
+        _key: string;
+      } & Checklist)
+    | ({
+        _key: string;
+      } & GuideSteps)
+    | ({
+        _key: string;
+      } & GuideFaq)
+    | ({
+        _key: string;
+      } & GuideVideo)
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  seo?: Seo;
+};
+
+export type Seo = {
+  _type: "seo";
+  title?: string;
+  description?: string;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type Post = {
   _id: string;
   _type: "post";
@@ -87,41 +191,6 @@ export type Post = {
       }
   >;
   seo?: Seo;
-};
-
-export type Seo = {
-  _type: "seo";
-  title?: string;
-  description?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
 };
 
 export type PricingFeatures = {
@@ -196,6 +265,77 @@ export type PricingPlans = {
     } & PricingTier
   >;
   betaDiscountPct?: number;
+};
+
+export type GuideVideo = {
+  _type: "guideVideo";
+  label?: string;
+  duration?: string;
+  url?: string;
+};
+
+export type GuideFaq = {
+  _type: "guideFaq";
+  items?: Array<{
+    q?: string;
+    a?: string;
+    _type: "guideFaqItem";
+    _key: string;
+  }>;
+};
+
+export type GuideSteps = {
+  _type: "guideSteps";
+  items?: Array<{
+    title?: string;
+    body?: Array<
+      | {
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "normal" | "h3";
+          listItem?: "bullet";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }
+      | ({
+          _key: string;
+        } & GuideCallout)
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          caption?: string;
+          _type: "image";
+          _key: string;
+        }
+    >;
+    _type: "stepItem";
+    _key: string;
+  }>;
+};
+
+export type Checklist = {
+  _type: "checklist";
+  items?: Array<string>;
+};
+
+export type GuideCallout = {
+  _type: "guideCallout";
+  tone?: "note" | "tip" | "warn" | "success";
+  label?: string;
+  text?: string;
 };
 
 export type Pullquote = {
@@ -1012,16 +1152,22 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | Preview
   | SanityImageAssetReference
-  | Post
+  | Guide
   | Seo
   | SanityImageCrop
   | SanityImageHotspot
   | Slug
+  | Post
   | PricingFeatures
   | PricingFeaturesReference
   | Pricing
   | AffiliateSettings
   | PricingPlans
+  | GuideVideo
+  | GuideFaq
+  | GuideSteps
+  | Checklist
+  | GuideCallout
   | Pullquote
   | Callout
   | FaqItem
@@ -1710,6 +1856,161 @@ export type POST_SLUGS_QUERY_RESULT = Array<{
   slug: string | null;
 }>;
 
+// Source: sanity/queries/index.ts
+// Variable: GUIDES_QUERY
+// Query: *[_type == "guide" && defined(slug.current)] | order(category asc, order asc){      "slug": slug.current,  category,  title,  lead,  level,  readMin,  updatedAt,  popular,  order  }
+export type GUIDES_QUERY_RESULT = Array<{
+  slug: string | null;
+  category:
+    | "branded-app"
+    | "community"
+    | "getting-started"
+    | "payments"
+    | "programming"
+    | "retention"
+    | null;
+  title: string | null;
+  lead: string | null;
+  level: "Advanced" | "Beginner" | "Intermediate" | null;
+  readMin: number | null;
+  updatedAt: string | null;
+  popular: boolean | null;
+  order: number | null;
+}>;
+
+// Source: sanity/queries/index.ts
+// Variable: GUIDE_QUERY
+// Query: *[_type == "guide" && slug.current == $slug][0]{      "slug": slug.current,  category,  title,  lead,  level,  readMin,  updatedAt,  popular,  order,    seo,    body[]{      ...,      _type == "image" => { ..., asset, alt, caption },      _type == "guideSteps" => {        ...,        items[]{          title,          body[]{            ...,            _type == "image" => { ..., asset, alt, caption }          }        }      }    }  }
+export type GUIDE_QUERY_RESULT = {
+  slug: string | null;
+  category:
+    | "branded-app"
+    | "community"
+    | "getting-started"
+    | "payments"
+    | "programming"
+    | "retention"
+    | null;
+  title: string | null;
+  lead: string | null;
+  level: "Advanced" | "Beginner" | "Intermediate" | null;
+  readMin: number | null;
+  updatedAt: string | null;
+  popular: boolean | null;
+  order: number | null;
+  seo: Seo | null;
+  body: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "h2" | "h3" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "checklist";
+        items?: Array<string>;
+      }
+    | {
+        _key: string;
+        _type: "guideCallout";
+        tone?: "note" | "success" | "tip" | "warn";
+        label?: string;
+        text?: string;
+      }
+    | {
+        _key: string;
+        _type: "guideFaq";
+        items?: Array<{
+          q?: string;
+          a?: string;
+          _type: "guideFaqItem";
+          _key: string;
+        }>;
+      }
+    | {
+        _key: string;
+        _type: "guideSteps";
+        items: Array<{
+          title: string | null;
+          body: Array<
+            | {
+                children?: Array<{
+                  marks?: Array<string>;
+                  text?: string;
+                  _type: "span";
+                  _key: string;
+                }>;
+                style?: "h3" | "normal";
+                listItem?: "bullet";
+                markDefs?: Array<{
+                  href?: string;
+                  _type: "link";
+                  _key: string;
+                }>;
+                level?: number;
+                _type: "block";
+                _key: string;
+              }
+            | {
+                _key: string;
+                _type: "guideCallout";
+                tone?: "note" | "success" | "tip" | "warn";
+                label?: string;
+                text?: string;
+              }
+            | {
+                asset: SanityImageAssetReference | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                alt: string | null;
+                caption: string | null;
+                _type: "image";
+                _key: string;
+              }
+          > | null;
+        }> | null;
+      }
+    | {
+        _key: string;
+        _type: "guideVideo";
+        label?: string;
+        duration?: string;
+        url?: string;
+      }
+    | {
+        asset: SanityImageAssetReference | null;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt: string | null;
+        caption: string | null;
+        _type: "image";
+        _key: string;
+      }
+  > | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: GUIDE_SLUGS_QUERY
+// Query: *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }
+export type GUIDE_SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -1725,5 +2026,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "post" && defined(slug.current)]|order(publishedAt desc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage\n\n  }\n': POSTS_QUERY_RESULT;
     '\n  *[_type == "post" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage\n,\n    lead,\n    coverImage{ ..., alt },\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption }\n    }\n  }\n': POST_QUERY_RESULT;
     '\n  *[_type == "post" && defined(slug.current)]{ "slug": slug.current }\n': POST_SLUGS_QUERY_RESULT;
+    '\n  *[_type == "guide" && defined(slug.current)] | order(category asc, order asc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n\n  }\n': GUIDES_QUERY_RESULT;
+    '\n  *[_type == "guide" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n,\n    seo,\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption },\n      _type == "guideSteps" => {\n        ...,\n        items[]{\n          title,\n          body[]{\n            ...,\n            _type == "image" => { ..., asset, alt, caption }\n          }\n        }\n      }\n    }\n  }\n': GUIDE_QUERY_RESULT;
+    '\n  *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }\n': GUIDE_SLUGS_QUERY_RESULT;
   }
 }

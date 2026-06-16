@@ -12,6 +12,9 @@ import {
   POSTS_QUERY,
   POST_QUERY,
   POST_SLUGS_QUERY,
+  GUIDES_QUERY,
+  GUIDE_QUERY,
+  GUIDE_SLUGS_QUERY,
 } from './queries'
 import type {
   HOME_QUERY_RESULT,
@@ -25,6 +28,9 @@ import type {
   POSTS_QUERY_RESULT,
   POST_QUERY_RESULT,
   POST_SLUGS_QUERY_RESULT,
+  GUIDES_QUERY_RESULT,
+  GUIDE_QUERY_RESULT,
+  GUIDE_SLUGS_QUERY_RESULT,
 } from '../sanity.types'
 
 export async function getHomePage(locale: string): Promise<HOME_QUERY_RESULT> {
@@ -104,4 +110,27 @@ export async function getPostSlugs(): Promise<POST_SLUGS_QUERY_RESULT> {
   cacheLife('hours')
   cacheTag('post-en')
   return client.fetch<POST_SLUGS_QUERY_RESULT>(POST_SLUGS_QUERY, {})
+}
+
+// Guides are not localized; `locale` only scopes the cache tag so the Sanity
+// revalidation webhook ({_type}-{language}) invalidates them like everything else.
+export async function getGuides(locale: string): Promise<GUIDES_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`guide-${locale}`)
+  return client.fetch<GUIDES_QUERY_RESULT>(GUIDES_QUERY, {})
+}
+
+export async function getGuide(locale: string, slug: string): Promise<GUIDE_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`guide-${locale}`)
+  return client.fetch<GUIDE_QUERY_RESULT>(GUIDE_QUERY, { slug })
+}
+
+export async function getGuideSlugs(): Promise<GUIDE_SLUGS_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag('guide-en')
+  return client.fetch<GUIDE_SLUGS_QUERY_RESULT>(GUIDE_SLUGS_QUERY, {})
 }

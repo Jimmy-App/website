@@ -12,6 +12,11 @@ import { teamStat } from './objects/teamStat'
 import { faqItem } from './objects/faqItem'
 import { callout } from './objects/callout'
 import { pullquote } from './objects/pullquote'
+import { guideCallout } from './objects/guideCallout'
+import { checklist } from './objects/checklist'
+import { guideSteps } from './objects/guideSteps'
+import { guideFaq } from './objects/guideFaq'
+import { guideVideo } from './objects/guideVideo'
 
 import { siteSettings } from './documents/siteSettings'
 import { homePage } from './documents/homePage'
@@ -24,6 +29,7 @@ import { footer } from './documents/footer'
 import { pricing } from './documents/pricing'
 import { pricingFeatures } from './documents/pricingFeatures'
 import { post } from './documents/post'
+import { guide } from './documents/guide'
 
 export const schemaTypes = [
   // Objects (must come before documents that reference them)
@@ -41,6 +47,11 @@ export const schemaTypes = [
   faqItem,
   callout,
   pullquote,
+  guideCallout,
+  checklist,
+  guideSteps,
+  guideFaq,
+  guideVideo,
   // Documents
   siteSettings,
   homePage,
@@ -53,4 +64,5 @@ export const schemaTypes = [
   pricing,
   pricingFeatures,
   post,
+  guide,
 ]
