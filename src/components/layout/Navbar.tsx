@@ -92,6 +92,44 @@ const MEMBER_KEYS = ['brandedApp', 'dailyWorkouts', 'community', 'directAccess',
 const RESOURCE_CONTENT_KEYS = ['blog', 'guides', 'changelog']
 const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
 
+// Resource items that map to a real (locale-aware) app route. Others stay as
+// their Sanity href (placeholder "#" until those pages exist).
+const RESOURCE_ROUTES: Record<string, string> = { blog: '/blog' }
+const resourceHref = (key?: string | null): string | undefined => RESOURCE_ROUTES[key ?? '']
+
+type ResItem = { key?: string | null; href?: string | null; title?: string | null }
+
+/* Mobile resources sub-link: locale-aware Link for internal routes, <a> else. */
+function MobileResItem({
+  it,
+  onClose,
+  className,
+}: {
+  it: ResItem
+  onClose: () => void
+  className?: string
+}) {
+  const href = resourceHref(it.key) ?? it.href ?? '#'
+  const inner = (
+    <>
+      <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
+      {it.title}
+    </>
+  )
+  if (href.startsWith('/')) {
+    return (
+      <Link href={href} onClick={onClose} className={className}>
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <a href={href} onClick={onClose} className={className}>
+      {inner}
+    </a>
+  )
+}
+
 /* Rounded flag icon — real SVG flags (emoji flags don't render on Windows/some Android) */
 function Flag({ src }: { src: string }) {
   return (
@@ -206,6 +244,7 @@ function ResourcesMega({ data }: { data: NavigationData }) {
               icon={RESOURCE_ICONS[it.key ?? ''] ?? null}
               title={it.title ?? ''}
               subtitle={it.subtitle ?? ''}
+              href={resourceHref(it.key)}
             />
           ))}
         </div>
@@ -223,6 +262,7 @@ function ResourcesMega({ data }: { data: NavigationData }) {
               icon={RESOURCE_ICONS[it.key ?? ''] ?? null}
               title={it.title ?? ''}
               subtitle={it.subtitle ?? ''}
+              href={resourceHref(it.key)}
             />
           ))}
         </div>
@@ -595,19 +635,13 @@ function MobileMenu({
                   <div>
                     <div className={groupLabelCls}>{data.resourcesContent}</div>
                     {contentItems.map((it) => (
-                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
-                        {it.title}
-                      </a>
+                      <MobileResItem key={it.key} it={it} onClose={onClose} className={subLinkCls} />
                     ))}
                   </div>
                   <div>
                     <div className={groupLabelCls}>{data.resourcesCommunity}</div>
                     {communityItems.map((it) => (
-                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
-                        {it.title}
-                      </a>
+                      <MobileResItem key={it.key} it={it} onClose={onClose} className={subLinkCls} />
                     ))}
                   </div>
                 </div>

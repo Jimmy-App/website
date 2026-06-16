@@ -105,3 +105,42 @@ export const FOOTER_QUERY = groq`
     copy
   }
 `
+
+// ── Blog ────────────────────────────────────────────────────────────────────
+// Posts are not localized (English content on all locales); the page chrome is
+// localized via next-intl. Card projection omits `body` to keep the list light.
+const POST_CARD = `
+  "slug": slug.current,
+  category,
+  title,
+  excerpt,
+  publishedAt,
+  readMin,
+  featured,
+  pick,
+  coverImage,
+  author->{ name, role, initials }
+`
+
+export const POSTS_QUERY = groq`
+  *[_type == "post" && defined(slug.current)]|order(publishedAt desc){
+    ${POST_CARD}
+  }
+`
+
+export const POST_QUERY = groq`
+  *[_type == "post" && slug.current == $slug][0]{
+    ${POST_CARD},
+    lead,
+    coverImage{ ..., alt },
+    author->{ name, role, bio, initials, image },
+    body[]{
+      ...,
+      _type == "image" => { ..., asset, alt, caption }
+    }
+  }
+`
+
+export const POST_SLUGS_QUERY = groq`
+  *[_type == "post" && defined(slug.current)]{ "slug": slug.current }
+`

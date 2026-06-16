@@ -10,6 +10,8 @@ import { pricingAddon } from './objects/pricingAddon'
 import { teamMember } from './objects/teamMember'
 import { teamStat } from './objects/teamStat'
 import { faqItem } from './objects/faqItem'
+import { callout } from './objects/callout'
+import { pullquote } from './objects/pullquote'
 
 import { siteSettings } from './documents/siteSettings'
 import { homePage } from './documents/homePage'
@@ -21,6 +23,8 @@ import { navigation } from './documents/navigation'
 import { footer } from './documents/footer'
 import { pricing } from './documents/pricing'
 import { pricingFeatures } from './documents/pricingFeatures'
+import { author } from './documents/author'
+import { post } from './documents/post'
 
 export const schemaTypes = [
   // Objects (must come before documents that reference them)
@@ -36,6 +40,8 @@ export const schemaTypes = [
   teamMember,
   teamStat,
   faqItem,
+  callout,
+  pullquote,
   // Documents
   siteSettings,
   homePage,
@@ -47,4 +53,6 @@ export const schemaTypes = [
   footer,
   pricing,
   pricingFeatures,
+  author,
+  post,
 ]

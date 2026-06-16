@@ -1,5 +1,52 @@
 {
   "errors": {
     "notFound": "La página que buscas no existe."
+  },
+  "blog": {
+    "eyebrow": "El blog de Jimmy",
+    "titlePrefix": "Playbooks para coaches que conservan a sus ",
+    "titleAccent": "atletas",
+    "titleSuffix": ".",
+    "subtitle": "Tácticas de retención, ideas de programación, historias reales de clientes y el negocio del coaching — escrito para quienes están en el gimnasio, no en la sala de juntas.",
+    "filterAll": "Todo",
+    "cat": {
+      "stories": "Historias de clientes",
+      "retention": "Coaching y retención",
+      "training": "Entrenamiento",
+      "business": "Negocio",
+      "product": "Novedades del producto"
+    },
+    "featured": "Destacado",
+    "latest": "Últimos artículos",
+    "readStory": "Leer la historia",
+    "noResults": "Aún no hay artículos en esta categoría — vuelve pronto.",
+    "minRead": "{n} min de lectura",
+    "min": "{n} min",
+    "newsletter": {
+      "eyebrow": "The Locker Room",
+      "title": "Un playbook de coaching en tu correo, cada semana.",
+      "body": "Tácticas de retención, ideas de programación y, de vez en cuando, una novedad del producto — sin relleno, cancela cuando quieras.",
+      "placeholder": "tu@tugimnasio.com",
+      "button": "Suscribirme",
+      "subscribed": "Suscrito ✓",
+      "fine": "Únete a más de 4.200 coaches. Enviamos un email por semana — nada más."
+    },
+    "onThisPage": "En esta página",
+    "share": "Compartir",
+    "copied": "Enlace copiado al portapapeles",
+    "keepReading": "Sigue leyendo",
+    "ctaTitle": "Deja de reemplazar a los atletas que ya ganaste.",
+    "ctaBody": "Seguimiento del progreso, comunicación con clientes y un feed de comunidad en un solo lugar — gratis hasta 3 clientes.",
+    "ctaPrimary": "Empezar gratis",
+    "ctaSecondary": "Ver precios",
+    "breadcrumb": "Blog",
+    "searchPlaceholder": "Buscar artículos…",
+    "results": "Resultados",
+    "clearSearch": "Borrar búsqueda",
+    "resultsCount": "{count, plural, one {# artículo} other {# artículos}}",
+    "searchHint": "Escribe para buscar",
+    "noResultsTitle": "No se encontraron artículos",
+    "noResultsBody": "Prueba otra palabra clave o limpia los filtros.",
+    "clearAll": "Limpiar búsqueda"
   }
 }

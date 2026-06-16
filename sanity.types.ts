@@ -20,6 +20,137 @@ export type Preview = {
   barChip?: string;
 };
 
+export type AuthorReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "author";
+};
+
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type Post = {
+  _id: string;
+  _type: "post";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  category?: "stories" | "retention" | "training" | "business" | "product";
+  author?: AuthorReference;
+  excerpt?: string;
+  lead?: string;
+  publishedAt?: string;
+  readMin?: number;
+  featured?: boolean;
+  pick?: boolean;
+  coverImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  body?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h2" | "h3" | "blockquote";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | ({
+        _key: string;
+      } & Callout)
+    | ({
+        _key: string;
+      } & Pullquote)
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
+        _type: "image";
+        _key: string;
+      }
+  >;
+  seo?: Seo;
+};
+
+export type Seo = {
+  _type: "seo";
+  title?: string;
+  description?: string;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type Author = {
+  _id: string;
+  _type: "author";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  role?: string;
+  bio?: string;
+  initials?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+};
+
 export type PricingFeatures = {
   _id: string;
   _type: "pricingFeatures";
@@ -94,6 +225,19 @@ export type PricingPlans = {
   betaDiscountPct?: number;
 };
 
+export type Pullquote = {
+  _type: "pullquote";
+  text?: string;
+  cite?: string;
+};
+
+export type Callout = {
+  _type: "callout";
+  tone?: "spark" | "check";
+  label?: string;
+  text?: string;
+};
+
 export type FaqItem = {
   _type: "faqItem";
   question?: string;
@@ -105,13 +249,6 @@ export type TeamStat = {
   num?: string;
   heading?: string;
   body?: string;
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
 export type TeamMember = {
@@ -189,19 +326,6 @@ export type SocialLink = {
     | "youtube"
     | "tiktok";
   url?: string;
-};
-
-export type Seo = {
-  _type: "seo";
-  title?: string;
-  description?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
 };
 
 export type NavMegaItem = {
@@ -815,22 +939,6 @@ export type HomePage = {
   seo?: Seo;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
   background?: string;
@@ -928,22 +1036,25 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type AllSanitySchemaTypes =
   | Preview
+  | AuthorReference
+  | SanityImageAssetReference
+  | Post
+  | Seo
+  | SanityImageCrop
+  | SanityImageHotspot
+  | Slug
+  | Author
   | PricingFeatures
   | PricingFeaturesReference
   | Pricing
   | AffiliateSettings
   | PricingPlans
+  | Pullquote
+  | Callout
   | FaqItem
   | TeamStat
-  | SanityImageAssetReference
   | TeamMember
   | PricingAddon
   | PricingTier
@@ -951,7 +1062,6 @@ export type AllSanitySchemaTypes =
   | FeatureTab
   | PortableTextBlock
   | SocialLink
-  | Seo
   | NavMegaItem
   | NavItem
   | TranslationMetadata
@@ -969,8 +1079,6 @@ export type AllSanitySchemaTypes =
   | AffiliatePage
   | PricingPage
   | HomePage
-  | SanityImageCrop
-  | SanityImageHotspot
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -978,8 +1086,7 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
-  | Slug;
+  | Geopoint;
 
 // Source: sanity/queries/index.ts
 // Variable: SITE_SETTINGS_QUERY
@@ -1525,6 +1632,131 @@ export type FOOTER_QUERY_RESULT = {
   copy: string | null;
 } | null;
 
+// Source: sanity/queries/index.ts
+// Variable: POSTS_QUERY
+// Query: *[_type == "post" && defined(slug.current)]|order(publishedAt desc){      "slug": slug.current,  category,  title,  excerpt,  publishedAt,  readMin,  featured,  pick,  coverImage,  author->{ name, role, initials }  }
+export type POSTS_QUERY_RESULT = Array<{
+  slug: string | null;
+  category:
+    | "business"
+    | "product"
+    | "retention"
+    | "stories"
+    | "training"
+    | null;
+  title: string | null;
+  excerpt: string | null;
+  publishedAt: string | null;
+  readMin: number | null;
+  featured: boolean | null;
+  pick: boolean | null;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  author: {
+    name: string | null;
+    role: string | null;
+    initials: string | null;
+  } | null;
+}>;
+
+// Source: sanity/queries/index.ts
+// Variable: POST_QUERY
+// Query: *[_type == "post" && slug.current == $slug][0]{      "slug": slug.current,  category,  title,  excerpt,  publishedAt,  readMin,  featured,  pick,  coverImage,  author->{ name, role, initials },    lead,    coverImage{ ..., alt },    author->{ name, role, bio, initials, image },    body[]{      ...,      _type == "image" => { ..., asset, alt, caption }    }  }
+export type POST_QUERY_RESULT = {
+  slug: string | null;
+  category:
+    | "business"
+    | "product"
+    | "retention"
+    | "stories"
+    | "training"
+    | null;
+  title: string | null;
+  excerpt: string | null;
+  publishedAt: string | null;
+  readMin: number | null;
+  featured: boolean | null;
+  pick: boolean | null;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string | null;
+    _type: "image";
+  } | null;
+  author: {
+    name: string | null;
+    role: string | null;
+    bio: string | null;
+    initials: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+  lead: string | null;
+  body: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h2" | "h3" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "callout";
+        tone?: "check" | "spark";
+        label?: string;
+        text?: string;
+      }
+    | {
+        asset: SanityImageAssetReference | null;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt: string | null;
+        caption: string | null;
+        _type: "image";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "pullquote";
+        text?: string;
+        cite?: string;
+      }
+  > | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: POST_SLUGS_QUERY
+// Query: *[_type == "post" && defined(slug.current)]{ "slug": slug.current }
+export type POST_SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -1537,5 +1769,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
     '\n  *[_type == "navigation" && language == $locale][0]{\n    featuresLabel,\n    featuresForCoaches,\n    featuresForMembers,\n    featuresItems[]{ key, title, subtitle, href },\n    featuresCta,\n    resourcesLabel,\n    resourcesContent,\n    resourcesCommunity,\n    resourcesItems[]{ key, title, subtitle, href },\n    pricing,\n    affiliate,\n    newBadge,\n    login,\n    getStarted,\n    getStartedShort,\n    openMenu,\n    close,\n    menu\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "footer" && language == $locale][0]{\n    taglinePrefix,\n    taglineEmphasis,\n    productHeading,\n    productLinks[]{ label, href, external },\n    companyHeading,\n    companyLinks[]{ label, href, external },\n    legalHeading,\n    legalLinks[]{ label, href, external },\n    copy\n  }\n': FOOTER_QUERY_RESULT;
+    '\n  *[_type == "post" && defined(slug.current)]|order(publishedAt desc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage,\n  author->{ name, role, initials }\n\n  }\n': POSTS_QUERY_RESULT;
+    '\n  *[_type == "post" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage,\n  author->{ name, role, initials }\n,\n    lead,\n    coverImage{ ..., alt },\n    author->{ name, role, bio, initials, image },\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption }\n    }\n  }\n': POST_QUERY_RESULT;
+    '\n  *[_type == "post" && defined(slug.current)]{ "slug": slug.current }\n': POST_SLUGS_QUERY_RESULT;
   }
 }

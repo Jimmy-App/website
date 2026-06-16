@@ -1,5 +1,52 @@
 {
   "errors": {
-    "notFound": "La page que vous recherchez n’existe pas."
+    "notFound": "La page que tu recherches n’existe pas."
+  },
+  "blog": {
+    "eyebrow": "Le blog Jimmy",
+    "titlePrefix": "Des playbooks pour les coachs qui gardent leurs ",
+    "titleAccent": "athlètes",
+    "titleSuffix": ".",
+    "subtitle": "Tactiques de rétention, idées de programmation, vraies histoires de clients et le business du coaching — écrit pour celles et ceux qui sont sur le terrain, pas en salle de réunion.",
+    "filterAll": "Tout",
+    "cat": {
+      "stories": "Histoires de clients",
+      "retention": "Coaching et rétention",
+      "training": "Entraînement",
+      "business": "Business",
+      "product": "Nouveautés produit"
+    },
+    "featured": "À la une",
+    "latest": "Derniers articles",
+    "readStory": "Lire l’histoire",
+    "noResults": "Aucun article dans cette catégorie pour l’instant — reviens bientôt.",
+    "minRead": "{n} min de lecture",
+    "min": "{n} min",
+    "newsletter": {
+      "eyebrow": "The Locker Room",
+      "title": "Un playbook de coaching dans ta boîte mail, chaque semaine.",
+      "body": "Tactiques de rétention, idées de programmation et, de temps en temps, une nouveauté produit — sans blabla, désabonne-toi quand tu veux.",
+      "placeholder": "toi@tasalle.com",
+      "button": "S’abonner",
+      "subscribed": "Abonné ✓",
+      "fine": "Rejoins plus de 4 200 coachs. On envoie un e-mail par semaine — c’est tout."
+    },
+    "onThisPage": "Sur cette page",
+    "share": "Partager",
+    "copied": "Lien copié dans le presse-papiers",
+    "keepReading": "Continue ta lecture",
+    "ctaTitle": "Arrête de remplacer les athlètes que tu as déjà gagnés.",
+    "ctaBody": "Suivi des progrès, communication client et un fil communautaire au même endroit — gratuit jusqu’à 3 clients.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Voir les tarifs",
+    "breadcrumb": "Blog",
+    "searchPlaceholder": "Rechercher des articles…",
+    "results": "Résultats",
+    "clearSearch": "Effacer la recherche",
+    "resultsCount": "{count, plural, one {# article} other {# articles}}",
+    "searchHint": "Tape pour rechercher",
+    "noResultsTitle": "Aucun article trouvé",
+    "noResultsBody": "Essaie un autre mot-clé ou réinitialise les filtres.",
+    "clearAll": "Réinitialiser"
   }
 }

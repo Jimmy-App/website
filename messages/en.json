@@ -1,5 +1,52 @@
 {
   "errors": {
     "notFound": "The page you’re looking for doesn’t exist."
+  },
+  "blog": {
+    "eyebrow": "The Jimmy Blog",
+    "titlePrefix": "Playbooks for coaches who keep their ",
+    "titleAccent": "athletes",
+    "titleSuffix": ".",
+    "subtitle": "Retention tactics, programming ideas, real client stories and the business of coaching — written for the people running the gym floor, not the boardroom.",
+    "filterAll": "All",
+    "cat": {
+      "stories": "Client Stories",
+      "retention": "Coaching & Retention",
+      "training": "Training",
+      "business": "Business",
+      "product": "Product Updates"
+    },
+    "featured": "Featured",
+    "latest": "Latest articles",
+    "readStory": "Read story",
+    "noResults": "No articles in this category yet — check back soon.",
+    "minRead": "{n} min read",
+    "min": "{n} min",
+    "newsletter": {
+      "eyebrow": "The Locker Room",
+      "title": "One coaching playbook in your inbox, every week.",
+      "body": "Retention tactics, programming ideas and the occasional product drop — no fluff, unsubscribe anytime.",
+      "placeholder": "you@yourgym.com",
+      "button": "Subscribe",
+      "subscribed": "Subscribed ✓",
+      "fine": "Join 4,200+ coaches. We send one email a week — that’s it."
+    },
+    "onThisPage": "On this page",
+    "share": "Share",
+    "copied": "Link copied to clipboard",
+    "keepReading": "Keep reading",
+    "ctaTitle": "Stop replacing the athletes you already earned.",
+    "ctaBody": "Progress tracking, client comms and a community feed in one place — free for up to 3 clients.",
+    "ctaPrimary": "Start for free",
+    "ctaSecondary": "See pricing",
+    "breadcrumb": "Blog",
+    "searchPlaceholder": "Search articles…",
+    "results": "Results",
+    "clearSearch": "Clear search",
+    "resultsCount": "{count, plural, one {# article} other {# articles}}",
+    "searchHint": "Type to search",
+    "noResultsTitle": "No articles found",
+    "noResultsBody": "Try a different keyword or clear the filters.",
+    "clearAll": "Clear search"
   }
 }
