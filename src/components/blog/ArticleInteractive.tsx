@@ -33,7 +33,10 @@ export function ReadingBar() {
     }
   }, [])
   return (
-    <div className="fixed inset-x-0 top-0 z-[60] h-[3px] bg-transparent">
+    // Mobile only: on desktop the sticky TOC already conveys reading progress.
+    // Sits above the navbar (z > 100) so it stays visible as the bar that the
+    // navbar background would otherwise cover on scroll.
+    <div className="fixed inset-x-0 top-0 z-[120] h-[3px] bg-transparent lg:hidden">
       <div ref={ref} className="h-full origin-left bg-purple" style={{ transform: 'scaleX(0)' }} />
     </div>
   )
@@ -117,14 +120,20 @@ const ThreadsIcon = () => (
 /** Share row: X, LinkedIn, copy-link with a toast. */
 export function ArticleShare({ label, copiedLabel }: { label: string; copiedLabel: string }) {
   const [copied, setCopied] = useState(false)
-  const url = () => (typeof window !== 'undefined' ? window.location.href : '')
-  const title = () => (typeof document !== 'undefined' ? document.title : '')
+  const [url, setUrl] = useState('')
+  const [title, setTitle] = useState('')
+  // Resolve the share target after mount so SSR and the first client render
+  // agree (both empty) — avoids a hydration mismatch on the href attributes.
+  useEffect(() => {
+    setUrl(window.location.href)
+    setTitle(document.title)
+  }, [])
   const btn =
     'grid size-9 place-items-center rounded-full border border-border bg-surface text-text-muted transition-[color,border-color,transform] duration-200 hover:border-purple-border hover:text-purple active:scale-[0.94]'
 
   const copy = async () => {
     try {
-      await navigator.clipboard?.writeText(url())
+      await navigator.clipboard?.writeText(url)
     } catch {
       /* clipboard unavailable — still confirm visually */
     }
@@ -138,7 +147,7 @@ export function ArticleShare({ label, copiedLabel }: { label: string; copiedLabe
       <a
         className={btn}
         aria-label="Share on X"
-        href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url())}`}
+        href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -147,7 +156,7 @@ export function ArticleShare({ label, copiedLabel }: { label: string; copiedLabe
       <a
         className={btn}
         aria-label="Share on Threads"
-        href={`https://www.threads.net/intent/post?text=${encodeURIComponent(`${title()} ${url()}`)}`}
+        href={`https://www.threads.net/intent/post?text=${encodeURIComponent(`${title} ${url}`)}`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -156,7 +165,7 @@ export function ArticleShare({ label, copiedLabel }: { label: string; copiedLabe
       <a
         className={btn}
         aria-label="Share on Facebook"
-        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url())}`}
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -165,7 +174,7 @@ export function ArticleShare({ label, copiedLabel }: { label: string; copiedLabe
       <a
         className={btn}
         aria-label="Share on LinkedIn"
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url())}`}
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noopener noreferrer"
       >
