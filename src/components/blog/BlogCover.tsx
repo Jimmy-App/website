@@ -44,12 +44,13 @@ export function BlogCover({
         className="absolute inset-0"
         style={{ background: 'radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.28), transparent 55%)' }}
       />
-      {/* faint grid */}
+      {/* faint grid — plain white lines (no mix-blend-mode: blend modes scrolling
+          under the fixed backdrop-filter navbar cause repaint "hanging" on iOS Safari) */}
       <div
-        className="absolute inset-0 opacity-[0.18] mix-blend-overlay"
+        className="absolute inset-0"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+            'linear-gradient(rgba(255,255,255,0.13) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.13) 1px, transparent 1px)',
           backgroundSize: '26px 26px',
         }}
       />
