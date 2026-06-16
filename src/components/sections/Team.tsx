@@ -313,8 +313,10 @@ export function Team({ data }: { data: TeamData }) {
               <span
                 className={cn(
                   'font-display text-[clamp(1.25rem,2vw,1.55rem)]',
-                  'shrink-0 font-extrabold leading-none tracking-[-0.02em] text-purple',
-                  'whitespace-nowrap',
+                  'font-extrabold leading-[1.08] tracking-[-0.02em] text-purple',
+                  // Allow multi-word values (e.g. "Chaque semaine") to wrap
+                  // within a bounded width instead of overflowing the column.
+                  'max-w-[6.5em] text-balance',
                 )}
               >
                 {stat.num}
