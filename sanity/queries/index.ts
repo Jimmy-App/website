@@ -241,3 +241,18 @@ export const CHANGELOG_QUERY = groq`
     changes[]{ type, text }
   }
 `
+
+// ── Roadmap ───────────────────────────────────────────────────────────────────
+// Not localized; chrome localized via next-intl. Grouped into Now/Next/Later in
+// code. `id` (= _id) is the per-card upvote key. Ordered within column.
+export const ROADMAP_QUERY = groq`
+  *[_type == "roadmapItem"] | order(order asc){
+    "id": _id,
+    column,
+    category,
+    title,
+    desc,
+    eta,
+    votes
+  }
+`

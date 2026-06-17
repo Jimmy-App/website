@@ -19,6 +19,7 @@ import {
   FEATURE_QUERY,
   FEATURE_SLUGS_QUERY,
   CHANGELOG_QUERY,
+  ROADMAP_QUERY,
 } from './queries'
 import type {
   HOME_QUERY_RESULT,
@@ -39,6 +40,7 @@ import type {
   FEATURE_QUERY_RESULT,
   FEATURE_SLUGS_QUERY_RESULT,
   CHANGELOG_QUERY_RESULT,
+  ROADMAP_QUERY_RESULT,
 } from '../sanity.types'
 
 export async function getHomePage(locale: string): Promise<HOME_QUERY_RESULT> {
@@ -173,4 +175,13 @@ export async function getChangelog(locale: string): Promise<CHANGELOG_QUERY_RESU
   cacheLife('hours')
   cacheTag(`changelogRelease-${locale}`)
   return client.fetch<CHANGELOG_QUERY_RESULT>(CHANGELOG_QUERY, {})
+}
+
+// Roadmap is not localized; `locale` only scopes the cache tag so the Sanity
+// revalidation webhook (roadmapItem-{language}) invalidates it like the rest.
+export async function getRoadmap(locale: string): Promise<ROADMAP_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`roadmapItem-${locale}`)
+  return client.fetch<ROADMAP_QUERY_RESULT>(ROADMAP_QUERY, {})
 }

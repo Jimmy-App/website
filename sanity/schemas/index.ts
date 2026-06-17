@@ -34,6 +34,7 @@ import { post } from './documents/post'
 import { guide } from './documents/guide'
 import { feature } from './documents/feature'
 import { changelogRelease } from './documents/changelogRelease'
+import { roadmapItem } from './documents/roadmapItem'
 
 export const schemaTypes = [
   // Objects (must come before documents that reference them)
@@ -73,4 +74,5 @@ export const schemaTypes = [
   guide,
   feature,
   changelogRelease,
+  roadmapItem,
 ]

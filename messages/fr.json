@@ -109,5 +109,27 @@
     "ctaPrimary": "Proposer une fonctionnalité",
     "ctaSecondary": "Voir la feuille de route",
     "showMore": "Voir plus de mises à jour"
+  },
+  "roadmap": {
+    "eyebrow": "Feuille de route produit",
+    "titlePrefix": "Ce qu'on ",
+    "titleAccent": "construit ensuite.",
+    "subtitle": "Pas de boîte noire. Voici où va Jimmy — et ce qui est déjà en chantier. La feuille de route est façonnée par des coachs comme toi, alors vote pour ce qui compte.",
+    "note": "Touche la flèche sur une carte pour voter — tes votes nous aident à prioriser.",
+    "votes": "votes",
+    "upvote": "Voter pour",
+    "colNow": "Maintenant",
+    "colNowSub": "En cours",
+    "colNext": "Ensuite",
+    "colNextSub": "Bientôt",
+    "colLater": "Plus tard",
+    "colLaterSub": "À l'étude",
+    "shippedTitle": "Récemment livré",
+    "shippedAll": "Changelog complet",
+    "ctaTitlePrefix": "Il te manque ",
+    "ctaTitleAccent": "quelque chose ?",
+    "ctaBody": "La feuille de route est façonnée par des coachs comme toi. Dis-nous ce qui rendrait Jimmy meilleur — on lit chaque demande.",
+    "ctaPrimary": "Proposer une fonctionnalité",
+    "ctaSecondary": "Voir ce qui est livré"
   }
 }

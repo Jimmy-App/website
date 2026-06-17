@@ -109,5 +109,27 @@
     "ctaPrimary": "Request a feature",
     "ctaSecondary": "See the roadmap",
     "showMore": "Show more updates"
+  },
+  "roadmap": {
+    "eyebrow": "Product Roadmap",
+    "titlePrefix": "What we're ",
+    "titleAccent": "building next.",
+    "subtitle": "No black box. Here's where Jimmy is headed — and the work that's already on the bench. The roadmap is shaped by coaches like you, so vote for what matters.",
+    "note": "Tap the arrow on any card to upvote — your votes help us prioritize.",
+    "votes": "votes",
+    "upvote": "Upvote",
+    "colNow": "Now",
+    "colNowSub": "In build",
+    "colNext": "Next",
+    "colNextSub": "Up soon",
+    "colLater": "Later",
+    "colLaterSub": "Exploring",
+    "shippedTitle": "Recently shipped",
+    "shippedAll": "Full changelog",
+    "ctaTitlePrefix": "Missing something ",
+    "ctaTitleAccent": "you need?",
+    "ctaBody": "The roadmap is shaped by coaches like you. Tell us what would make Jimmy better — we read every request.",
+    "ctaPrimary": "Request a feature",
+    "ctaSecondary": "See what shipped"
   }
 }

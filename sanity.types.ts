@@ -20,6 +20,21 @@ export type Preview = {
   barChip?: string;
 };
 
+export type RoadmapItem = {
+  _id: string;
+  _type: "roadmapItem";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  column?: "now" | "next" | "later";
+  category?: "community" | "training" | "app" | "payments" | "coach";
+  title?: string;
+  desc?: string;
+  eta?: string;
+  votes?: number;
+  order?: number;
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -1232,6 +1247,7 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | Preview
+  | RoadmapItem
   | SanityImageAssetReference
   | ChangelogRelease
   | SanityImageCrop
@@ -2170,6 +2186,19 @@ export type CHANGELOG_QUERY_RESULT = Array<{
   }> | null;
 }>;
 
+// Source: sanity/queries/index.ts
+// Variable: ROADMAP_QUERY
+// Query: *[_type == "roadmapItem"] | order(order asc){    "id": _id,    column,    category,    title,    desc,    eta,    votes  }
+export type ROADMAP_QUERY_RESULT = Array<{
+  id: string;
+  column: "later" | "next" | "now" | null;
+  category: "app" | "coach" | "community" | "payments" | "training" | null;
+  title: string | null;
+  desc: string | null;
+  eta: string | null;
+  votes: number | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -2192,5 +2221,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
     '\n  *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }\n': FEATURE_SLUGS_QUERY_RESULT;
     '\n  *[_type == "changelogRelease" && defined(date)] | order(date desc){\n    version,\n    date,\n    title,\n    lead,\n    image{ ..., alt },\n    changes[]{ type, text }\n  }\n': CHANGELOG_QUERY_RESULT;
+    '\n  *[_type == "roadmapItem"] | order(order asc){\n    "id": _id,\n    column,\n    category,\n    title,\n    desc,\n    eta,\n    votes\n  }\n': ROADMAP_QUERY_RESULT;
   }
 }

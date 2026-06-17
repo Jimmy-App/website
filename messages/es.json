@@ -109,5 +109,27 @@
     "ctaPrimary": "Sugerir una función",
     "ctaSecondary": "Ver la hoja de ruta",
     "showMore": "Ver más novedades"
+  },
+  "roadmap": {
+    "eyebrow": "Hoja de ruta del producto",
+    "titlePrefix": "Lo que ",
+    "titleAccent": "viene después.",
+    "subtitle": "Sin caja negra. Esto es hacia dónde va Jimmy — y lo que ya está en marcha. La hoja de ruta la marcan coaches como tú, así que vota por lo que importa.",
+    "note": "Toca la flecha en cualquier tarjeta para votar — tus votos nos ayudan a priorizar.",
+    "votes": "votos",
+    "upvote": "Votar por",
+    "colNow": "Ahora",
+    "colNowSub": "En desarrollo",
+    "colNext": "Siguiente",
+    "colNextSub": "Pronto",
+    "colLater": "Más tarde",
+    "colLaterSub": "Explorando",
+    "shippedTitle": "Lanzado hace poco",
+    "shippedAll": "Changelog completo",
+    "ctaTitlePrefix": "¿Te falta ",
+    "ctaTitleAccent": "algo que necesitas?",
+    "ctaBody": "La hoja de ruta la marcan coaches como tú. Cuéntanos qué haría mejor a Jimmy — leemos cada solicitud.",
+    "ctaPrimary": "Sugerir una función",
+    "ctaSecondary": "Ver lo lanzado"
   }
 }
