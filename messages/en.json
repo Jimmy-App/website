@@ -30,6 +30,21 @@
     "ctaBody": "Start for free — your branded app, your clients, your revenue.",
     "ctaBtn": "Start for free"
   },
+  "features": {
+    "breadcrumbHome": "Home",
+    "breadcrumbFeatures": "Features",
+    "forCoaches": "For Coaches",
+    "startFree": "Start for free",
+    "bookDemo": "Book a demo",
+    "whatsInside": "What's inside",
+    "platform": "The platform",
+    "moreForCoaches": "More for coaches",
+    "ctaEyebrow": "Get started",
+    "ctaTitlePrefix": "Less admin. ",
+    "ctaTitleAccent": "More",
+    "ctaTitleSuffix": " coaching.",
+    "ctaBody": "Everything you need to run a professional coaching business — workouts, payments, community and messaging in one place."
+  },
   "blog": {
     "eyebrow": "The Jimmy Blog",
     "titlePrefix": "Playbooks for coaches who keep their ",

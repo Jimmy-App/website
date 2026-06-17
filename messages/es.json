@@ -30,6 +30,21 @@
     "ctaBody": "Empieza gratis — tu app, tus clientes, tus ingresos.",
     "ctaBtn": "Empezar gratis"
   },
+  "features": {
+    "breadcrumbHome": "Inicio",
+    "breadcrumbFeatures": "Funcionalidades",
+    "forCoaches": "Para coaches",
+    "startFree": "Empezar gratis",
+    "bookDemo": "Reservar una demo",
+    "whatsInside": "Qué incluye",
+    "platform": "La plataforma",
+    "moreForCoaches": "Más para coaches",
+    "ctaEyebrow": "Empieza ahora",
+    "ctaTitlePrefix": "Menos admin. ",
+    "ctaTitleAccent": "Más",
+    "ctaTitleSuffix": " coaching.",
+    "ctaBody": "Todo lo que necesitas para gestionar tu negocio de coaching — entrenamientos, pagos, comunidad y mensajería en un solo lugar."
+  },
   "blog": {
     "eyebrow": "El blog de Jimmy",
     "titlePrefix": "Playbooks para coaches que conservan a sus ",

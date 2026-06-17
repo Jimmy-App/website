@@ -30,6 +30,21 @@
     "ctaBody": "Commence gratuitement — ton app, tes clients, tes revenus.",
     "ctaBtn": "Commencer gratuitement"
   },
+  "features": {
+    "breadcrumbHome": "Accueil",
+    "breadcrumbFeatures": "Fonctionnalités",
+    "forCoaches": "Pour les coachs",
+    "startFree": "Commencer gratuitement",
+    "bookDemo": "Réserver une démo",
+    "whatsInside": "Ce que tu obtiens",
+    "platform": "La plateforme",
+    "moreForCoaches": "Plus pour les coachs",
+    "ctaEyebrow": "Commencer",
+    "ctaTitlePrefix": "Moins d'admin. ",
+    "ctaTitleAccent": "Plus",
+    "ctaTitleSuffix": " de coaching.",
+    "ctaBody": "Tout ce qu'il faut pour gérer ton activité de coach — séances, paiements, communauté et messagerie au même endroit."
+  },
   "blog": {
     "eyebrow": "Le blog Jimmy",
     "titlePrefix": "Des playbooks pour les coachs qui gardent leurs ",

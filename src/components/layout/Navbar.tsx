@@ -97,6 +97,17 @@ const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
 const RESOURCE_ROUTES: Record<string, string> = { blog: '/blog', guides: '/guides' }
 const resourceHref = (key?: string | null): string | undefined => RESOURCE_ROUTES[key ?? '']
 
+// Feature (coach) items that map to a real route.
+const FEATURE_ROUTES: Record<string, string> = {
+  workoutBuilder:   '/features/workout-builder',
+  programs:         '/features/programs-courses',
+  communityFeed:    '/features/community-feed',
+  messaging:        '/features/messaging',
+  payments:         '/features/payments',
+  progressTracking: '/features/progress-tracking',
+}
+const featureHref = (key?: string | null): string | undefined => FEATURE_ROUTES[key ?? '']
+
 type ResItem = { key?: string | null; href?: string | null; title?: string | null }
 
 /* Mobile resources sub-link: locale-aware Link for internal routes, <a> else. */
@@ -113,6 +124,37 @@ function MobileResItem({
   const inner = (
     <>
       <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
+      {it.title}
+    </>
+  )
+  if (href.startsWith('/')) {
+    return (
+      <Link href={href} onClick={onClose} className={className}>
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <a href={href} onClick={onClose} className={className}>
+      {inner}
+    </a>
+  )
+}
+
+/* Mobile coach feature sub-link: locale-aware Link for internal routes. */
+function MobileCoachItem({
+  it,
+  onClose,
+  className,
+}: {
+  it: ResItem
+  onClose: () => void
+  className?: string
+}) {
+  const href = featureHref(it.key) ?? it.href ?? '#'
+  const inner = (
+    <>
+      <span className="text-text-faint">{FEATURE_ICONS_SM[it.key ?? ''] ?? null}</span>
       {it.title}
     </>
   )
@@ -167,6 +209,7 @@ function FeaturesMega({ data }: { data: NavigationData }) {
               icon={FEATURE_ICONS[it.key ?? ''] ?? null}
               title={it.title ?? ''}
               subtitle={it.subtitle ?? ''}
+              href={featureHref(it.key) ?? it.href ?? '#'}
             />
           ))}
         </div>
@@ -564,10 +607,7 @@ function MobileMenu({
                   <div>
                     <div className={groupLabelCls}>{data.featuresForCoaches}</div>
                     {coachItems.map((it) => (
-                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{FEATURE_ICONS_SM[it.key ?? ''] ?? null}</span>
-                        {it.title}
-                      </a>
+                      <MobileCoachItem key={it.key} it={it} onClose={onClose} className={subLinkCls} />
                     ))}
                   </div>
                   <div>
