@@ -233,7 +233,7 @@ const FEATURES = [
     name: 'Easy Payments',
     sub: 'Manage plans in one place.',
     iconKey: 'wallet',
-    demoKey: 'payments',
+    demoKey: 'easyPayment',
     title: { prefix: 'Plans, paid in ', accent: 'seconds.', suffix: '' },
     highlight: { prefix: 'No reminders. ', accent: 'No friction.' },
     highlightSub: 'When paying is effortless, members stay subscribed — and coaches stop chasing invoices.',

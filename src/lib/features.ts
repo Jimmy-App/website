@@ -26,6 +26,7 @@ export type FeatureDemoKey =
   | 'dailyWorkout'
   | 'brandedApp'
   | 'progressView'
+  | 'easyPayment'
   | null
 
 // ── Capability (what's inside grid item) ──────────────────────────────────────
