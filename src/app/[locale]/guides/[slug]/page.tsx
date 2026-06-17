@@ -107,7 +107,7 @@ export default async function GuidePage({
 
       {/* ── 3-column docs layout ─────────────────────────────────── */}
       <div
-        className="mx-auto grid max-w-[1280px] px-[clamp(12px,3vw,24px)]"
+        className="mx-auto grid max-w-[1280px] px-[clamp(20px,3vw,24px)]"
         style={{
           paddingTop: 'calc(var(--navbar-height) + clamp(1.5rem, 3vw, 2rem))',
           paddingBottom: 'clamp(3rem, 6vw, 5rem)',

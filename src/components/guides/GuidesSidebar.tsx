@@ -54,7 +54,7 @@ export function GuidesSidebar({ groups, searchPlaceholder, browseLabel, noResult
 
   return (
     <aside
-      className="docs-sidebar"
+      className="max-lg:mb-6"
       aria-label="Documentation navigation"
     >
       {/* Mobile toggle */}
