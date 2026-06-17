@@ -203,13 +203,13 @@ const FEATURE_CARD = `
 `
 
 export const FEATURES_QUERY = groq`
-  *[_type == "feature" && defined(slug.current)] | order(order asc){
+  *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){
     ${FEATURE_CARD}
   }
 `
 
 export const FEATURE_QUERY = groq`
-  *[_type == "feature" && slug.current == $slug][0]{
+  *[_type == "feature" && slug.current == $slug && language == $locale][0]{
     ${FEATURE_CARD},
     demoKey,
     title{ prefix, accent, suffix },
@@ -223,6 +223,7 @@ export const FEATURE_QUERY = groq`
   }
 `
 
+// Slugs are shared across languages; the English docs are the canonical set.
 export const FEATURE_SLUGS_QUERY = groq`
-  *[_type == "feature" && defined(slug.current)]{ "slug": slug.current }
+  *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }
 `

@@ -141,20 +141,20 @@ export async function getGuideSlugs(): Promise<GUIDE_SLUGS_QUERY_RESULT> {
   return client.fetch<GUIDE_SLUGS_QUERY_RESULT>(GUIDE_SLUGS_QUERY, {})
 }
 
-// Features are not localized; `locale` only scopes the cache tag so the Sanity
-// revalidation webhook ({_type}-{language}) invalidates them like everything else.
+// Features are localized (per-language docs); `locale` scopes both the query and
+// the cache tag (the Sanity webhook invalidates `feature-{language}`).
 export async function getFeatures(locale: string): Promise<FEATURES_QUERY_RESULT> {
   'use cache'
   cacheLife('hours')
   cacheTag(`feature-${locale}`)
-  return client.fetch<FEATURES_QUERY_RESULT>(FEATURES_QUERY, {})
+  return client.fetch<FEATURES_QUERY_RESULT>(FEATURES_QUERY, { locale })
 }
 
 export async function getFeature(locale: string, slug: string): Promise<FEATURE_QUERY_RESULT> {
   'use cache'
   cacheLife('hours')
   cacheTag(`feature-${locale}`)
-  return client.fetch<FEATURE_QUERY_RESULT>(FEATURE_QUERY, { slug })
+  return client.fetch<FEATURE_QUERY_RESULT>(FEATURE_QUERY, { slug, locale })
 }
 
 export async function getFeatureSlugs(): Promise<FEATURE_SLUGS_QUERY_RESULT> {

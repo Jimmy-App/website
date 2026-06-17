@@ -248,28 +248,65 @@ const FEATURES = [
   },
 ]
 
-// ── Convert to Sanity documents ────────────────────────────────────────────────
-const docs = FEATURES.map((f, i) => {
-  const doc = {
-    _id: `feature-${f.slug}`,
-    _type: 'feature',
-    name: f.name,
-    slug: { _type: 'slug', current: f.slug },
-    audience: f.audience,
-    order: i,
-    sub: f.sub,
-    iconKey: f.iconKey,
-    title: f.title,
-    highlight: f.highlight,
-    highlightSub: f.highlightSub,
-    lead: f.lead,
-    tags: f.tags,
-    capsTitle: f.capsTitle,
-    caps: f.caps.map((c) => ({ _type: 'featureCap', _key: key(), ...c })),
+// ── Localized translations (fr/es) ─────────────────────────────────────────────
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+const __dir = dirname(fileURLToPath(import.meta.url))
+const TR = JSON.parse(readFileSync(join(__dir, 'feature-translations.json'), 'utf8'))
+
+const LOCALES = ['en', 'fr', 'es']
+
+// Build the per-locale text. `en` uses the inline English content; fr/es pull the
+// translated fields, keeping non-localized keys (iconKey/demoKey order) from EN.
+function localize(f, locale) {
+  if (locale === 'en') {
+    return {
+      name: f.name, sub: f.sub, title: f.title, highlight: f.highlight,
+      highlightSub: f.highlightSub, lead: f.lead, tags: f.tags,
+      capsTitle: f.capsTitle, caps: f.caps,
+    }
   }
-  if (f.demoKey) doc.demoKey = f.demoKey
-  return doc
-})
+  const t = TR[f.slug]?.[locale]
+  if (!t) throw new Error(`Missing ${locale} translation for ${f.slug}`)
+  return {
+    name: t.name, sub: t.sub, title: t.title, highlight: t.highlight,
+    highlightSub: t.highlightSub, lead: t.lead, tags: t.tags,
+    capsTitle: t.capsTitle,
+    // merge translated title/desc onto the code-side iconKey (same order)
+    caps: f.caps.map((c, ci) => ({ iconKey: c.iconKey, title: t.caps[ci].title, desc: t.caps[ci].desc })),
+  }
+}
+
+// ── Convert to Sanity documents (12 features × 3 locales = 36 docs) ─────────────
+const docs = FEATURES.flatMap((f, i) =>
+  LOCALES.map((locale) => {
+    const L = localize(f, locale)
+    const doc = {
+      _id: `feature-${f.slug}-${locale}`,
+      _type: 'feature',
+      language: locale,
+      name: L.name,
+      slug: { _type: 'slug', current: f.slug },
+      audience: f.audience,
+      order: i,
+      sub: L.sub,
+      iconKey: f.iconKey,
+      title: L.title,
+      highlight: L.highlight,
+      highlightSub: L.highlightSub,
+      lead: L.lead,
+      tags: L.tags,
+      capsTitle: L.capsTitle,
+      caps: L.caps.map((c) => ({ _type: 'featureCap', _key: key(), ...c })),
+    }
+    if (f.demoKey) doc.demoKey = f.demoKey
+    return doc
+  }),
+)
+
+// Old non-localized ids (feature-<slug>) from the previous single-language seed.
+const oldIds = FEATURES.map((f) => `feature-${f.slug}`)
 
 // ── Mutate ─────────────────────────────────────────────────────────────────────
 async function mutate(documents) {
@@ -278,7 +315,13 @@ async function mutate(documents) {
     {
       method: 'POST',
       headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mutations: documents.map((d) => ({ createOrReplace: d })) }),
+      body: JSON.stringify({
+        mutations: [
+          ...documents.map((d) => ({ createOrReplace: d })),
+          // Remove the legacy non-localized docs (feature-<slug>).
+          ...oldIds.map((id) => ({ delete: { id } })),
+        ],
+      }),
     },
   )
   const json = await res.json()
@@ -290,5 +333,5 @@ async function mutate(documents) {
 }
 
 const result = await mutate(docs)
-console.log(`✓ features: ${result.results.length}`)
+console.log(`✓ features: ${result.results.length} mutations (36 localized docs + cleanup)`)
 console.log('done')

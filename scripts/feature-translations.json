@@ -1,0 +1,386 @@
+{
+  "workout-builder": {
+    "fr": {
+      "name": "Créateur de programmes d'entraînement",
+      "sub": "Programme des blocs structurés en quelques secondes.",
+      "title": { "prefix": "Crée des séances qui ", "accent": "marquent.", "suffix": "" },
+      "highlight": { "prefix": "Programme une fois. ", "accent": "Réutilise à l'infini." },
+      "highlightSub": "Arrête de reconstruire la même séance chaque semaine. Sauvegarde-la, clone-la, ajuste-la — et retrouve tes soirées.",
+      "lead": "EMOM, AMRAP, circuits, force — programme des blocs structurés en secondes, pas dans des tableurs. Conçu pour les coachs qui entraînent vraiment.",
+      "tags": ["Blocs de travail", "EMOM", "AMRAP", "Circuits", "Bibliothèque vidéo"],
+      "capsTitle": "Tout ce qu'il te faut pour programmer — rien de superflu.",
+      "caps": [
+        { "title": "Types de blocs natifs", "desc": "EMOM, AMRAP, circuits et force sont intégrés — aucun contournement nécessaire." },
+        { "title": "Bibliothèque vidéo", "desc": "Associe une démo à chaque mouvement pour que la technique ne fasse jamais défaut." },
+        { "title": "Modèles réutilisables", "desc": "Duplique une semaine ou un bloc entier et reprogramme-le en un seul tap." }
+      ]
+    },
+    "es": {
+      "name": "Creador de entrenamientos",
+      "sub": "Programa bloques estructurados en segundos.",
+      "title": { "prefix": "Crea entrenamientos que ", "accent": "impactan.", "suffix": "" },
+      "highlight": { "prefix": "Programa una vez. ", "accent": "Reutiliza siempre." },
+      "highlightSub": "Deja de reconstruir la misma sesión cada semana. Guárdala, clónala, ajústala — y recupera tus tardes.",
+      "lead": "EMOM, AMRAP, circuitos, fuerza — programa bloques estructurados en segundos, no en hojas de cálculo. Hecho para coaches que realmente entrenan.",
+      "tags": ["Bloques de trabajo", "EMOM", "AMRAP", "Circuitos", "Biblioteca de videos"],
+      "capsTitle": "Todo lo que necesitas para programar — nada más.",
+      "caps": [
+        { "title": "Tipos de bloques nativos", "desc": "EMOM, AMRAP, circuitos y fuerza ya están incluidos — sin rodeos." },
+        { "title": "Biblioteca de videos", "desc": "Añade una demo a cada movimiento para que la técnica nunca quede en duda." },
+        { "title": "Plantillas reutilizables", "desc": "Duplica una semana o un bloque completo y reprogramalo con un solo tap." }
+      ]
+    }
+  },
+  "programs-courses": {
+    "fr": {
+      "name": "Programmes et formations",
+      "sub": "Modules, leçons, programmes complets.",
+      "title": { "prefix": "Des formations, comme sur ", "accent": "Skool.", "suffix": "" },
+      "highlight": { "prefix": "Enseigne une fois. ", "accent": "Vends à l'infini." },
+      "highlightSub": "Transforme ton expertise en une formation qui génère des revenus pendant que tu coaches — sans heures supplémentaires.",
+      "lead": "Structure des modules et des leçons en quelques clics. Vidéos, PDF, quiz et progression débloquée — tout sous ta marque.",
+      "tags": ["Modules", "Leçons", "Quiz", "Certificats", "Contenu progressif"],
+      "capsTitle": "Transforme ton savoir en produit.",
+      "caps": [
+        { "title": "Modules et leçons", "desc": "Organise ton contenu en un parcours que tes clients peuvent vraiment suivre." },
+        { "title": "Progression débloquée", "desc": "Bloque les leçons jusqu'à ce que tes clients soient prêts pour la suite." },
+        { "title": "Quiz et certificats", "desc": "Récompense la complétion et prouve que le travail a été accompli." }
+      ]
+    },
+    "es": {
+      "name": "Programas y cursos",
+      "sub": "Módulos, lecciones, programas completos.",
+      "title": { "prefix": "Cursos, como en ", "accent": "Skool.", "suffix": "" },
+      "highlight": { "prefix": "Enseña una vez. ", "accent": "Vende siempre." },
+      "highlightSub": "Convierte lo que sabes en un curso que genera ingresos mientras haces coaching — sin horas extra.",
+      "lead": "Estructura módulos y lecciones en pocos clics. Videos, PDF, cuestionarios y progresión desbloqueada — todo bajo tu marca.",
+      "tags": ["Módulos", "Lecciones", "Cuestionarios", "Certificados", "Contenido progresivo"],
+      "capsTitle": "Convierte tu conocimiento en un producto.",
+      "caps": [
+        { "title": "Módulos y lecciones", "desc": "Organiza el contenido en un camino que tus clientes puedan seguir de verdad." },
+        { "title": "Progresión desbloqueada", "desc": "Bloquea lecciones hasta que tus clientes estén listos para lo siguiente." },
+        { "title": "Cuestionarios y certificados", "desc": "Premia la finalización y demuestra que el trabajo se hizo." }
+      ]
+    }
+  },
+  "community-feed": {
+    "fr": {
+      "name": "Fil communautaire",
+      "sub": "Publications, réactions, défis.",
+      "title": { "prefix": "Tes clients ne ", "accent": "s'entraînent jamais seuls.", "suffix": "" },
+      "highlight": { "prefix": "L'appartenance dépasse ", "accent": "la volonté." },
+      "highlightSub": "Les clients abandonnent les programmes. Ils n'abandonnent pas les communautés. Donne-leur une raison de revenir.",
+      "lead": "Un fil communautaire style Skool intégré à ta plateforme. Publications, réactions, annonces et défis collectifs maintiennent l'élan.",
+      "tags": ["Publications", "Réactions", "Annonces", "Défis collectifs"],
+      "capsTitle": "Le moteur de rétention, intégré.",
+      "caps": [
+        { "title": "Publications et réactions", "desc": "Un fil vivant où tes clients partagent leurs victoires et s'encouragent mutuellement." },
+        { "title": "Annonces", "desc": "Épingle les mises à jour pour que toute la communauté voie ce qui compte." },
+        { "title": "Défis collectifs", "desc": "Lance des défis qui transforment l'effort solo en effort d'équipe." }
+      ]
+    },
+    "es": {
+      "name": "Feed comunitario",
+      "sub": "Publicaciones, reacciones, desafíos.",
+      "title": { "prefix": "Tus clientes nunca ", "accent": "entrenan solos.", "suffix": "" },
+      "highlight": { "prefix": "La comunidad supera ", "accent": "a la fuerza de voluntad." },
+      "highlightSub": "Los clientes abandonan los programas. No abandonan las comunidades. Dales una razón para seguir apareciendo.",
+      "lead": "Un feed comunitario estilo Skool integrado en tu plataforma. Publicaciones, reacciones, anuncios y desafíos grupales mantienen el impulso.",
+      "tags": ["Publicaciones", "Reacciones", "Anuncios", "Desafíos grupales"],
+      "capsTitle": "El motor de retención, integrado.",
+      "caps": [
+        { "title": "Publicaciones y reacciones", "desc": "Un feed activo donde tus clientes comparten logros y se animan entre sí." },
+        { "title": "Anuncios", "desc": "Fija actualizaciones para que toda la comunidad vea lo que importa." },
+        { "title": "Desafíos grupales", "desc": "Crea desafíos que convierten el esfuerzo individual en esfuerzo de equipo." }
+      ]
+    }
+  },
+  "messaging": {
+    "fr": {
+      "name": "Messagerie",
+      "sub": "Chat 1:1 et de groupe avec tes clients.",
+      "title": { "prefix": "Arrête de coacher depuis ", "accent": "WhatsApp.", "suffix": "" },
+      "highlight": { "prefix": "Une seule boîte de réception. ", "accent": "Zéro chaos." },
+      "highlightSub": "Plus de messages perdus entre trois applis. Tout ce qu'un client envoie reste exactement là où ça doit être.",
+      "lead": "Chat 1:1 et de groupe intégré directement dans Jimmy. Textes, photos et messages vocaux — au même endroit, liés au bon client.",
+      "tags": ["Chat 1:1", "Vocal", "Photos et vidéos", "Chat de groupe"],
+      "capsTitle": "Une seule boîte de réception pour toute ta liste.",
+      "caps": [
+        { "title": "Chat 1:1 client", "desc": "Chaque conversation est liée directement à l'entraînement de ce client." },
+        { "title": "Messages vocaux", "desc": "Envoie des conseils rapides sur la technique sans taper un paragraphe." },
+        { "title": "Photos et vidéos", "desc": "Analyse la technique avec des clips partagés directement dans la discussion." }
+      ]
+    },
+    "es": {
+      "name": "Mensajería",
+      "sub": "Chat 1:1 y grupal con tus clientes.",
+      "title": { "prefix": "Deja de hacer coaching desde ", "accent": "WhatsApp.", "suffix": "" },
+      "highlight": { "prefix": "Una sola bandeja. ", "accent": "Cero caos." },
+      "highlightSub": "Se acabaron los mensajes perdidos entre tres apps. Todo lo que un cliente envía queda exactamente donde debe estar.",
+      "lead": "Chat 1:1 y grupal integrado directamente en Jimmy. Texto, fotos y mensajes de voz — todo en un lugar, vinculado al cliente correcto.",
+      "tags": ["Chat 1:1", "Voz", "Fotos y videos", "Chat grupal"],
+      "capsTitle": "Una sola bandeja para todo tu roster.",
+      "caps": [
+        { "title": "Chat 1:1 con clientes", "desc": "Cada conversación vive junto al entrenamiento de ese cliente." },
+        { "title": "Mensajes de voz", "desc": "Envía correcciones rápidas de técnica sin escribir un párrafo." },
+        { "title": "Fotos y videos", "desc": "Revisa la técnica con clips compartidos directamente en el hilo." }
+      ]
+    }
+  },
+  "payments": {
+    "fr": {
+      "name": "Paiements",
+      "sub": "Abonnements et paiements ponctuels.",
+      "title": { "prefix": "Laisse le système gérer ", "accent": "la facturation.", "suffix": "" },
+      "highlight": { "prefix": "Touche tes revenus ", "accent": "en automatique." },
+      "highlightSub": "Les factures oubliées et les relances gênantes, c'est terminé. La facturation tourne seule pour que tu te concentres sur tes athlètes.",
+      "lead": "Paiements Stripe intégrés, abonnements récurrents et facturation automatique — l'argent rentre pendant que tu coaches.",
+      "tags": ["Stripe Connect", "Récurrent", "Facturation auto", "Analytique"],
+      "capsTitle": "Touche tes revenus sans courir après personne.",
+      "caps": [
+        { "title": "Stripe Connect", "desc": "Les versements arrivent directement sur ton compte — Jimmy ne retient jamais ton argent." },
+        { "title": "Plans récurrents", "desc": "Configure un abonnement une fois et laisse-le se renouveler tout seul." },
+        { "title": "Analytique des revenus", "desc": "Suis ton MRR, le churn et tes clients actifs d'un coup d'œil." }
+      ]
+    },
+    "es": {
+      "name": "Pagos",
+      "sub": "Suscripciones y pagos únicos.",
+      "title": { "prefix": "Deja que el sistema gestione ", "accent": "la facturación.", "suffix": "" },
+      "highlight": { "prefix": "Cobra en ", "accent": "piloto automático." },
+      "highlightSub": "Las facturas olvidadas y los recordatorios incómodos terminan aquí. La facturación se gestiona sola para que te concentres en tus atletas.",
+      "lead": "Pagos Stripe integrados, suscripciones recurrentes y facturación automática — el dinero sigue fluyendo mientras haces coaching.",
+      "tags": ["Stripe Connect", "Recurrente", "Facturación automática", "Analítica"],
+      "capsTitle": "Cobra sin perseguir a nadie.",
+      "caps": [
+        { "title": "Stripe Connect", "desc": "Los pagos llegan directamente a tu cuenta — Jimmy nunca retiene tu dinero." },
+        { "title": "Planes recurrentes", "desc": "Configura una suscripción una vez y deja que se renueve sola." },
+        { "title": "Analítica de ingresos", "desc": "Ve tu MRR, la baja y los clientes activos de un vistazo." }
+      ]
+    }
+  },
+  "progress-tracking": {
+    "fr": {
+      "name": "Suivi de la progression",
+      "sub": "PRs, charges, benchmarks.",
+      "title": { "prefix": "Suis chaque PR, charge et ", "accent": "série.", "suffix": "" },
+      "highlight": { "prefix": "Ce qu'on mesure, ", "accent": "on le recommence." },
+      "highlightSub": "La progression visible est le meilleur motivateur qui soit. Rends chaque gain impossible à ignorer.",
+      "lead": "Suis les benchmarks sur toute ta liste. Repère qui progresse — et qui a besoin d'un coup de pouce — avant qu'ils disparaissent.",
+      "tags": ["PRs", "Benchmarks", "Historique des charges", "Séries"],
+      "capsTitle": "Des données qui maintiennent tes clients sur la bonne voie.",
+      "caps": [
+        { "title": "PRs et benchmarks", "desc": "Les records personnels sont enregistrés automatiquement pendant l'entraînement." },
+        { "title": "Historique des charges", "desc": "Chaque série, chaque séance — retrouvables en quelques secondes." },
+        { "title": "Séries et assiduité", "desc": "Repère les décrochages tôt et interviens avant que ça devienne un désabonnement." }
+      ]
+    },
+    "es": {
+      "name": "Seguimiento del progreso",
+      "sub": "PRs, cargas, benchmarks.",
+      "title": { "prefix": "Ve cada PR, carga y ", "accent": "racha.", "suffix": "" },
+      "highlight": { "prefix": "Lo que se mide, ", "accent": "se repite." },
+      "highlightSub": "El progreso visible es el motivador más poderoso que existe. Haz que cada logro sea imposible de ignorar.",
+      "lead": "Sigue los benchmarks en todo tu roster. Detecta quién avanza — y quién necesita un empujón — antes de que desaparezca.",
+      "tags": ["PRs", "Benchmarks", "Historial de cargas", "Rachas"],
+      "capsTitle": "Datos que mantienen a tus clientes en el camino.",
+      "caps": [
+        { "title": "PRs y benchmarks", "desc": "Los récords personales se registran automáticamente mientras los clientes entrenan." },
+        { "title": "Historial de cargas", "desc": "Cada serie, cada sesión — disponibles en segundos." },
+        { "title": "Rachas y adherencia", "desc": "Detecta la baja a tiempo e intervén antes de que se convierta en cancelación." }
+      ]
+    }
+  },
+  "branded-mobile-app": {
+    "fr": {
+      "name": "Application mobile à ta marque",
+      "sub": "Ton logo, tes couleurs.",
+      "title": { "prefix": "Ta marque. ", "accent": "Dans leur poche.", "suffix": "" },
+      "highlight": { "prefix": "Ton logo. ", "accent": "Tes couleurs." },
+      "highlightSub": "Tes membres ouvrent une appli avec ton nom chaque jour. C'est une marque que la pub ne peut pas t'offrir.",
+      "lead": "Une appli iOS et Android en marque blanche — ton logo, tes couleurs, ton nom sur l'écran d'accueil. Tes membres s'entraînent dans ton univers, pas celui de quelqu'un d'autre.",
+      "tags": ["iOS & Android", "Ton logo", "Tes couleurs", "Notifications push"],
+      "capsTitle": "Une appli qui ne ressemble qu'à toi.",
+      "caps": [
+        { "title": "Ton logo et tes couleurs", "desc": "Chaque écran porte ta marque, pas un modèle générique." },
+        { "title": "iOS & Android", "desc": "Des applis natives que tes membres téléchargent et gardent sur leur téléphone." },
+        { "title": "Notifications push", "desc": "Atteins tes membres dès qu'une nouvelle séance est disponible." }
+      ]
+    },
+    "es": {
+      "name": "App móvil con tu marca",
+      "sub": "Tu logo, tus colores.",
+      "title": { "prefix": "Tu marca. ", "accent": "En su bolsillo.", "suffix": "" },
+      "highlight": { "prefix": "Tu logo. ", "accent": "Tus colores." },
+      "highlightSub": "Tus miembros abren una app con tu nombre cada día. Esa es una marca que no se compra con publicidad.",
+      "lead": "Una app iOS y Android de marca blanca — tu logo, tus colores, tu nombre en la pantalla de inicio. Tus miembros entrenan en tu mundo, no en el de otra persona.",
+      "tags": ["iOS & Android", "Tu logo", "Tus colores", "Notificaciones push"],
+      "capsTitle": "Una app que es inconfundiblemente tuya.",
+      "caps": [
+        { "title": "Tu logo y tus colores", "desc": "Cada pantalla lleva tu marca, no una plantilla genérica." },
+        { "title": "iOS & Android", "desc": "Apps nativas que tus miembros descargan y guardan en su teléfono." },
+        { "title": "Notificaciones push", "desc": "Llega a tus miembros en el momento en que una nueva sesión está lista." }
+      ]
+    }
+  },
+  "daily-workouts": {
+    "fr": {
+      "name": "Séances quotidiennes",
+      "sub": "Blocs clairs, minuteurs, vidéos.",
+      "title": { "prefix": "La séance du jour, ", "accent": "prête.", "suffix": "" },
+      "highlight": { "prefix": "Ouvre. Entraîne-toi. ", "accent": "C'est fait." },
+      "highlightSub": "Pas de tableurs, pas de PDF, pas de questions. La séance attend dès qu'ils ouvrent l'appli.",
+      "lead": "Des blocs clairs, des minuteurs intégrés et des vidéos de démonstration. Tes membres ouvrent l'appli et s'entraînent — sans hésiter, sans chercher.",
+      "tags": ["Blocs quotidiens", "Minuteurs", "Vidéos de démo", "Journalisation"],
+      "capsTitle": "Arrive. Entraîne-toi. C'est fait.",
+      "caps": [
+        { "title": "Blocs quotidiens", "desc": "Chaque jour présente exactement quoi faire, dans l'ordre." },
+        { "title": "Minuteurs intégrés", "desc": "Les minuteurs EMOM et d'intervalles fonctionnent directement dans la séance." },
+        { "title": "Vidéos de démo", "desc": "Chaque mouvement vient avec un clip — la technique ne fait jamais défaut." }
+      ]
+    },
+    "es": {
+      "name": "Entrenamientos diarios",
+      "sub": "Bloques claros, temporizadores, videos.",
+      "title": { "prefix": "La sesión de hoy, ", "accent": "lista.", "suffix": "" },
+      "highlight": { "prefix": "Abre. Entrena. ", "accent": "Listo." },
+      "highlightSub": "Sin hojas de cálculo, sin PDF, sin preguntas. La sesión está esperando en el momento en que abren la app.",
+      "lead": "Bloques claros, temporizadores integrados y videos de demostración. Tus miembros abren la app y simplemente entrenan — sin dudas, sin desplazarse.",
+      "tags": ["Bloques diarios", "Temporizadores", "Videos de demo", "Registro"],
+      "capsTitle": "Llega. Entrena. Listo.",
+      "caps": [
+        { "title": "Bloques diarios", "desc": "Cada día presenta exactamente qué hacer, en orden." },
+        { "title": "Temporizadores integrados", "desc": "Los temporizadores EMOM e intervalos funcionan dentro del entrenamiento." },
+        { "title": "Videos de demo", "desc": "Cada movimiento viene con un clip — la técnica nunca queda en duda." }
+      ]
+    }
+  },
+  "community-member": {
+    "fr": {
+      "name": "Communauté",
+      "sub": "S'entraîner ensemble, pas seul.",
+      "title": { "prefix": "Entraîne-toi ensemble, ", "accent": "pas seul.", "suffix": "" },
+      "highlight": { "prefix": "Ils ne s'entraînent pas — ", "accent": "ils appartiennent." },
+      "highlightSub": "La motivation est contagieuse. Entour tes membres de personnes sur le même chemin, et ils restent.",
+      "lead": "Un fil, des défis et des réactions qui poussent tes membres à revenir — pour eux et pour les autres.",
+      "tags": ["Fil partagé", "Défis", "Réactions", "Classements"],
+      "capsTitle": "Ce qui les fait revenir, intégré.",
+      "caps": [
+        { "title": "Fil partagé", "desc": "Victoires, Check-in et encouragements de tout le groupe." },
+        { "title": "Défis", "desc": "La compétition amicale qui donne l'impression que l'effort est un jeu." },
+        { "title": "Réactions", "desc": "Un simple tap de soutien qui transforme l'effort en appartenance." }
+      ]
+    },
+    "es": {
+      "name": "Comunidad",
+      "sub": "Entrenar juntos, no solos.",
+      "title": { "prefix": "Entrena juntos, ", "accent": "no solos.", "suffix": "" },
+      "highlight": { "prefix": "No solo entrenan — ", "accent": "pertenecen." },
+      "highlightSub": "La motivación es contagiosa. Rodea a tus miembros de personas en el mismo camino y se quedan.",
+      "lead": "Un feed, desafíos y reacciones que mantienen a tus miembros apareciendo — por ellos y por los demás.",
+      "tags": ["Feed compartido", "Desafíos", "Reacciones", "Clasificaciones"],
+      "capsTitle": "La parte que los hace volver.",
+      "caps": [
+        { "title": "Feed compartido", "desc": "Logros, Check-in y ánimo de todo el grupo." },
+        { "title": "Desafíos", "desc": "La competencia amistosa que hace que el esfuerzo parezca un juego." },
+        { "title": "Reacciones", "desc": "Un solo tap de apoyo que convierte el esfuerzo en pertenencia." }
+      ]
+    }
+  },
+  "direct-access": {
+    "fr": {
+      "name": "Accès direct",
+      "sub": "Chat et Check-in avec le coach.",
+      "title": { "prefix": "Leur coach, ", "accent": "à portée de tap.", "suffix": "" },
+      "highlight": { "prefix": "Toujours à ", "accent": "portée de main." },
+      "highlightSub": "Quand l'aide est à un tap, tes membres font confiance au processus — et restent bien plus longtemps.",
+      "lead": "Chat et Check-in avec leur coach, directement intégrés — pour que les questions trouvent une réponse et que rien ne passe entre les mailles.",
+      "tags": ["Chat 1:1", "Check-in", "Vocal", "Rappels"],
+      "capsTitle": "Un soutien toujours à portée de main.",
+      "caps": [
+        { "title": "Chat 1:1", "desc": "Un lien direct avec leur coach, sans autre appli nécessaire." },
+        { "title": "Check-in", "desc": "Des rappels réguliers qui responsabilisent tes membres et les font se sentir vus." },
+        { "title": "Rappels", "desc": "Des petites notifications pour que séances et réponses ne passent jamais à la trappe." }
+      ]
+    },
+    "es": {
+      "name": "Acceso directo",
+      "sub": "Chat y Check-in con el coach.",
+      "title": { "prefix": "Su coach, ", "accent": "a un tap de distancia.", "suffix": "" },
+      "highlight": { "prefix": "Siempre al ", "accent": "alcance." },
+      "highlightSub": "Cuando la ayuda está a un tap, los miembros confían en el proceso — y se quedan mucho más tiempo.",
+      "lead": "Chat y Check-in con su coach, integrados directamente — para que las preguntas tengan respuesta y nada se pierda.",
+      "tags": ["Chat 1:1", "Check-in", "Voz", "Recordatorios"],
+      "capsTitle": "Apoyo siempre al alcance.",
+      "caps": [
+        { "title": "Chat 1:1", "desc": "Una línea directa con su coach, sin necesidad de otra app." },
+        { "title": "Check-in", "desc": "Recordatorios regulares que mantienen a los miembros responsables y presentes." },
+        { "title": "Recordatorios", "desc": "Avisos suaves para que las sesiones y respuestas nunca se pierdan." }
+      ]
+    }
+  },
+  "progress-view": {
+    "fr": {
+      "name": "Vue de progression",
+      "sub": "Graphiques, séries, historique de PRs.",
+      "title": { "prefix": "Regarde les progrès ", "accent": "s'accumuler.", "suffix": "" },
+      "highlight": { "prefix": "Une motivation qu'on peut ", "accent": "voir." },
+      "highlightSub": "Des chiffres qui grimpent — le meilleur coach qui soit. Tes membres voient leur progression et en veulent toujours plus.",
+      "lead": "Graphiques, séries et historique complet de PRs — la preuve visible que le travail paie, directement dans leur poche.",
+      "tags": ["Graphiques de progression", "Séries", "Historique de PRs", "Badges"],
+      "capsTitle": "Une motivation qu'ils peuvent vraiment voir.",
+      "caps": [
+        { "title": "Graphiques de progression", "desc": "Chaque charge et chaque benchmark tracés dans le temps." },
+        { "title": "Séries", "desc": "Des séries quotidiennes qui rendent la régularité gratifiante." },
+        { "title": "Historique de PRs", "desc": "Un palmarès personnel qui grandit et qu'on aime revisiter." }
+      ]
+    },
+    "es": {
+      "name": "Vista de progreso",
+      "sub": "Gráficas, rachas, historial de PRs.",
+      "title": { "prefix": "Mira cómo se acumulan ", "accent": "los logros.", "suffix": "" },
+      "highlight": { "prefix": "Motivación que se puede ", "accent": "ver." },
+      "highlightSub": "Los números que suben son el mejor coach que existe. Tus miembros ven su progreso — y quieren más.",
+      "lead": "Gráficas, rachas e historial completo de PRs — prueba visible de que el trabajo funciona, directo en su bolsillo.",
+      "tags": ["Gráficas de progreso", "Rachas", "Historial de PRs", "Insignias"],
+      "capsTitle": "Motivación que realmente pueden ver.",
+      "caps": [
+        { "title": "Gráficas de progreso", "desc": "Cada carga y benchmark trazados en el tiempo." },
+        { "title": "Rachas", "desc": "Rachas diarias que hacen que la constancia se sienta gratificante." },
+        { "title": "Historial de PRs", "desc": "Un registro creciente de récords personales para mirar atrás con orgullo." }
+      ]
+    }
+  },
+  "easy-payments": {
+    "fr": {
+      "name": "Paiements simplifiés",
+      "sub": "Gère tes abonnements en un seul endroit.",
+      "title": { "prefix": "Des abonnements payés en ", "accent": "quelques secondes.", "suffix": "" },
+      "highlight": { "prefix": "Pas de relances. ", "accent": "Pas de friction." },
+      "highlightSub": "Quand payer est simple, tes membres restent abonnés — et tu arrêtes de courir après les factures.",
+      "lead": "Tes membres gèrent leur abonnement et leurs paiements en un seul endroit — sécurisé, simple, et sans relances gênantes.",
+      "tags": ["Abonnements", "Paiement sécurisé", "Reçus", "Autonome"],
+      "capsTitle": "Le paiement, c'est la partie facile.",
+      "caps": [
+        { "title": "Un seul endroit pour tout", "desc": "Abonnement, historique et reçus — tout est dans l'appli." },
+        { "title": "Paiement sécurisé", "desc": "Propulsé par Stripe — les coordonnées bancaires n'atteignent jamais le coach." },
+        { "title": "Autonomie totale", "desc": "Passe à un plan supérieur, mets en pause ou mets à jour le paiement sans va-et-vient." }
+      ]
+    },
+    "es": {
+      "name": "Pagos fáciles",
+      "sub": "Gestiona tus suscripciones en un solo lugar.",
+      "title": { "prefix": "Planes pagados en ", "accent": "segundos.", "suffix": "" },
+      "highlight": { "prefix": "Sin recordatorios. ", "accent": "Sin fricción." },
+      "highlightSub": "Cuando pagar es sin esfuerzo, los miembros siguen suscritos — y los coaches dejan de perseguir facturas.",
+      "lead": "Tus miembros gestionan su suscripción y pagos en un solo lugar — seguro, simple, y sin recordatorios incómodos.",
+      "tags": ["Suscripciones", "Pago seguro", "Recibos", "Autogestión"],
+      "capsTitle": "Pagar es la parte fácil.",
+      "caps": [
+        { "title": "Un solo lugar para todo", "desc": "Suscripción, historial y recibos — todo vive en la app." },
+        { "title": "Pago seguro", "desc": "Con Stripe — los datos de la tarjeta nunca llegan al coach." },
+        { "title": "Autogestión", "desc": "Cambia de plan, pausa o actualiza el pago sin ir y venir." }
+      ]
+    }
+  }
+}

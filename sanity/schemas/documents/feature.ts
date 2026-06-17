@@ -16,6 +16,7 @@ export const feature = defineType({
   title: 'Feature',
   type: 'document',
   fields: [
+    defineField({ name: 'language', type: 'string', readOnly: true, hidden: true }),
     defineField({ name: 'name', title: 'Name (breadcrumb label)', type: 'string', validation: (R) => R.required() }),
     defineField({
       name: 'slug',
