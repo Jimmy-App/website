@@ -93,5 +93,21 @@
     "noResultsTitle": "Aucun article trouvé",
     "noResultsBody": "Essaie un autre mot-clé ou réinitialise les filtres.",
     "clearAll": "Réinitialiser"
+  },
+  "changelog": {
+    "eyebrow": "Nouveautés produit",
+    "titlePrefix": "Chaque mise à jour, ",
+    "titleAccent": "au grand jour.",
+    "subtitle": "De nouvelles fonctionnalités, des détails plus fins et les correctifs que tu as demandés — livrés en continu et notés noir sur blanc pour que tu saches toujours ce qui a changé.",
+    "latest": "Dernière",
+    "tagNew": "Nouveau",
+    "tagImproved": "Amélioré",
+    "tagFixed": "Corrigé",
+    "ctaTitlePrefix": "Tu veux quelque chose ",
+    "ctaTitleAccent": "sur cette liste ?",
+    "ctaBody": "La feuille de route est façonnée par des coachs comme toi. Dis-nous ce qui rendrait Jimmy meilleur — on lit chaque demande.",
+    "ctaPrimary": "Proposer une fonctionnalité",
+    "ctaSecondary": "Voir la feuille de route",
+    "showMore": "Voir plus de mises à jour"
   }
 }

@@ -227,3 +227,17 @@ export const FEATURE_QUERY = groq`
 export const FEATURE_SLUGS_QUERY = groq`
   *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }
 `
+
+// ── Changelog ─────────────────────────────────────────────────────────────────
+// Not localized (English content on all locales); chrome localized via next-intl.
+// Newest first. `image` keeps the asset ref + alt for urlFor().
+export const CHANGELOG_QUERY = groq`
+  *[_type == "changelogRelease" && defined(date)] | order(date desc){
+    version,
+    date,
+    title,
+    lead,
+    image{ ..., alt },
+    changes[]{ type, text }
+  }
+`

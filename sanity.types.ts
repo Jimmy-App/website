@@ -27,6 +27,47 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type ChangelogRelease = {
+  _id: string;
+  _type: "changelogRelease";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  version?: string;
+  date?: string;
+  title?: string;
+  lead?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  changes?: Array<
+    {
+      _key: string;
+    } & ChangelogChange
+  >;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
 export type Guide = {
   _id: string;
   _type: "guide";
@@ -107,22 +148,6 @@ export type Seo = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
 };
 
 export type Slug = {
@@ -265,6 +290,12 @@ export type PricingPlans = {
     } & PricingTier
   >;
   betaDiscountPct?: number;
+};
+
+export type ChangelogChange = {
+  _type: "changelogChange";
+  type?: "new" | "improved" | "fixed";
+  text?: string;
 };
 
 export type FeatureCap = {
@@ -1202,10 +1233,11 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | Preview
   | SanityImageAssetReference
-  | Guide
-  | Seo
+  | ChangelogRelease
   | SanityImageCrop
   | SanityImageHotspot
+  | Guide
+  | Seo
   | Slug
   | Post
   | PricingFeatures
@@ -1213,6 +1245,7 @@ export type AllSanitySchemaTypes =
   | Pricing
   | AffiliateSettings
   | PricingPlans
+  | ChangelogChange
   | FeatureCap
   | GuideVideo
   | GuideFaq
@@ -2115,6 +2148,28 @@ export type FEATURE_SLUGS_QUERY_RESULT = Array<{
   slug: string | null;
 }>;
 
+// Source: sanity/queries/index.ts
+// Variable: CHANGELOG_QUERY
+// Query: *[_type == "changelogRelease" && defined(date)] | order(date desc){    version,    date,    title,    lead,    image{ ..., alt },    changes[]{ type, text }  }
+export type CHANGELOG_QUERY_RESULT = Array<{
+  version: string | null;
+  date: string;
+  title: string | null;
+  lead: string | null;
+  image: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string | null;
+    _type: "image";
+  } | null;
+  changes: Array<{
+    type: "fixed" | "improved" | "new" | null;
+    text: string | null;
+  }> | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -2136,5 +2191,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n\n  }\n': FEATURES_QUERY_RESULT;
     '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
     '\n  *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }\n': FEATURE_SLUGS_QUERY_RESULT;
+    '\n  *[_type == "changelogRelease" && defined(date)] | order(date desc){\n    version,\n    date,\n    title,\n    lead,\n    image{ ..., alt },\n    changes[]{ type, text }\n  }\n': CHANGELOG_QUERY_RESULT;
   }
 }

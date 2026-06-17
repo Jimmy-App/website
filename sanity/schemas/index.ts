@@ -18,6 +18,7 @@ import { guideSteps } from './objects/guideSteps'
 import { guideFaq } from './objects/guideFaq'
 import { guideVideo } from './objects/guideVideo'
 import { featureCap } from './objects/featureCap'
+import { changelogChange } from './objects/changelogChange'
 
 import { siteSettings } from './documents/siteSettings'
 import { homePage } from './documents/homePage'
@@ -32,6 +33,7 @@ import { pricingFeatures } from './documents/pricingFeatures'
 import { post } from './documents/post'
 import { guide } from './documents/guide'
 import { feature } from './documents/feature'
+import { changelogRelease } from './documents/changelogRelease'
 
 export const schemaTypes = [
   // Objects (must come before documents that reference them)
@@ -55,6 +57,7 @@ export const schemaTypes = [
   guideFaq,
   guideVideo,
   featureCap,
+  changelogChange,
   // Documents
   siteSettings,
   homePage,
@@ -69,4 +72,5 @@ export const schemaTypes = [
   post,
   guide,
   feature,
+  changelogRelease,
 ]

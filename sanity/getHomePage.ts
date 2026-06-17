@@ -18,6 +18,7 @@ import {
   FEATURES_QUERY,
   FEATURE_QUERY,
   FEATURE_SLUGS_QUERY,
+  CHANGELOG_QUERY,
 } from './queries'
 import type {
   HOME_QUERY_RESULT,
@@ -37,6 +38,7 @@ import type {
   FEATURES_QUERY_RESULT,
   FEATURE_QUERY_RESULT,
   FEATURE_SLUGS_QUERY_RESULT,
+  CHANGELOG_QUERY_RESULT,
 } from '../sanity.types'
 
 export async function getHomePage(locale: string): Promise<HOME_QUERY_RESULT> {
@@ -162,4 +164,13 @@ export async function getFeatureSlugs(): Promise<FEATURE_SLUGS_QUERY_RESULT> {
   cacheLife('hours')
   cacheTag('feature-en')
   return client.fetch<FEATURE_SLUGS_QUERY_RESULT>(FEATURE_SLUGS_QUERY, {})
+}
+
+// Changelog is not localized; `locale` only scopes the cache tag so the Sanity
+// revalidation webhook (changelogRelease-{language}) invalidates it like the rest.
+export async function getChangelog(locale: string): Promise<CHANGELOG_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`changelogRelease-${locale}`)
+  return client.fetch<CHANGELOG_QUERY_RESULT>(CHANGELOG_QUERY, {})
 }

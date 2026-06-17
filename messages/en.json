@@ -93,5 +93,21 @@
     "noResultsTitle": "No articles found",
     "noResultsBody": "Try a different keyword or clear the filters.",
     "clearAll": "Clear search"
+  },
+  "changelog": {
+    "eyebrow": "Product Updates",
+    "titlePrefix": "Every update, ",
+    "titleAccent": "in the open.",
+    "subtitle": "New features, sharper details and the fixes you asked for — shipped continuously and written down so you always know what changed.",
+    "latest": "Latest",
+    "tagNew": "New",
+    "tagImproved": "Improved",
+    "tagFixed": "Fixed",
+    "ctaTitlePrefix": "Want something ",
+    "ctaTitleAccent": "on this list?",
+    "ctaBody": "The roadmap is shaped by coaches like you. Tell us what would make Jimmy better — we read every request.",
+    "ctaPrimary": "Request a feature",
+    "ctaSecondary": "See the roadmap",
+    "showMore": "Show more updates"
   }
 }

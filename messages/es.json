@@ -93,5 +93,21 @@
     "noResultsTitle": "No se encontraron artículos",
     "noResultsBody": "Prueba otra palabra clave o limpia los filtros.",
     "clearAll": "Limpiar búsqueda"
+  },
+  "changelog": {
+    "eyebrow": "Novedades del producto",
+    "titlePrefix": "Cada novedad, ",
+    "titleAccent": "sin secretos.",
+    "subtitle": "Nuevas funciones, detalles más finos y las correcciones que pediste — publicadas de forma continua y por escrito para que siempre sepas qué cambió.",
+    "latest": "Última",
+    "tagNew": "Nuevo",
+    "tagImproved": "Mejorado",
+    "tagFixed": "Corregido",
+    "ctaTitlePrefix": "¿Quieres algo ",
+    "ctaTitleAccent": "de esta lista?",
+    "ctaBody": "La hoja de ruta la marcan coaches como tú. Cuéntanos qué haría mejor a Jimmy — leemos cada solicitud.",
+    "ctaPrimary": "Sugerir una función",
+    "ctaSecondary": "Ver la hoja de ruta",
+    "showMore": "Ver más novedades"
   }
 }

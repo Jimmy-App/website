@@ -33,6 +33,9 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title('Features')
         .child(S.documentTypeList('feature').title('Features')),
+      S.listItem()
+        .title('Changelog')
+        .child(S.documentTypeList('changelogRelease').title('Changelog Releases')),
       S.divider(),
       S.listItem()
         .title('Navigation')
