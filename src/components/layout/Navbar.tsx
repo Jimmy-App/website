@@ -97,7 +97,7 @@ const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
 const RESOURCE_ROUTES: Record<string, string> = { blog: '/blog', guides: '/guides' }
 const resourceHref = (key?: string | null): string | undefined => RESOURCE_ROUTES[key ?? '']
 
-// Feature (coach) items that map to a real route.
+// Feature items (coach + member) that map to a real route.
 const FEATURE_ROUTES: Record<string, string> = {
   workoutBuilder:   '/features/workout-builder',
   programs:         '/features/programs-courses',
@@ -105,6 +105,12 @@ const FEATURE_ROUTES: Record<string, string> = {
   messaging:        '/features/messaging',
   payments:         '/features/payments',
   progressTracking: '/features/progress-tracking',
+  brandedApp:       '/features/branded-mobile-app',
+  dailyWorkouts:    '/features/daily-workouts',
+  community:        '/features/community-member',
+  directAccess:     '/features/direct-access',
+  progressView:     '/features/progress-view',
+  easyPayments:     '/features/easy-payments',
 }
 const featureHref = (key?: string | null): string | undefined => FEATURE_ROUTES[key ?? '']
 
@@ -141,8 +147,8 @@ function MobileResItem({
   )
 }
 
-/* Mobile coach feature sub-link: locale-aware Link for internal routes. */
-function MobileCoachItem({
+/* Mobile feature sub-link (coach or member): locale-aware Link for internal routes. */
+function MobileFeatureItem({
   it,
   onClose,
   className,
@@ -171,6 +177,9 @@ function MobileCoachItem({
     </a>
   )
 }
+
+/** @deprecated Use MobileFeatureItem — kept for backwards-compat during migration */
+const MobileCoachItem = MobileFeatureItem
 
 /* Rounded flag icon — real SVG flags (emoji flags don't render on Windows/some Android) */
 function Flag({ src }: { src: string }) {
@@ -227,6 +236,7 @@ function FeaturesMega({ data }: { data: NavigationData }) {
               icon={FEATURE_ICONS[it.key ?? ''] ?? null}
               title={it.title ?? ''}
               subtitle={it.subtitle ?? ''}
+              href={featureHref(it.key) ?? it.href ?? '#'}
             />
           ))}
         </div>
@@ -613,10 +623,7 @@ function MobileMenu({
                   <div>
                     <div className={groupLabelCls}>{data.featuresForMembers}</div>
                     {memberItems.map((it) => (
-                      <a key={it.key} href={it.href ?? '#'} onClick={onClose} className={subLinkCls}>
-                        <span className="text-text-faint">{FEATURE_ICONS_SM[it.key ?? ''] ?? null}</span>
-                        {it.title}
-                      </a>
+                      <MobileFeatureItem key={it.key} it={it} onClose={onClose} className={subLinkCls} />
                     ))}
                   </div>
                 </div>

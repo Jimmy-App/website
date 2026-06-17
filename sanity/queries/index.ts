@@ -188,3 +188,41 @@ export const GUIDE_QUERY = groq`
 export const GUIDE_SLUGS_QUERY = groq`
   *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }
 `
+
+// ── Features ──────────────────────────────────────────────────────────────────
+// Not localized (English content on all locales); page chrome localized via
+// next-intl. The demo / icon / media are resolved code-side from string keys.
+// Card projection (related lists, static params) omits the heavy hero fields.
+const FEATURE_CARD = `
+  "slug": slug.current,
+  audience,
+  name,
+  sub,
+  iconKey,
+  order
+`
+
+export const FEATURES_QUERY = groq`
+  *[_type == "feature" && defined(slug.current)] | order(order asc){
+    ${FEATURE_CARD}
+  }
+`
+
+export const FEATURE_QUERY = groq`
+  *[_type == "feature" && slug.current == $slug][0]{
+    ${FEATURE_CARD},
+    demoKey,
+    title{ prefix, accent, suffix },
+    highlight{ prefix, accent },
+    highlightSub,
+    lead,
+    tags,
+    capsTitle,
+    caps[]{ iconKey, title, desc },
+    seo
+  }
+`
+
+export const FEATURE_SLUGS_QUERY = groq`
+  *[_type == "feature" && defined(slug.current)]{ "slug": slug.current }
+`

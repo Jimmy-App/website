@@ -20,11 +20,64 @@ export type Preview = {
   barChip?: string;
 };
 
+export type Feature = {
+  _id: string;
+  _type: "feature";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  audience?: "For Coaches" | "For Members";
+  order?: number;
+  sub?: string;
+  iconKey?: string;
+  demoKey?: string;
+  title?: {
+    prefix?: string;
+    accent?: string;
+    suffix?: string;
+  };
+  highlight?: {
+    prefix?: string;
+    accent?: string;
+  };
+  highlightSub?: string;
+  lead?: string;
+  tags?: Array<string>;
+  capsTitle?: string;
+  caps?: Array<
+    {
+      _key: string;
+    } & FeatureCap
+  >;
+  seo?: Seo;
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type Seo = {
+  _type: "seo";
+  title?: string;
+  description?: string;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
 };
 
 export type Guide = {
@@ -96,19 +149,6 @@ export type Guide = {
   seo?: Seo;
 };
 
-export type Seo = {
-  _type: "seo";
-  title?: string;
-  description?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-};
-
 export type SanityImageCrop = {
   _type: "sanity.imageCrop";
   top?: number;
@@ -123,12 +163,6 @@ export type SanityImageHotspot = {
   y?: number;
   height?: number;
   width?: number;
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
 };
 
 export type Post = {
@@ -265,6 +299,13 @@ export type PricingPlans = {
     } & PricingTier
   >;
   betaDiscountPct?: number;
+};
+
+export type FeatureCap = {
+  _type: "featureCap";
+  iconKey?: string;
+  title?: string;
+  desc?: string;
 };
 
 export type GuideVideo = {
@@ -1151,18 +1192,20 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes =
   | Preview
+  | Feature
   | SanityImageAssetReference
-  | Guide
   | Seo
+  | Slug
+  | Guide
   | SanityImageCrop
   | SanityImageHotspot
-  | Slug
   | Post
   | PricingFeatures
   | PricingFeaturesReference
   | Pricing
   | AffiliateSettings
   | PricingPlans
+  | FeatureCap
   | GuideVideo
   | GuideFaq
   | GuideSteps
@@ -2011,6 +2054,57 @@ export type GUIDE_SLUGS_QUERY_RESULT = Array<{
   slug: string | null;
 }>;
 
+// Source: sanity/queries/index.ts
+// Variable: FEATURES_QUERY
+// Query: *[_type == "feature" && defined(slug.current)] | order(order asc){      "slug": slug.current,  audience,  name,  sub,  iconKey,  order  }
+export type FEATURES_QUERY_RESULT = Array<{
+  slug: string | null;
+  audience: "For Coaches" | "For Members" | null;
+  name: string | null;
+  sub: string | null;
+  iconKey: string | null;
+  order: number | null;
+}>;
+
+// Source: sanity/queries/index.ts
+// Variable: FEATURE_QUERY
+// Query: *[_type == "feature" && slug.current == $slug][0]{      "slug": slug.current,  audience,  name,  sub,  iconKey,  order,    demoKey,    title{ prefix, accent, suffix },    highlight{ prefix, accent },    highlightSub,    lead,    tags,    capsTitle,    caps[]{ iconKey, title, desc },    seo  }
+export type FEATURE_QUERY_RESULT = {
+  slug: string | null;
+  audience: "For Coaches" | "For Members" | null;
+  name: string | null;
+  sub: string | null;
+  iconKey: string | null;
+  order: number | null;
+  demoKey: string | null;
+  title: {
+    prefix: string | null;
+    accent: string | null;
+    suffix: string | null;
+  } | null;
+  highlight: {
+    prefix: string | null;
+    accent: string | null;
+  } | null;
+  highlightSub: string | null;
+  lead: string | null;
+  tags: Array<string> | null;
+  capsTitle: string | null;
+  caps: Array<{
+    iconKey: string | null;
+    title: string | null;
+    desc: string | null;
+  }> | null;
+  seo: Seo | null;
+} | null;
+
+// Source: sanity/queries/index.ts
+// Variable: FEATURE_SLUGS_QUERY
+// Query: *[_type == "feature" && defined(slug.current)]{ "slug": slug.current }
+export type FEATURE_SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -2029,5 +2123,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "guide" && defined(slug.current)] | order(category asc, order asc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n\n  }\n': GUIDES_QUERY_RESULT;
     '\n  *[_type == "guide" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n,\n    seo,\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption },\n      _type == "guideSteps" => {\n        ...,\n        items[]{\n          title,\n          body[]{\n            ...,\n            _type == "image" => { ..., asset, alt, caption }\n          }\n        }\n      }\n    }\n  }\n': GUIDE_QUERY_RESULT;
     '\n  *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }\n': GUIDE_SLUGS_QUERY_RESULT;
+    '\n  *[_type == "feature" && defined(slug.current)] | order(order asc){\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n\n  }\n': FEATURES_QUERY_RESULT;
+    '\n  *[_type == "feature" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
+    '\n  *[_type == "feature" && defined(slug.current)]{ "slug": slug.current }\n': FEATURE_SLUGS_QUERY_RESULT;
   }
 }

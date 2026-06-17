@@ -1,22 +1,27 @@
 import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { getNavigation, getFooter } from '../../../../../sanity/getHomePage'
+import {
+  getNavigation,
+  getFooter,
+  getFeature,
+  getFeatures,
+  getFeatureSlugs,
+} from '../../../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { FeatureHero } from '@/components/features/FeatureHero'
 import { FeatureCapabilities } from '@/components/features/FeatureCapabilities'
 import { FeatureRelated } from '@/components/features/FeatureRelated'
 import { FeatureCta } from '@/components/features/FeatureCta'
-import {
-  getFeature,
-  relatedFeatures,
-  allCoachSlugs,
-} from '@/lib/features'
+import { toFeature, toFeatureCard } from '@/lib/features'
 
 export async function generateStaticParams() {
-  const slugs = allCoachSlugs()
-  return slugs.map((slug) => ({ slug }))
+  const slugs = await getFeatureSlugs()
+  return slugs
+    .map((s) => s.slug)
+    .filter((slug): slug is string => Boolean(slug))
+    .map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({
@@ -24,9 +29,10 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
-  const { slug } = await params
-  const feature = getFeature(slug)
-  if (!feature) return { title: 'Features' }
+  const { locale, slug } = await params
+  const doc = await getFeature(locale, slug)
+  if (!doc) return { title: 'Features' }
+  const feature = toFeature(doc)
   return {
     title: feature.name,
     description: feature.lead,
@@ -45,18 +51,30 @@ export default async function FeaturePage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const feature = getFeature(slug)
-  if (!feature) notFound()
-
-  const related = relatedFeatures(slug)
-
-  const [navigation, footer, t] = await Promise.all([
+  const [doc, allCards, navigation, footer, t] = await Promise.all([
+    getFeature(locale, slug),
+    getFeatures(locale),
     getNavigation(locale),
     getFooter(locale),
     getTranslations({ locale, namespace: 'features' }),
   ])
 
+  if (!doc) notFound()
   if (!navigation || !footer) notFound()
+
+  const feature = toFeature(doc)
+
+  // Related = same audience, excluding the current feature.
+  const related = allCards
+    .filter((c) => c.audience === feature.audience && c.slug !== feature.slug)
+    .map(toFeatureCard)
+
+  const audienceLabel =
+    feature.audience === 'For Members' ? t('forMembers') : t('forCoaches')
+  const moreForAudience =
+    feature.audience === 'For Members'
+      ? t('moreForMembers')
+      : t('moreForCoaches')
 
   return (
     <>
@@ -68,7 +86,7 @@ export default async function FeaturePage({
           t={{
             breadcrumbHome: t('breadcrumbHome'),
             breadcrumbFeatures: t('breadcrumbFeatures'),
-            forCoaches: t('forCoaches'),
+            forCoaches: audienceLabel,
             startFree: t('startFree'),
             bookDemo: t('bookDemo'),
           }}
@@ -82,7 +100,7 @@ export default async function FeaturePage({
         <FeatureRelated
           features={related}
           platform={t('platform')}
-          moreForCoaches={t('moreForCoaches')}
+          moreForCoaches={moreForAudience}
         />
 
         <FeatureCta

@@ -15,6 +15,9 @@ import {
   GUIDES_QUERY,
   GUIDE_QUERY,
   GUIDE_SLUGS_QUERY,
+  FEATURES_QUERY,
+  FEATURE_QUERY,
+  FEATURE_SLUGS_QUERY,
 } from './queries'
 import type {
   HOME_QUERY_RESULT,
@@ -31,6 +34,9 @@ import type {
   GUIDES_QUERY_RESULT,
   GUIDE_QUERY_RESULT,
   GUIDE_SLUGS_QUERY_RESULT,
+  FEATURES_QUERY_RESULT,
+  FEATURE_QUERY_RESULT,
+  FEATURE_SLUGS_QUERY_RESULT,
 } from '../sanity.types'
 
 export async function getHomePage(locale: string): Promise<HOME_QUERY_RESULT> {
@@ -133,4 +139,27 @@ export async function getGuideSlugs(): Promise<GUIDE_SLUGS_QUERY_RESULT> {
   cacheLife('hours')
   cacheTag('guide-en')
   return client.fetch<GUIDE_SLUGS_QUERY_RESULT>(GUIDE_SLUGS_QUERY, {})
+}
+
+// Features are not localized; `locale` only scopes the cache tag so the Sanity
+// revalidation webhook ({_type}-{language}) invalidates them like everything else.
+export async function getFeatures(locale: string): Promise<FEATURES_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`feature-${locale}`)
+  return client.fetch<FEATURES_QUERY_RESULT>(FEATURES_QUERY, {})
+}
+
+export async function getFeature(locale: string, slug: string): Promise<FEATURE_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag(`feature-${locale}`)
+  return client.fetch<FEATURE_QUERY_RESULT>(FEATURE_QUERY, { slug })
+}
+
+export async function getFeatureSlugs(): Promise<FEATURE_SLUGS_QUERY_RESULT> {
+  'use cache'
+  cacheLife('hours')
+  cacheTag('feature-en')
+  return client.fetch<FEATURE_SLUGS_QUERY_RESULT>(FEATURE_SLUGS_QUERY, {})
 }

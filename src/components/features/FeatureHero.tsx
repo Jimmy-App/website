@@ -16,6 +16,7 @@ import { ChevronRight, ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { FeatureDemo } from './FeatureDemo'
+import { FeatureVideo } from './FeatureVideo'
 import { FEATURE_ICON_MAP } from './featureMeta'
 import type { Feature } from '@/lib/features'
 
@@ -182,17 +183,22 @@ export function FeatureHero({ feature, t }: Props) {
               }}
             />
 
-            {/* Demo frame */}
+            {/* Demo / media frame.
+                Real video media fills the frame edge-to-edge (it carries its own
+                scene); animated demos keep inner padding on the white surface. */}
             <div
               className={cn(
                 'rounded-[24px] border border-border bg-surface shadow-[var(--shadow-md)]',
-                'p-3 sm:p-4',
-                // Prevent demo from overflowing on mobile
                 'overflow-hidden',
+                feature.media ? 'p-0' : 'p-3 sm:p-4',
               )}
               aria-hidden="true"
             >
-              <FeatureDemo demoKey={feature.demoKey} active={inView} />
+              {feature.media ? (
+                <FeatureVideo media={feature.media} active={inView} />
+              ) : (
+                <FeatureDemo demoKey={feature.demoKey} active={inView} />
+              )}
             </div>
           </div>
         </div>

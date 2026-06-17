@@ -9,10 +9,10 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { FEATURE_ICON_MAP } from './featureMeta'
-import type { Feature } from '@/lib/features'
+import type { FeatureCard } from '@/lib/features'
 
 type Props = {
-  features: Feature[]
+  features: FeatureCard[]
   platform: string
   moreForCoaches: string
 }

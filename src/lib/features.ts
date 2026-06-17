@@ -1,13 +1,17 @@
 /**
- * Features — static data layer (Sanity-portable).
+ * Features — types + code-side mapping layer.
  *
- * Content matches the window.FEATURES catalogue from feature-data.js.
- * Types are designed so a future Sanity fetch can drop in and the
- * consumers don't need to change.
+ * Editable content (copy, tags, caps, icon/demo keys) lives in Sanity
+ * (`feature` documents, seeded from scripts/seed-features.ts). This file keeps
+ * the render types, the Sanity → render mapper, and the bits that stay coupled
+ * to code: hero media assets (FEATURE_MEDIA) — the demo and icon keys resolve in
+ * FeatureDemo.tsx / featureMeta.tsx.
  *
  * Icons are NOT imported here — they live in featureMeta.tsx so this
  * file stays plain TS (no JSX, no React imports).
  */
+
+import type { FEATURE_QUERY_RESULT, FEATURES_QUERY_RESULT } from '../../sanity.types'
 
 // ── Audience ──────────────────────────────────────────────────────────────────
 export type FeatureAudience = 'For Coaches' | 'For Members'
@@ -19,6 +23,9 @@ export type FeatureDemoKey =
   | 'messaging'
   | 'payments'
   | 'courses'
+  | 'dailyWorkout'
+  | 'brandedApp'
+  | 'progressView'
   | null
 
 // ── Capability (what's inside grid item) ──────────────────────────────────────
@@ -42,7 +49,21 @@ export type HighlightParts = {
   accent: string
 }
 
-// ── Feature ───────────────────────────────────────────────────────────────────
+// ── Hero media ────────────────────────────────────────────────────────────────
+// When present, this real screen-recording replaces the animated `demoKey` demo
+// in the hero panel (e.g. branded-mobile-app uses an actual app capture).
+export type FeatureMedia = {
+  kind: 'video'
+  /** H.264 mp4 source under /public (universally supported) */
+  mp4: string
+  /** still frame shown before playback / under reduced-motion */
+  poster: string
+  /** intrinsic dimensions, for aspect-ratio + no layout shift */
+  width: number
+  height: number
+}
+
+// ── Feature (full render shape) ────────────────────────────────────────────────
 export type Feature = {
   slug: string
   audience: FeatureAudience
@@ -53,6 +74,8 @@ export type Feature = {
   /** lucide icon key into FEATURE_ICON_MAP in featureMeta.tsx */
   iconKey: string
   demoKey: FeatureDemoKey
+  /** Optional real media that replaces the animated demo in the hero panel */
+  media?: FeatureMedia
   title: TitleParts
   highlight: HighlightParts
   highlightSub: string
@@ -62,268 +85,67 @@ export type Feature = {
   caps: FeatureCap[]
 }
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+// ── Feature card (related lists / nav) ─────────────────────────────────────────
+export type FeatureCard = Pick<
+  Feature,
+  'slug' | 'audience' | 'name' | 'sub' | 'iconKey'
+>
 
-const FEATURES: Feature[] = [
-  {
-    slug: 'workout-builder',
-    audience: 'For Coaches',
-    name: 'Workout Builder',
-    sub: 'Program structured blocks fast.',
-    iconKey: 'dumbbell',
-    demoKey: 'workout',
-    title: {
-      prefix: 'Build training that ',
-      accent: 'moves.',
-      suffix: '',
-    },
-    highlight: {
-      prefix: 'Program once. ',
-      accent: 'Reuse forever.',
-    },
-    highlightSub:
-      'Stop rebuilding the same session every week. Save it, clone it, tweak it — and get your evenings back.',
-    lead: 'EMOM, AMRAP, circuits, strength — program structured blocks in seconds, not spreadsheets. Built for coaches who actually train.',
-    tags: ['Work Blocks', 'EMOM', 'AMRAP', 'Circuits', 'Video Library'],
-    capsTitle: "Everything you need to program — nothing you don't.",
-    caps: [
-      {
-        iconKey: 'blocks',
-        title: 'Native block types',
-        desc: 'EMOM, AMRAP, circuits and strength are built in — no workarounds.',
-      },
-      {
-        iconKey: 'video',
-        title: 'Video library',
-        desc: 'Attach a demo to every movement so form is never in question.',
-      },
-      {
-        iconKey: 'copy',
-        title: 'Reusable templates',
-        desc: 'Duplicate a full week or block and reprogram it in one tap.',
-      },
-    ],
+// ── Code-side hero media, keyed by slug ────────────────────────────────────────
+// Media is a real asset in /public, so it stays in code rather than Sanity.
+export const FEATURE_MEDIA: Record<string, FeatureMedia> = {
+  'branded-mobile-app': {
+    kind: 'video',
+    mp4: '/assets/screens/mobileapp-screen.mp4',
+    poster: '/assets/screens/mobileapp-screen.jpg',
+    width: 960,
+    height: 720,
   },
-
-  {
-    slug: 'programs-courses',
-    audience: 'For Coaches',
-    name: 'Programs & Courses',
-    sub: 'Modules, lessons, full programs.',
-    iconKey: 'graduation-cap',
-    demoKey: 'courses',
-    title: {
-      prefix: 'Courses, like on ',
-      accent: 'Skool.',
-      suffix: '',
-    },
-    highlight: {
-      prefix: 'Teach once. ',
-      accent: 'Sell forever.',
-    },
-    highlightSub:
-      'Package what you know into a course that earns while you coach — no extra hours required.',
-    lead: 'Structure modules and lessons in a few clicks. Videos, PDFs, quizzes and unlocked progression — all under your brand.',
-    tags: ['Modules', 'Lessons', 'Quizzes', 'Certificates', 'Drip'],
-    capsTitle: 'Turn your knowledge into a product.',
-    caps: [
-      {
-        iconKey: 'layers',
-        title: 'Modules & lessons',
-        desc: 'Organize content into a path clients can actually follow.',
-      },
-      {
-        iconKey: 'lock',
-        title: 'Unlocked progression',
-        desc: "Gate lessons until clients are ready for what's next.",
-      },
-      {
-        iconKey: 'award',
-        title: 'Quizzes & certificates',
-        desc: 'Reward completion and prove the work got done.',
-      },
-    ],
-  },
-
-  {
-    slug: 'community-feed',
-    audience: 'For Coaches',
-    name: 'Community Feed',
-    sub: 'Posts, reactions, challenges.',
-    iconKey: 'users',
-    demoKey: 'community',
-    title: {
-      prefix: 'Your clients never ',
-      accent: 'train alone.',
-      suffix: '',
-    },
-    highlight: {
-      prefix: 'Belonging beats ',
-      accent: 'willpower.',
-    },
-    highlightSub:
-      "Clients quit programs. They don't quit communities. Give them a reason to keep showing up.",
-    lead: 'A Skool-style community feed built right into your platform. Posts, reactions, announcements and group challenges keep momentum high.',
-    tags: ['Posts', 'Reactions', 'Announcements', 'Group Challenges'],
-    capsTitle: 'The retention engine, built in.',
-    caps: [
-      {
-        iconKey: 'message-square',
-        title: 'Posts & reactions',
-        desc: 'A living feed where clients share wins and cheer each other on.',
-      },
-      {
-        iconKey: 'megaphone',
-        title: 'Announcements',
-        desc: 'Pin updates so the whole community sees what matters.',
-      },
-      {
-        iconKey: 'trophy',
-        title: 'Group challenges',
-        desc: 'Spin up challenges that turn solo effort into team effort.',
-      },
-    ],
-  },
-
-  {
-    slug: 'messaging',
-    audience: 'For Coaches',
-    name: 'Messaging',
-    sub: '1:1 and group chat with clients.',
-    iconKey: 'message-circle',
-    demoKey: 'messaging',
-    title: {
-      prefix: 'Stop coaching from ',
-      accent: 'WhatsApp.',
-      suffix: '',
-    },
-    highlight: {
-      prefix: 'One inbox. ',
-      accent: 'Zero chaos.',
-    },
-    highlightSub:
-      'No more lost messages across three apps. Everything a client sends stays exactly where it belongs.',
-    lead: '1:1 and group chat built directly into Jimmy. Text, photos and voice messages — all in one place, all tied to the right client.',
-    tags: ['1:1 Chat', 'Voice', 'Photo & Video', 'Group Chat'],
-    capsTitle: 'One inbox for your whole roster.',
-    caps: [
-      {
-        iconKey: 'message-circle',
-        title: '1:1 client chat',
-        desc: "Every conversation lives next to that client's training.",
-      },
-      {
-        iconKey: 'mic',
-        title: 'Voice messages',
-        desc: 'Send quick form cues without typing a paragraph.',
-      },
-      {
-        iconKey: 'image',
-        title: 'Photo & video',
-        desc: 'Review technique with clips shared right in the thread.',
-      },
-    ],
-  },
-
-  {
-    slug: 'payments',
-    audience: 'For Coaches',
-    name: 'Payments',
-    sub: 'Subscriptions and one-off payments.',
-    iconKey: 'credit-card',
-    demoKey: 'payments',
-    title: {
-      prefix: 'Let the system run ',
-      accent: 'billing.',
-      suffix: '',
-    },
-    highlight: {
-      prefix: 'Get paid on ',
-      accent: 'autopilot.',
-    },
-    highlightSub:
-      'Forgotten invoices and awkward reminders end here. Billing runs itself so you can focus on athletes.',
-    lead: 'Integrated Stripe payments, recurring subscriptions and automatic billing — money keeps moving while you coach.',
-    tags: ['Stripe Connect', 'Recurring', 'Auto Billing', 'Analytics'],
-    capsTitle: 'Get paid without chasing anyone.',
-    caps: [
-      {
-        iconKey: 'credit-card',
-        title: 'Stripe Connect',
-        desc: "Payouts land straight in your account — Jimmy never holds your money.",
-      },
-      {
-        iconKey: 'repeat',
-        title: 'Recurring plans',
-        desc: 'Set a subscription once and let it renew on its own.',
-      },
-      {
-        iconKey: 'bar-chart-3',
-        title: 'Revenue analytics',
-        desc: 'See MRR, churn and active clients at a glance.',
-      },
-    ],
-  },
-
-  {
-    slug: 'progress-tracking',
-    audience: 'For Coaches',
-    name: 'Progress Tracking',
-    sub: 'PRs, lifts, benchmarks.',
-    iconKey: 'trending-up',
-    demoKey: null,
-    title: {
-      prefix: 'See every PR, lift and ',
-      accent: 'streak.',
-      suffix: '',
-    },
-    highlight: {
-      prefix: 'What gets measured, ',
-      accent: 'gets repeated.',
-    },
-    highlightSub:
-      'Visible progress is the strongest motivator there is. Make every gain impossible to miss.',
-    lead: 'Track benchmarks across your whole roster. Spot who\'s thriving — and who needs a nudge — before they ever go quiet.',
-    tags: ['PRs', 'Benchmarks', 'Lift History', 'Streaks'],
-    capsTitle: 'Data that keeps clients on track.',
-    caps: [
-      {
-        iconKey: 'trending-up',
-        title: 'PRs & benchmarks',
-        desc: 'Personal records logged automatically as clients train.',
-      },
-      {
-        iconKey: 'activity',
-        title: 'Lift history',
-        desc: 'Every set, every session — searchable in seconds.',
-      },
-      {
-        iconKey: 'flame',
-        title: 'Streaks & adherence',
-        desc: 'Spot drop-off early and step in before it becomes a churn.',
-      },
-    ],
-  },
-]
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-export function getFeature(slug: string): Feature | undefined {
-  return FEATURES.find((f) => f.slug === slug)
 }
 
-export function coachFeatures(): Feature[] {
-  return FEATURES.filter((f) => f.audience === 'For Coaches')
+// ── Sanity → render mappers ─────────────────────────────────────────────────────
+
+/** Maps a full FEATURE_QUERY document into the render `Feature` shape. */
+export function toFeature(doc: NonNullable<FEATURE_QUERY_RESULT>): Feature {
+  const slug = doc.slug ?? ''
+  return {
+    slug,
+    audience: (doc.audience ?? 'For Coaches') as FeatureAudience,
+    name: doc.name ?? '',
+    sub: doc.sub ?? '',
+    iconKey: doc.iconKey ?? '',
+    demoKey: (doc.demoKey ?? null) as FeatureDemoKey,
+    media: FEATURE_MEDIA[slug],
+    title: {
+      prefix: doc.title?.prefix ?? '',
+      accent: doc.title?.accent ?? '',
+      suffix: doc.title?.suffix ?? '',
+    },
+    highlight: {
+      prefix: doc.highlight?.prefix ?? '',
+      accent: doc.highlight?.accent ?? '',
+    },
+    highlightSub: doc.highlightSub ?? '',
+    lead: doc.lead ?? '',
+    tags: doc.tags ?? [],
+    capsTitle: doc.capsTitle ?? '',
+    caps: (doc.caps ?? []).map((c) => ({
+      iconKey: c.iconKey ?? '',
+      title: c.title ?? '',
+      desc: c.desc ?? '',
+    })),
+  }
 }
 
-export function relatedFeatures(slug: string): Feature[] {
-  const feature = getFeature(slug)
-  if (!feature) return []
-  return FEATURES.filter(
-    (f) => f.audience === feature.audience && f.slug !== slug,
-  )
-}
-
-export function allCoachSlugs(): string[] {
-  return coachFeatures().map((f) => f.slug)
+/** Maps a FEATURES_QUERY card into the lighter `FeatureCard` shape. */
+export function toFeatureCard(
+  doc: FEATURES_QUERY_RESULT[number],
+): FeatureCard {
+  return {
+    slug: doc.slug ?? '',
+    audience: (doc.audience ?? 'For Coaches') as FeatureAudience,
+    name: doc.name ?? '',
+    sub: doc.sub ?? '',
+    iconKey: doc.iconKey ?? '',
+  }
 }

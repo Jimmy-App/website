@@ -30,6 +30,9 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title('Guides')
         .child(S.documentTypeList('guide').title('Guides')),
+      S.listItem()
+        .title('Features')
+        .child(S.documentTypeList('feature').title('Features')),
       S.divider(),
       S.listItem()
         .title('Navigation')
