@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { pageMetadata } from '@/lib/seo'
 import { renderLegalPage } from '@/components/legal/renderLegalPage'
 import { TERMS_DOC } from '@/content/legal/terms'
@@ -10,11 +10,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/terms',
-    title: 'Terms of Service',
-    description: "The terms governing your use of Jimmy's website, app and coaching services.",
+    title: t('terms.title'),
+    description: t('terms.description'),
   })
 }
 

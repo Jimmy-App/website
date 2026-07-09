@@ -154,5 +154,44 @@
     "save": "Save preferences",
     "close": "Close",
     "footerSettings": "Cookie Settings"
+  },
+  "seo": {
+    "home": {
+      "title": "Jimmy — The Skool of Fitness | Coaching Software for Coaches",
+      "description": "Jimmy is the Skool of Fitness — all-in-one coaching software for fitness coaches. Build workout programs, run a community, message clients and get paid, all in one white-label app. Start free with up to 3 clients."
+    },
+    "pricing": {
+      "title": "Pricing — Coaching Software Plans",
+      "description": "Simple, transparent pricing for the Jimmy coaching software. Start free with up to 3 clients — no card required — then scale with Club plans as your coaching business grows."
+    },
+    "affiliate": {
+      "title": "Affiliate Program — Earn 30% Recurring",
+      "description": "Join the Jimmy affiliate program and earn 30% recurring commission for every fitness coach you refer. Share the coaching platform you love and get paid every month."
+    },
+    "blog": {
+      "title": "Blog — Coaching, Retention & Business Playbooks",
+      "description": "The Jimmy blog — client retention, programming and business-growth playbooks for online fitness coaches and personal trainers."
+    },
+    "changelog": {
+      "title": "Changelog — Product Updates",
+      "description": "Every Jimmy update, in the open. New features, improvements and fixes to the coaching software for fitness coaches — shipped continuously."
+    },
+    "roadmap": {
+      "title": "Roadmap — What We're Building Next",
+      "description": "What we're building next in the Jimmy coaching platform, shaped by the fitness coaches who use Jimmy every day."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "How Jimmy collects, uses and protects your personal data."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "description": "The terms governing your use of Jimmy's website, app and coaching services."
+    },
+    "cookiePolicy": {
+      "title": "Cookie Policy",
+      "description": "How Jimmy uses cookies and similar tracking technologies."
+    },
+    "featureSuffix": "for Fitness Coaches"
   }
 }

@@ -15,12 +15,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/changelog',
-    title: 'Changelog — Product Updates',
-    description:
-      'Every Jimmy update, in the open. New features, improvements and fixes to the coaching software for fitness coaches — shipped continuously.',
+    title: t('changelog.title'),
+    description: t('changelog.description'),
   })
 }
 

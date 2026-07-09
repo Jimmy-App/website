@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata, localizedUrl } from '@/lib/seo'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -27,12 +27,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/pricing',
-    title: 'Pricing — Coaching Software Plans',
-    description:
-      'Simple, transparent pricing for the Jimmy coaching software. Start free with up to 3 clients — no card required — then scale with Club plans as your coaching business grows.',
+    title: t('pricing.title'),
+    description: t('pricing.description'),
   })
 }
 

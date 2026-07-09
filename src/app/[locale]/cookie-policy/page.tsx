@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { pageMetadata } from '@/lib/seo'
 import { renderLegalPage } from '@/components/legal/renderLegalPage'
 import { COOKIE_DOC } from '@/content/legal/cookie-policy'
@@ -10,11 +10,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/cookie-policy',
-    title: 'Cookie Policy',
-    description: 'How Jimmy uses cookies and similar tracking technologies.',
+    title: t('cookiePolicy.title'),
+    description: t('cookiePolicy.description'),
   })
 }
 

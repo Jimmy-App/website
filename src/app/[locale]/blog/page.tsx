@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
 import { getNavigation, getFooter, getPosts } from '../../../../sanity/getHomePage'
@@ -17,12 +17,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/blog',
-    title: 'Blog — Coaching, Retention & Business Playbooks',
-    description:
-      'The Jimmy blog — client retention, programming and business-growth playbooks for online fitness coaches and personal trainers.',
+    title: t('blog.title'),
+    description: t('blog.description'),
   })
 }
 

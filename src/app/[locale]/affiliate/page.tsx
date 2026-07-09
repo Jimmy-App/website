@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
 import {
@@ -23,12 +23,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/affiliate',
-    title: 'Affiliate Program — Earn 30% Recurring',
-    description:
-      'Join the Jimmy affiliate program and earn 30% recurring commission for every fitness coach you refer. Share the coaching platform you love and get paid every month.',
+    title: t('affiliate.title'),
+    description: t('affiliate.description'),
   })
 }
 

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { pageMetadata } from '@/lib/seo'
 import { renderLegalPage } from '@/components/legal/renderLegalPage'
 import { PRIVACY_DOC } from '@/content/legal/privacy'
@@ -10,11 +10,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/privacy',
-    title: 'Privacy Policy',
-    description: 'How Jimmy collects, uses and protects your personal data.',
+    title: t('privacy.title'),
+    description: t('privacy.description'),
   })
 }
 

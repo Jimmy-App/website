@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/seo/JsonLd'
@@ -27,14 +27,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   const md = await pageMetadata({
     locale,
     path: '',
-    description:
-      'Jimmy is the all-in-one coaching software for fitness coaches — build workout programs, run a community, message clients and get paid, all in one white-label app. Start free with up to 3 clients.',
+    description: t('home.description'),
   })
   // Absolute home title (no "| Jimmy" suffix) targeting the primary keyword.
-  return { ...md, title: { absolute: 'Jimmy — Coaching Software for Fitness Coaches' } }
+  return { ...md, title: { absolute: t('home.title') } }
 }
 
 export default async function HomePage({

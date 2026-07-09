@@ -154,5 +154,44 @@
     "save": "Guardar",
     "close": "Cerrar",
     "footerSettings": "Configuración de cookies"
+  },
+  "seo": {
+    "home": {
+      "title": "Jimmy — The Skool of Fitness | Software de coaching",
+      "description": "Jimmy es la Skool of Fitness: el software de coaching todo-en-uno para coaches de fitness. Crea tus programas de entrenamiento, gestiona una comunidad, chatea con tus clientes y cobra tus pagos, todo en una app de marca blanca. Empieza gratis con hasta 3 clientes."
+    },
+    "pricing": {
+      "title": "Precios — Planes del software de coaching",
+      "description": "Precios simples y transparentes para el software de coaching Jimmy. Empieza gratis con hasta 3 clientes — sin tarjeta — y escala con los planes Club a medida que crece tu negocio."
+    },
+    "affiliate": {
+      "title": "Programa de afiliados — 30% recurrente",
+      "description": "Únete al programa de afiliados de Jimmy y gana un 30% de comisión recurrente por cada coach de fitness que refieras. Comparte la plataforma de coaching que amas y cobra cada mes."
+    },
+    "blog": {
+      "title": "Blog — Retención, programación y negocio",
+      "description": "El blog de Jimmy: retención de clientes, programación y estrategias de crecimiento para coaches de fitness en línea y entrenadores personales."
+    },
+    "changelog": {
+      "title": "Changelog — Novedades del producto",
+      "description": "Cada novedad de Jimmy, a la vista. Nuevas funciones, mejoras y correcciones del software de coaching para coaches de fitness — publicadas de forma continua."
+    },
+    "roadmap": {
+      "title": "Roadmap — Lo que viene",
+      "description": "Lo que estamos construyendo para la plataforma de coaching Jimmy, moldeado por los coaches de fitness que la usan cada día."
+    },
+    "privacy": {
+      "title": "Política de privacidad",
+      "description": "Cómo Jimmy recopila, usa y protege tus datos personales."
+    },
+    "terms": {
+      "title": "Términos del servicio",
+      "description": "Los términos que rigen tu uso del sitio, la app y los servicios de coaching de Jimmy."
+    },
+    "cookiePolicy": {
+      "title": "Política de cookies",
+      "description": "Cómo Jimmy usa cookies y tecnologías de seguimiento similares."
+    },
+    "featureSuffix": "para coaches de fitness"
   }
 }

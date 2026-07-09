@@ -16,12 +16,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'seo' })
   return pageMetadata({
     locale,
     path: '/roadmap',
-    title: "Roadmap — What We're Building Next",
-    description:
-      "What we're building next in the Jimmy coaching platform. Now, Next and Later — shaped by the fitness coaches who use Jimmy every day.",
+    title: t('roadmap.title'),
+    description: t('roadmap.description'),
   })
 }
 

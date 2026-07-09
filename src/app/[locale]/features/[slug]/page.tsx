@@ -35,11 +35,12 @@ export async function generateMetadata({
   const { locale, slug } = await params
   const doc = await getFeature(locale, slug)
   if (!doc) return pageMetadata({ locale, path: `/features/${slug}`, title: 'Features' })
+  const t = await getTranslations({ locale, namespace: 'seo' })
   const feature = toFeature(doc)
   return pageMetadata({
     locale,
     path: `/features/${slug}`,
-    title: `${feature.name} for Fitness Coaches`,
+    title: `${feature.name} ${t('featureSuffix')}`,
     description: feature.lead,
   })
 }
