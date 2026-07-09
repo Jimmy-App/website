@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { pageMetadata } from '@/lib/seo'
+import { pageMetadata, localizedUrl } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { breadcrumbSchema } from '@/lib/jsonld'
 import {
   getNavigation,
   getFooter,
@@ -75,8 +77,15 @@ export default async function FeaturePage({
       ? t('moreForMembers')
       : t('moreForCoaches')
 
+  const featureBreadcrumb = breadcrumbSchema([
+    { name: 'Home', url: localizedUrl(locale) },
+    { name: 'Features', url: localizedUrl(locale, '/#features') },
+    { name: feature.name, url: localizedUrl(locale, `/features/${slug}`) },
+  ])
+
   return (
     <>
+      <JsonLd data={featureBreadcrumb} />
       <Navbar data={navigation} />
 
       <main>

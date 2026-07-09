@@ -1,7 +1,13 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { pageMetadata } from '@/lib/seo'
+import { pageMetadata, localizedUrl } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/JsonLd'
+import {
+  faqSchema,
+  softwareApplicationSchema,
+  breadcrumbSchema,
+} from '@/lib/jsonld'
 import {
   getHomePage,
   getNavigation,
@@ -57,8 +63,26 @@ export default async function PricingPage({
     notFound()
   }
 
+  const tierPrices = (plans.tiers ?? [])
+    .map((t) => t.priceEur ?? 0)
+    .filter((p) => p > 0)
+  const schemas = [
+    softwareApplicationSchema({
+      lowPrice: 0,
+      highPrice: tierPrices.length ? Math.max(...tierPrices) : undefined,
+      currency: 'EUR',
+    }),
+    breadcrumbSchema([
+      { name: 'Home', url: localizedUrl(locale) },
+      { name: 'Pricing', url: localizedUrl(locale, '/pricing') },
+    ]),
+  ]
+  const pricingFaq = faqSchema(pricingPage.faq.items ?? [])
+  if (pricingFaq) schemas.push(pricingFaq)
+
   return (
     <>
+      <JsonLd data={schemas} />
       <Navbar data={navigation} />
       <main>
         {/* Reused home Pricing section + FAQ; page-specific centered CTA */}

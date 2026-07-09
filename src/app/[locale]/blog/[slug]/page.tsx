@@ -3,7 +3,9 @@ import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ChevronRight, ArrowRight } from 'lucide-react'
-import { pageMetadata } from '@/lib/seo'
+import { pageMetadata, localizedUrl } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { articleSchema, breadcrumbSchema } from '@/lib/jsonld'
 import {
   getNavigation,
   getFooter,
@@ -96,8 +98,24 @@ export default async function BlogPostPage({
         : null,
     }))
 
+  const postUrl = localizedUrl(locale, `/blog/${slug}`)
+  const articleLd = articleSchema({
+    headline: post.title ?? 'Blog',
+    description: post.excerpt ?? undefined,
+    url: postUrl,
+    image: coverUrl ?? undefined,
+    datePublished: post.publishedAt ?? undefined,
+    locale,
+  })
+  const breadcrumbLd = breadcrumbSchema([
+    { name: 'Home', url: localizedUrl(locale) },
+    { name: 'Blog', url: localizedUrl(locale, '/blog') },
+    { name: post.title ?? 'Article', url: postUrl },
+  ])
+
   return (
     <>
+      <JsonLd data={[articleLd, breadcrumbLd]} />
       <ReadingBar />
       <Navbar data={navigation} />
 

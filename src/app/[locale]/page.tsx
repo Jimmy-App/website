@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { organizationSchema, websiteSchema, faqSchema } from '@/lib/jsonld'
 import { getHomePage, getNavigation, getFooter, getPricingPlans } from '../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -68,8 +70,13 @@ export default async function HomePage({
     notFound()
   }
 
+  const homeSchemas = [organizationSchema(), websiteSchema(locale)]
+  const homeFaq = faqSchema(home.faq.items ?? [])
+  if (homeFaq) homeSchemas.push(homeFaq)
+
   return (
     <>
+      <JsonLd data={homeSchemas} />
       <Navbar data={navigation} />
       <main>
         <Hero data={home.hero} />
