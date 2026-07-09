@@ -6,7 +6,6 @@ import { urlFor } from '../../../../sanity/image'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { BlogIndex } from '@/components/blog/BlogIndex'
-import { BlogNewsletter } from '@/components/blog/BlogNewsletter'
 import type { CardPost } from '@/components/blog/PostCard'
 import { formatPostDate, isCategoryKey } from '@/lib/blog'
 import type { POSTS_QUERY_RESULT } from '../../../../sanity.types'
@@ -68,7 +67,6 @@ export default async function BlogPage({
           No articles published yet.
         </div>
       )}
-      <BlogNewsletter />
       <Footer data={footer} />
     </>
   )
