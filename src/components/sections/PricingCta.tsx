@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Check, CalendarDays, Users, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
 import type { FinalCtaContent } from '@/lib/content'
 
@@ -68,7 +69,7 @@ export function PricingCta({ data }: { data: FinalCtaContent }) {
               translucent button with the same press effect. */}
           <div className="mt-[clamp(1.6rem,3vw,2rem)] flex flex-wrap items-center justify-center gap-3">
             <Button
-              href="#"
+              href={appRegisterUrl}
               variant="solid"
               size="lg"
               className="px-[30px] py-[15px]"

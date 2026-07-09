@@ -131,5 +131,37 @@
     "ctaBody": "La feuille de route est façonnée par des coachs comme toi. Dis-nous ce qui rendrait Jimmy meilleur — on lit chaque demande.",
     "ctaPrimary": "Proposer une fonctionnalité",
     "ctaSecondary": "Voir ce qui est livré"
+  },
+  "legal": {
+    "eyebrow": "Mentions légales",
+    "onThisPage": "Sur cette page",
+    "lastUpdated": "Dernière mise à jour",
+    "backToTop": "Haut de page",
+    "more": "Autres politiques",
+    "privacyTitle": "Politique de confidentialité",
+    "termsTitle": "Conditions d'utilisation",
+    "cookieTitle": "Politique des cookies",
+    "questions": "Des questions sur cette politique ?",
+    "contactCta": "Écris à notre équipe"
+  },
+  "cookies": {
+    "bannerHeading": "Un mot sur les cookies",
+    "bannerText": "Nous utilisons des cookies pour l'analyse et le marketing.",
+    "readPolicy": "Lire la politique des cookies",
+    "acceptAll": "Tout accepter",
+    "rejectAll": "Tout refuser",
+    "customize": "Personnaliser",
+    "prefsTitle": "Préférences des cookies",
+    "prefsIntro": "Choisis les cookies que nous pouvons utiliser. Tu peux changer ce choix à tout moment depuis le pied de page.",
+    "necessaryTitle": "Strictement nécessaires",
+    "necessaryDesc": "Indispensables au fonctionnement du site — connexion, sécurité et tes préférences.",
+    "analyticsTitle": "Analyse",
+    "analyticsDesc": "Nous aident à comprendre comment les visiteurs utilisent le site (Google Analytics 4).",
+    "marketingTitle": "Marketing",
+    "marketingDesc": "Servent à t'afficher des publicités pertinentes sur d'autres plateformes (Meta Pixel).",
+    "alwaysOn": "Toujours actifs",
+    "save": "Enregistrer",
+    "close": "Fermer",
+    "footerSettings": "Paramètres des cookies"
   }
 }

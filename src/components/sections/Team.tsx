@@ -67,6 +67,8 @@ function SocialLink({
     <a
       href={href}
       aria-label={label}
+      target="_blank"
+      rel="noopener noreferrer"
       className={cn(
         'flex size-8 items-center justify-center rounded-[9px]',
         'border border-border bg-bg text-text-muted',
@@ -90,6 +92,8 @@ interface MemberData {
   location: string
   photo: string
   initials: string
+  instagram?: string
+  linkedin?: string
 }
 
 function TeamCard({
@@ -187,14 +191,20 @@ function TeamCard({
             {member.location}
           </span>
 
-          <div className="ml-auto flex gap-[6px]">
-            <SocialLink href="#" label="Instagram">
-              <IconInstagram className="size-[15px]" />
-            </SocialLink>
-            <SocialLink href="#" label="LinkedIn">
-              <IconLinkedIn className="size-[15px]" />
-            </SocialLink>
-          </div>
+          {(member.instagram || member.linkedin) && (
+            <div className="ml-auto flex gap-[6px]">
+              {member.instagram && (
+                <SocialLink href={member.instagram} label={`${member.name} on Instagram`}>
+                  <IconInstagram className="size-[15px]" />
+                </SocialLink>
+              )}
+              {member.linkedin && (
+                <SocialLink href={member.linkedin} label={`${member.name} on LinkedIn`}>
+                  <IconLinkedIn className="size-[15px]" />
+                </SocialLink>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </motion.article>
@@ -205,6 +215,18 @@ function TeamCard({
 
 // Hardcoded photo paths (Sanity image fields are not yet URL-resolved in this context)
 const MEMBER_PHOTOS = ['/assets/people/coach-1.png', '/assets/people/coach-2.png']
+
+// Per-member social links, indexed to match the Sanity `members` order
+// (0 = Quentin Randis, 1 = Nazar Moroz). Omit a handle to hide that icon.
+const MEMBER_SOCIALS: Array<{ instagram?: string; linkedin?: string }> = [
+  {
+    instagram: 'https://www.instagram.com/quentinrandis',
+    linkedin: 'https://www.linkedin.com/in/quentinrandis/',
+  },
+  {
+    linkedin: 'https://www.linkedin.com/in/nazarmoroze/',
+  },
+]
 
 export function Team({ data }: { data: TeamData }) {
   const revealHeader = useReveal(0)
@@ -218,6 +240,8 @@ export function Team({ data }: { data: TeamData }) {
     location: m.location ?? '',
     photo: MEMBER_PHOTOS[i] ?? '/assets/people/coach-1.png',
     initials: (m.name ?? '').split(' ').map((w) => w[0] ?? '').join('').slice(0, 2).toUpperCase(),
+    instagram: MEMBER_SOCIALS[i]?.instagram,
+    linkedin: MEMBER_SOCIALS[i]?.linkedin,
   }))
 
   const stats = (data.stats ?? []).map((s) => ({

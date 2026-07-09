@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Bricolage_Grotesque, Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/styles/globals.css'
 
 const bricolage = Bricolage_Grotesque({
@@ -34,7 +36,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${bricolage.variable} ${inter.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Vercel first-party, cookieless metrics — load after hydration,
+            non-blocking, no consent needed (no personal data / cookies). */}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   )
 }

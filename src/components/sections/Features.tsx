@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
 import { WorkoutBuilderDemo } from '@/components/sections/WorkoutBuilderDemo'
 import { CommunityFeedDemo } from '@/components/sections/CommunityFeedDemo'
@@ -321,7 +322,7 @@ export function Features({ data }: { data: FeaturesData }) {
                     size="sm"
                     icon={<ArrowRight size={14} strokeWidth={1.75} />}
                     className="self-start"
-                    href="#"
+                    href={appRegisterUrl}
                   >
                     {data.cta}
                   </Button>

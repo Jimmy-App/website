@@ -5,6 +5,7 @@ import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { ArrowRight, CalendarDays, Check } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
 import type { FinalCtaData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
@@ -230,7 +231,7 @@ export function FinalCta({ data }: { data: FinalCtaData }) {
             >
               {/* Primary — solid purple, shimmer-on-hover via Button variant */}
               <Button
-                href="#"
+                href={appRegisterUrl}
                 variant="solid"
                 size="lg"
                 icon={

@@ -5,6 +5,7 @@ import { useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
 import type { StepsData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
@@ -392,7 +393,7 @@ export function Steps({ data }: { data: StepsData }) {
           className="flex justify-center"
         >
           <Button
-            href="#"
+            href={appRegisterUrl}
             variant="solid"
             size="lg"
             icon={<ArrowRight className="size-[15px]" strokeWidth={1.75} />}

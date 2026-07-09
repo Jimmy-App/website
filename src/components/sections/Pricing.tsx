@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
 import type { PricingData, PricingPlansData } from '@/lib/content'
 
@@ -540,7 +541,7 @@ export function Pricing({
 
             {/* CTA — shared <Button> (same press/hover effects as the homepage) */}
             <Button
-              type="button"
+              href={appRegisterUrl}
               variant="solid"
               size="lg"
               className="mt-auto w-full py-[15px] text-[15px] font-bold shadow-[0_12px_28px_-8px_rgba(138,50,224,0.6)] hover:shadow-[0_14px_34px_-8px_rgba(138,50,224,0.72)]"
@@ -718,7 +719,7 @@ function PlanCard({
       {/* Per-card CTA — reuses the shared <Button> (same press/hover effects). */}
       <div className="mt-auto pt-[26px]">
         <Button
-          href="#"
+          href={appRegisterUrl}
           variant={isClub ? 'solid' : 'ghost'}
           size="lg"
           className="w-full text-[14.5px]"

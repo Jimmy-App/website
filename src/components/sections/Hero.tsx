@@ -1,6 +1,13 @@
 'use client'
 
-import { useReducedMotion, motion } from 'framer-motion'
+import { useRef } from 'react'
+import {
+  useReducedMotion,
+  motion,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+} from 'framer-motion'
 import Image from 'next/image'
 import {
   Zap,
@@ -12,6 +19,8 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Chip } from '@/components/ui/Chip'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
+import { smoothScrollToId } from '@/lib/smoothScroll'
 import type { HeroData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
@@ -90,8 +99,18 @@ function TrustChip({
   )
 }
 
+// ─── Scroll-painted illustration backdrop ─────────────────────────────────────
+// Two stacked copies of the same illustration: a faint grayscale "pencil
+// underpainting" below, and the full-color layer above, revealed top-to-bottom
+// by a scroll-linked soft gradient mask — the scene paints itself in as the
+// visitor swipes down. Honors prefers-reduced-motion (static full color).
+// Bump the version suffix whenever the artwork is swapped — the URL change
+// busts browser + next/image caches (mobile has no hard-refresh).
+const HERO_BG = '/assets/hero/hero-bg.v4.jpg'
+
 // ─── Hero section ─────────────────────────────────────────────────────────────
 export function Hero({ data }: { data: HeroData }) {
+  const reduced = useReducedMotion()
   const revealBadge = useReveal(100)
   const revealTitle = useReveal(200)
   const revealSubtitle = useReveal(300)
@@ -100,22 +119,66 @@ export function Hero({ data }: { data: HeroData }) {
   const revealTrust = useReveal(560)
   const revealProduct = useReveal(960)
 
+  // Paint-in progress: 0 at page top → fully painted after ~55% of the hero
+  // has been scrolled past. Starts at 26% so the sky is already "painted".
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const painted = useTransform(scrollYProgress, [0, 0.55], [26, 112])
+  const paintMask = useMotionTemplate`linear-gradient(to bottom, #000 ${painted}%, transparent calc(${painted}% + 16%))`
+
   return (
     <section
       id="hero"
+      ref={sectionRef}
       aria-label={data.sectionLabel ?? ''}
       className={cn(
         'relative flex min-h-svh flex-col items-center',
         // Navbar offset + section top padding
         'pt-[calc(var(--navbar-height)+var(--space-16))] pb-[var(--space-20)]',
         'px-[clamp(1rem,4vw,2.5rem)]',
-        // Subtle purple radial glow at the top
         'bg-bg',
-        '[background-image:radial-gradient(ellipse_70%_45%_at_50%_-10%,rgba(138,50,224,0.07)_0%,transparent_68%)]',
       )}
     >
+      {/* ── Scroll-painted illustration backdrop ────────────────────── */}
+      <div aria-hidden className="absolute inset-0 overflow-hidden">
+        {/* Pencil underpainting (always visible, faint) */}
+        <Image
+          src={HERO_BG}
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover object-[center_bottom] opacity-70 grayscale"
+        />
+        {/* Color layer, painted in on scroll */}
+        <motion.div
+          className="absolute inset-0"
+          style={
+            reduced
+              ? undefined
+              : { WebkitMaskImage: paintMask, maskImage: paintMask }
+          }
+        >
+          <Image
+            src={HERO_BG}
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover object-[center_bottom]"
+          />
+        </motion.div>
+        {/* Readability veil behind the copy block */}
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_62%_44%_at_50%_16%,rgba(255,255,255,0.78)_0%,transparent_70%)]" />
+        {/* Fade into the next (white) section */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-bg" />
+      </div>
+
       {/* ── Copy block ────────────────────────────────────────────────── */}
-      <div className="flex w-full max-w-[720px] flex-col items-center text-center">
+      <div className="relative z-10 flex w-full max-w-[720px] flex-col items-center text-center">
 
         {/* Eyebrow badge */}
         <motion.div {...revealBadge} className="mb-[var(--space-5)] max-w-full">
@@ -177,7 +240,7 @@ export function Hero({ data }: { data: HeroData }) {
           className="flex flex-wrap items-center justify-center gap-[var(--space-3)] max-sm:w-full max-sm:flex-col"
         >
           <Button
-            href="#"
+            href={appRegisterUrl}
             variant="solid"
             size="lg"
             icon={
@@ -188,10 +251,14 @@ export function Hero({ data }: { data: HeroData }) {
             {data.ctaPrimary}
           </Button>
           <Button
-            href="#"
+            href="#features"
             variant="ghost"
             size="lg"
             className="max-sm:w-full max-sm:justify-center"
+            onClick={(e) => {
+              e.preventDefault()
+              smoothScrollToId('features')
+            }}
           >
             {data.ctaSecondary}
           </Button>
@@ -220,7 +287,7 @@ export function Hero({ data }: { data: HeroData }) {
       {/* ── Comparison callouts ────────────────────────────────────────── */}
       <div
         className={cn(
-          'mt-[var(--space-10)] flex w-full max-w-[860px]',
+          'relative z-10 mt-[var(--space-10)] flex w-full max-w-[860px]',
           'flex-wrap items-center justify-center gap-[var(--space-3)]',
           // On mobile stack but hug content (centered) — full-width pills with short
           // text look empty/stretched; content-width chips read cleaner.
@@ -235,7 +302,7 @@ export function Hero({ data }: { data: HeroData }) {
       {/* ── Product showcase ───────────────────────────────────────────── */}
       <motion.div
         {...revealProduct}
-        className="mt-[var(--space-10)] w-full max-w-[960px]"
+        className="relative z-10 mt-[var(--space-10)] w-full max-w-[960px]"
       >
         {/* Meta label */}
         <div className="mb-[var(--space-5)] text-center">
@@ -251,29 +318,30 @@ export function Hero({ data }: { data: HeroData }) {
         <div
           className={cn(
             'flex min-h-[320px] items-center justify-center overflow-hidden',
-            'rounded-2xl border border-border bg-surface p-[var(--space-4)]',
+            'rounded-2xl border border-border bg-surface p-[var(--space-2)]',
             'shadow-[var(--shadow-xl)]',
             'max-sm:min-h-[200px]',
           )}
         >
-          {/*
-            Asset choice: /assets/screens/dashboard.png
-            Rationale: prototype uses `uploads/dashboard.png` labeled "Coach Dashboard".
-            `hand-mock-hero.png` is a hand-holding-phone mock — not the full dashboard frame.
-            The dashboard screenshot matches the product-frame intent exactly.
-          */}
+          {/* Coach Dashboard product frame — full-bleed screenshot */}
           <Image
-            src="/assets/screens/dashboard.png"
+            src="/assets/screens/dashboard-new.png"
             alt={data.productImageAlt ?? ''}
-            width={1456}
-            height={816}
+            width={3024}
+            height={1796}
             priority
             className="block h-auto w-full rounded-xl"
           />
         </div>
 
-        {/* Italic brand note */}
-        <p className="mt-[var(--space-4)] text-center font-display text-xs italic text-text-faint">
+        {/* Italic brand note — sits on the illustration's meadow, needs a
+            white glow + stronger ink to stay readable */}
+        <p
+          className={cn(
+            'mt-[var(--space-4)] text-center font-display text-xs italic text-text-muted',
+            '[text-shadow:0_0_6px_rgba(255,255,255,0.95),0_0_14px_rgba(255,255,255,0.8)]',
+          )}
+        >
           {data.brandNote}
         </p>
       </motion.div>

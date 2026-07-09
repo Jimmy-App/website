@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
+import { CookieSettingsButton } from '@/components/cookies/CookieSettingsButton'
 import type { FooterData } from '@/lib/content'
 
 /* ── Social icons (inline SVG — no extra deps) ──────────────────── */
@@ -38,10 +39,9 @@ function IconDiscord() {
 }
 
 const SOCIAL = [
-  { href: '#', label: 'Instagram', icon: <IconInstagram /> },
-  { href: '#', label: 'LinkedIn', icon: <IconLinkedIn /> },
-  { href: '#', label: 'YouTube', icon: <IconYouTube /> },
-  { href: '#', label: 'Discord', icon: <IconDiscord /> },
+  { href: 'https://www.instagram.com/jimmycoach.app', label: 'Instagram', icon: <IconInstagram /> },
+  { href: 'https://www.linkedin.com/company/jimmycoach', label: 'LinkedIn', icon: <IconLinkedIn /> },
+  { href: 'https://discord.gg/Rsqh6yZmEM', label: 'Discord', icon: <IconDiscord /> },
 ]
 
 /* Internal ("/…") hrefs use the locale-aware Link; anchors/externals stay <a>. */
@@ -237,13 +237,23 @@ export function Footer({ data }: { data: FooterData }) {
               borderTop: '1px solid var(--ft-line)',
             }}
           >
-            <p style={{ fontSize: '13.5px', fontWeight: 450, color: 'var(--ft-faint)', letterSpacing: '-0.005em' }}>
-              {data.copy}
-            </p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <p style={{ fontSize: '13.5px', fontWeight: 450, color: 'var(--ft-faint)', letterSpacing: '-0.005em' }}>
+                {data.copy}
+              </p>
+              <CookieSettingsButton className="ft-col-link text-[13.5px]" />
+            </div>
 
             <div className="flex items-center gap-[10px]">
               {SOCIAL.map(({ href, label, icon }) => (
-                <a key={label} href={href} aria-label={label} className="ft-social-link">
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="ft-social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {icon}
                 </a>
               ))}

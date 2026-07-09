@@ -131,5 +131,37 @@
     "ctaBody": "The roadmap is shaped by coaches like you. Tell us what would make Jimmy better — we read every request.",
     "ctaPrimary": "Request a feature",
     "ctaSecondary": "See what shipped"
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "onThisPage": "On this page",
+    "lastUpdated": "Last updated",
+    "backToTop": "Back to top",
+    "more": "More policies",
+    "privacyTitle": "Privacy Policy",
+    "termsTitle": "Terms of Service",
+    "cookieTitle": "Cookie Policy",
+    "questions": "Questions about this policy?",
+    "contactCta": "Email our team"
+  },
+  "cookies": {
+    "bannerHeading": "A quick note on cookies",
+    "bannerText": "We use cookies for analytics and marketing.",
+    "readPolicy": "Read Cookie Policy",
+    "acceptAll": "Accept all",
+    "rejectAll": "Reject all",
+    "customize": "Customize",
+    "prefsTitle": "Cookie Preferences",
+    "prefsIntro": "Choose which cookies we can use. You can change this anytime from the footer.",
+    "necessaryTitle": "Strictly necessary",
+    "necessaryDesc": "Required for the site to work — login, security and your preferences.",
+    "analyticsTitle": "Analytics",
+    "analyticsDesc": "Help us understand how visitors use the site (Google Analytics 4).",
+    "marketingTitle": "Marketing",
+    "marketingDesc": "Used to show you relevant ads on other platforms (Meta Pixel).",
+    "alwaysOn": "Always on",
+    "save": "Save preferences",
+    "close": "Close",
+    "footerSettings": "Cookie Settings"
   }
 }

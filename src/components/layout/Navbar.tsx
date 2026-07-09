@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
+import { appLoginUrl, appRegisterUrl } from '@/lib/appUrl'
 import { FeatureItem } from '@/components/ui/FeatureItem'
 import { Button } from '@/components/ui/Button'
 import type { NavigationData } from '@/lib/content'
@@ -719,10 +720,10 @@ function MobileMenu({
           </div>
 
           <div className={cn('mt-4 flex flex-col gap-3', rowCls, rowState)} style={delay(5)}>
-            <Button variant="ghost" size="md" className="w-full justify-center py-[14px]">
+            <Button href={appLoginUrl} variant="ghost" size="md" className="w-full justify-center py-[14px]">
               {data.login}
             </Button>
-            <Button variant="solid" size="md" className="w-full justify-center py-[14px]">
+            <Button href={appRegisterUrl} variant="solid" size="md" className="w-full justify-center py-[14px]">
               {data.getStarted}
             </Button>
           </div>
@@ -812,16 +813,17 @@ export function Navbar({ data }: { data: NavigationData }) {
 
             {/* CTA buttons — hidden on mobile (<= lg) */}
             <div className="hidden lg:flex items-center gap-2">
-              <Button variant="ghost" size="sm">
+              <Button href={appLoginUrl} variant="ghost" size="sm">
                 {data.login}
               </Button>
-              <Button variant="solid" size="sm">
+              <Button href={appRegisterUrl} variant="solid" size="sm">
                 {data.getStarted}
               </Button>
             </div>
 
             {/* Get Started — compact, mobile only; hidden while the menu is open */}
             <Button
+              href={appRegisterUrl}
               variant="solid"
               size="sm"
               className={cn(

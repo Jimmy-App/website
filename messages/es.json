@@ -131,5 +131,37 @@
     "ctaBody": "La hoja de ruta la marcan coaches como tú. Cuéntanos qué haría mejor a Jimmy — leemos cada solicitud.",
     "ctaPrimary": "Sugerir una función",
     "ctaSecondary": "Ver lo lanzado"
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "onThisPage": "En esta página",
+    "lastUpdated": "Última actualización",
+    "backToTop": "Volver arriba",
+    "more": "Más políticas",
+    "privacyTitle": "Política de privacidad",
+    "termsTitle": "Términos del servicio",
+    "cookieTitle": "Política de cookies",
+    "questions": "¿Preguntas sobre esta política?",
+    "contactCta": "Escribe a nuestro equipo"
+  },
+  "cookies": {
+    "bannerHeading": "Una nota sobre las cookies",
+    "bannerText": "Usamos cookies para analítica y marketing.",
+    "readPolicy": "Leer la política de cookies",
+    "acceptAll": "Aceptar todo",
+    "rejectAll": "Rechazar todo",
+    "customize": "Personalizar",
+    "prefsTitle": "Preferencias de cookies",
+    "prefsIntro": "Elige qué cookies podemos usar. Puedes cambiarlo cuando quieras desde el pie de página.",
+    "necessaryTitle": "Estrictamente necesarias",
+    "necessaryDesc": "Necesarias para que el sitio funcione: inicio de sesión, seguridad y tus preferencias.",
+    "analyticsTitle": "Analítica",
+    "analyticsDesc": "Nos ayudan a entender cómo usan el sitio los visitantes (Google Analytics 4).",
+    "marketingTitle": "Marketing",
+    "marketingDesc": "Se usan para mostrarte anuncios relevantes en otras plataformas (Meta Pixel).",
+    "alwaysOn": "Siempre activas",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "footerSettings": "Configuración de cookies"
   }
 }

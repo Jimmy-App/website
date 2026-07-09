@@ -134,32 +134,17 @@ function StoreBadge({
   sub,
   main,
   logo,
+  soon,
 }: {
-  href: string
+  href?: string
   label: string
   sub: string
   main: string
   logo: React.ReactNode
+  soon?: boolean
 }) {
-  return (
-    <a
-      href={href}
-      aria-label={label}
-      className={cn(
-        'inline-flex items-center gap-[11px]',
-        'rounded-[14px]',
-        'no-underline',
-        'shadow-[0_2px_14px_rgba(26,25,23,0.18)]',
-        'transition-[opacity,transform,box-shadow] duration-[160ms]',
-        'hover:opacity-[0.88] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(26,25,23,0.28)]',
-        'max-[600px]:flex-1 max-[600px]:justify-center',
-      )}
-      style={{
-        background: '#fff',
-        color: 'var(--color-text)',
-        padding: '9px 16px',
-      }}
-    >
+  const inner = (
+    <>
       <span className="flex h-6 w-6 shrink-0 items-center justify-center">
         {logo}
       </span>
@@ -173,6 +158,54 @@ function StoreBadge({
           {main}
         </span>
       </span>
+    </>
+  )
+
+  const style = {
+    background: '#fff',
+    color: 'var(--color-text)',
+    padding: '9px 16px',
+  }
+
+  if (soon) {
+    return (
+      <div
+        aria-label={label}
+        aria-disabled="true"
+        className={cn(
+          'inline-flex items-center gap-[11px]',
+          'rounded-[14px]',
+          'no-underline',
+          'shadow-[0_2px_14px_rgba(26,25,23,0.18)]',
+          'transition-[opacity,transform,box-shadow] duration-[160ms]',
+          'max-[600px]:flex-1 max-[600px]:justify-center',
+          'cursor-default opacity-60',
+        )}
+        style={style}
+      >
+        {inner}
+      </div>
+    )
+  }
+
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(
+        'inline-flex items-center gap-[11px]',
+        'rounded-[14px]',
+        'no-underline',
+        'shadow-[0_2px_14px_rgba(26,25,23,0.18)]',
+        'transition-[opacity,transform,box-shadow] duration-[160ms]',
+        'hover:opacity-[0.88] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(26,25,23,0.28)]',
+        'max-[600px]:flex-1 max-[600px]:justify-center',
+      )}
+      style={style}
+    >
+      {inner}
     </a>
   )
 }
@@ -320,14 +353,14 @@ export function Tech({ data }: { data: TechData }) {
             className="flex flex-wrap gap-3 pt-1"
           >
             <StoreBadge
-              href="#"
+              href="https://apps.apple.com/us/app/jimmy-coach/id6746717819"
               label={data.appStoreLabel ?? ''}
               sub={data.appStoreSub ?? ''}
               main={data.appStoreMain ?? ''}
               logo={<AppleLogo />}
             />
             <StoreBadge
-              href="#"
+              soon
               label={data.playStoreLabel ?? ''}
               sub={data.playStoreSub ?? ''}
               main={data.playStoreMain ?? ''}

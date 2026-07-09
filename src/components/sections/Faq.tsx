@@ -260,7 +260,9 @@ export function Faq({ data }: { data: FaqData }) {
         >
           {data.footNote}{' '}
           <a
-            href="#"
+            href="https://discord.gg/Rsqh6yZmEM"
+            target="_blank"
+            rel="noopener noreferrer"
             className={cn(
               'inline-flex items-center gap-[6px] font-semibold text-purple',
               'no-underline transition-[gap] duration-[180ms] ease-out',
