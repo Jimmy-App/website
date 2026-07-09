@@ -72,10 +72,12 @@ export function toRelease(doc: CHANGELOG_QUERY_RESULT[number]): Release {
       }
     : undefined
 
+  // The query filters `defined(date)`, so date is always present at runtime.
+  const date = doc.date ?? ''
   return {
     version: doc.version ?? '',
-    date: doc.date,
-    dateLabel: new Date(doc.date).toLocaleDateString('en-US', {
+    date,
+    dateLabel: new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

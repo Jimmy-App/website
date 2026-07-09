@@ -38,7 +38,7 @@ export default async function RoadmapPage({
   const shipped: ShippedItem[] = changelog.slice(0, 4).map((r) => ({
     version: r.version ?? '',
     title: r.title ?? '',
-    when: new Date(r.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    when: new Date(r.date ?? '').toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
   }))
 
   return (

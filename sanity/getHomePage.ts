@@ -168,13 +168,14 @@ export async function getFeatureSlugs(): Promise<FEATURE_SLUGS_QUERY_RESULT> {
   return client.fetch<FEATURE_SLUGS_QUERY_RESULT>(FEATURE_SLUGS_QUERY, {})
 }
 
-// Changelog is not localized; `locale` only scopes the cache tag so the Sanity
-// revalidation webhook (changelogRelease-{language}) invalidates it like the rest.
+// Changelog releases are localized (one changelogRelease doc per language):
+// filter by locale so a page shows only its language's releases. The cache tag
+// is scoped per-locale and matches the Sanity webhook (changelogRelease-{language}).
 export async function getChangelog(locale: string): Promise<CHANGELOG_QUERY_RESULT> {
   'use cache'
   cacheLife('hours')
   cacheTag(`changelogRelease-${locale}`)
-  return client.fetch<CHANGELOG_QUERY_RESULT>(CHANGELOG_QUERY, {})
+  return client.fetch<CHANGELOG_QUERY_RESULT>(CHANGELOG_QUERY, { locale })
 }
 
 // Roadmap is not localized; `locale` only scopes the cache tag so the Sanity

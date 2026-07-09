@@ -2166,10 +2166,10 @@ export type FEATURE_SLUGS_QUERY_RESULT = Array<{
 
 // Source: sanity/queries/index.ts
 // Variable: CHANGELOG_QUERY
-// Query: *[_type == "changelogRelease" && defined(date)] | order(date desc){    version,    date,    title,    lead,    image{ ..., alt },    changes[]{ type, text }  }
+// Query: *[_type == "changelogRelease" && defined(date) && language == $locale] | order(date desc){    version,    date,    title,    lead,    image{ ..., alt },    changes[]{ type, text }  }
 export type CHANGELOG_QUERY_RESULT = Array<{
   version: string | null;
-  date: string;
+  date: string | null;
   title: string | null;
   lead: string | null;
   image: {
@@ -2220,7 +2220,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n\n  }\n': FEATURES_QUERY_RESULT;
     '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
     '\n  *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }\n': FEATURE_SLUGS_QUERY_RESULT;
-    '\n  *[_type == "changelogRelease" && defined(date)] | order(date desc){\n    version,\n    date,\n    title,\n    lead,\n    image{ ..., alt },\n    changes[]{ type, text }\n  }\n': CHANGELOG_QUERY_RESULT;
+    '\n  *[_type == "changelogRelease" && defined(date) && language == $locale] | order(date desc){\n    version,\n    date,\n    title,\n    lead,\n    image{ ..., alt },\n    changes[]{ type, text }\n  }\n': CHANGELOG_QUERY_RESULT;
     '\n  *[_type == "roadmapItem"] | order(order asc){\n    "id": _id,\n    column,\n    category,\n    title,\n    desc,\n    eta,\n    votes\n  }\n': ROADMAP_QUERY_RESULT;
   }
 }

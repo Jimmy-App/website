@@ -232,7 +232,7 @@ export const FEATURE_SLUGS_QUERY = groq`
 // Not localized (English content on all locales); chrome localized via next-intl.
 // Newest first. `image` keeps the asset ref + alt for urlFor().
 export const CHANGELOG_QUERY = groq`
-  *[_type == "changelogRelease" && defined(date)] | order(date desc){
+  *[_type == "changelogRelease" && defined(date) && language == $locale] | order(date desc){
     version,
     date,
     title,
