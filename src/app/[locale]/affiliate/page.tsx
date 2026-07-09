@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/lib/seo'
 import {
   getNavigation,
   getFooter,
@@ -16,7 +17,20 @@ import { AffiliateHowItWorks } from '@/components/affiliate/AffiliateHowItWorks'
 import { AffiliateWhyWho } from '@/components/affiliate/AffiliateWhyWho'
 import type { FaqData, FinalCtaContent } from '@/lib/content'
 
-export const metadata: Metadata = { title: 'Affiliate Program' }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return pageMetadata({
+    locale,
+    path: '/affiliate',
+    title: 'Affiliate Program',
+    description:
+      'Earn 30% recurring commission for every coach you refer to Jimmy. Share the platform you love and get paid every month.',
+  })
+}
 
 export default async function AffiliatePage({
   params,

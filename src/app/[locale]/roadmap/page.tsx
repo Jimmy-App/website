@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/lib/seo'
 import { getNavigation, getFooter, getChangelog, getRoadmap } from '../../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -9,10 +10,19 @@ import { RecentlyShipped, type ShippedItem } from '@/components/roadmap/Recently
 import { RoadmapCta } from '@/components/roadmap/RoadmapCta'
 import { groupRoadmap } from '@/lib/roadmap'
 
-export const metadata: Metadata = {
-  title: 'Roadmap',
-  description:
-    "What we're building next for modern fitness coaches. Now, Next and Later — shaped by the coaches who use Jimmy every day.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return pageMetadata({
+    locale,
+    path: '/roadmap',
+    title: 'Roadmap',
+    description:
+      "What we're building next for modern fitness coaches. Now, Next and Later — shaped by the coaches who use Jimmy every day.",
+  })
 }
 
 export default async function RoadmapPage({

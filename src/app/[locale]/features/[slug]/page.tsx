@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/lib/seo'
 import {
   getNavigation,
   getFooter,
@@ -31,16 +32,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
   const doc = await getFeature(locale, slug)
-  if (!doc) return { title: 'Features' }
+  if (!doc) return pageMetadata({ locale, path: `/features/${slug}`, title: 'Features' })
   const feature = toFeature(doc)
-  return {
+  return pageMetadata({
+    locale,
+    path: `/features/${slug}`,
     title: feature.name,
     description: feature.lead,
-    openGraph: {
-      title: `${feature.name} — Jimmy`,
-      description: feature.lead,
-    },
-  }
+  })
 }
 
 export default async function FeaturePage({

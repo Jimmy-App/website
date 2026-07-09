@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/lib/seo'
 import { getNavigation, getFooter, getPosts } from '../../../../sanity/getHomePage'
 import { urlFor } from '../../../../sanity/image'
 import { Navbar } from '@/components/layout/Navbar'
@@ -10,10 +11,19 @@ import type { CardPost } from '@/components/blog/PostCard'
 import { formatPostDate, isCategoryKey } from '@/lib/blog'
 import type { POSTS_QUERY_RESULT } from '../../../../sanity.types'
 
-export const metadata: Metadata = {
-  title: 'Blog',
-  description:
-    'The Jimmy blog — retention, programming and business playbooks for modern fitness coaches.',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return pageMetadata({
+    locale,
+    path: '/blog',
+    title: 'Blog',
+    description:
+      'The Jimmy blog — retention, programming and business playbooks for modern fitness coaches.',
+  })
 }
 
 type SanityPost = POSTS_QUERY_RESULT[number]

@@ -1,5 +1,7 @@
+import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/lib/seo'
 import { getHomePage, getNavigation, getFooter, getPricingPlans } from '../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -16,6 +18,20 @@ import { Team } from '@/components/sections/Team'
 import { Faq } from '@/components/sections/Faq'
 import { Manifesto } from '@/components/sections/Manifesto'
 import { FinalCta } from '@/components/sections/FinalCta'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return pageMetadata({
+    locale,
+    path: '',
+    description:
+      'Jimmy is the retention platform for modern fitness coaches — structured workouts, community, payments, and a white-label app for your members.',
+  })
+}
 
 export default async function HomePage({
   params,

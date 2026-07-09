@@ -11,6 +11,7 @@ export const SITE_URL = (
 ).replace(/\/+$/, '')
 
 export const SITE_NAME = 'Jimmy'
+export const DEFAULT_TITLE = 'Jimmy — The Skool of Fitness'
 export const DEFAULT_OG_IMAGE = '/og.jpg'
 
 export const LOCALES = routing.locales
@@ -64,7 +65,8 @@ export function pageMetadata({
   noIndex = false,
 }: PageMetaInput): Metadata {
   const url = localizedUrl(locale, path)
-  const images = [{ url: image, width: 1200, height: 630, alt: title ?? SITE_NAME }]
+  const ogTitle = title ?? DEFAULT_TITLE
+  const images = [{ url: image, width: 1200, height: 630, alt: ogTitle }]
 
   return {
     title,
@@ -78,13 +80,13 @@ export function pageMetadata({
       siteName: SITE_NAME,
       locale: OG_LOCALE[locale] ?? 'en_US',
       url,
-      title: title ?? undefined,
+      title: ogTitle,
       description: description ?? undefined,
       images,
     },
     twitter: {
       card: 'summary_large_image',
-      title: title ?? undefined,
+      title: ogTitle,
       description: description ?? undefined,
       images,
     },

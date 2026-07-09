@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ChevronRight, ArrowRight } from 'lucide-react'
+import { pageMetadata } from '@/lib/seo'
 import {
   getNavigation,
   getFooter,
@@ -39,8 +40,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
   const post = await getPost(locale, slug)
-  if (!post) return { title: 'Blog' }
-  return { title: post.title ?? 'Blog', description: post.excerpt ?? undefined }
+  if (!post) return pageMetadata({ locale, path: `/blog/${slug}`, title: 'Blog' })
+  return pageMetadata({
+    locale,
+    path: `/blog/${slug}`,
+    title: post.title ?? 'Blog',
+    description: post.excerpt ?? undefined,
+    type: 'article',
+  })
 }
 
 const Dot = () => <span className="size-[3px] rounded-full bg-text-faint" />
