@@ -6,6 +6,7 @@ import { useLocale } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { appLoginUrl, appRegisterUrl } from '@/lib/appUrl'
+import { guidesEnabled } from '@/lib/env'
 import { FeatureItem } from '@/components/ui/FeatureItem'
 import { Button } from '@/components/ui/Button'
 import type { NavigationData } from '@/lib/content'
@@ -128,12 +129,27 @@ function MobileResItem({
   className?: string
 }) {
   const href = resourceHref(it.key) ?? it.href ?? '#'
+  const isGuides = it.key === 'guides'
+  const soonBadge = (
+    <span className="ml-1.5 rounded-full border border-border bg-surface-offset px-[6px] py-[2px] text-[9px] font-bold uppercase leading-none tracking-[0.07em] text-text-faint">
+      Soon
+    </span>
+  )
   const inner = (
     <>
       <span className="text-text-faint">{RESOURCE_ICONS_SM[it.key ?? ''] ?? null}</span>
       {it.title}
+      {isGuides && soonBadge}
     </>
   )
+  // Guides isn't live on production — show it as a dimmed, non-navigable row.
+  if (isGuides && !guidesEnabled) {
+    return (
+      <span className={cn(className, 'cursor-default opacity-60')} aria-disabled="true">
+        {inner}
+      </span>
+    )
+  }
   if (href.startsWith('/')) {
     return (
       <Link href={href} onClick={onClose} className={className}>
@@ -292,15 +308,20 @@ function ResourcesMega({ data }: { data: NavigationData }) {
           {data.resourcesContent}
         </div>
         <div className="flex flex-col gap-px">
-          {contentItems.map((it) => (
-            <FeatureItem
-              key={it.key}
-              icon={RESOURCE_ICONS[it.key ?? ''] ?? null}
-              title={it.title ?? ''}
-              subtitle={it.subtitle ?? ''}
-              href={resourceHref(it.key)}
-            />
-          ))}
+          {contentItems.map((it) => {
+            const isGuides = it.key === 'guides'
+            return (
+              <FeatureItem
+                key={it.key}
+                icon={RESOURCE_ICONS[it.key ?? ''] ?? null}
+                title={it.title ?? ''}
+                subtitle={it.subtitle ?? ''}
+                href={resourceHref(it.key)}
+                badge={isGuides ? 'Soon' : undefined}
+                disabled={isGuides && !guidesEnabled}
+              />
+            )
+          })}
         </div>
       </div>
 

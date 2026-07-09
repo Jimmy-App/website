@@ -27,6 +27,7 @@ import {
   isGuideLevel,
   type GuideCategoryKey,
 } from '@/lib/guides'
+import { isProduction } from '@/lib/env'
 
 const CATEGORY_ORDER: GuideCategoryKey[] = [
   'getting-started',
@@ -38,6 +39,8 @@ const CATEGORY_ORDER: GuideCategoryKey[] = [
 ]
 
 export async function generateStaticParams() {
+  // Don't pre-render guide pages on production — the section is hidden there.
+  if (isProduction) return []
   const slugs = await getGuideSlugs()
   return slugs
     .filter((s): s is { slug: string } => s.slug !== null)
@@ -51,8 +54,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
   const guide = await getGuide(locale, slug)
-  if (!guide) return { title: 'Guides' }
-  return { title: guide.title ?? 'Guide', description: guide.lead ?? undefined }
+  // Work-in-progress: noindex until the Guides section ships.
+  const robots = { index: false, follow: false } as const
+  if (!guide) return { title: 'Guides', robots }
+  return {
+    title: guide.title ?? 'Guide',
+    description: guide.lead ?? undefined,
+    robots,
+  }
 }
 
 /* ── Level badge colours ─────────────────────────────────────────────── */
@@ -69,6 +78,9 @@ export default async function GuidePage({
 }) {
   const { locale, slug } = await params
   setRequestLocale(locale)
+
+  // Guides isn't content-complete yet — accessible on preview/local only.
+  if (isProduction) notFound()
 
   const [guide, guides, navigation, footer, t] = await Promise.all([
     getGuide(locale, slug),

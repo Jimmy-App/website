@@ -6,11 +6,14 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { GuidesLanding } from '@/components/guides/GuidesLanding'
 import { groupByCategory, type GuideCategoryKey } from '@/lib/guides'
+import { isProduction } from '@/lib/env'
 
 export const metadata: Metadata = {
   title: 'Guides',
   description:
     'Step-by-step guides for setting up Jimmy, programming workouts, growing your community and getting paid.',
+  // Work-in-progress: keep out of search indexes until the section ships.
+  robots: { index: false, follow: false },
 }
 
 const CATEGORY_ORDER: GuideCategoryKey[] = [
@@ -29,6 +32,9 @@ export default async function GuidesPage({
 }) {
   const { locale } = await params
   setRequestLocale(locale)
+
+  // Guides isn't content-complete yet — accessible on preview/local only.
+  if (isProduction) notFound()
 
   const [navigation, footer, guides, t] = await Promise.all([
     getNavigation(locale),
