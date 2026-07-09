@@ -6,6 +6,7 @@ import { ArrowRight, CalendarDays, Check } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { appRegisterUrl } from '@/lib/appUrl'
+import { calTriggerProps } from '@/lib/cal'
 import type { FinalCtaData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
@@ -254,9 +255,9 @@ export function FinalCta({ data }: { data: FinalCtaData }) {
                 {data.ctaPrimary}
               </Button>
 
-              {/* Secondary — ghost with purple calendar icon before text */}
+              {/* Secondary — ghost with purple calendar icon; opens Cal.com demo */}
               <Button
-                href="#"
+                {...calTriggerProps}
                 variant="ghost"
                 size="lg"
                 className={cn(

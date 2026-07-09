@@ -7,6 +7,7 @@ import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { appLoginUrl, appRegisterUrl } from '@/lib/appUrl'
 import { guidesEnabled } from '@/lib/env'
+import { calTriggerProps } from '@/lib/cal'
 import { FeatureItem } from '@/components/ui/FeatureItem'
 import { Button } from '@/components/ui/Button'
 import type { NavigationData } from '@/lib/content'
@@ -279,13 +280,14 @@ function FeaturesMega({ data }: { data: NavigationData }) {
         <p className="relative text-[12.5px] leading-[1.5] mb-auto" style={{ color: 'rgba(255,255,255,0.62)' }}>
           {data.featuresCta?.body}
         </p>
-        <a
-          href="#"
-          className="relative mt-4 inline-flex items-center gap-[7px] self-start whitespace-nowrap rounded-full bg-purple px-[18px] py-[10px] text-[13px] font-semibold text-white transition-[background,box-shadow,transform] duration-[var(--dur-fast)] hover:bg-purple-hover hover:shadow-[0_4px_18px_rgba(138,50,224,0.4)] hover:-translate-y-px"
+        <button
+          type="button"
+          {...calTriggerProps}
+          className="relative mt-4 inline-flex cursor-pointer items-center gap-[7px] self-start whitespace-nowrap rounded-full bg-purple px-[18px] py-[10px] text-[13px] font-semibold text-white transition-[background,box-shadow,transform] duration-[var(--dur-fast)] hover:bg-purple-hover hover:shadow-[0_4px_18px_rgba(138,50,224,0.4)] hover:-translate-y-px"
         >
           {data.featuresCta?.btn}
           <ArrowRight size={14} strokeWidth={1.75} />
-        </a>
+        </button>
       </aside>
     </div>
   )

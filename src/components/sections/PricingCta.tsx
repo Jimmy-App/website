@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Check, CalendarDays, Users, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appRegisterUrl } from '@/lib/appUrl'
+import { calTriggerProps } from '@/lib/cal'
 import { Button } from '@/components/ui/Button'
 import type { FinalCtaContent } from '@/lib/content'
 
@@ -77,15 +78,16 @@ export function PricingCta({ data }: { data: FinalCtaContent }) {
             >
               {data.ctaPrimary}
             </Button>
-            <a
-              href="#"
+            <button
+              type="button"
+              {...calTriggerProps}
               className={cn(
-                'inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/[0.08] px-[28px] py-[15px] text-[15px] font-medium text-white',
+                'inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/16 bg-white/[0.08] px-[28px] py-[15px] text-[15px] font-medium text-white',
                 'transition-[background,transform] duration-200 hover:bg-white/[0.14] active:scale-[0.97]',
               )}
             >
               {data.ctaSecondary}
-            </a>
+            </button>
           </div>
 
           {/* Trust row */}
