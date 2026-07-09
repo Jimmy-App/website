@@ -15,6 +15,8 @@ import { useInView } from 'framer-motion'
 import { ChevronRight, ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
+import { appRegisterUrl } from '@/lib/appUrl'
+import { calTriggerProps } from '@/lib/cal'
 import { FeatureDemo } from './FeatureDemo'
 import { FeatureVideo } from './FeatureVideo'
 import { FEATURE_ICON_MAP } from './featureMeta'
@@ -136,19 +138,20 @@ export function FeatureHero({ feature, t }: Props) {
               className="feature-hero-reveal mb-[clamp(1.25rem,2.5vw,1.75rem)] flex flex-wrap gap-3"
               style={STAGGER_STYLE(5)}
             >
-              <Link
-                href="/pricing"
+              <a
+                href={appRegisterUrl}
                 className="inline-flex items-center gap-2 rounded-full bg-purple px-5 py-[11px] text-[14px] font-semibold text-white shadow-[0_2px_12px_rgba(138,50,224,0.28)] transition-[background,box-shadow,transform] duration-[var(--dur-fast)] hover:bg-purple-hover hover:shadow-[0_4px_20px_rgba(138,50,224,0.4)] hover:-translate-y-px active:translate-y-0 active:bg-purple-active"
               >
                 {t.startFree}
                 <ArrowRight size={15} strokeWidth={2} />
-              </Link>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--color-ghost-border)] bg-transparent px-5 py-[11px] text-[14px] font-semibold text-text transition-[background,border-color] duration-[var(--dur-fast)] hover:border-[var(--color-ghost-border-h)] hover:bg-[var(--color-ghost-hover)]"
+              </a>
+              <button
+                type="button"
+                {...calTriggerProps}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--color-ghost-border)] bg-transparent px-5 py-[11px] text-[14px] font-semibold text-text transition-[background,border-color] duration-[var(--dur-fast)] hover:border-[var(--color-ghost-border-h)] hover:bg-[var(--color-ghost-hover)]"
               >
                 {t.bookDemo}
-              </Link>
+              </button>
             </div>
 
             {/* Tag chips */}

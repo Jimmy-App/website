@@ -77,8 +77,13 @@ export function FeatureItem({
       </IntlLink>
     )
   }
+  const external = href.startsWith('http')
   return (
-    <NextLink href={href} className={cls}>
+    <NextLink
+      href={href}
+      className={cls}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    >
       {inner}
     </NextLink>
   )

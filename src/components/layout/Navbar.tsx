@@ -98,7 +98,10 @@ const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
 // Resource items that map to a real (locale-aware) app route. Others stay as
 // their Sanity href (placeholder "#" until those pages exist).
 const RESOURCE_ROUTES: Record<string, string> = { blog: '/blog', guides: '/guides', changelog: '/changelog', productUpdates: '/changelog', roadmap: '/roadmap' }
-const resourceHref = (key?: string | null): string | undefined => RESOURCE_ROUTES[key ?? '']
+// Resource items that link to an external URL (opened in a new tab).
+const RESOURCE_EXTERNAL: Record<string, string> = { discord: 'https://discord.gg/Rsqh6yZmEM' }
+const resourceHref = (key?: string | null): string | undefined =>
+  RESOURCE_ROUTES[key ?? ''] ?? RESOURCE_EXTERNAL[key ?? '']
 
 // Feature items (coach + member) that map to a real route.
 const FEATURE_ROUTES: Record<string, string> = {
@@ -158,8 +161,14 @@ function MobileResItem({
       </Link>
     )
   }
+  const external = href.startsWith('http')
   return (
-    <a href={href} onClick={onClose} className={className}>
+    <a
+      href={href}
+      onClick={onClose}
+      className={className}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    >
       {inner}
     </a>
   )
@@ -189,8 +198,14 @@ function MobileFeatureItem({
       </Link>
     )
   }
+  const external = href.startsWith('http')
   return (
-    <a href={href} onClick={onClose} className={className}>
+    <a
+      href={href}
+      onClick={onClose}
+      className={className}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    >
       {inner}
     </a>
   )
