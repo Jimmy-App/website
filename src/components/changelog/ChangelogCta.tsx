@@ -61,15 +61,17 @@ export function ChangelogCta({ t }: Props) {
           </p>
 
           <div className="relative flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/pricing"
+            <a
+              href="https://discord.gg/Rsqh6yZmEM"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-purple px-6 py-[13px] text-[14px] font-semibold text-white shadow-[0_2px_16px_rgba(138,50,224,0.4)] transition-[background,box-shadow,transform] duration-[var(--dur-fast)] hover:bg-purple-hover hover:shadow-[0_4px_24px_rgba(138,50,224,0.55)] hover:-translate-y-px"
             >
               {t.primary}
               <ArrowRight size={15} strokeWidth={2} />
-            </Link>
+            </a>
             <Link
-              href="/pricing"
+              href="/roadmap"
               className="inline-flex items-center gap-2 rounded-full border px-6 py-[13px] text-[14px] font-semibold text-white transition-[background,border-color] duration-[var(--dur-fast)] hover:bg-white/[0.06]"
               style={{ borderColor: 'rgba(255,255,255,0.22)' }}
             >
