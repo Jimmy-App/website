@@ -4,6 +4,9 @@ import { getNavigation, getFooter } from '../../../sanity/getHomePage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { LegalPage, type LegalCrossLink } from '@/components/legal/LegalPage'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { breadcrumbSchema } from '@/lib/jsonld'
+import { localizedUrl } from '@/lib/seo'
 import {
   LEGAL_SLUGS,
   formatLegalDate,
@@ -44,8 +47,14 @@ export async function renderLegalPage({
     href: `/${locale}/${s}`,
   }))
 
+  const breadcrumb = breadcrumbSchema([
+    { name: 'Home', url: localizedUrl(locale) },
+    { name: doc.title, url: localizedUrl(locale, `/${doc.slug}`) },
+  ])
+
   return (
     <>
+      <JsonLd data={breadcrumb} />
       <Navbar data={navigation} />
       <LegalPage
         doc={doc}

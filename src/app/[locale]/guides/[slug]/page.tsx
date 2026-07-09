@@ -28,6 +28,9 @@ import {
   type GuideCategoryKey,
 } from '@/lib/guides'
 import { isProduction } from '@/lib/env'
+import { localizedUrl } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { articleSchema, breadcrumbSchema } from '@/lib/jsonld'
 
 const CATEGORY_ORDER: GuideCategoryKey[] = [
   'getting-started',
@@ -111,8 +114,26 @@ export default async function GuidePage({
 
   const updatedFormatted = formatGuideDate(guide.updatedAt)
 
+  // Structured data (ready for when Guides launch — the pages are noindex/WIP).
+  const guideUrl = localizedUrl(locale, `/guides/${slug}`)
+  const guideSchemas = [
+    articleSchema({
+      headline: guide.title ?? 'Guide',
+      description: guide.lead ?? undefined,
+      url: guideUrl,
+      datePublished: guide.updatedAt ?? undefined,
+      locale,
+    }),
+    breadcrumbSchema([
+      { name: 'Home', url: localizedUrl(locale) },
+      { name: 'Guides', url: localizedUrl(locale, '/guides') },
+      { name: guide.title ?? 'Guide', url: guideUrl },
+    ]),
+  ]
+
   return (
     <>
+      <JsonLd data={guideSchemas} />
       {/* Mobile reading progress bar */}
       <ReadingBar />
       <Navbar data={navigation} />
