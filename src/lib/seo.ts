@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { routing } from '@/i18n/routing'
+import { getSiteSettings } from '../../sanity/getHomePage'
+import { urlFor } from '../../sanity/image'
 
 /**
  * Central SEO config. Canonical/hreflang/OG all derive from SITE_URL, so the
@@ -52,21 +54,42 @@ export interface PageMetaInput {
 }
 
 /**
- * Build a full Metadata object for a page: canonical + hreflang + OpenGraph +
- * Twitter, all absolute. Use inside `generateMetadata`.
+ * Resolve the OG image: an explicit override, else the Sanity-managed image
+ * (siteSettings.seo.ogImage, per locale — editable in Studio), else the bundled
+ * default. Cached via getSiteSettings.
  */
-export function pageMetadata({
+async function resolveOgImage(locale: string, explicit?: string): Promise<string> {
+  if (explicit) return explicit
+  try {
+    const settings = await getSiteSettings(locale)
+    const og = settings?.seo?.ogImage
+    if (og?.asset) {
+      return urlFor(og).width(1200).height(630).fit('crop').auto('format').url()
+    }
+  } catch {
+    // Sanity unavailable — fall through to the bundled image.
+  }
+  return DEFAULT_OG_IMAGE
+}
+
+/**
+ * Build a full Metadata object for a page: canonical + hreflang + OpenGraph +
+ * Twitter, all absolute. The OG image is editable in Sanity (siteSettings.seo.
+ * ogImage). Use inside `generateMetadata`.
+ */
+export async function pageMetadata({
   locale,
   path = '',
   title,
   description,
-  image = DEFAULT_OG_IMAGE,
+  image,
   type = 'website',
   noIndex = false,
-}: PageMetaInput): Metadata {
+}: PageMetaInput): Promise<Metadata> {
   const url = localizedUrl(locale, path)
   const ogTitle = title ?? DEFAULT_TITLE
-  const images = [{ url: image, width: 1200, height: 630, alt: ogTitle }]
+  const ogImage = await resolveOgImage(locale, image)
+  const images = [{ url: ogImage, width: 1200, height: 630, alt: ogTitle }]
 
   return {
     title,
