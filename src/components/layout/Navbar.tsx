@@ -672,8 +672,8 @@ function MobileMenu({
           >
             <span className="inline-flex items-center gap-[10px]">
               {data.affiliate}
-              <span className="rounded-full border border-purple-border bg-purple-light px-[7px] py-[3px] text-[9px] font-bold uppercase leading-none tracking-[0.07em] text-purple">
-                {data.newBadge}
+              <span className="rounded-full border border-border bg-surface-offset px-[7px] py-[3px] text-[9px] font-bold uppercase leading-none tracking-[0.07em] text-text-faint">
+                Soon
               </span>
             </span>
           </Link>
@@ -809,8 +809,8 @@ export function Navbar({ data }: { data: NavigationData }) {
 
             <Link href="/affiliate" className="inline-flex items-center text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">
               {data.affiliate}
-              <span className="ml-[5px] text-[9px] font-bold uppercase tracking-[0.07em] text-purple bg-purple-light border border-purple-border rounded-full px-[6px] py-[2px] leading-none">
-                {data.newBadge}
+              <span className="ml-[5px] text-[9px] font-bold uppercase tracking-[0.07em] text-text-faint bg-surface-offset border border-border rounded-full px-[6px] py-[2px] leading-none">
+                Soon
               </span>
             </Link>
 

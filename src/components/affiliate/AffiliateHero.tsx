@@ -1,8 +1,8 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { SoonButton } from '@/components/ui/SoonButton'
 import { EarningsCalculator } from './EarningsCalculator'
 import type { AffiliateCalcData, AffiliateHeroData, AffiliateSettingsData } from '@/lib/content'
 
@@ -85,9 +85,8 @@ export function AffiliateHero({
           {data.subtitle}
         </motion.p>
         <motion.div {...rise(0.32)} className="mt-[clamp(26px,3vw,34px)] flex flex-wrap justify-center gap-3">
-          <Button href="#calc" variant="solid" size="lg" icon={<ArrowRight className="size-4" strokeWidth={2} />}>
-            {data.ctaPrimary}
-          </Button>
+          {/* Affiliate program not live yet — primary CTA shown as "Soon". */}
+          <SoonButton size="lg" />
           <Button href="#how" variant="secondary" size="lg">
             {data.ctaSecondary}
           </Button>

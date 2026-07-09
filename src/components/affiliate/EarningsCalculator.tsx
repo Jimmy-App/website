@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Info, ArrowRight } from 'lucide-react'
+import { TrendingUp, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/Button'
+import { SoonButton } from '@/components/ui/SoonButton'
 import type { AffiliateCalcData, AffiliateSettingsData } from '@/lib/content'
 
 const SYM = { eur: '€', usd: '$' } as const
@@ -235,9 +235,8 @@ export function EarningsCalculator({
         </div>
 
         <div className="mt-auto flex flex-col gap-3">
-          <Button href="#" variant="solid" size="lg" className="w-full justify-center" icon={<ArrowRight className="size-4" strokeWidth={2} />}>
-            {t.cta}
-          </Button>
+          {/* Affiliate program not live yet — link generation shown as "Soon". */}
+          <SoonButton size="lg" full />
           <p className="flex items-start gap-2 text-[11.5px] leading-[1.5] text-text-faint">
             <Info className="mt-px size-[13px] flex-none" strokeWidth={2} />
             <span>{t.note}</span>
