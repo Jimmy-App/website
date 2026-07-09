@@ -11,6 +11,7 @@ const SOCIAL_PROFILES = [
   'https://www.instagram.com/jimmycoach.app',
   'https://www.linkedin.com/company/jimmycoach',
   'https://discord.gg/Rsqh6yZmEM',
+  'https://www.wikidata.org/wiki/Q140474086',
 ]
 
 /** Reusable publisher/author node. */
