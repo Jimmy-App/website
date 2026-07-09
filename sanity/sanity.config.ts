@@ -21,6 +21,7 @@ const localizedSchemaTypes = [
   'footer',
   'siteSettings',
   'feature',
+  'changelogRelease',
 ]
 
 const hiddenTemplateIds = new Set(

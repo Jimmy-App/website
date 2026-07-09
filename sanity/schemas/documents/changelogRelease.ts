@@ -1,9 +1,10 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 /**
- * Changelog release entry. Not localized — English content on all locales (like
- * blog/guides); the page chrome is localized via next-intl. The "Latest" badge
- * and the New/Improved/Fixed tag set are derived at render (newest release /
+ * Changelog release entry. Localized via @sanity/document-internationalization
+ * (one doc per language, `language` field managed by the plugin) — registered in
+ * sanity.config.ts localizedSchemaTypes. The page filters by locale. The "Latest"
+ * badge and the New/Improved/Fixed tag set are derived at render (newest release /
  * the change types present), so editors only manage the content here.
  */
 export const changelogRelease = defineType({
@@ -11,6 +12,8 @@ export const changelogRelease = defineType({
   title: 'Changelog Release',
   type: 'document',
   fields: [
+    // Managed by the document-internationalization plugin.
+    defineField({ name: 'language', type: 'string', readOnly: true, hidden: true }),
     defineField({ name: 'version', type: 'string', description: 'e.g. v3.4', validation: (R) => R.required() }),
     defineField({
       name: 'date',
@@ -46,11 +49,15 @@ export const changelogRelease = defineType({
     },
   ],
   preview: {
-    select: { title: 'title', version: 'version', date: 'date', media: 'image' },
-    prepare: ({ title, version, date, media }: { title?: string; version?: string; date?: string; media?: unknown }) => ({
-      title: `${version ?? ''} — ${title ?? ''}`,
-      subtitle: date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '',
-      media: media as never,
-    }),
+    select: { title: 'title', version: 'version', date: 'date', language: 'language', media: 'image' },
+    prepare: ({ title, version, date, language, media }: { title?: string; version?: string; date?: string; language?: string; media?: unknown }) => {
+      const when = date ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+      const lang = language ? language.toUpperCase() : ''
+      return {
+        title: `${version ?? ''} — ${title ?? ''}`,
+        subtitle: [lang, when].filter(Boolean).join(' · '),
+        media: media as never,
+      }
+    },
   },
 })

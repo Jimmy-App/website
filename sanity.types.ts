@@ -42,47 +42,6 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
-export type ChangelogRelease = {
-  _id: string;
-  _type: "changelogRelease";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  version?: string;
-  date?: string;
-  title?: string;
-  lead?: string;
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  changes?: Array<
-    {
-      _key: string;
-    } & ChangelogChange
-  >;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
 export type Guide = {
   _id: string;
   _type: "guide";
@@ -163,6 +122,22 @@ export type Seo = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type Slug = {
@@ -574,6 +549,13 @@ export type FeatureReference = {
   [internalGroqTypeReferenceTo]?: "feature";
 };
 
+export type ChangelogReleaseReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "changelogRelease";
+};
+
 export type InternationalizedArrayReferenceValue = {
   _type: "internationalizedArrayReferenceValue";
   value?:
@@ -583,7 +565,34 @@ export type InternationalizedArrayReferenceValue = {
     | NavigationReference
     | FooterReference
     | SiteSettingsReference
-    | FeatureReference;
+    | FeatureReference
+    | ChangelogReleaseReference;
+};
+
+export type ChangelogRelease = {
+  _id: string;
+  _type: "changelogRelease";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  language?: string;
+  version?: string;
+  date?: string;
+  title?: string;
+  lead?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  changes?: Array<
+    {
+      _key: string;
+    } & ChangelogChange
+  >;
 };
 
 export type Feature = {
@@ -1249,11 +1258,10 @@ export type AllSanitySchemaTypes =
   | Preview
   | RoadmapItem
   | SanityImageAssetReference
-  | ChangelogRelease
-  | SanityImageCrop
-  | SanityImageHotspot
   | Guide
   | Seo
+  | SanityImageCrop
+  | SanityImageHotspot
   | Slug
   | Post
   | PricingFeatures
@@ -1290,7 +1298,9 @@ export type AllSanitySchemaTypes =
   | FooterReference
   | SiteSettingsReference
   | FeatureReference
+  | ChangelogReleaseReference
   | InternationalizedArrayReferenceValue
+  | ChangelogRelease
   | Feature
   | SiteSettings
   | Footer
