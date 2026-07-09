@@ -20,9 +20,9 @@ export async function generateMetadata({
   return pageMetadata({
     locale,
     path: '/blog',
-    title: 'Blog',
+    title: 'Blog — Coaching, Retention & Business Playbooks',
     description:
-      'The Jimmy blog — retention, programming and business playbooks for modern fitness coaches.',
+      'The Jimmy blog — client retention, programming and business-growth playbooks for online fitness coaches and personal trainers.',
   })
 }
 

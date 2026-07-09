@@ -30,9 +30,9 @@ export async function generateMetadata({
   return pageMetadata({
     locale,
     path: '/pricing',
-    title: 'Pricing',
+    title: 'Pricing — Coaching Software Plans',
     description:
-      'Simple, transparent pricing for fitness coaches. Start free with up to 3 clients — no card required, then scale with Club plans as you grow.',
+      'Simple, transparent pricing for the Jimmy coaching software. Start free with up to 3 clients — no card required — then scale with Club plans as your coaching business grows.',
   })
 }
 

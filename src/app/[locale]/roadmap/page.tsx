@@ -19,9 +19,9 @@ export async function generateMetadata({
   return pageMetadata({
     locale,
     path: '/roadmap',
-    title: 'Roadmap',
+    title: "Roadmap — What We're Building Next",
     description:
-      "What we're building next for modern fitness coaches. Now, Next and Later — shaped by the coaches who use Jimmy every day.",
+      "What we're building next in the Jimmy coaching platform. Now, Next and Later — shaped by the fitness coaches who use Jimmy every day.",
   })
 }
 

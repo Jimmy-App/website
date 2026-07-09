@@ -26,9 +26,9 @@ export async function generateMetadata({
   return pageMetadata({
     locale,
     path: '/affiliate',
-    title: 'Affiliate Program',
+    title: 'Affiliate Program — Earn 30% Recurring',
     description:
-      'Earn 30% recurring commission for every coach you refer to Jimmy. Share the platform you love and get paid every month.',
+      'Join the Jimmy affiliate program and earn 30% recurring commission for every fitness coach you refer. Share the coaching platform you love and get paid every month.',
   })
 }
 

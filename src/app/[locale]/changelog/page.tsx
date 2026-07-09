@@ -18,9 +18,9 @@ export async function generateMetadata({
   return pageMetadata({
     locale,
     path: '/changelog',
-    title: 'Changelog',
+    title: 'Changelog — Product Updates',
     description:
-      'Every Jimmy update, in the open. New features, improvements and fixes for modern fitness coaches — shipped continuously.',
+      'Every Jimmy update, in the open. New features, improvements and fixes to the coaching software for fitness coaches — shipped continuously.',
   })
 }
 

@@ -27,12 +27,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  return pageMetadata({
+  const md = await pageMetadata({
     locale,
     path: '',
     description:
-      'Jimmy is the retention platform for modern fitness coaches — structured workouts, community, payments, and a white-label app for your members.',
+      'Jimmy is the all-in-one coaching software for fitness coaches — build workout programs, run a community, message clients and get paid, all in one white-label app. Start free with up to 3 clients.',
   })
+  // Absolute home title (no "| Jimmy" suffix) targeting the primary keyword.
+  return { ...md, title: { absolute: 'Jimmy — Coaching Software for Fitness Coaches' } }
 }
 
 export default async function HomePage({

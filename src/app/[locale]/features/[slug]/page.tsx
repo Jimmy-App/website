@@ -39,7 +39,7 @@ export async function generateMetadata({
   return pageMetadata({
     locale,
     path: `/features/${slug}`,
-    title: feature.name,
+    title: `${feature.name} for Fitness Coaches`,
     description: feature.lead,
   })
 }
