@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { CookieConsentProvider } from '@/components/cookies/CookieConsentProvider'
 import { CalInit } from '@/components/cal/CalInit'
+import { SyncHtmlLang } from '@/components/i18n/SyncHtmlLang'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -30,6 +31,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <CookieConsentProvider>{children}</CookieConsentProvider>
       <CalInit />
+      <SyncHtmlLang locale={locale} />
     </NextIntlClientProvider>
   )
 }
