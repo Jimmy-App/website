@@ -15,6 +15,9 @@ import {
   FlaskConical,
   ShieldCheck,
   ArrowLeftRight,
+  Gift,
+  TrendingUp,
+  CircleX,
   ChevronDown,
   ArrowRight,
 } from 'lucide-react'
@@ -23,20 +26,31 @@ import { cn } from '@/lib/utils'
 // ─── Animation helpers ─────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
-// ─── Icon map (ordered to match the 11 FAQ items in Sanity) ───────────────────
-const ICONS: React.FC<{ className?: string }>[] = [
-  ({ className }) => <LayoutGrid className={className} strokeWidth={1.75} />, // what is Jimmy
-  ({ className }) => <Users className={className} strokeWidth={1.75} />, // who is it for
-  ({ className }) => <Tag className={className} strokeWidth={1.75} />, // cost
-  ({ className }) => <Percent className={className} strokeWidth={1.75} />, // transaction fees
-  ({ className }) => <Smartphone className={className} strokeWidth={1.75} />, // clients pay?
-  ({ className }) => <Layers className={className} strokeWidth={1.75} />, // vs Skool
-  ({ className }) => <Dumbbell className={className} strokeWidth={1.75} />, // vs Trainerize
-  ({ className }) => <GraduationCap className={className} strokeWidth={1.75} />, // courses
-  ({ className }) => <FlaskConical className={className} strokeWidth={1.75} />, // beta
-  ({ className }) => <ShieldCheck className={className} strokeWidth={1.75} />, // security
-  ({ className }) => <ArrowLeftRight className={className} strokeWidth={1.75} />, // migration
-]
+// ─── Icon maps (ordered to match the FAQ items in Sanity, per page) ───────────
+type FaqIcon = React.FC<{ className?: string }>
+
+const ICON_SETS: Record<'home' | 'pricing', FaqIcon[]> = {
+  home: [
+    ({ className }) => <LayoutGrid className={className} strokeWidth={1.75} />, // what is Jimmy
+    ({ className }) => <Users className={className} strokeWidth={1.75} />, // who is it for
+    ({ className }) => <Tag className={className} strokeWidth={1.75} />, // cost
+    ({ className }) => <Layers className={className} strokeWidth={1.75} />, // vs Skool
+    ({ className }) => <Dumbbell className={className} strokeWidth={1.75} />, // vs Trainerize
+    ({ className }) => <FlaskConical className={className} strokeWidth={1.75} />, // beta
+    ({ className }) => <ShieldCheck className={className} strokeWidth={1.75} />, // security
+    ({ className }) => <ArrowLeftRight className={className} strokeWidth={1.75} />, // migration
+  ],
+  pricing: [
+    ({ className }) => <FlaskConical className={className} strokeWidth={1.75} />, // beta −15%
+    ({ className }) => <Gift className={className} strokeWidth={1.75} />, // free forever
+    ({ className }) => <TrendingUp className={className} strokeWidth={1.75} />, // scaling tiers
+    ({ className }) => <Percent className={className} strokeWidth={1.75} />, // transaction fees
+    ({ className }) => <Smartphone className={className} strokeWidth={1.75} />, // clients pay?
+    ({ className }) => <CircleX className={className} strokeWidth={1.75} />, // cancel anytime
+    ({ className }) => <Users className={className} strokeWidth={1.75} />, // team / gym accounts
+    ({ className }) => <GraduationCap className={className} strokeWidth={1.75} />, // courses
+  ],
+}
 
 // ─── Single accordion item ─────────────────────────────────────────────────────
 interface FaqItemProps {
@@ -171,7 +185,14 @@ function FaqItem({
 }
 
 // ─── FAQ section ──────────────────────────────────────────────────────────────
-export function Faq({ data }: { data: FaqData }) {
+export function Faq({
+  data,
+  variant = 'home',
+}: {
+  data: FaqData
+  variant?: 'home' | 'pricing'
+}) {
+  const ICONS = ICON_SETS[variant]
   const reduced = useReducedMotion()
 
   // First item open by default
