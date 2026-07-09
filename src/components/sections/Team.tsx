@@ -120,11 +120,11 @@ function TeamCard({
         'hover:border-purple-border hover:shadow-[0_14px_34px_-12px_rgba(138,50,224,0.16)]',
       )}
     >
-      {/* Photo column */}
+      {/* Photo column — full-height strip on desktop, a face-focused banner on mobile */}
       <div
         className={cn(
           'relative border-r border-border bg-surface-2',
-          'max-[440px]:min-h-[140px] max-[440px]:border-b max-[440px]:border-r-0',
+          'max-[440px]:aspect-[16/10] max-[440px]:border-b max-[440px]:border-r-0',
         )}
       >
         {/* Index label */}
@@ -143,8 +143,8 @@ function TeamCard({
           src={member.photo}
           alt={member.name}
           fill
-          className="object-cover"
-          sizes="128px"
+          className="object-cover object-center max-[440px]:object-[center_18%]"
+          sizes="(max-width: 440px) 100vw, 128px"
         />
       </div>
 
