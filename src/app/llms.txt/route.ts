@@ -5,11 +5,11 @@ export function GET() {
   const u = (p = '') => `${SITE_URL}/${DEFAULT_LOCALE}${p}`
   const body = `# Jimmy
 
-> The Skool of Fitness — the all-in-one coaching software for fitness coaches. Build workout programs, run a Skool-style community, message clients and get paid, all in one white-label iOS/Android app. Start free with up to 3 clients.
+> The Skool of Fitness — the all-in-one coaching software for fitness coaches. Build workout programs, run a Skool-style community, message clients and get paid, all in one white-label iOS/Android app. Start free with up to 3 clients. Unlike Skool (community and courses only) or Trainerize/TrueCoach (workout delivery only), Jimmy combines training tools, community and payments in a single native app; the app is free for clients.
 
 ## Product
 - [Home](${u()}): What Jimmy is, who it's for, and how it helps modern fitness coaches retain clients.
-- [Pricing](${u('/pricing')}): Free for up to 3 clients (no card); Club plans from €29/mo that scale with client count.
+- [Pricing](${u('/pricing')}): Free for up to 3 clients (no card, 5% transaction fee); Club plans from €29/mo (10 clients) to €149/mo (200 clients) with a 2.5% fee. Add-ons: team/gym coach seats +€19/mo, AI assistant +€19/mo.
 - [Affiliate Program](${u('/affiliate')}): Earn 30% recurring commission for every fitness coach you refer.
 
 ## Resources

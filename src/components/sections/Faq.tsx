@@ -5,8 +5,13 @@ import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
 import type { FaqData } from '@/lib/content'
 import {
   LayoutGrid,
-  Palette,
+  Users,
   Tag,
+  Percent,
+  Smartphone,
+  Layers,
+  Dumbbell,
+  GraduationCap,
   FlaskConical,
   ShieldCheck,
   ArrowLeftRight,
@@ -18,14 +23,19 @@ import { cn } from '@/lib/utils'
 // ─── Animation helpers ─────────────────────────────────────────────────────────
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
-// ─── Icon map (ordered to match 6 FAQ items) ──────────────────────────────────
+// ─── Icon map (ordered to match the 11 FAQ items in Sanity) ───────────────────
 const ICONS: React.FC<{ className?: string }>[] = [
-  ({ className }) => <LayoutGrid className={className} strokeWidth={1.75} />,
-  ({ className }) => <Palette className={className} strokeWidth={1.75} />,
-  ({ className }) => <Tag className={className} strokeWidth={1.75} />,
-  ({ className }) => <FlaskConical className={className} strokeWidth={1.75} />,
-  ({ className }) => <ShieldCheck className={className} strokeWidth={1.75} />,
-  ({ className }) => <ArrowLeftRight className={className} strokeWidth={1.75} />,
+  ({ className }) => <LayoutGrid className={className} strokeWidth={1.75} />, // what is Jimmy
+  ({ className }) => <Users className={className} strokeWidth={1.75} />, // who is it for
+  ({ className }) => <Tag className={className} strokeWidth={1.75} />, // cost
+  ({ className }) => <Percent className={className} strokeWidth={1.75} />, // transaction fees
+  ({ className }) => <Smartphone className={className} strokeWidth={1.75} />, // clients pay?
+  ({ className }) => <Layers className={className} strokeWidth={1.75} />, // vs Skool
+  ({ className }) => <Dumbbell className={className} strokeWidth={1.75} />, // vs Trainerize
+  ({ className }) => <GraduationCap className={className} strokeWidth={1.75} />, // courses
+  ({ className }) => <FlaskConical className={className} strokeWidth={1.75} />, // beta
+  ({ className }) => <ShieldCheck className={className} strokeWidth={1.75} />, // security
+  ({ className }) => <ArrowLeftRight className={className} strokeWidth={1.75} />, // migration
 ]
 
 // ─── Single accordion item ─────────────────────────────────────────────────────
@@ -227,7 +237,9 @@ export function Faq({ data }: { data: FaqData }) {
         {/* ── Accordion list ── */}
         <div className="flex flex-col gap-3">
           {items.map((item, index) => {
-            const Icon = ICONS[index]
+            // Modulo guard: content editors can add more items in Sanity than
+            // we have icons — cycling is better than crashing the render.
+            const Icon = ICONS[index % ICONS.length]
             return (
               <FaqItem
                 key={item._key}
