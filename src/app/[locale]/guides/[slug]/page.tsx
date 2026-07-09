@@ -42,8 +42,9 @@ const CATEGORY_ORDER: GuideCategoryKey[] = [
 ]
 
 export async function generateStaticParams() {
-  // Don't pre-render guide pages on production — the section is hidden there.
-  if (isProduction) return []
+  // Cache Components forbids returning an empty array here, so we always emit the
+  // real slugs. Production hiding happens at runtime: the page calls notFound()
+  // when isProduction (and the routes are noindex + excluded from the sitemap).
   const slugs = await getGuideSlugs()
   return slugs
     .filter((s): s is { slug: string } => s.slug !== null)
