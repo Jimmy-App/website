@@ -4,6 +4,7 @@ import { useReducedMotion, motion } from 'framer-motion'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { urlFor } from '../../../sanity/image'
 import type { TeamData } from '@/lib/content'
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
@@ -213,7 +214,7 @@ function TeamCard({
 
 // ─── Team section ─────────────────────────────────────────────────────────────
 
-// Hardcoded photo paths (Sanity image fields are not yet URL-resolved in this context)
+// Fallback photos, used only when a member has no photo uploaded in Sanity.
 const MEMBER_PHOTOS = ['/assets/people/coach-1.png', '/assets/people/coach-2.png']
 
 // Per-member social links, indexed to match the Sanity `members` order
@@ -238,7 +239,9 @@ export function Team({ data }: { data: TeamData }) {
     role: m.role ?? '',
     bio: m.bio ?? '',
     location: m.location ?? '',
-    photo: MEMBER_PHOTOS[i] ?? '/assets/people/coach-1.png',
+    photo: m.photo?.asset
+      ? urlFor(m.photo).width(320).height(400).fit('crop').auto('format').url()
+      : (MEMBER_PHOTOS[i] ?? '/assets/people/coach-1.png'),
     initials: (m.name ?? '').split(' ').map((w) => w[0] ?? '').join('').slice(0, 2).toUpperCase(),
     instagram: MEMBER_SOCIALS[i]?.instagram,
     linkedin: MEMBER_SOCIALS[i]?.linkedin,
