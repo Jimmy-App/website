@@ -280,6 +280,16 @@ export type PricingPlans = {
     } & PricingTier
   >;
   betaDiscountPct?: number;
+  feesFree?: PlanFees;
+  feesClub?: PlanFees;
+};
+
+export type PlanFees = {
+  _type: "planFees";
+  stripePct?: number;
+  stripeFixedEur?: number;
+  stripeFixedUsd?: number;
+  jimmyPct?: number;
 };
 
 export type ChangelogChange = {
@@ -1269,6 +1279,7 @@ export type AllSanitySchemaTypes =
   | Pricing
   | AffiliateSettings
   | PricingPlans
+  | PlanFees
   | ChangelogChange
   | FeatureCap
   | GuideVideo
@@ -1370,7 +1381,7 @@ export type PRICING_PAGE_QUERY_RESULT = {
 
 // Source: sanity/queries/index.ts
 // Variable: PRICING_PLANS_QUERY
-// Query: *[_type == "pricingPlans"][0]{    tiers[]{ clients, priceEur, priceUsd },    betaDiscountPct  }
+// Query: *[_type == "pricingPlans"][0]{    tiers[]{ clients, priceEur, priceUsd },    betaDiscountPct,    feesFree{ stripePct, stripeFixedEur, stripeFixedUsd, jimmyPct },    feesClub{ stripePct, stripeFixedEur, stripeFixedUsd, jimmyPct }  }
 export type PRICING_PLANS_QUERY_RESULT = {
   tiers: Array<{
     clients: string | null;
@@ -1378,6 +1389,18 @@ export type PRICING_PLANS_QUERY_RESULT = {
     priceUsd: number | null;
   }> | null;
   betaDiscountPct: number | null;
+  feesFree: {
+    stripePct: number | null;
+    stripeFixedEur: number | null;
+    stripeFixedUsd: number | null;
+    jimmyPct: number | null;
+  } | null;
+  feesClub: {
+    stripePct: number | null;
+    stripeFixedEur: number | null;
+    stripeFixedUsd: number | null;
+    jimmyPct: number | null;
+  } | null;
 } | null;
 
 // Source: sanity/queries/index.ts
@@ -2215,7 +2238,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "siteSettings" && language == $locale][0]{\n    siteName,\n    siteDescription,\n    seo,\n    notFound\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "pricingPage" && language == $locale][0]{\n    title,\n    faq,\n    finalCta,\n    seo\n  }\n': PRICING_PAGE_QUERY_RESULT;
-    '\n  *[_type == "pricingPlans"][0]{\n    tiers[]{ clients, priceEur, priceUsd },\n    betaDiscountPct\n  }\n': PRICING_PLANS_QUERY_RESULT;
+    '\n  *[_type == "pricingPlans"][0]{\n    tiers[]{ clients, priceEur, priceUsd },\n    betaDiscountPct,\n    feesFree{ stripePct, stripeFixedEur, stripeFixedUsd, jimmyPct },\n    feesClub{ stripePct, stripeFixedEur, stripeFixedUsd, jimmyPct }\n  }\n': PRICING_PLANS_QUERY_RESULT;
     '\n  *[_type == "affiliatePage" && language == $locale][0]{\n    title,\n    hero,\n    calc,\n    how,\n    why,\n    who,\n    faq,\n    finalCta,\n    seo\n  }\n': AFFILIATE_PAGE_QUERY_RESULT;
     '\n  *[_type == "affiliateSettings"][0]{\n    rate, sliderMin, sliderMax, sliderDefault, ticks,\n    eur{ avg, lo, hi },\n    usd{ avg, lo, hi }\n  }\n': AFFILIATE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;

@@ -27,6 +27,20 @@ export const pricingPlans = defineType({
       initialValue: 15,
       validation: (Rule) => Rule.required().min(0).max(100),
     }),
+    defineField({
+      name: 'feesFree',
+      type: 'planFees',
+      title: 'Transaction fees — Free plan',
+      description:
+        'Shown as "Transaction fees — Stripe X% + €Y · Jimmy Z%" on the Free card. Global for all languages.',
+    }),
+    defineField({
+      name: 'feesClub',
+      type: 'planFees',
+      title: 'Transaction fees — Club plans',
+      description:
+        'Shown on the Club card. Global for all languages; the currency switcher picks € or $.',
+    }),
   ],
   preview: {
     prepare: () => ({ title: 'Pricing Plans (prices)' }),

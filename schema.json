@@ -1663,6 +1663,66 @@
           "type": "number"
         },
         "optional": true
+      },
+      "feesFree": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "planFees"
+        },
+        "optional": true
+      },
+      "feesClub": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "planFees"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "planFees",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "planFees"
+          }
+        },
+        "stripePct": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "stripeFixedEur": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "stripeFixedUsd": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "jimmyPct": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        }
       }
     }
   },

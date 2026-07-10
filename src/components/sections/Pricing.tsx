@@ -26,19 +26,28 @@ type Currency = 'eur' | 'usd'
 // Sanity (homePage.pricing.tiers), keyed by slider step.
 const SYMBOLS: Record<Currency, string> = { eur: '€', usd: '$' }
 
+// Fallbacks when the Sanity fields are empty (match the values seeded there).
+const DEFAULT_FEES = {
+  free: { stripePct: 2.9, stripeFixedEur: 0.3, stripeFixedUsd: 0.3, jimmyPct: 5 },
+  club: { stripePct: 1.4, stripeFixedEur: 0.25, stripeFixedUsd: 0.25, jimmyPct: 2.5 },
+}
+
 function getFees(
   isFree: boolean,
   currency: Currency,
+  plans: PricingPlansData,
 ): { stripe: string; jimmy: string } {
-  if (isFree) {
-    return {
-      stripe: currency === 'eur' ? 'Stripe 2.9% + €0.30' : 'Stripe 2.9% + $0.30',
-      jimmy: 'Jimmy 5%',
-    }
-  }
+  const fromSanity = isFree ? plans.feesFree : plans.feesClub
+  const defaults = isFree ? DEFAULT_FEES.free : DEFAULT_FEES.club
+  const stripePct = fromSanity?.stripePct ?? defaults.stripePct
+  const jimmyPct = fromSanity?.jimmyPct ?? defaults.jimmyPct
+  const fixed =
+    currency === 'eur'
+      ? fromSanity?.stripeFixedEur ?? defaults.stripeFixedEur
+      : fromSanity?.stripeFixedUsd ?? defaults.stripeFixedUsd
   return {
-    stripe: currency === 'eur' ? 'Stripe 1.4% + €0.25' : 'Stripe 1.4% + $0.25',
-    jimmy: 'Jimmy 2.5%',
+    stripe: `Stripe ${stripePct}% + ${SYMBOLS[currency]}${fixed.toFixed(2)}`,
+    jimmy: `Jimmy ${jimmyPct}%`,
   }
 }
 
@@ -243,7 +252,7 @@ export function Pricing({
   const tickLabels = ['0', ...tiers.slice(1).map((tr) => tr.clients ?? '')]
   const planLabel = isFree ? (data.planFree ?? '') : (data.planClub ?? '')
   const activeCard: 'free' | 'club' = isFree ? 'free' : 'club'
-  const fees = getFees(isFree, currency)
+  const fees = getFees(isFree, currency, plans)
 
   // Plan-card prices (synced to the slider). When the slider is on Free, the
   // CLUB card previews the entry CLUB tier (index 1).

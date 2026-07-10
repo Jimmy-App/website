@@ -6,6 +6,7 @@ import { portableTextBlock } from './objects/portableTextBlock'
 import { featureTab } from './objects/featureTab'
 import { platformStep } from './objects/platformStep'
 import { pricingTier } from './objects/pricingTier'
+import { planFees } from './objects/planFees'
 import { pricingAddon } from './objects/pricingAddon'
 import { teamMember } from './objects/teamMember'
 import { teamStat } from './objects/teamStat'
@@ -46,6 +47,7 @@ export const schemaTypes = [
   featureTab,
   platformStep,
   pricingTier,
+  planFees,
   pricingAddon,
   teamMember,
   teamStat,
