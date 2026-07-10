@@ -23,8 +23,8 @@ export const PRICING_PLANS_QUERY = groq`
   *[_type == "pricingPlans"][0]{
     tiers[]{ clients, priceEur, priceUsd },
     betaDiscountPct,
-    feesFree{ stripePct, stripeFixedEur, stripeFixedUsd, jimmyPct },
-    feesClub{ stripePct, stripeFixedEur, stripeFixedUsd, jimmyPct }
+    feesFree{ stripePctEur, stripePctUsd, stripeFixedEur, stripeFixedUsd, jimmyPct },
+    feesClub{ stripePctEur, stripePctUsd, stripeFixedEur, stripeFixedUsd, jimmyPct }
   }
 `
 

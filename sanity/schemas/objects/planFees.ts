@@ -11,10 +11,10 @@ export const planFees = defineType({
   type: 'object',
   fields: [
     defineField({
-      name: 'stripePct',
+      name: 'stripePctEur',
       type: 'number',
-      title: 'Stripe %',
-      description: 'e.g. 2.9 → "Stripe 2.9%"',
+      title: 'Stripe % (EUR)',
+      description: 'e.g. 1.4 → "Stripe 1.4%" when the currency switcher is on €',
       validation: (Rule) => Rule.required().min(0).max(100),
     }),
     defineField({
@@ -23,6 +23,13 @@ export const planFees = defineType({
       title: 'Stripe fixed fee (EUR)',
       description: 'e.g. 0.3 → "€0.30"',
       validation: (Rule) => Rule.required().min(0),
+    }),
+    defineField({
+      name: 'stripePctUsd',
+      type: 'number',
+      title: 'Stripe % (USD)',
+      description: 'e.g. 2.9 → "Stripe 2.9%" when the currency switcher is on $',
+      validation: (Rule) => Rule.required().min(0).max(100),
     }),
     defineField({
       name: 'stripeFixedUsd',
@@ -40,9 +47,9 @@ export const planFees = defineType({
     }),
   ],
   preview: {
-    select: { stripePct: 'stripePct', jimmyPct: 'jimmyPct' },
-    prepare: ({ stripePct, jimmyPct }) => ({
-      title: `Stripe ${stripePct}% · Jimmy ${jimmyPct}%`,
+    select: { stripePctEur: 'stripePctEur', stripePctUsd: 'stripePctUsd', jimmyPct: 'jimmyPct' },
+    prepare: ({ stripePctEur, stripePctUsd, jimmyPct }) => ({
+      title: `Stripe €${stripePctEur}% / $${stripePctUsd}% · Jimmy ${jimmyPct}%`,
     }),
   },
 })

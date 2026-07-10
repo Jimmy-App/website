@@ -28,8 +28,8 @@ const SYMBOLS: Record<Currency, string> = { eur: '€', usd: '$' }
 
 // Fallbacks when the Sanity fields are empty (match the values seeded there).
 const DEFAULT_FEES = {
-  free: { stripePct: 2.9, stripeFixedEur: 0.3, stripeFixedUsd: 0.3, jimmyPct: 5 },
-  club: { stripePct: 1.4, stripeFixedEur: 0.25, stripeFixedUsd: 0.25, jimmyPct: 2.5 },
+  free: { stripePctEur: 2.9, stripePctUsd: 2.9, stripeFixedEur: 0.3, stripeFixedUsd: 0.3, jimmyPct: 5 },
+  club: { stripePctEur: 1.4, stripePctUsd: 1.4, stripeFixedEur: 0.25, stripeFixedUsd: 0.25, jimmyPct: 2.5 },
 }
 
 function getFees(
@@ -39,14 +39,17 @@ function getFees(
 ): { stripe: string; jimmy: string } {
   const fromSanity = isFree ? plans.feesFree : plans.feesClub
   const defaults = isFree ? DEFAULT_FEES.free : DEFAULT_FEES.club
-  const stripePct = fromSanity?.stripePct ?? defaults.stripePct
   const jimmyPct = fromSanity?.jimmyPct ?? defaults.jimmyPct
+  const pct =
+    currency === 'eur'
+      ? fromSanity?.stripePctEur ?? defaults.stripePctEur
+      : fromSanity?.stripePctUsd ?? defaults.stripePctUsd
   const fixed =
     currency === 'eur'
       ? fromSanity?.stripeFixedEur ?? defaults.stripeFixedEur
       : fromSanity?.stripeFixedUsd ?? defaults.stripeFixedUsd
   return {
-    stripe: `Stripe ${stripePct}% + ${SYMBOLS[currency]}${fixed.toFixed(2)}`,
+    stripe: `Stripe ${pct}% + ${SYMBOLS[currency]}${fixed.toFixed(2)}`,
     jimmy: `Jimmy ${jimmyPct}%`,
   }
 }

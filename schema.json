@@ -1695,7 +1695,7 @@
             "value": "planFees"
           }
         },
-        "stripePct": {
+        "stripePctEur": {
           "type": "objectAttribute",
           "value": {
             "type": "number"
@@ -1703,6 +1703,13 @@
           "optional": true
         },
         "stripeFixedEur": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "stripePctUsd": {
           "type": "objectAttribute",
           "value": {
             "type": "number"
