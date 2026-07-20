@@ -301,15 +301,17 @@ export const homePage = defineType({
         // the pricingPlans data so copy and rates never drift apart).
         defineField({
           name: 'feeSaveFree',
+          title: 'Fee incentive — Free view',
           type: 'string',
           description:
-            'Fee incentive shown on the Free plan (nudge to Club), e.g. "Switch to Club and halve your Jimmy fee".',
+            'Strip shown on the Free plan (nudge to Club). Currently "Halve your fee on Club". The 5%→2.5% numbers are added automatically.',
         }),
         defineField({
           name: 'feeSaveClub',
+          title: 'Fee incentive — Club view',
           type: 'string',
           description:
-            'Fee incentive shown on Club plans (confirms the saving), e.g. "Club halves your Jimmy fee vs Free".',
+            'Strip shown on Club plans (confirms the saving). Currently "Half the fee vs Free". The 5%→2.5% numbers are added automatically.',
         }),
         defineField({ name: 'ctaFree', type: 'string' }),
         defineField({ name: 'ctaClub', type: 'string' }),
