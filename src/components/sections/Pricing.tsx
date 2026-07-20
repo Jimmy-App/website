@@ -891,16 +891,16 @@ function BenefitCard({
       }}
       className={cn(
         'group flex h-full flex-col rounded-[18px] border border-border bg-surface',
-        'p-[clamp(1.15rem,1.7vw,1.55rem)]',
+        'p-[clamp(1.2rem,1.6vw,1.5rem)]',
         'transition-[border-color,box-shadow,transform] duration-[200ms]',
-        'hover:-translate-y-[3px] hover:border-[rgba(138,50,224,0.35)]',
-        'hover:shadow-[0_14px_34px_-10px_rgba(138,50,224,0.18)]',
+        'hover:-translate-y-[3px] hover:border-[rgba(138,50,224,0.28)]',
+        'hover:shadow-[0_12px_30px_-14px_rgba(138,50,224,0.22)]',
       )}
     >
-      <div className="mb-[clamp(1.3rem,2.4vw,1.85rem)] flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[12px] bg-[rgba(138,50,224,0.1)] text-purple transition-[background,transform] duration-[200ms] group-hover:scale-[1.06] group-hover:bg-[rgba(138,50,224,0.14)]">
+      <div className="mb-[clamp(0.85rem,1.5vw,1.1rem)] flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[rgba(138,50,224,0.1)] text-purple transition-transform duration-[200ms] group-hover:scale-[1.06]">
         {icon}
       </div>
-      <p className="font-display text-[clamp(0.98rem,1.15vw,1.1rem)] font-bold leading-[1.32] tracking-[-0.01em] text-text [text-wrap:balance]">
+      <p className="font-display text-[clamp(0.9rem,0.98vw,0.98rem)] font-bold leading-[1.36] tracking-[-0.01em] text-text [text-wrap:balance]">
         {text}
       </p>
     </motion.div>
