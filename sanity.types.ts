@@ -1072,6 +1072,8 @@ export type HomePage = {
     perMonth?: string;
     forUpTo?: string;
     feesLabel?: string;
+    feeSaveFree?: string;
+    feeSaveClub?: string;
     ctaFree?: string;
     ctaClub?: string;
     lockNote?: string;
@@ -1725,6 +1727,8 @@ export type HOME_QUERY_RESULT = {
     perMonth?: string;
     forUpTo?: string;
     feesLabel?: string;
+    feeSaveFree?: string;
+    feeSaveClub?: string;
     ctaFree?: string;
     ctaClub?: string;
     lockNote?: string;

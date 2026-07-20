@@ -297,6 +297,20 @@ export const homePage = defineType({
         defineField({ name: 'perMonth', type: 'string' }),
         defineField({ name: 'forUpTo', type: 'string' }),
         defineField({ name: 'feesLabel', type: 'string' }),
+        // Incentive strip framing (no numbers — the fee % delta is injected from
+        // the pricingPlans data so copy and rates never drift apart).
+        defineField({
+          name: 'feeSaveFree',
+          type: 'string',
+          description:
+            'Fee incentive shown on the Free plan (nudge to Club), e.g. "Switch to Club and halve your Jimmy fee".',
+        }),
+        defineField({
+          name: 'feeSaveClub',
+          type: 'string',
+          description:
+            'Fee incentive shown on Club plans (confirms the saving), e.g. "Club halves your Jimmy fee vs Free".',
+        }),
         defineField({ name: 'ctaFree', type: 'string' }),
         defineField({ name: 'ctaClub', type: 'string' }),
         defineField({ name: 'lockNote', type: 'text', rows: 2 }),

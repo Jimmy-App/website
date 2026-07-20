@@ -257,6 +257,13 @@ export function Pricing({
   const activeCard: 'free' | 'club' = isFree ? 'free' : 'club'
   const fees = getFees(isFree, currency, plans)
 
+  // Jimmy fee % for BOTH plans (not just the active one) so the incentive strip
+  // can always show the Free→Club delta. Numbers come from the pricingPlans data
+  // (fallback to defaults) — the copy stays number-free, so they never drift.
+  const freeJimmyPct = plans.feesFree?.jimmyPct ?? DEFAULT_FEES.free.jimmyPct
+  const clubJimmyPct = plans.feesClub?.jimmyPct ?? DEFAULT_FEES.club.jimmyPct
+  const feeSaveText = (isFree ? data.feeSaveFree : data.feeSaveClub) ?? ''
+
   // Plan-card prices (synced to the slider). When the slider is on Free, the
   // CLUB card previews the entry CLUB tier (index 1).
   const clubIdx = isFree ? 1 : step
@@ -544,11 +551,50 @@ export function Pricing({
             </div>
 
             {/* Fees */}
-            <div className="mb-[1.4rem] border-b border-[var(--color-divider)] border-t py-3 text-[12.5px] leading-[1.5] text-text-muted">
-              {(data.feesLabel ?? '')}{' '}
-              <strong className="font-bold text-text">{fees.stripe}</strong>
-              {' · '}
-              <strong className="font-bold text-text">{fees.jimmy}</strong>
+            <div className="mb-[1.4rem] border-b border-[var(--color-divider)] border-t py-3">
+              {/* Payment-processor fee — factual, muted */}
+              <div className="text-[12.5px] leading-[1.5] text-text-muted">
+                {(data.feesLabel ?? '')}{' '}
+                <strong className="font-bold text-text">{fees.stripe}</strong>
+              </div>
+
+              {/* Jimmy-fee incentive — always visible, so the Free→Club saving
+                  reads at a glance instead of only on toggle. */}
+              <div className="mt-[10px] flex items-center gap-[9px] rounded-[10px] border border-purple-border bg-purple-light px-[11px] py-[8px]">
+                <Sparkles
+                  size={15}
+                  strokeWidth={1.9}
+                  className="shrink-0 text-purple"
+                />
+                <span className="min-w-0 flex-1 text-[12px] font-medium leading-[1.35] text-text">
+                  {shouldReduceMotion ? (
+                    feeSaveText
+                  ) : (
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span
+                        key={activeCard}
+                        initial={{ opacity: 0, y: 4, filter: 'blur(3px)' }}
+                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, y: -4, filter: 'blur(3px)' }}
+                        transition={{ duration: 0.2, ease: easeOut }}
+                        className="block"
+                      >
+                        {feeSaveText}
+                      </motion.span>
+                    </AnimatePresence>
+                  )}
+                </span>
+                {/* Free → Club fee delta (data-driven) */}
+                <span className="flex shrink-0 items-center gap-[5px] text-[12.5px] font-bold tabular-nums">
+                  <span className="text-text-faint">{freeJimmyPct}%</span>
+                  <ArrowRight
+                    size={12}
+                    strokeWidth={2.4}
+                    className="text-purple/60"
+                  />
+                  <span className="text-purple">{clubJimmyPct}%</span>
+                </span>
+              </div>
             </div>
 
             {/* CTA — shared <Button> (same press/hover effects as the homepage) */}

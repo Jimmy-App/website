@@ -6422,6 +6422,20 @@
               },
               "optional": true
             },
+            "feeSaveFree": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "feeSaveClub": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
             "ctaFree": {
               "type": "objectAttribute",
               "value": {
