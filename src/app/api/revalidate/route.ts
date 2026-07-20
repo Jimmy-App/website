@@ -21,12 +21,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Missing _type' }, { status: 400 })
   }
 
-  const tags = language
-    ? [`${_type}-${language}`]
-    : routing.locales.map((locale) => `${_type}-${locale}`)
+  // Bust BOTH the bare `${_type}` tag (non-localized singletons like
+  // pricingPlans / affiliateSettings use cacheTag('pricingPlans')) AND the
+  // per-locale `${_type}-${locale}` tags (localized docs). Emitting only the
+  // locale-suffixed tags silently missed the singletons — a pricing edit would
+  // never propagate until cacheLife expired or a redeploy.
+  const tags = new Set<string>([_type])
+  if (language) {
+    tags.add(`${_type}-${language}`)
+  } else {
+    for (const locale of routing.locales) tags.add(`${_type}-${locale}`)
+  }
 
   // Second arg is the cacheLife profile — matches cacheLife('hours') in sanity/getHomePage.ts
   for (const tag of tags) revalidateTag(tag, 'hours')
 
-  return NextResponse.json({ revalidated: true, tags, now: Date.now() })
+  return NextResponse.json({ revalidated: true, tags: [...tags], now: Date.now() })
 }
