@@ -360,7 +360,7 @@ export function Tech({ data }: { data: TechData }) {
               logo={<AppleLogo />}
             />
             <StoreBadge
-              soon
+              href="https://play.google.com/store/apps/details?id=com.jimmycoach.jimmy"
               label={data.playStoreLabel ?? ''}
               sub={data.playStoreSub ?? ''}
               main={data.playStoreMain ?? ''}
