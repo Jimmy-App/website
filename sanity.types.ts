@@ -1078,6 +1078,19 @@ export type HomePage = {
     ctaClub?: string;
     lockNote?: string;
     whatsIncluded?: string;
+    benefitsEyebrow?: string;
+    benefits?: Array<{
+      iconKey?:
+        | "workout"
+        | "messaging"
+        | "app"
+        | "payments"
+        | "community"
+        | "courses";
+      text?: string;
+      _type: "pricingBenefit";
+      _key: string;
+    }>;
     freeTag?: string;
     clubTag?: string;
     freePerLabel?: string;
@@ -1733,6 +1746,19 @@ export type HOME_QUERY_RESULT = {
     ctaClub?: string;
     lockNote?: string;
     whatsIncluded?: string;
+    benefitsEyebrow?: string;
+    benefits?: Array<{
+      iconKey?:
+        | "app"
+        | "community"
+        | "courses"
+        | "messaging"
+        | "payments"
+        | "workout";
+      text?: string;
+      _type: "pricingBenefit";
+      _key: string;
+    }>;
     freeTag?: string;
     clubTag?: string;
     freePerLabel?: string;

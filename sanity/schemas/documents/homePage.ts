@@ -317,6 +317,44 @@ export const homePage = defineType({
         defineField({ name: 'ctaClub', type: 'string' }),
         defineField({ name: 'lockNote', type: 'text', rows: 2 }),
         defineField({ name: 'whatsIncluded', type: 'string' }),
+        // "The same platform, whichever plan you choose" band under the slider.
+        defineField({
+          name: 'benefitsEyebrow',
+          title: 'Benefits band — eyebrow',
+          type: 'string',
+          description: 'Small caps heading above the 4 benefit cards, e.g. "The same platform, whichever plan you choose".',
+        }),
+        defineField({
+          name: 'benefits',
+          title: 'Benefits band — cards',
+          type: 'array',
+          description: 'The 4 benefit cards shown below the pricing slider (same for Free & Club).',
+          of: [
+            {
+              type: 'object',
+              name: 'pricingBenefit',
+              fields: [
+                defineField({
+                  name: 'iconKey',
+                  title: 'Icon',
+                  type: 'string',
+                  options: {
+                    list: [
+                      { title: 'Workout builder', value: 'workout' },
+                      { title: 'Messaging', value: 'messaging' },
+                      { title: 'Client app', value: 'app' },
+                      { title: 'Payments', value: 'payments' },
+                      { title: 'Community', value: 'community' },
+                      { title: 'Courses', value: 'courses' },
+                    ],
+                  },
+                }),
+                defineField({ name: 'text', title: 'Text', type: 'string' }),
+              ],
+              preview: { select: { title: 'text', subtitle: 'iconKey' } },
+            },
+          ],
+        }),
         defineField({ name: 'freeTag', type: 'string' }),
         defineField({ name: 'clubTag', type: 'string' }),
         // Plan-card price labels

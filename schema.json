@@ -6464,6 +6464,83 @@
               },
               "optional": true
             },
+            "benefitsEyebrow": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "benefits": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "array",
+                "of": {
+                  "type": "object",
+                  "attributes": {
+                    "iconKey": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "union",
+                        "of": [
+                          {
+                            "type": "string",
+                            "value": "workout"
+                          },
+                          {
+                            "type": "string",
+                            "value": "messaging"
+                          },
+                          {
+                            "type": "string",
+                            "value": "app"
+                          },
+                          {
+                            "type": "string",
+                            "value": "payments"
+                          },
+                          {
+                            "type": "string",
+                            "value": "community"
+                          },
+                          {
+                            "type": "string",
+                            "value": "courses"
+                          }
+                        ]
+                      },
+                      "optional": true
+                    },
+                    "text": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      },
+                      "optional": true
+                    },
+                    "_type": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string",
+                        "value": "pricingBenefit"
+                      }
+                    }
+                  },
+                  "rest": {
+                    "type": "object",
+                    "attributes": {
+                      "_key": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "optional": true
+            },
             "freeTag": {
               "type": "objectAttribute",
               "value": {

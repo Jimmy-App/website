@@ -8,7 +8,19 @@ import {
   useEffect,
   useLayoutEffect,
 } from 'react'
-import { Zap, ArrowRight, Lock, Users, Sparkles, Repeat } from 'lucide-react'
+import {
+  Zap,
+  ArrowRight,
+  Lock,
+  Users,
+  Sparkles,
+  Repeat,
+  Dumbbell,
+  MessageCircle,
+  Smartphone,
+  CreditCard,
+  GraduationCap,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
@@ -631,6 +643,32 @@ export function Pricing({
         </motion.div>
         </motion.div>
 
+        {/* ── The same platform, whichever plan you choose ── */}
+        {(data.benefits ?? []).length > 0 && (
+          <div className="mt-[clamp(2.6rem,5vw,3.8rem)]">
+            <motion.div
+              {...fadeRise}
+              transition={{ duration: 0.6, ease: easeOut, delay: 0.06 }}
+              className="mb-[clamp(1.5rem,2.6vw,2.1rem)] text-center"
+            >
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-text-faint">
+                {data.benefitsEyebrow ?? ''}
+              </span>
+            </motion.div>
+            <div className="grid grid-cols-4 gap-[clamp(0.85rem,1.5vw,1.35rem)] max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
+              {(data.benefits ?? []).map((b, i) => (
+                <BenefitCard
+                  key={i}
+                  icon={BENEFIT_ICONS[b.iconKey ?? ''] ?? BENEFIT_ICONS.workout}
+                  text={b.text ?? ''}
+                  index={i}
+                  reduce={!!shouldReduceMotion}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ── What's included ── */}
         <div className="mt-[clamp(2.4rem,5vw,3.4rem)] mb-[1.4rem] text-center">
           <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-faint">
@@ -817,6 +855,55 @@ function FeatureRow({
       </span>
       {text}
     </li>
+  )
+}
+
+// Benefit-band icons, keyed by the Sanity `iconKey` select.
+const BENEFIT_ICONS: Record<string, React.ReactNode> = {
+  workout: <Dumbbell size={19} strokeWidth={1.9} />,
+  messaging: <MessageCircle size={19} strokeWidth={1.9} />,
+  app: <Smartphone size={19} strokeWidth={1.9} />,
+  payments: <CreditCard size={19} strokeWidth={1.9} />,
+  community: <Users size={19} strokeWidth={1.9} />,
+  courses: <GraduationCap size={19} strokeWidth={1.9} />,
+}
+
+function BenefitCard({
+  icon,
+  text,
+  index,
+  reduce,
+}: {
+  icon: React.ReactNode
+  text: string
+  index: number
+  reduce: boolean
+}) {
+  return (
+    <motion.div
+      initial={reduce ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{
+        duration: 0.55,
+        ease: [0.16, 1, 0.3, 1],
+        delay: reduce ? 0 : 0.06 + index * 0.07,
+      }}
+      className={cn(
+        'group flex h-full flex-col rounded-[18px] border border-border bg-surface',
+        'p-[clamp(1.15rem,1.7vw,1.55rem)]',
+        'transition-[border-color,box-shadow,transform] duration-[200ms]',
+        'hover:-translate-y-[3px] hover:border-[rgba(138,50,224,0.35)]',
+        'hover:shadow-[0_14px_34px_-10px_rgba(138,50,224,0.18)]',
+      )}
+    >
+      <div className="mb-[clamp(1.3rem,2.4vw,1.85rem)] flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[12px] bg-[rgba(138,50,224,0.1)] text-purple transition-[background,transform] duration-[200ms] group-hover:scale-[1.06] group-hover:bg-[rgba(138,50,224,0.14)]">
+        {icon}
+      </div>
+      <p className="font-display text-[clamp(0.98rem,1.15vw,1.1rem)] font-bold leading-[1.32] tracking-[-0.01em] text-text [text-wrap:balance]">
+        {text}
+      </p>
+    </motion.div>
   )
 }
 
