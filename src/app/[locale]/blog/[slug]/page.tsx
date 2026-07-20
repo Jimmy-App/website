@@ -7,16 +7,12 @@ import { pageMetadata, localizedUrl } from '@/lib/seo'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { articleSchema, breadcrumbSchema } from '@/lib/jsonld'
 import {
-  getNavigation,
-  getFooter,
   getPost,
   getPosts,
   getPostSlugs,
 } from '../../../../../sanity/getHomePage'
 import { urlFor } from '../../../../../sanity/image'
 import { Link } from '@/i18n/navigation'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { PortableBody } from '@/components/blog/PortableBody'
 import { BlogCover } from '@/components/blog/BlogCover'
 import { PostCard, type CardPost } from '@/components/blog/PostCard'
@@ -62,14 +58,12 @@ export default async function BlogPostPage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const [navigation, footer, post, allPosts, t] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
+  const [post, allPosts, t] = await Promise.all([
     getPost(locale, slug),
     getPosts(locale),
     getTranslations({ locale, namespace: 'blog' }),
   ])
-  if (!post || !navigation || !footer) notFound()
+  if (!post) notFound()
 
   const category: CategoryKey = isCategoryKey(post.category) ? post.category : 'stories'
   const meta = CATEGORY_META[category]
@@ -117,7 +111,6 @@ export default async function BlogPostPage({
     <>
       <JsonLd data={[articleLd, breadcrumbLd]} />
       <ReadingBar />
-      <Navbar data={navigation} />
 
       {/* ── Article head ── */}
       <section className="relative overflow-hidden border-b border-border bg-surface-2">
@@ -248,8 +241,6 @@ export default async function BlogPostPage({
           </div>
         </div>
       </section>
-
-      <Footer data={footer} />
     </>
   )
 }

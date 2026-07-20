@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { getNavigation, getFooter, getGuides } from '../../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
+import { getGuides } from '../../../../sanity/getHomePage'
 import { GuidesLanding } from '@/components/guides/GuidesLanding'
 import { groupByCategory, type GuideCategoryKey } from '@/lib/guides'
 import { isProduction } from '@/lib/env'
@@ -36,13 +34,10 @@ export default async function GuidesPage({
   // Guides isn't content-complete yet — accessible on preview/local only.
   if (isProduction) notFound()
 
-  const [navigation, footer, guides, t] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
+  const [guides, t] = await Promise.all([
     getGuides(locale),
     getTranslations({ locale, namespace: 'guides' }),
   ])
-  if (!navigation || !footer) notFound()
 
   const byCategory = groupByCategory(guides)
   const categories = CATEGORY_ORDER.map((key) => ({
@@ -54,7 +49,6 @@ export default async function GuidesPage({
 
   return (
     <>
-      <Navbar data={navigation} />
       <GuidesLanding
         categories={categories}
         popular={popular}
@@ -69,7 +63,6 @@ export default async function GuidesPage({
           ctaBtn: t('ctaBtn'),
         }}
       />
-      <Footer data={footer} />
     </>
   )
 }

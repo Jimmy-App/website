@@ -10,13 +10,9 @@ import {
 } from '@/lib/jsonld'
 import {
   getHomePage,
-  getNavigation,
-  getFooter,
   getPricingPage,
   getPricingPlans,
 } from '../../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { Pricing } from '@/components/sections/Pricing'
 import { Faq } from '@/components/sections/Faq'
 import { PricingCta } from '@/components/sections/PricingCta'
@@ -44,18 +40,14 @@ export default async function PricingPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [home, navigation, footer, pricingPage, plans] = await Promise.all([
+  const [home, pricingPage, plans] = await Promise.all([
     getHomePage(locale),
-    getNavigation(locale),
-    getFooter(locale),
     getPricingPage(locale),
     getPricingPlans(),
   ])
 
   if (
     !home?.pricing ||
-    !navigation ||
-    !footer ||
     !plans ||
     !pricingPage?.faq ||
     !pricingPage.finalCta
@@ -83,14 +75,12 @@ export default async function PricingPage({
   return (
     <>
       <JsonLd data={schemas} />
-      <Navbar data={navigation} />
       <main>
         {/* Reused home Pricing section + FAQ; page-specific centered CTA */}
         <Pricing data={home.pricing} plans={plans} page />
         <Faq data={pricingPage.faq} variant="pricing" />
         <PricingCta data={pricingPage.finalCta} />
       </main>
-      <Footer data={footer} />
     </>
   )
 }

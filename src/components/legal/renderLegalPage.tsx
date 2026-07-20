@@ -1,8 +1,4 @@
 import { getTranslations } from 'next-intl/server'
-import { notFound } from 'next/navigation'
-import { getNavigation, getFooter } from '../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { LegalPage, type LegalCrossLink } from '@/components/legal/LegalPage'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { breadcrumbSchema } from '@/lib/jsonld'
@@ -31,13 +27,7 @@ export async function renderLegalPage({
   doc: LegalDoc
   locale: string
 }) {
-  const [navigation, footer, t] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
-    getTranslations({ locale, namespace: 'legal' }),
-  ])
-
-  if (!navigation || !footer) notFound()
+  const t = await getTranslations({ locale, namespace: 'legal' })
 
   const crossLinks: LegalCrossLink[] = LEGAL_SLUGS.filter(
     (s) => s !== doc.slug,
@@ -55,7 +45,6 @@ export async function renderLegalPage({
   return (
     <>
       <JsonLd data={breadcrumb} />
-      <Navbar data={navigation} />
       <LegalPage
         doc={doc}
         toc={tocFromDoc(doc)}
@@ -72,7 +61,6 @@ export async function renderLegalPage({
         crossLinks={crossLinks}
         contactHref={LEGAL_CONTACT}
       />
-      <Footer data={footer} />
     </>
   )
 }

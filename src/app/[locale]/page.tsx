@@ -4,9 +4,7 @@ import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { organizationSchema, websiteSchema, faqSchema } from '@/lib/jsonld'
-import { getHomePage, getNavigation, getFooter, getPricingPlans } from '../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
+import { getHomePage, getPricingPlans } from '../../../sanity/getHomePage'
 import { Hero } from '@/components/sections/Hero'
 import { Features } from '@/components/sections/Features'
 import WhyJimmy from '@/components/sections/WhyJimmy'
@@ -45,15 +43,11 @@ export default async function HomePage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [home, navigation, footer, plans] = await Promise.all([
+  const [home, plans] = await Promise.all([
     getHomePage(locale),
-    getNavigation(locale),
-    getFooter(locale),
     getPricingPlans(),
   ])
   if (
-    !navigation ||
-    !footer ||
     !plans ||
     !home?.hero ||
     !home.features ||
@@ -79,7 +73,6 @@ export default async function HomePage({
   return (
     <>
       <JsonLd data={homeSchemas} />
-      <Navbar data={navigation} />
       <main>
         <Hero data={home.hero} />
         <Features data={home.features} />
@@ -95,7 +88,6 @@ export default async function HomePage({
         <Manifesto data={home.manifesto} />
         <FinalCta data={home.finalCta} />
       </main>
-      <Footer data={footer} />
     </>
   )
 }

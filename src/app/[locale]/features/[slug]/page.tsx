@@ -5,14 +5,10 @@ import { pageMetadata, localizedUrl } from '@/lib/seo'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { breadcrumbSchema } from '@/lib/jsonld'
 import {
-  getNavigation,
-  getFooter,
   getFeature,
   getFeatures,
   getFeatureSlugs,
 } from '../../../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { FeatureHero } from '@/components/features/FeatureHero'
 import { FeatureCapabilities } from '@/components/features/FeatureCapabilities'
 import { FeatureRelated } from '@/components/features/FeatureRelated'
@@ -53,16 +49,13 @@ export default async function FeaturePage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const [doc, allCards, navigation, footer, t] = await Promise.all([
+  const [doc, allCards, t] = await Promise.all([
     getFeature(locale, slug),
     getFeatures(locale),
-    getNavigation(locale),
-    getFooter(locale),
     getTranslations({ locale, namespace: 'features' }),
   ])
 
   if (!doc) notFound()
-  if (!navigation || !footer) notFound()
 
   const feature = toFeature(doc)
 
@@ -87,7 +80,6 @@ export default async function FeaturePage({
   return (
     <>
       <JsonLd data={featureBreadcrumb} />
-      <Navbar data={navigation} />
 
       <main>
         <FeatureHero
@@ -124,8 +116,6 @@ export default async function FeaturePage({
           }}
         />
       </main>
-
-      <Footer data={footer} />
     </>
   )
 }

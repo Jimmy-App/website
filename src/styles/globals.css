@@ -168,8 +168,19 @@
 
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
     scroll-padding-top: var(--navbar-height);
+  }
+
+  /* Smooth scrolling ONLY for in-page anchor navigation (a live :target).
+     Applying `scroll-behavior: smooth` globally on <html> turns the App
+     Router's scroll-to-top-on-navigation into an animated glide that often
+     fails to reach the top (esp. when the next page is shorter), leaving the
+     user mid-page. Scoping to :has(:target) keeps the smooth TOC/anchor glide
+     while letting route changes reset scroll instantly. */
+  @media (prefers-reduced-motion: no-preference) {
+    html:has(:target) {
+      scroll-behavior: smooth;
+    }
   }
 
   body {

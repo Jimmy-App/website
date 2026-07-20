@@ -2,9 +2,7 @@ import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
-import { getNavigation, getFooter, getChangelog, getRoadmap } from '../../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
+import { getChangelog, getRoadmap } from '../../../../sanity/getHomePage'
 import { RoadmapBoard } from '@/components/roadmap/RoadmapBoard'
 import { RecentlyShipped, type ShippedItem } from '@/components/roadmap/RecentlyShipped'
 import { RoadmapCta } from '@/components/roadmap/RoadmapCta'
@@ -33,14 +31,11 @@ export default async function RoadmapPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [navigation, footer, changelog, roadmap, t] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
+  const [changelog, roadmap, t] = await Promise.all([
     getChangelog(locale),
     getRoadmap(locale),
     getTranslations({ locale, namespace: 'roadmap' }),
   ])
-  if (!navigation || !footer) notFound()
 
   const columns = groupRoadmap(roadmap)
 
@@ -53,7 +48,6 @@ export default async function RoadmapPage({
 
   return (
     <>
-      <Navbar data={navigation} />
       <main>
         <RoadmapBoard
           columns={columns}
@@ -86,7 +80,6 @@ export default async function RoadmapPage({
           }}
         />
       </main>
-      <Footer data={footer} />
     </>
   )
 }

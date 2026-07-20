@@ -2,9 +2,7 @@ import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
-import { getNavigation, getFooter, getChangelog } from '../../../../sanity/getHomePage'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
+import { getChangelog } from '../../../../sanity/getHomePage'
 import { Changelog } from '@/components/changelog/Changelog'
 import { ChangelogCta } from '@/components/changelog/ChangelogCta'
 import { toRelease } from '@/lib/changelog'
@@ -32,19 +30,15 @@ export default async function ChangelogPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [navigation, footer, docs, t] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
+  const [docs, t] = await Promise.all([
     getChangelog(locale),
     getTranslations({ locale, namespace: 'changelog' }),
   ])
-  if (!navigation || !footer) notFound()
 
   const releases = docs.map(toRelease)
 
   return (
     <>
-      <Navbar data={navigation} />
       <main>
         <Changelog
           releases={releases}
@@ -70,7 +64,6 @@ export default async function ChangelogPage({
           }}
         />
       </main>
-      <Footer data={footer} />
     </>
   )
 }

@@ -3,15 +3,11 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ChevronRight, Clock, ArrowLeft, ArrowRight } from 'lucide-react'
 import {
-  getNavigation,
-  getFooter,
   getGuides,
   getGuide,
   getGuideSlugs,
 } from '../../../../../sanity/getHomePage'
 import { Link } from '@/i18n/navigation'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { ReadingBar } from '@/components/blog/ArticleInteractive'
 import { GuidesSidebar } from '@/components/guides/GuidesSidebar'
 import { GuideToc } from '@/components/guides/GuideToc'
@@ -86,16 +82,13 @@ export default async function GuidePage({
   // Guides isn't content-complete yet — accessible on preview/local only.
   if (isProduction) notFound()
 
-  const [guide, guides, navigation, footer, t] = await Promise.all([
+  const [guide, guides, t] = await Promise.all([
     getGuide(locale, slug),
     getGuides(locale),
-    getNavigation(locale),
-    getFooter(locale),
     getTranslations({ locale, namespace: 'guides' }),
   ])
 
   if (!guide) notFound()
-  if (!navigation || !footer) notFound()
 
   const byCategory = groupByCategory(guides)
   const sidebarGroups = CATEGORY_ORDER.map((key) => ({
@@ -137,7 +130,6 @@ export default async function GuidePage({
       <JsonLd data={guideSchemas} />
       {/* Mobile reading progress bar */}
       <ReadingBar />
-      <Navbar data={navigation} />
 
       {/* ── 3-column docs layout ─────────────────────────────────── */}
       <div
@@ -271,8 +263,6 @@ export default async function GuidePage({
           )}
         </div>
       </div>
-
-      <Footer data={footer} />
     </>
   )
 }

@@ -2,10 +2,8 @@ import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
-import { getNavigation, getFooter, getPosts } from '../../../../sanity/getHomePage'
+import { getPosts } from '../../../../sanity/getHomePage'
 import { urlFor } from '../../../../sanity/image'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { BlogIndex } from '@/components/blog/BlogIndex'
 import type { CardPost } from '@/components/blog/PostCard'
 import { formatPostDate, isCategoryKey } from '@/lib/blog'
@@ -50,12 +48,7 @@ export default async function BlogPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [navigation, footer, posts] = await Promise.all([
-    getNavigation(locale),
-    getFooter(locale),
-    getPosts(locale),
-  ])
-  if (!navigation || !footer) notFound()
+  const [posts] = await Promise.all([getPosts(locale)])
 
   const valid = posts.filter((p) => p.slug)
   const featuredSrc = valid.find((p) => p.featured) ?? valid[0]
@@ -69,7 +62,6 @@ export default async function BlogPage({
 
   return (
     <>
-      <Navbar data={navigation} />
       {featured ? (
         <BlogIndex featured={featured} picks={picks} posts={rest} />
       ) : (
@@ -77,7 +69,6 @@ export default async function BlogPage({
           No articles published yet.
         </div>
       )}
-      <Footer data={footer} />
     </>
   )
 }
