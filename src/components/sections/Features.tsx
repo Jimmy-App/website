@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
+import { useReducedMotion, m as motion, AnimatePresence } from 'framer-motion'
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
 import {
   Dumbbell,
@@ -14,12 +14,32 @@ import {
 import { cn } from '@/lib/utils'
 import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
-import { WorkoutBuilderDemo } from '@/components/sections/WorkoutBuilderDemo'
-import { CommunityFeedDemo } from '@/components/sections/CommunityFeedDemo'
-import { MessagingDemo } from '@/components/sections/MessagingDemo'
-import { PaymentsDemo } from '@/components/sections/PaymentsDemo'
-import { CourseBuilderDemo } from '@/components/sections/CourseBuilderDemo'
+import dynamic from 'next/dynamic'
 import type { FeaturesData } from '@/lib/content'
+
+// Heavy, framer-motion-driven product demos — below the fold and shown one tab
+// at a time. Load them client-side on demand (ssr:false) so they stay out of
+// the initial JS bundle; the tab panels already reserve height (no CLS).
+const WorkoutBuilderDemo = dynamic(
+  () => import('@/components/sections/WorkoutBuilderDemo').then((mod) => mod.WorkoutBuilderDemo),
+  { ssr: false },
+)
+const CommunityFeedDemo = dynamic(
+  () => import('@/components/sections/CommunityFeedDemo').then((mod) => mod.CommunityFeedDemo),
+  { ssr: false },
+)
+const MessagingDemo = dynamic(
+  () => import('@/components/sections/MessagingDemo').then((mod) => mod.MessagingDemo),
+  { ssr: false },
+)
+const PaymentsDemo = dynamic(
+  () => import('@/components/sections/PaymentsDemo').then((mod) => mod.PaymentsDemo),
+  { ssr: false },
+)
+const CourseBuilderDemo = dynamic(
+  () => import('@/components/sections/CourseBuilderDemo').then((mod) => mod.CourseBuilderDemo),
+  { ssr: false },
+)
 
 // ── Tab metadata (icon, id, screenshot asset) ────────────────────────────────
 

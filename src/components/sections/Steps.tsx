@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducedMotion, motion, useInView } from 'framer-motion'
+import { useReducedMotion, m as motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'

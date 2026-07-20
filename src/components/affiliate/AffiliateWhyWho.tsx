@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { m as motion, useReducedMotion } from 'framer-motion'
 import { LineChart, Clock, LayoutGrid, CreditCard, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { AffiliateWhoData, AffiliateWhyData } from '@/lib/content'

@@ -2,7 +2,7 @@
 
 import {
   useReducedMotion,
-  motion,
+  m as motion,
   useAnimation,
   useInView,
 } from 'framer-motion'
@@ -24,12 +24,32 @@ import {
   GraduationCap,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { WorkoutBuilderDemo } from '@/components/sections/WorkoutBuilderDemo'
-import { CommunityFeedDemo } from '@/components/sections/CommunityFeedDemo'
-import { MessagingDemo } from '@/components/sections/MessagingDemo'
-import { PaymentsDemo } from '@/components/sections/PaymentsDemo'
-import { CourseBuilderDemo } from '@/components/sections/CourseBuilderDemo'
+import dynamic from 'next/dynamic'
 import type { PlatformData } from '@/lib/content'
+
+// Heavy, framer-motion-driven product demos — deep below the fold. Load them
+// client-side on demand (ssr:false) so they stay out of the initial JS bundle;
+// the step panels already reserve height (no CLS).
+const WorkoutBuilderDemo = dynamic(
+  () => import('@/components/sections/WorkoutBuilderDemo').then((mod) => mod.WorkoutBuilderDemo),
+  { ssr: false },
+)
+const CommunityFeedDemo = dynamic(
+  () => import('@/components/sections/CommunityFeedDemo').then((mod) => mod.CommunityFeedDemo),
+  { ssr: false },
+)
+const MessagingDemo = dynamic(
+  () => import('@/components/sections/MessagingDemo').then((mod) => mod.MessagingDemo),
+  { ssr: false },
+)
+const PaymentsDemo = dynamic(
+  () => import('@/components/sections/PaymentsDemo').then((mod) => mod.PaymentsDemo),
+  { ssr: false },
+)
+const CourseBuilderDemo = dynamic(
+  () => import('@/components/sections/CourseBuilderDemo').then((mod) => mod.CourseBuilderDemo),
+  { ssr: false },
+)
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
+import { useReducedMotion, m as motion, AnimatePresence } from 'framer-motion'
 import type { FaqData } from '@/lib/content'
 import {
   LayoutGrid,

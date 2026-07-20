@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducedMotion, motion, AnimatePresence } from 'framer-motion'
+import { useReducedMotion, m as motion, AnimatePresence } from 'framer-motion'
 import {
   useState,
   useCallback,

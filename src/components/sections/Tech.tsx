@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducedMotion, motion } from 'framer-motion'
+import { useReducedMotion, m as motion } from 'framer-motion'
 import Image from 'next/image'
 import { Lock, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'

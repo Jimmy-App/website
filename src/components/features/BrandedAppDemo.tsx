@@ -9,7 +9,7 @@
  */
 
 import { useEffect, useState, type CSSProperties } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { m as motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Home, Dumbbell, Users, User, Bell, Play } from 'lucide-react'
 
 const BRANDS = [

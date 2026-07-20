@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { m as motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { X, ShieldCheck, BarChart3, Megaphone } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'

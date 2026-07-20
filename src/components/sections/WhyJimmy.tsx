@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { m as motion, useReducedMotion } from 'framer-motion'
 import {
   MessageCircle,
   Dumbbell,

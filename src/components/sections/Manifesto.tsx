@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { m as motion, useInView, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { PortableInline } from '@/lib/PortableInline'
 import type { ManifestoData } from '@/lib/content'

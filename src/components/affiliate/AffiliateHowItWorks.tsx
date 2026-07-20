@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useAnimation, useInView, useReducedMotion } from 'framer-motion'
+import { m as motion, useAnimation, useInView, useReducedMotion } from 'framer-motion'
 import { Link2, Share2, CreditCard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StateGrab, StateShare, StateEarn, type HowLabels } from './howItWorksStates'

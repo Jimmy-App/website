@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { m as motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Check, CreditCard, Lock, Loader2 } from 'lucide-react'
 
 const CARD = '4242424242424242'

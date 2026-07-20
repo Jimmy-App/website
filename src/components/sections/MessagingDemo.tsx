@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, m as motion, useInView, useReducedMotion } from 'framer-motion'
 import { Play, Pause, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 

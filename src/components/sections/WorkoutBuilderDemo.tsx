@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   AnimatePresence,
-  motion,
+  m as motion,
   useInView,
   useReducedMotion,
   type Transition,

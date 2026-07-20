@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { getNavigation, getFooter } from '../../../sanity/getHomePage'
 import { CookieConsentProvider } from '@/components/cookies/CookieConsentProvider'
+import { MotionProvider } from '@/components/motion/MotionProvider'
 import { CalInit } from '@/components/cal/CalInit'
 import { SyncHtmlLang } from '@/components/i18n/SyncHtmlLang'
 import { Navbar } from '@/components/layout/Navbar'
@@ -47,13 +48,15 @@ export default async function LocaleLayout({
   // localized-404 route it must sit inside a Suspense boundary to stay PPR-safe.
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <CookieConsentProvider>
-        <Suspense>
-          <Navbar data={navigation} />
-          {children}
-          <Footer data={footer} />
-        </Suspense>
-      </CookieConsentProvider>
+      <MotionProvider>
+        <CookieConsentProvider>
+          <Suspense>
+            <Navbar data={navigation} />
+            {children}
+            <Footer data={footer} />
+          </Suspense>
+        </CookieConsentProvider>
+      </MotionProvider>
       <CalInit />
       <SyncHtmlLang locale={locale} />
     </NextIntlClientProvider>

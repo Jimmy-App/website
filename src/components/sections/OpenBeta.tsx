@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducedMotion, motion } from 'framer-motion'
+import { useReducedMotion, m as motion } from 'framer-motion'
 import { MessagesSquare, Vote, Rocket, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'

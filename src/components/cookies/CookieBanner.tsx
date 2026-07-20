@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { m as motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Cookie, Settings2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'

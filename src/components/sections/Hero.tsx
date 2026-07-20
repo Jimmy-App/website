@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import {
   useReducedMotion,
-  motion,
+  m as motion,
   useScroll,
   useTransform,
   useMotionTemplate,
@@ -329,7 +329,7 @@ export function Hero({ data }: { data: HeroData }) {
             alt={data.productImageAlt ?? ''}
             width={3024}
             height={1796}
-            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
             className="block h-auto w-full rounded-xl"
           />
         </div>

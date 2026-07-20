@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { m as motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { ArrowRight, Search, SearchX, X } from 'lucide-react'
 import { Link } from '@/i18n/navigation'

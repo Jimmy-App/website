@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { m as motion, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { SoonButton } from '@/components/ui/SoonButton'
 import { EarningsCalculator } from './EarningsCalculator'
