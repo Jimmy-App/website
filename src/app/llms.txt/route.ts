@@ -9,7 +9,7 @@ export function GET() {
 
 ## Product
 - [Home](${u()}): What Jimmy is, who it's for, and how it helps modern fitness coaches retain clients.
-- [Pricing](${u('/pricing')}): Free for up to 3 clients (no card, 5% transaction fee); Club plans from €29/mo (10 clients) to €149/mo (200 clients) with a 2.5% fee. Add-ons: team/gym coach seats +€19/mo, AI assistant +€19/mo.
+- [Pricing](${u('/pricing')}): Free for up to 3 clients (no card, 5% transaction fee); Club plans from €29/mo (10 clients) to €149/mo (200 clients) with a 1% fee. Add-ons: team/gym coach seats +€19/mo, AI assistant +€19/mo.
 - [Affiliate Program](${u('/affiliate')}): Earn 30% recurring commission for every fitness coach you refer.
 
 ## Resources

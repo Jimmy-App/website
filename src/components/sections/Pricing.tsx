@@ -41,7 +41,7 @@ const SYMBOLS: Record<Currency, string> = { eur: '€', usd: '$' }
 // Fallbacks when the Sanity fields are empty (match the values seeded there).
 const DEFAULT_FEES = {
   free: { stripePctEur: 2.9, stripePctUsd: 2.9, stripeFixedEur: 0.3, stripeFixedUsd: 0.3, jimmyPct: 5 },
-  club: { stripePctEur: 1.4, stripePctUsd: 1.4, stripeFixedEur: 0.25, stripeFixedUsd: 0.25, jimmyPct: 2.5 },
+  club: { stripePctEur: 1.4, stripePctUsd: 1.4, stripeFixedEur: 0.25, stripeFixedUsd: 0.25, jimmyPct: 1 },
 }
 
 function getFees(
