@@ -319,11 +319,36 @@ export const homePage = defineType({
         }),
         defineField({
           name: 'annualNote',
-          title: 'Small print — annual vs beta',
+          title: 'Small print — annual vs beta (monthly view)',
           type: 'text',
           rows: 2,
           description:
-            'Explains that the annual saving and the beta discount do not stack. Shown under the price.',
+            'Shown while billing monthly. Use {annual} and {beta} for the rates — they are filled from pricingPlans so the copy cannot drift from the price.',
+        }),
+        defineField({
+          name: 'betaMonthlyOnlyNote',
+          title: 'Small print — annual vs beta (annual view)',
+          type: 'text',
+          rows: 2,
+          description:
+            'Shown while billing annually, when the beta rate is not the one applied. Tells the coach how to get it back. Use {beta} for the rate.',
+        }),
+        // The fee sentence differs by plan: Free is nudged ("drops as your
+        // business grows"), paid tiers are reassured ("just 1% at this plan").
+        // Use {pct} — the number comes from pricingPlans, never the copy.
+        defineField({
+          name: 'feeNoteFree',
+          title: 'Payments note — Free',
+          type: 'text',
+          rows: 3,
+          description: 'e.g. "Payments & billing, handled for you — … Included with a {pct}% fee on payments, which drops as your business grows."',
+        }),
+        defineField({
+          name: 'feeNoteClub',
+          title: 'Payments note — paid tiers',
+          type: 'text',
+          rows: 3,
+          description: 'e.g. "Payments & billing, handled for you — … Included with just a {pct}% fee on payments at this plan."',
         }),
         defineField({ name: 'forUpTo', type: 'string' }),
         defineField({ name: 'feesLabel', type: 'string' }),

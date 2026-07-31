@@ -45,6 +45,19 @@ function getFees(
   }
 }
 
+/**
+ * Fill {pct} / {annual} / {beta} in CMS copy from the pricing data.
+ *
+ * The rates live in the pricingPlans singleton, so a sentence must never spell
+ * one out — otherwise changing the fee in Sanity silently leaves the prose
+ * quoting the old number, in three locales.
+ */
+function interp(template: string, values: Record<string, number>): string {
+  return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
+    key in values ? String(values[key]) : whole,
+  )
+}
+
 // ── Slider thumb + track styles (injected once, idiomatic Tailwind can't do pseudo) ──
 
 const SLIDER_STYLE = `
@@ -256,7 +269,9 @@ export function Pricing({
   // (fallback to defaults) — the copy stays number-free, so they never drift.
   const freeJimmyPct = plans.feesFree?.jimmyPct ?? DEFAULT_FEES.free.jimmyPct
   const clubJimmyPct = plans.feesClub?.jimmyPct ?? DEFAULT_FEES.club.jimmyPct
-  const feeSaveText = (isFree ? data.feeSaveFree : data.feeSaveClub) ?? ''
+  // data.feeSaveFree / feeSaveClub are no longer rendered: the Free→Club fee
+  // nudge pill gave way to the payments sentence. The fields stay in Sanity so
+  // the copy is not lost if the nudge comes back.
 
   // Entrance animation config
   const fadeRise = {
@@ -524,30 +539,26 @@ export function Pricing({
               </div>
             </div>
 
-            {/* Fee incentive — the one thing that really does differ by tier */}
-            <div className="mt-[clamp(0.9rem,1.8vw,1.25rem)] flex flex-wrap items-center gap-x-[10px] gap-y-[6px] text-[13.5px] leading-[1.6] text-text-muted">
-              <span>
-                {(data.feesLabel ?? '')} <strong className="font-semibold text-text">{fees.stripe}</strong>
-                {' · '}
-                <strong className="font-semibold text-text">{fees.jimmy}</strong>
-              </span>
-              {feeSaveText && (
-                <span className="inline-flex items-center gap-[7px] rounded-full bg-purple-light px-[10px] py-[4px] text-[12px] font-semibold text-purple">
-                  <Sparkles size={11} strokeWidth={2.2} />
-                  {feeSaveText}
-                  <span className="tabular-nums opacity-70">
-                    {freeJimmyPct}% → {clubJimmyPct}%
-                  </span>
-                </span>
-              )}
-            </div>
+            {/* Payments & billing — benefit first, fee second. The old line led
+                with "Transaction fees" and a Free→Club nudge pill, which sold
+                the cost before the service. */}
+            <p className="mt-[clamp(0.9rem,1.8vw,1.25rem)] text-[13.5px] leading-[1.6] text-text-muted">
+              {interp(
+                (isFree ? data.feeNoteFree : data.feeNoteClub) ??
+                  (isFree
+                    ? 'Payments & billing, handled for you — Jimmy takes care of invoicing, reminders and client access automatically. Included with a {pct}% fee on payments, which drops as your business grows.'
+                    : 'Payments & billing, handled for you — Jimmy takes care of invoicing, reminders and client access automatically. Included with just a {pct}% fee on payments at this plan.'),
+                { pct: isFree ? freeJimmyPct : clubJimmyPct },
+              )}{' '}
+              {/* Stripe's own cut is a real cost the coach pays on top of ours.
+                  The sentence above says "just 1%", so leaving this out would
+                  understate what actually leaves their account. */}
+              <span className="whitespace-nowrap text-text-faint">({fees.stripe})</span>
+            </p>
 
-            {/* Fixed height: the annual/beta note only applies to paid tiers,
-                and letting it come and go would resize the card mid-drag. */}
+            {/* Fixed height: these lines only apply to paid tiers, and letting
+                them come and go would resize the card mid-drag. */}
             <div className="mt-[7px] min-h-[34px]">
-              {/* Only while the beta rate is the one in the price. On annual it
-                  is not, and promising a locked −15% under a −20% figure would
-                  be describing a discount the coach is not getting. */}
               {betaWins && (data.lockNote ?? '') && (
                 <p className="text-[12.5px] leading-[1.55] text-text-faint">
                   {(data.lockNote ?? '')}
@@ -555,8 +566,17 @@ export function Pricing({
               )}
               {!isFree && (
                 <p className="text-[12.5px] leading-[1.55] text-text-faint">
-                  {(data.annualNote ??
-                    `Annual billing (save ${annualPct}%) and the beta discount don't combine — the best offer applies automatically.`)}
+                  {betaWins
+                    ? interp(
+                        data.annualNote ??
+                          "Annual billing (save {annual}%) and the Beta Lover discount don't combine — best offer applies automatically.",
+                        { annual: annualPct, beta: betaPct },
+                      )
+                    : interp(
+                        data.betaMonthlyOnlyNote ??
+                          'Beta Lover pricing applies to monthly billing only — switch back to Monthly to keep your −{beta}% for life.',
+                        { annual: annualPct, beta: betaPct },
+                      )}
                 </p>
               )}
             </div>
