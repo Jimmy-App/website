@@ -1,34 +1,12 @@
 'use client'
 
 import { useReducedMotion, m as motion, AnimatePresence } from 'framer-motion'
-import {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-} from 'react'
-import {
-  Zap,
-  ArrowRight,
-  Lock,
-  Users,
-  Sparkles,
-  Repeat,
-  Dumbbell,
-  MessageCircle,
-  Smartphone,
-  CreditCard,
-  GraduationCap,
-} from 'lucide-react'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import { Zap, ArrowRight, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
 import type { PricingData, PricingPlansData } from '@/lib/content'
-
-// useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
-const useIsoLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 // ── Pricing data ──────────────────────────────────────────────────────────────
 
@@ -194,26 +172,10 @@ export function Pricing({
   const sliderRef = useRef<HTMLInputElement>(null)
   const trackWrapRef = useRef<HTMLDivElement>(null)
 
-  // ── Card height morphing ──────────────────────────────────────────────────
-  // Crossing the FREE↔CLUB boundary adds/removes the beta badge, the struck-out
-  // price and the lock note, which changes the card's height. We measure the
-  // grid and animate a wrapper's height so the whole card resizes smoothly.
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [cardHeight, setCardHeight] = useState<number | undefined>(undefined)
-  const mounted = useRef(false)
-  useEffect(() => {
-    mounted.current = true
-  }, [])
-
-  useIsoLayoutEffect(() => {
-    const measure = () => {
-      if (cardRef.current) setCardHeight(cardRef.current.offsetHeight)
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    if (cardRef.current) ro.observe(cardRef.current)
-    return () => ro.disconnect()
-  }, [])
+  // The card used to measure and animate its own height, because crossing the
+  // FREE↔CLUB boundary added rows and resized it. The rows that appear only on
+  // paid tiers now reserve their space instead, so the height is constant and
+  // there is nothing to measure.
 
   // Inject slider pseudo-element styles once
   useEffect(() => {
@@ -266,7 +228,6 @@ export function Pricing({
   // Tick axis: first marker is "0", remaining markers are the paid-tier client counts
   const tickLabels = ['0', ...tiers.slice(1).map((tr) => tr.clients ?? '')]
   const planLabel = isFree ? (data.planFree ?? '') : (data.planClub ?? '')
-  const activeCard: 'free' | 'club' = isFree ? 'free' : 'club'
   const fees = getFees(isFree, currency, plans)
 
   // Jimmy fee % for BOTH plans (not just the active one) so the incentive strip
@@ -276,14 +237,6 @@ export function Pricing({
   const clubJimmyPct = plans.feesClub?.jimmyPct ?? DEFAULT_FEES.club.jimmyPct
   const feeSaveText = (isFree ? data.feeSaveFree : data.feeSaveClub) ?? ''
 
-  // Plan-card prices (synced to the slider). When the slider is on Free, the
-  // CLUB card previews the entry CLUB tier (index 1).
-  const clubIdx = isFree ? 1 : step
-  const clubReg = priceOf(clubIdx)
-  const freeCardAmt = `${sym}0`
-  const clubCardAmt = clubReg != null ? `${sym}${(clubReg * discount).toFixed(2)}` : `${sym}0`
-  const clubCardClients = tiers[clubIdx]?.clients ?? ''
-
   // Entrance animation config
   const fadeRise = {
     initial: shouldReduceMotion ? {} : { opacity: 0, y: 16 },
@@ -292,11 +245,6 @@ export function Pricing({
   }
   const easeOut = [0.16, 1, 0.3, 1] as const
 
-  // Card height morph: skip the first run (mount should settle silently).
-  const heightTransition = {
-    duration: shouldReduceMotion || !mounted.current ? 0 : 0.5,
-    ease: [0.32, 0.72, 0, 1] as const,
-  }
   // Appear/disappear of the conditional (CLUB-only) bits.
   const appear = shouldReduceMotion
     ? { initial: false, animate: {}, exit: {} }
@@ -346,48 +294,27 @@ export function Pricing({
           </span>
         </motion.div>
 
-        {/* ── Header ── */}
-        <motion.header
-          {...fadeRise}
-          transition={{ duration: 0.64, ease: easeOut, delay: 0.04 }}
-          className="mx-auto mb-[clamp(2.2rem,4vw,3rem)] max-w-[660px] text-center"
-        >
-          <span className="mb-4 inline-flex items-center gap-[6px] text-[11px] font-bold uppercase tracking-[0.1em] text-purple before:h-[5px] before:w-[5px] before:rounded-full before:bg-purple before:content-['']">
-            {(data.eyebrow ?? '')}
-          </span>
-          <h2 className="mb-[0.9rem] font-display text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-[1.05] tracking-[-0.035em] text-text [text-wrap:balance]">
-            {(data.title ?? '')}
-          </h2>
-          <p className="text-[clamp(1rem,1.5vw,1.125rem)] leading-[1.6] text-text-muted [text-wrap:balance]">
-            {(data.subtitle ?? '')}
-          </p>
-        </motion.header>
-
-        {/* ── Interactive scaler ── */}
+        {/* ── One plan, priced by roster ─────────────────────────────────────
+            Everything lives in a single card now: the size you pick, what it
+            costs, and the fact that the feature set never changes. The old
+            layout split that across a two-column card, a benefits band and a
+            Free-vs-Club comparison, which implied the plans differ. They do
+            not — only the client limit does. */}
         <motion.div
           {...fadeRise}
-          transition={{ duration: 0.72, ease: easeOut, delay: 0.08 }}
-          className="relative"
+          transition={{ duration: 0.72, ease: easeOut, delay: 0.04 }}
+          className="mx-auto max-w-[1000px] overflow-hidden rounded-[clamp(20px,2.4vw,28px)] border border-border bg-surface shadow-[0_18px_50px_-30px_rgba(26,25,23,0.28)]"
         >
-        <motion.div
-          initial={false}
-          animate={{ height: cardHeight ?? 'auto' }}
-          transition={heightTransition}
-          className="relative overflow-hidden rounded-[28px] border border-border bg-surface shadow-[0_34px_90px_-44px_rgba(26,25,23,0.3),0_2px_10px_rgba(26,25,23,0.04)]"
-        >
-        <div
-          ref={cardRef}
-          className="grid grid-cols-[1.12fr_0.88fr] max-[820px]:grid-cols-1"
-        >
-          {/* Left: control */}
-          <div className="flex flex-col p-[clamp(1.9rem,3vw,2.9rem)]">
-            {/* Head row */}
-            <div className="mb-[clamp(2.2rem,4vw,3rem)] flex flex-wrap items-start justify-between gap-[16px_18px]">
-              <div className="min-w-0 flex-[1_1_220px]">
-                <div className="mb-[0.4rem] font-display text-[clamp(1.2rem,1.9vw,1.5rem)] font-bold leading-[1.2] tracking-[-0.02em] text-text">
-                  {(data.sliderQuestion ?? '')}
-                </div>
-                <p className="text-[13.5px] text-text-muted">{(data.sliderHelp ?? '')}</p>
+          <div className="p-[clamp(1.35rem,3.6vw,2.6rem)]">
+            {/* Head: the promise, and the currency it is priced in */}
+            <div className="flex flex-wrap items-start justify-between gap-[14px_18px]">
+              <div className="min-w-0 flex-[1_1_260px]">
+                <h2 className="font-display text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold leading-[1.06] tracking-[-0.035em] text-text [text-wrap:balance]">
+                  {(data.title ?? '')}
+                </h2>
+                <p className="mt-[0.6rem] text-[clamp(0.9rem,1.35vw,1.0625rem)] leading-[1.55] text-text-muted [text-wrap:balance]">
+                  {(data.sliderHelp ?? data.subtitle ?? '')}
+                </p>
               </div>
 
               {/* Currency switcher */}
@@ -409,14 +336,15 @@ export function Pricing({
                     )}
                     aria-pressed={currency === cur}
                   >
-                    {cur === 'eur' ? '€ EUR' : '$ USD'}
+                    <span className="max-[420px]:hidden">{cur === 'eur' ? '€ EUR' : '$ USD'}</span>
+                    <span className="min-[421px]:hidden">{cur === 'eur' ? '€' : '$'}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Slider */}
-            <div className="mt-auto">
+            {/* Roster size */}
+            <div className="mt-[clamp(1.9rem,3.6vw,2.7rem)]">
               <div ref={trackWrapRef} className="pr-track-wrap">
                 <input
                   ref={sliderRef}
@@ -468,249 +396,121 @@ export function Pricing({
                 })}
               </div>
             </div>
-          </div>
 
-          {/* Right: result panel */}
-          <div
-            className="relative flex flex-col border-l border-border p-[clamp(1.9rem,3vw,2.7rem)] max-[820px]:border-l-0 max-[820px]:border-t"
-            style={{
-              background: 'linear-gradient(165deg, #F4ECFF 0%, #FBF8FF 58%, var(--color-surface) 100%)',
-            }}
-          >
-            {/* Plan name + beta badge */}
-            <div className="mb-4 flex min-h-[22px] items-center gap-[9px]">
-              <span className="font-display text-[13px] font-extrabold uppercase tracking-[0.12em] text-purple">
-                {planLabel}
-              </span>
-              <AnimatePresence initial={false}>
-                {!isFree && (
-                  <motion.span
-                    key="beta-badge"
-                    initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.7 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.7 }}
-                    transition={
-                      shouldReduceMotion
-                        ? { duration: 0 }
-                        : { type: 'spring', duration: 0.4, bounce: 0.34 }
-                    }
-                    className="origin-left rounded-full bg-purple px-[9px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.05em] text-white"
-                  >
-                    {(data.betaBadge ?? '')}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* What that size costs. Heights are fixed on the rows that only
+                exist for paid tiers, so dragging the slider never resizes the
+                card or shifts the CTA out from under the cursor. */}
+            <div className="mt-[clamp(1.5rem,2.8vw,2.1rem)] rounded-[clamp(15px,1.8vw,20px)] bg-surface-2 p-[clamp(1.05rem,2.4vw,1.6rem)]">
+              {/* Explicit column → row rather than flex-wrap: wrapping left a
+                  dead gap between the price and the button on phones. */}
+              <div className="flex flex-col gap-[clamp(0.9rem,2vw,1.25rem)] min-[561px]:flex-row min-[561px]:items-center min-[561px]:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-purple">
+                    {(data.forUpTo ?? '')} {clientsCount} {(data.clients ?? '')}
+                  </p>
 
-            {/* Price */}
-            <div className="mb-[0.35rem] flex flex-nowrap items-center gap-3">
-              <span
-                key={bumpKey}
-                className={cn(
-                  'font-display text-[clamp(2.6rem,5vw,3.7rem)] font-extrabold leading-[0.95] tracking-[-0.04em] text-text tabular-nums whitespace-nowrap',
-                  !shouldReduceMotion && bumpKey > 0 && 'pr-bump',
-                )}
-              >
-                {nowText}
-              </span>
-              <div className="flex min-w-0 flex-col items-start justify-center gap-[2px]">
-                <AnimatePresence initial={false}>
-                  {wasText && (
-                    <motion.span
-                      key="was-price"
-                      initial={shouldReduceMotion ? false : { opacity: 0, x: -6 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={shouldReduceMotion ? undefined : { opacity: 0, x: -6 }}
-                      transition={
-                        shouldReduceMotion
-                          ? { duration: 0 }
-                          : { duration: 0.26, ease: easeOut }
-                      }
-                      className="text-[17px] font-semibold leading-[1.1] text-text-faint line-through tabular-nums"
+                  <div className="mt-[7px] flex items-baseline gap-[10px]">
+                    <span
+                      key={bumpKey}
+                      className={cn(
+                        'font-display text-[clamp(2.3rem,5.2vw,3.4rem)] font-extrabold leading-none tracking-[-0.04em] text-text tabular-nums',
+                        !shouldReduceMotion && 'motion-safe:animate-[pr-bump_0.34s_cubic-bezier(0.32,0.72,0,1)]',
+                      )}
                     >
-                      {wasText}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-                <span className="text-[15px] font-semibold leading-[1.1] text-text-muted">
-                  {(data.perMonth ?? '')}
-                </span>
-              </div>
-            </div>
+                      {nowText}
+                    </span>
+                    <span className="text-[clamp(0.9rem,1.2vw,1.0625rem)] font-medium text-text-muted">
+                      {(data.perMonth ?? '')}
+                    </span>
+                  </div>
 
-            {/* Sub line */}
-            <div className="mb-[1.3rem] text-[14px] text-text-muted">
-              {(data.forUpTo ?? '')}{' '}
-              <span className="relative inline-flex overflow-hidden align-bottom tabular-nums">
-                {shouldReduceMotion ? (
-                  clientsCount
-                ) : (
-                  <AnimatePresence mode="popLayout" initial={false}>
-                    <motion.span
-                      key={clientsCount}
-                      initial={{ opacity: 0, y: '0.7em' }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: '-0.7em' }}
-                      transition={{ duration: 0.24, ease: easeOut }}
-                      className="inline-block font-semibold text-text"
-                    >
-                      {clientsCount}
-                    </motion.span>
-                  </AnimatePresence>
-                )}
-              </span>{' '}
-              {(data.clients ?? '')}
-            </div>
-
-            {/* Fees */}
-            <div className="mb-[1.4rem] border-b border-[var(--color-divider)] border-t py-3">
-              {/* Payment-processor fee — factual, muted */}
-              <div className="text-[12.5px] leading-[1.5] text-text-muted">
-                {(data.feesLabel ?? '')}{' '}
-                <strong className="font-bold text-text">{fees.stripe}</strong>
-              </div>
-
-              {/* Jimmy-fee incentive — always visible, so the Free→Club saving
-                  reads at a glance instead of only on toggle. */}
-              <div className="mt-[10px] flex items-center gap-[9px] rounded-[10px] border border-purple-border bg-purple-light px-[11px] py-[8px]">
-                <Sparkles
-                  size={15}
-                  strokeWidth={1.9}
-                  className="shrink-0 text-purple"
-                />
-                <span className="min-w-0 flex-1 text-[12px] font-medium leading-[1.35] text-text">
-                  {shouldReduceMotion ? (
-                    feeSaveText
-                  ) : (
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.span
-                        key={activeCard}
-                        initial={{ opacity: 0, y: 4, filter: 'blur(3px)' }}
-                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                        exit={{ opacity: 0, y: -4, filter: 'blur(3px)' }}
-                        transition={{ duration: 0.2, ease: easeOut }}
-                        className="block"
-                      >
-                        {feeSaveText}
-                      </motion.span>
+                  {/* Was-price + beta badge: paid tiers only, but the row keeps
+                      its height on Free so nothing below it moves. */}
+                  <div className="mt-[7px] flex min-h-[22px] items-center gap-[9px]">
+                    <AnimatePresence initial={false}>
+                      {!isFree && (
+                        <motion.span
+                          key="was"
+                          {...appear}
+                          transition={{ duration: 0.22, ease: easeOut }}
+                          className="text-[14px] font-semibold text-text-faint line-through tabular-nums"
+                        >
+                          {wasText}
+                        </motion.span>
+                      )}
+                      {!isFree && (
+                        <motion.span
+                          key="beta"
+                          {...appear}
+                          transition={{ duration: 0.22, ease: easeOut }}
+                          className="inline-flex items-center gap-[5px] rounded-full bg-purple-light px-[9px] py-[3px] text-[10.5px] font-extrabold uppercase tracking-[0.06em] text-purple"
+                        >
+                          <Sparkles size={10} strokeWidth={2.4} />
+                          {(data.betaBadge ?? '')}
+                        </motion.span>
+                      )}
                     </AnimatePresence>
-                  )}
-                </span>
-                {/* Free → Club fee delta (data-driven) */}
-                <span className="flex shrink-0 items-center gap-[5px] text-[12.5px] font-bold tabular-nums">
-                  <span className="text-text-faint">{freeJimmyPct}%</span>
-                  <ArrowRight
-                    size={12}
-                    strokeWidth={2.4}
-                    className="text-purple/60"
-                  />
-                  <span className="text-purple">{clubJimmyPct}%</span>
-                </span>
+                  </div>
+                </div>
+
+                <Button
+                  href={appRegisterUrl}
+                  variant="solid"
+                  size="lg"
+                  className="max-[560px]:w-full"
+                >
+                  {isFree ? (data.ctaFree ?? '') : (data.ctaClub ?? '')}
+                  <ArrowRight size={16} strokeWidth={2.2} />
+                </Button>
               </div>
             </div>
 
-            {/* CTA — shared <Button> (same press/hover effects as the homepage) */}
-            <Button
-              href={appRegisterUrl}
-              variant="solid"
-              size="lg"
-              className="mt-auto w-full py-[15px] text-[15px] font-bold shadow-[0_12px_28px_-8px_rgba(138,50,224,0.6)] hover:shadow-[0_14px_34px_-8px_rgba(138,50,224,0.72)]"
-              icon={<ArrowRight size={17} strokeWidth={1.75} />}
-            >
-              {isFree ? (data.ctaFree ?? '') : (data.ctaClub ?? '')}
-            </Button>
-
-            {/* Lock note */}
-            <AnimatePresence initial={false}>
-              {!isFree && (
-                <motion.p
-                  key="lock-note"
-                  {...appear}
-                  transition={
-                    shouldReduceMotion
-                      ? { duration: 0 }
-                      : { duration: 0.28, ease: easeOut }
-                  }
-                  className="mt-3 flex items-start gap-[7px] text-[11.5px] leading-[1.5] text-text-muted"
-                >
-                  <Lock size={13} strokeWidth={1.75} className="mt-[2px] shrink-0 text-purple" />
-                  <span>{(data.lockNote ?? '')}</span>
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-        </motion.div>
-        </motion.div>
-
-        {/* ── The same platform, whichever plan you choose ── */}
-        {(data.benefits ?? []).length > 0 && (
-          <div className="mt-[clamp(2.6rem,5vw,3.8rem)]">
-            <motion.div
-              {...fadeRise}
-              transition={{ duration: 0.6, ease: easeOut, delay: 0.06 }}
-              className="mb-[clamp(1.5rem,2.6vw,2.1rem)] text-center"
-            >
-              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-text-faint">
-                {data.benefitsEyebrow ?? ''}
+            {/* Fee incentive — the one thing that really does differ by tier */}
+            <div className="mt-[clamp(0.9rem,1.8vw,1.25rem)] flex flex-wrap items-center gap-x-[10px] gap-y-[6px] text-[13.5px] leading-[1.6] text-text-muted">
+              <span>
+                {(data.feesLabel ?? '')} <strong className="font-semibold text-text">{fees.stripe}</strong>
+                {' · '}
+                <strong className="font-semibold text-text">{fees.jimmy}</strong>
               </span>
-            </motion.div>
-            <div className="grid grid-cols-4 gap-[clamp(0.85rem,1.5vw,1.35rem)] max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
-              {(data.benefits ?? []).map((b, i) => (
-                <BenefitCard
-                  key={i}
-                  icon={BENEFIT_ICONS[b.iconKey ?? ''] ?? BENEFIT_ICONS.workout}
-                  text={b.text ?? ''}
-                  index={i}
-                  reduce={!!shouldReduceMotion}
-                />
-              ))}
+              {feeSaveText && (
+                <span className="inline-flex items-center gap-[7px] rounded-full bg-purple-light px-[10px] py-[4px] text-[12px] font-semibold text-purple">
+                  <Sparkles size={11} strokeWidth={2.2} />
+                  {feeSaveText}
+                  <span className="tabular-nums opacity-70">
+                    {freeJimmyPct}% → {clubJimmyPct}%
+                  </span>
+                </span>
+              )}
             </div>
+
+            {(data.lockNote ?? '') && (
+              <p className="mt-[7px] text-[12.5px] leading-[1.55] text-text-faint">
+                {(data.lockNote ?? '')}
+              </p>
+            )}
           </div>
-        )}
 
-        {/* ── What's included ── */}
-        <div className="mt-[clamp(2.4rem,5vw,3.4rem)] mb-[1.4rem] text-center">
-          <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-faint">
-            {(data.whatsIncluded ?? '')}
-          </span>
-        </div>
-
-        <motion.div
-          {...fadeRise}
-          transition={{ duration: 0.64, ease: easeOut, delay: 0.12 }}
-          className="grid grid-cols-2 gap-[clamp(1rem,2vw,1.5rem)] max-[680px]:mx-auto max-[680px]:max-w-[440px] max-[680px]:grid-cols-1"
-        >
-          {/* Free card */}
-          <PlanCard
-            name={data.planFree ?? ''}
-            tag={data.freeTag ?? ''}
-            amt={freeCardAmt}
-            per={data.freePerLabel ?? ''}
-            ctaLabel={data.ctaFree ?? ''}
-            isClub={false}
-            isActive={activeCard === 'free'}
-          >
-            {(data.freeFeatures ?? []).map((text, i) => (
-              <FeatureRow key={i} text={text} isClub={false} />
-            ))}
-          </PlanCard>
-
-          {/* Club card */}
-          <PlanCard
-            name={data.planClub ?? ''}
-            tag={data.clubTag ?? ''}
-            amt={clubCardAmt}
-            per={`${data.clubPerPrefix ?? ''} ${clubCardClients}`.trim()}
-            popular={data.popularLabel ?? undefined}
-            ctaLabel={data.ctaClub ?? ''}
-            isClub
-            isActive={activeCard === 'club'}
-          >
-            {(data.clubFeatures ?? []).map((text, i) => (
-              <FeatureRow key={i} text={text} isClub lead={i === 0} />
-            ))}
-          </PlanCard>
+          {/* Said once, because it is true for every tier */}
+          {(data.benefits ?? []).length > 0 && (
+            <div className="border-t border-divider bg-surface px-[clamp(1.35rem,3.6vw,2.6rem)] py-[clamp(1.2rem,2.6vw,1.8rem)]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-text-faint">
+                {data.benefitsEyebrow ?? ''}
+              </p>
+              <ul className="mt-[clamp(0.85rem,1.6vw,1.15rem)] grid grid-cols-4 gap-x-[clamp(0.9rem,2vw,1.6rem)] gap-y-[11px] max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
+                {(data.benefits ?? []).map((b, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-[9px] text-[14px] leading-[1.45] text-text"
+                  >
+                    <span className="mt-[2px] shrink-0 text-purple">
+                      <CheckMark />
+                    </span>
+                    {b.text ?? ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </motion.div>
 
         {/* ── Add-ons ── */}
@@ -749,163 +549,6 @@ export function Pricing({
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
-
-function PlanCard({
-  name,
-  tag,
-  amt,
-  per,
-  popular,
-  ctaLabel,
-  isClub,
-  isActive,
-  children,
-}: {
-  name: string
-  tag: string
-  amt: string
-  per: string
-  popular?: string
-  ctaLabel: string
-  isClub: boolean
-  isActive: boolean
-  children: React.ReactNode
-}) {
-  return (
-    <div
-      className={cn(
-        'relative flex flex-col rounded-[22px] border bg-surface p-[clamp(1.5rem,2.4vw,2rem)] transition-[border-color,box-shadow,transform] duration-[220ms]',
-        isClub
-          ? 'border-[rgba(138,50,224,0.4)] shadow-[0_18px_50px_-30px_rgba(138,50,224,0.4)]'
-          : 'border-border',
-        isActive && isClub && '-translate-y-[2px] shadow-[0_22px_56px_-28px_rgba(138,50,224,0.5)]',
-        isActive && !isClub && '-translate-y-[2px] border-[rgba(138,50,224,0.4)] shadow-[0_18px_50px_-30px_rgba(138,50,224,0.4)]',
-      )}
-    >
-      {/* Name + (optional) "Most popular" badge */}
-      <div className="mb-[0.6rem] flex items-center justify-between gap-2">
-        <div
-          className={cn(
-            'font-display text-[14px] font-extrabold uppercase tracking-[0.1em]',
-            isClub ? 'text-purple' : 'text-text-muted',
-          )}
-        >
-          {name}
-        </div>
-        {popular && (
-          <span className="rounded-full border border-purple-border bg-purple-light px-[10px] py-[4px] text-[10px] font-extrabold uppercase tracking-[0.06em] text-purple">
-            {popular}
-          </span>
-        )}
-      </div>
-
-      {/* Price (synced to the slider) */}
-      <div className="mb-[0.45rem] flex items-baseline gap-[6px]">
-        <span className="font-display text-[2.4rem] font-extrabold leading-none tracking-[-0.04em] text-text tabular-nums">
-          {amt}
-        </span>
-        <span className="text-[14px] font-semibold text-text-muted">{per}</span>
-      </div>
-
-      <p className="mb-[1.2rem] border-b border-[var(--color-divider)] pb-[1.2rem] text-[14px] leading-[1.5] text-text-muted">
-        {tag}
-      </p>
-      <ul className="flex list-none flex-col gap-[11px]">{children}</ul>
-
-      {/* Per-card CTA — reuses the shared <Button> (same press/hover effects). */}
-      <div className="mt-auto pt-[26px]">
-        <Button
-          href={appRegisterUrl}
-          variant={isClub ? 'solid' : 'ghost'}
-          size="lg"
-          className="w-full text-[14.5px]"
-        >
-          {ctaLabel}
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-function FeatureRow({
-  text,
-  isClub,
-  lead = false,
-}: {
-  text: string
-  isClub: boolean
-  lead?: boolean
-}) {
-  return (
-    <li
-      className={cn(
-        'flex items-center gap-[11px] text-[14px]',
-        lead ? 'font-semibold text-text-muted' : 'text-text',
-      )}
-    >
-      <span
-        className={cn(
-          'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full',
-          isClub
-            ? 'bg-purple text-white'
-            : 'bg-[rgba(138,50,224,0.12)] text-purple',
-        )}
-      >
-        <CheckMark />
-      </span>
-      {text}
-    </li>
-  )
-}
-
-// Benefit-band icons, keyed by the Sanity `iconKey` select.
-const BENEFIT_ICONS: Record<string, React.ReactNode> = {
-  workout: <Dumbbell size={19} strokeWidth={1.9} />,
-  messaging: <MessageCircle size={19} strokeWidth={1.9} />,
-  app: <Smartphone size={19} strokeWidth={1.9} />,
-  payments: <CreditCard size={19} strokeWidth={1.9} />,
-  community: <Users size={19} strokeWidth={1.9} />,
-  courses: <GraduationCap size={19} strokeWidth={1.9} />,
-}
-
-function BenefitCard({
-  icon,
-  text,
-  index,
-  reduce,
-}: {
-  icon: React.ReactNode
-  text: string
-  index: number
-  reduce: boolean
-}) {
-  return (
-    <motion.div
-      initial={reduce ? false : { opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{
-        duration: 0.55,
-        ease: [0.16, 1, 0.3, 1],
-        delay: reduce ? 0 : 0.06 + index * 0.07,
-      }}
-      className={cn(
-        'group flex h-full flex-col rounded-[18px] border border-border bg-surface',
-        'p-[clamp(1.2rem,1.6vw,1.5rem)]',
-        'transition-[border-color,box-shadow,transform] duration-[200ms]',
-        'hover:-translate-y-[3px] hover:border-[rgba(138,50,224,0.28)]',
-        'hover:shadow-[0_12px_30px_-14px_rgba(138,50,224,0.22)]',
-      )}
-    >
-      <div className="mb-[clamp(0.85rem,1.5vw,1.1rem)] flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[12px] bg-[rgba(138,50,224,0.1)] text-purple transition-transform duration-[200ms] group-hover:scale-[1.06]">
-        {icon}
-      </div>
-      <p className="font-display text-[clamp(0.9rem,0.98vw,0.98rem)] font-bold leading-[1.36] tracking-[-0.01em] text-text [text-wrap:balance]">
-        {text}
-      </p>
-    </motion.div>
-  )
-}
 
 function AddonCard({
   icon,
