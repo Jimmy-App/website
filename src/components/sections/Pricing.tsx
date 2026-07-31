@@ -11,6 +11,7 @@ import type { PricingData, PricingPlansData } from '@/lib/content'
 // ── Pricing data ──────────────────────────────────────────────────────────────
 
 type Currency = 'eur' | 'usd'
+type Billing = 'monthly' | 'annual'
 
 // Currency symbols (locale-independent). Client counts + prices come from
 // Sanity (homePage.pricing.tiers), keyed by slider step.
@@ -167,6 +168,7 @@ export function Pricing({
 
   const [step, setStep] = useState(0) // default: 0 (Free)
   const [currency, setCurrency] = useState<Currency>('eur')
+  const [billing, setBilling] = useState<Billing>('monthly')
   const [bumpKey, setBumpKey] = useState(0)
   const prevStateRef = useRef({ step, currency })
   const sliderRef = useRef<HTMLInputElement>(null)
@@ -213,9 +215,28 @@ export function Pricing({
     [currency, shouldReduceMotion],
   )
 
-  // Derived state — tiers + discount come from the global pricingPlans singleton.
+  const handleBilling = useCallback(
+    (next: Billing) => {
+      setBilling((prev) => {
+        if (prev !== next && !shouldReduceMotion) setBumpKey((k) => k + 1)
+        return next
+      })
+    },
+    [shouldReduceMotion],
+  )
+
+  // Derived state — tiers + discounts come from the global pricingPlans singleton.
   const tiers = plans.tiers ?? []
-  const discount = 1 - (plans.betaDiscountPct ?? 15) / 100
+  const betaPct = plans.betaDiscountPct ?? 15
+  const annualPct = plans.annualDiscountPct ?? 20
+
+  // The two offers do not stack — whichever saves more is the one shown, which
+  // is what the small print promises ("best offer applies automatically").
+  // Paying yearly currently wins, so the beta badge steps aside in that view.
+  const isAnnual = billing === 'annual'
+  const appliedPct = isAnnual ? Math.max(annualPct, betaPct) : betaPct
+  const betaWins = appliedPct === betaPct && (!isAnnual || betaPct >= annualPct)
+  const discount = 1 - appliedPct / 100
   const sym = SYMBOLS[currency]
   const priceOf = (i: number) =>
     currency === 'eur' ? tiers[i]?.priceEur ?? null : tiers[i]?.priceUsd ?? null
@@ -343,8 +364,40 @@ export function Pricing({
               </div>
             </div>
 
+            {/* Billing period. Full-width segmented control, so the cheaper
+                option is not hidden behind a small toggle. */}
+            <div
+              role="radiogroup"
+              aria-label={(data.billingMonthly ?? 'Monthly') + ' / ' + (data.billingAnnual ?? 'Annual')}
+              className="mt-[clamp(1.5rem,2.8vw,2rem)] grid grid-cols-2 gap-[3px] rounded-full bg-surface-2 p-[3px]"
+            >
+              {(['monthly', 'annual'] as Billing[]).map((b) => {
+                const active = billing === b
+                return (
+                  <button
+                    key={b}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => handleBilling(b)}
+                    className={cn(
+                      // min-h keeps the tap target at 44px on phones.
+                      'inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-full border-0 px-3 font-body text-[13px] font-bold transition-[background,color] duration-[180ms] [transition-timing-function:var(--ease-out)]',
+                      active
+                        ? 'bg-purple text-white shadow-[0_6px_18px_-8px_rgba(138,50,224,0.6)]'
+                        : 'bg-transparent text-text-muted hover:text-text',
+                    )}
+                  >
+                    {b === 'monthly'
+                      ? (data.billingMonthly ?? 'Monthly')
+                      : (data.billingAnnual ?? `Annual · save ${annualPct}%`)}
+                  </button>
+                )
+              })}
+            </div>
+
             {/* Roster size */}
-            <div className="mt-[clamp(1.9rem,3.6vw,2.7rem)]">
+            <div className="mt-[clamp(1.5rem,2.8vw,2rem)]">
               <div ref={trackWrapRef} className="pr-track-wrap">
                 <input
                   ref={sliderRef}
@@ -420,7 +473,9 @@ export function Pricing({
                       {nowText}
                     </span>
                     <span className="text-[clamp(0.9rem,1.2vw,1.0625rem)] font-medium text-text-muted">
-                      {(data.perMonth ?? '')}
+                      {isAnnual && !isFree
+                        ? (data.perMonthAnnual ?? '/month, billed annually')
+                        : (data.perMonth ?? '')}
                     </span>
                   </div>
 
@@ -438,7 +493,11 @@ export function Pricing({
                           {wasText}
                         </motion.span>
                       )}
-                      {!isFree && (
+                      {/* Only when the beta rate is the offer actually applied.
+                          Paying yearly saves more, so it takes over and this
+                          badge would otherwise claim a discount that is not
+                          the one in the price. */}
+                      {!isFree && betaWins && (
                         <motion.span
                           key="beta"
                           {...appear}
@@ -483,11 +542,24 @@ export function Pricing({
               )}
             </div>
 
-            {(data.lockNote ?? '') && (
-              <p className="mt-[7px] text-[12.5px] leading-[1.55] text-text-faint">
-                {(data.lockNote ?? '')}
-              </p>
-            )}
+            {/* Fixed height: the annual/beta note only applies to paid tiers,
+                and letting it come and go would resize the card mid-drag. */}
+            <div className="mt-[7px] min-h-[34px]">
+              {/* Only while the beta rate is the one in the price. On annual it
+                  is not, and promising a locked −15% under a −20% figure would
+                  be describing a discount the coach is not getting. */}
+              {betaWins && (data.lockNote ?? '') && (
+                <p className="text-[12.5px] leading-[1.55] text-text-faint">
+                  {(data.lockNote ?? '')}
+                </p>
+              )}
+              {!isFree && (
+                <p className="text-[12.5px] leading-[1.55] text-text-faint">
+                  {(data.annualNote ??
+                    `Annual billing (save ${annualPct}%) and the beta discount don't combine — the best offer applies automatically.`)}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Said once, because it is true for every tier */}

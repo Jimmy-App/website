@@ -28,6 +28,15 @@ export const pricingPlans = defineType({
       validation: (Rule) => Rule.required().min(0).max(100),
     }),
     defineField({
+      name: 'annualDiscountPct',
+      type: 'number',
+      title: 'Annual discount (%)',
+      description:
+        'e.g. 20 → paying yearly shows the monthly-equivalent at −20%. Does not stack with the beta discount; whichever is larger is the one shown.',
+      initialValue: 20,
+      validation: (Rule) => Rule.min(0).max(100),
+    }),
+    defineField({
       name: 'feesFree',
       type: 'planFees',
       title: 'Transaction fees — Free plan',

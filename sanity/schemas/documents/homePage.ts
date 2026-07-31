@@ -295,6 +295,36 @@ export const homePage = defineType({
         defineField({ name: 'planClub', type: 'string' }),
         defineField({ name: 'betaBadge', type: 'string' }),
         defineField({ name: 'perMonth', type: 'string' }),
+        // Billing-period switch. Annual is shown as a monthly-equivalent price
+        // ("€23.20 /month, billed annually") so the two states stay comparable
+        // at a glance instead of jumping between a monthly and a yearly figure.
+        defineField({
+          name: 'billingMonthly',
+          title: 'Billing switch — monthly label',
+          type: 'string',
+          description: 'e.g. "Monthly"',
+        }),
+        defineField({
+          name: 'billingAnnual',
+          title: 'Billing switch — annual label',
+          type: 'string',
+          description:
+            'e.g. "Annual · save 20%". The 20% comes from pricingPlans.annualDiscountPct — keep the wording in sync if you change the rate.',
+        }),
+        defineField({
+          name: 'perMonthAnnual',
+          title: 'Price suffix — annual',
+          type: 'string',
+          description: 'e.g. "/month, billed annually"',
+        }),
+        defineField({
+          name: 'annualNote',
+          title: 'Small print — annual vs beta',
+          type: 'text',
+          rows: 2,
+          description:
+            'Explains that the annual saving and the beta discount do not stack. Shown under the price.',
+        }),
         defineField({ name: 'forUpTo', type: 'string' }),
         defineField({ name: 'feesLabel', type: 'string' }),
         // Incentive strip framing (no numbers — the fee % delta is injected from
