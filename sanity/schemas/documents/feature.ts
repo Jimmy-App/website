@@ -36,6 +36,35 @@ export const feature = defineType({
       description: 'Catalogue order (lower = first). Used for related lists & static params.',
       validation: (R) => R.required(),
     }),
+    // ── Feature status (JIM-145) ─────────────────────────────────────────────
+    // The single source of truth for whether a feature exists. The homepage
+    // tabs and the nav mega-menu resolve their own status from here by slug,
+    // so a feature cannot be "coming soon" in one place and live in another.
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Live — shipped, no badge', value: 'live' },
+          { title: 'In beta — badge', value: 'beta' },
+          { title: 'Coming soon — badge, no promise of a date', value: 'soon' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'live',
+      validation: (R) => R.required(),
+      description:
+        'Never mark something Live that a coach cannot use today. If it is partly built, that is In beta.',
+    }),
+    defineField({
+      name: 'statusNote',
+      title: 'Status note (optional)',
+      type: 'string',
+      description:
+        'Only where we are certain, and never a specific date — a quarter at most, e.g. "Q4". Leave empty if unsure.',
+      hidden: ({ parent }) => parent?.status === 'live',
+    }),
     defineField({ name: 'sub', title: 'Subtitle (nav / related cards)', type: 'string', validation: (R) => R.required() }),
     defineField({
       name: 'iconKey',

@@ -202,7 +202,9 @@ const FEATURE_CARD = `
   name,
   sub,
   iconKey,
-  order
+  order,
+  status,
+  statusNote
 `
 
 export const FEATURES_QUERY = groq`

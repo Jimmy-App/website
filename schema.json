@@ -3635,6 +3635,34 @@
         },
         "optional": true
       },
+      "status": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "live"
+            },
+            {
+              "type": "string",
+              "value": "beta"
+            },
+            {
+              "type": "string",
+              "value": "soon"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "statusNote": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "sub": {
         "type": "objectAttribute",
         "value": {

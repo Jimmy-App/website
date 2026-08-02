@@ -620,6 +620,8 @@ export type Feature = {
   slug?: Slug;
   audience?: "For Coaches" | "For Members";
   order?: number;
+  status?: "live" | "beta" | "soon";
+  statusNote?: string;
   sub?: string;
   iconKey?: string;
   demoKey?: string;
@@ -2203,7 +2205,7 @@ export type GUIDE_SLUGS_QUERY_RESULT = Array<{
 
 // Source: sanity/queries/index.ts
 // Variable: FEATURES_QUERY
-// Query: *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){      "slug": slug.current,  audience,  name,  sub,  iconKey,  order  }
+// Query: *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){      "slug": slug.current,  audience,  name,  sub,  iconKey,  order,  status,  statusNote  }
 export type FEATURES_QUERY_RESULT = Array<{
   slug: string | null;
   audience: "For Coaches" | "For Members" | null;
@@ -2211,11 +2213,13 @@ export type FEATURES_QUERY_RESULT = Array<{
   sub: string | null;
   iconKey: string | null;
   order: number | null;
+  status: "beta" | "live" | "soon" | null;
+  statusNote: string | null;
 }>;
 
 // Source: sanity/queries/index.ts
 // Variable: FEATURE_QUERY
-// Query: *[_type == "feature" && slug.current == $slug && language == $locale][0]{      "slug": slug.current,  audience,  name,  sub,  iconKey,  order,    demoKey,    title{ prefix, accent, suffix },    highlight{ prefix, accent },    highlightSub,    lead,    tags,    capsTitle,    caps[]{ iconKey, title, desc },    seo  }
+// Query: *[_type == "feature" && slug.current == $slug && language == $locale][0]{      "slug": slug.current,  audience,  name,  sub,  iconKey,  order,  status,  statusNote,    demoKey,    title{ prefix, accent, suffix },    highlight{ prefix, accent },    highlightSub,    lead,    tags,    capsTitle,    caps[]{ iconKey, title, desc },    seo  }
 export type FEATURE_QUERY_RESULT = {
   slug: string | null;
   audience: "For Coaches" | "For Members" | null;
@@ -2223,6 +2227,8 @@ export type FEATURE_QUERY_RESULT = {
   sub: string | null;
   iconKey: string | null;
   order: number | null;
+  status: "beta" | "live" | "soon" | null;
+  statusNote: string | null;
   demoKey: string | null;
   title: {
     prefix: string | null;
@@ -2305,8 +2311,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "guide" && defined(slug.current)] | order(category asc, order asc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n\n  }\n': GUIDES_QUERY_RESULT;
     '\n  *[_type == "guide" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n,\n    seo,\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption },\n      _type == "guideSteps" => {\n        ...,\n        items[]{\n          title,\n          body[]{\n            ...,\n            _type == "image" => { ..., asset, alt, caption }\n          }\n        }\n      }\n    }\n  }\n': GUIDE_QUERY_RESULT;
     '\n  *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }\n': GUIDE_SLUGS_QUERY_RESULT;
-    '\n  *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n\n  }\n': FEATURES_QUERY_RESULT;
-    '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
+    '\n  *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order,\n  status,\n  statusNote\n\n  }\n': FEATURES_QUERY_RESULT;
+    '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order,\n  status,\n  statusNote\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
     '\n  *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }\n': FEATURE_SLUGS_QUERY_RESULT;
     '\n  *[_type == "changelogRelease" && defined(date) && language == $locale] | order(date desc){\n    version,\n    date,\n    title,\n    lead,\n    image{ ..., alt },\n    changes[]{ type, text }\n  }\n': CHANGELOG_QUERY_RESULT;
     '\n  *[_type == "roadmapItem"] | order(order asc){\n    "id": _id,\n    column,\n    category,\n    title,\n    desc,\n    eta,\n    votes\n  }\n': ROADMAP_QUERY_RESULT;
