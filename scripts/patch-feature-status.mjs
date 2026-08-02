@@ -10,7 +10,6 @@
  *     Program exists, but not the courses the page describes.
  *
  * Everything marked live was checked against the schema or a shipped screen.
- * branded-mobile-app is deliberately absent — see the note at the bottom.
  *
  *   node --env-file=.env.local scripts/patch-feature-status.mjs [--dry]
  */
@@ -36,6 +35,9 @@ const STATUS = {
   'community-feed': 'soon',
   'community-member': 'soon',
   'programs-courses': 'soon',
+  // In-app branding (coach logo / colours) does not work yet either, so the
+  // page describing it is a promise rather than a description.
+  'branded-mobile-app': 'soon',
   // Verified against the data model or a shipped screen.
   'workout-builder': 'live',
   'daily-workouts': 'live',
