@@ -67,6 +67,7 @@ export function FeatureStatusBadge({
   note,
   label,
   variant = 'label',
+  interactive = true,
   className,
 }: {
   status: FeatureStatusValue | null | undefined
@@ -75,6 +76,12 @@ export function FeatureStatusBadge({
   /** Localised wording, from the `featureStatus` message namespace. */
   label: string
   variant?: FeatureStatusVariant
+  /**
+   * `icon` only. Focusable by default so touch and keyboard can reach the
+   * wording. Set false when the badge sits inside a link that already carries
+   * its own tab stop — a second stop that does nothing on Enter is noise.
+   */
+  interactive?: boolean
   className?: string
 }) {
   // Shipped features get no badge — that is what "live" means.
@@ -87,9 +94,8 @@ export function FeatureStatusBadge({
     return (
       <span
         // Focusable so the wording is reachable by keyboard and by tap — a
-        // hover-only tooltip would be unreadable on the phone, which is
-        // exactly where this table is tightest.
-        tabIndex={0}
+        // hover-only tooltip would be unreadable on the phone.
+        tabIndex={interactive ? 0 : undefined}
         role="note"
         aria-label={full}
         className={cn(

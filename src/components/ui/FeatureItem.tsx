@@ -26,8 +26,11 @@ export function FeatureItem({
   subtitle: ReactNode
   href?: string
   className?: string
-  /** Small pill after the title, e.g. "Soon". */
-  badge?: string
+  /**
+   * After the title. A string renders as a small pill ("Soon"); a node is
+   * rendered as-is, so callers can pass a `FeatureStatusBadge`.
+   */
+  badge?: ReactNode
   /** Render as a non-navigable, dimmed row (no link). */
   disabled?: boolean
 }) {
@@ -51,10 +54,12 @@ export function FeatureItem({
       </span>
       <span className="flex items-center gap-[6px] font-body text-[13.5px] font-semibold leading-snug tracking-[-0.01em] whitespace-nowrap text-text">
         {title}
-        {badge && (
+        {typeof badge === 'string' ? (
           <span className="rounded-full border border-border bg-surface-offset px-[6px] py-[2px] text-[9px] font-bold uppercase leading-none tracking-[0.07em] text-text-faint">
             {badge}
           </span>
+        ) : (
+          badge
         )}
       </span>
       <span className="mt-px font-body text-[11.5px] font-normal leading-[1.3] whitespace-nowrap text-text-faint">

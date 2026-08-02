@@ -9,7 +9,11 @@ import { appLoginUrl, appRegisterUrl } from '@/lib/appUrl'
 import { guidesEnabled } from '@/lib/env'
 import { calTriggerProps } from '@/lib/cal'
 import { FeatureItem } from '@/components/ui/FeatureItem'
-import { statusForKey, type FeatureStatusValue } from '@/components/features/FeatureStatus'
+import {
+  FeatureStatusBadge,
+  statusForKey,
+  type FeatureStatusValue,
+} from '@/components/features/FeatureStatus'
 import { Button } from '@/components/ui/Button'
 import type { NavigationData } from '@/lib/content'
 import {
@@ -243,7 +247,18 @@ function FeaturesMega({
   // list cannot say "live" while the feature page says "coming soon".
   const badgeFor = (key?: string | null) => {
     const st = statusForKey(key, statuses)
-    return st === 'live' ? undefined : st === 'beta' ? statusLabels.beta : statusLabels.soon
+    if (st === 'live') return undefined
+    return (
+      // Icon, not a pill: the pill was as wide as the feature name and pushed
+      // the row out. Not focusable — the row is already a link, and the
+      // feature page it opens says the same thing in full.
+      <FeatureStatusBadge
+        variant="icon"
+        interactive={false}
+        status={st}
+        label={st === 'beta' ? statusLabels.beta : statusLabels.soon}
+      />
+    )
   }
 
   const featuresItems = data.featuresItems ?? []
