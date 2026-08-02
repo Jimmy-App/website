@@ -461,7 +461,10 @@ export function Pricing({
                   >
                     {b === 'monthly'
                       ? (data.billingMonthly ?? 'Monthly')
-                      : (data.billingAnnual ?? `Annual · save ${annualPct}%`)}
+                      : interp(data.billingAnnual ?? 'Annual · save {annual}%', {
+                          annual: annualPct,
+                          beta: betaPct,
+                        })}
                   </button>
                 )
               })}

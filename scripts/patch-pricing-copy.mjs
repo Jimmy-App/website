@@ -100,11 +100,20 @@ const COPY = {
 const TOP_TIER_LABEL = 'unlimited'
 
 const patchTopTier = async () => {
-  const doc = await client.fetch(`*[_type == "pricingPlans"][0]{ _id, tiers }`)
+  const doc = await client.fetch(`*[_type == "pricingPlans"][0]{ _id, tiers, annualDiscountPct }`)
   if (!doc?._id || !Array.isArray(doc.tiers) || doc.tiers.length === 0) {
     console.error('  ✗ pricingPlans: not found or has no tiers')
     return
   }
+  // The rate the copy's {annual} placeholder resolves to. Sanity's initialValue
+  // only applies to documents created after the field existed, so the live one
+  // is empty and the component falls back to a constant — set it explicitly so
+  // the number is visible and editable where someone would look for it.
+  if (doc.annualDiscountPct == null) {
+    console.log('  · annualDiscountPct: (empty) -> 20')
+    if (!dry) await client.patch(doc._id).set({ annualDiscountPct: 20 }).commit()
+  }
+
   const last = doc.tiers.length - 1
   if (doc.tiers[last].clients === TOP_TIER_LABEL) {
     console.log(`  · top tier already "${TOP_TIER_LABEL}"`)
