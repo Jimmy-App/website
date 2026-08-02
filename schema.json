@@ -1664,6 +1664,13 @@
         },
         "optional": true
       },
+      "annualDiscountPct": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
       "feesFree": {
         "type": "objectAttribute",
         "value": {
@@ -2577,6 +2584,20 @@
           "optional": true
         },
         "priceUsd": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "priceEurAnnual": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "number"
+          },
+          "optional": true
+        },
+        "priceUsdAnnual": {
           "type": "objectAttribute",
           "value": {
             "type": "number"
@@ -6408,7 +6429,63 @@
               },
               "optional": true
             },
+            "billingMonthly": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "billingAnnual": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "perMonthAnnual": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "annualNote": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "feeNoteFree": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "feeNoteClub": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "annualSaveBadge": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
             "forUpTo": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "forUnlimited": {
               "type": "objectAttribute",
               "value": {
                 "type": "string"
