@@ -9,6 +9,7 @@ import { appLoginUrl, appRegisterUrl } from '@/lib/appUrl'
 import { guidesEnabled } from '@/lib/env'
 import { calTriggerProps } from '@/lib/cal'
 import { FeatureItem } from '@/components/ui/FeatureItem'
+import { statusForKey, type FeatureStatusValue } from '@/components/features/FeatureStatus'
 import { Button } from '@/components/ui/Button'
 import type { NavigationData } from '@/lib/content'
 import {
@@ -229,7 +230,22 @@ function Flag({ src }: { src: string }) {
 }
 
 /* ── MegaMenu: Features ─────────────────────────────────────────── */
-function FeaturesMega({ data }: { data: NavigationData }) {
+function FeaturesMega({
+  data,
+  statuses = {},
+  statusLabels,
+}: {
+  data: NavigationData
+  statuses?: Record<string, FeatureStatusValue>
+  statusLabels: { beta: string; soon: string }
+}) {
+  // The menu keys are not feature slugs; statusForKey does the mapping so this
+  // list cannot say "live" while the feature page says "coming soon".
+  const badgeFor = (key?: string | null) => {
+    const st = statusForKey(key, statuses)
+    return st === 'live' ? undefined : st === 'beta' ? statusLabels.beta : statusLabels.soon
+  }
+
   const featuresItems = data.featuresItems ?? []
   const coachItems = featuresItems.filter((it) => COACH_KEYS.includes(it.key ?? ''))
   const memberItems = featuresItems.filter((it) => MEMBER_KEYS.includes(it.key ?? ''))
@@ -252,6 +268,7 @@ function FeaturesMega({ data }: { data: NavigationData }) {
               title={it.title ?? ''}
               subtitle={it.subtitle ?? ''}
               href={featureHref(it.key) ?? it.href ?? '#'}
+              badge={badgeFor(it.key)}
             />
           ))}
         </div>
@@ -270,6 +287,7 @@ function FeaturesMega({ data }: { data: NavigationData }) {
               title={it.title ?? ''}
               subtitle={it.subtitle ?? ''}
               href={featureHref(it.key) ?? it.href ?? '#'}
+              badge={badgeFor(it.key)}
             />
           ))}
         </div>
@@ -782,7 +800,18 @@ function MobileMenu({
 }
 
 /* ── Navbar ─────────────────────────────────────────────────────── */
-export function Navbar({ data }: { data: NavigationData }) {
+export function Navbar({
+  data,
+  featureStatuses = {},
+  statusLabels,
+}: {
+  data: NavigationData
+  /** slug -> status, from the feature documents (JIM-145). */
+  featureStatuses?: Record<string, FeatureStatusValue>
+  /** Badge wording. Passed in rather than read here — the navbar takes all of
+   *  its copy as data, so this keeps that one convention. */
+  statusLabels: { beta: string; soon: string }
+}) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const navPathname = usePathname()
@@ -834,7 +863,11 @@ export function Navbar({ data }: { data: NavigationData }) {
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-8 flex-1" aria-label="Primary">
             <NavMegaItem label={data.featuresLabel ?? ''}>
-              <FeaturesMega data={data} />
+              <FeaturesMega
+                data={data}
+                statuses={featureStatuses}
+                statusLabels={statusLabels}
+              />
             </NavMegaItem>
 
             <Link href="/pricing" className="text-sm font-[450] tracking-[-0.01em] text-text-muted whitespace-nowrap transition-colors duration-[180ms] hover:text-text">

@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
-import { getMessages, setRequestLocale } from 'next-intl/server'
+import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
-import { getNavigation, getFooter } from '../../../sanity/getHomePage'
+import { getNavigation, getFooter, getFeatures } from '../../../sanity/getHomePage'
+import type { FeatureStatusValue } from '@/components/features/FeatureStatus'
 import { CookieConsentProvider } from '@/components/cookies/CookieConsentProvider'
 import { MotionProvider } from '@/components/motion/MotionProvider'
 import { CalInit } from '@/components/cal/CalInit'
@@ -30,13 +31,21 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale)
 
-  const [messages, navigation, footer] = await Promise.all([
+  const [messages, navigation, footer, featureCards, tStatus] = await Promise.all([
     getMessages({ locale }),
     getNavigation(locale),
     getFooter(locale),
+    // Feature statuses drive the mega-menu badges — read from the feature
+    // documents so the menu cannot disagree with the feature pages.
+    getFeatures(locale),
+    getTranslations({ locale, namespace: 'featureStatus' }),
   ])
 
   if (!navigation || !footer) notFound()
+
+  const featureStatuses: Record<string, FeatureStatusValue> = Object.fromEntries(
+    (featureCards ?? []).map((f) => [f.slug ?? '', (f.status ?? 'live') as FeatureStatusValue]),
+  )
 
   // Navbar + Footer live in the layout (not per-page) so they persist across
   // navigations. `template.tsx` only wraps `{children}`, so the page body fades
@@ -51,7 +60,11 @@ export default async function LocaleLayout({
       <MotionProvider>
         <CookieConsentProvider>
           <Suspense>
-            <Navbar data={navigation} />
+            <Navbar
+              data={navigation}
+              featureStatuses={featureStatuses}
+              statusLabels={{ beta: tStatus('beta'), soon: tStatus('soon') }}
+            />
             {children}
             <Footer data={footer} />
           </Suspense>
