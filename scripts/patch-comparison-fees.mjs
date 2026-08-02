@@ -6,15 +6,17 @@
  *   Skool      2.9%   — skool.com/pricing, Pro plan. Hobby is 10%; the
  *                       footnote says that too rather than quietly quoting
  *                       whichever number flatters us.
- *   Trainerize —      — publishes no rate of its own; Stripe Integrated
- *                       Payments is a $10/mo add-on and they point at Stripe
- *                       for the rate. The "1.9%" and "up to 5%" figures on the
- *                       web are all from rivals selling against Trainerize and
- *                       they contradict each other, so they are not a source.
+ *   Trainerize 3.15%  — from Nazar, 2026-08-02. NOT on any Trainerize page:
+ *                       their pricing page states no rate and points at Stripe,
+ *                       and the "1.9%" / "up to 5%" figures on the web are all
+ *                       from rivals selling against Trainerize. We have no
+ *                       citation for this one if it is ever challenged.
  *   TrueCoach  5%     — help.truecoach.co, "a flat 5% fee per transaction".
  *   FITR       5.99%  — coachwithfitr.com/pricing. The ticket said "+5%";
  *                       their own page says 5.99%, so the page wins.
- *   WhatsApp   —      — no payments feature at all (see the payments row).
+ *   WhatsApp   —      — no payments feature at all (see the payments row), so
+ *                       the dash means "nothing to charge a fee on", not
+ *                       "unpublished". The aria-label says so.
  *
  * These are NOT like for like and the footnote has to say so: our 1% sits on
  * top of Stripe, while Skool's and TrueCoach's published rates look all-in.
@@ -51,42 +53,38 @@ const COMPETITORS = ['Skool', 'Trainerize', 'TrueCoach', 'FITR', 'WhatsApp']
 const COPY = {
   en: {
     feeRowLabel: 'Platform transaction fee',
-    feeValues: ['1%', '2.9%', '—', '5%', '5.99%', '—'],
-    feeUnknownAriaLabel: 'Not published',
+    feeValues: ['1%', '2.9%', '3.15%', '5%', '5.99%', '—'],
+    feeUnknownAriaLabel: 'No payments',
     feeNote:
-      "Each figure is the provider's own published rate, and they do not all break out Stripe " +
-      "the same way: Jimmy's 1% (Club plans; 5% on Free) sits on top of Stripe's processing " +
-      "fees, while Skool's and TrueCoach's published rates appear to be all-in. Skool's 2.9% is " +
-      'the Pro plan — Hobby is 10%. Trainerize publishes no rate of its own and points to Stripe. ' +
-      'A dash means the provider publishes no figure we could verify. Read from each provider’s ' +
-      'public pricing page or help centre, August 2026.',
+      "Figures are each provider's own rate, and they do not all break out Stripe the same way: " +
+      "Jimmy's 1% (Club plans; 5% on Free) sits on top of Stripe's processing fees, while " +
+      "Skool's and TrueCoach's appear to be all-in. Skool's 2.9% is the Pro plan — Hobby is 10%. " +
+      'Trainerize does not state a rate on its public pricing page. WhatsApp has no payments of ' +
+      'its own, so there is no fee to quote. Checked August 2026.',
   },
   es: {
     feeRowLabel: 'Comisión de transacción de la plataforma',
-    feeValues: [`1${NB}%`, `2,9${NB}%`, '—', `5${NB}%`, `5,99${NB}%`, '—'],
-    feeUnknownAriaLabel: 'No publicado',
+    feeValues: [`1${NB}%`, `2,9${NB}%`, `3,15${NB}%`, `5${NB}%`, `5,99${NB}%`, '—'],
+    feeUnknownAriaLabel: 'Sin pagos',
     feeNote:
-      'Cada cifra es la tarifa publicada por el propio proveedor, y no todos separan Stripe de la ' +
-      `misma forma: el 1${NB}% de Jimmy (planes Club; 5${NB}% en Free) se suma a las comisiones de ` +
-      'procesamiento de Stripe, mientras que las tarifas publicadas por Skool y TrueCoach parecen ' +
-      `incluirlo todo. El 2,9${NB}% de Skool corresponde al plan Pro: en Hobby es del 10${NB}%. ` +
-      'Trainerize no publica ninguna tarifa propia y remite a Stripe. Un guion significa que el ' +
-      'proveedor no publica una cifra que hayamos podido verificar. Consultado en las páginas ' +
-      'públicas de precios o los centros de ayuda de cada proveedor, agosto de 2026.',
+      'Cada cifra es la tarifa del propio proveedor, y no todos separan Stripe de la misma ' +
+      `forma: el 1${NB}% de Jimmy (planes Club; 5${NB}% en Free) se suma a las comisiones de ` +
+      'procesamiento de Stripe, mientras que las de Skool y TrueCoach parecen incluirlo todo. ' +
+      `El 2,9${NB}% de Skool corresponde al plan Pro: en Hobby es del 10${NB}%. Trainerize no ` +
+      'indica ninguna tarifa en su página pública de precios. WhatsApp no tiene pagos propios, ' +
+      'así que no hay comisión que citar. Consultado en agosto de 2026.',
   },
   fr: {
     feeRowLabel: 'Commission de transaction de la plateforme',
-    feeValues: [`1${NB}%`, `2,9${NB}%`, '—', `5${NB}%`, `5,99${NB}%`, '—'],
-    feeUnknownAriaLabel: 'Non publié',
+    feeValues: [`1${NB}%`, `2,9${NB}%`, `3,15${NB}%`, `5${NB}%`, `5,99${NB}%`, '—'],
+    feeUnknownAriaLabel: 'Pas de paiements',
     feeNote:
-      'Chaque chiffre est le tarif publié par le prestataire lui-même, et tous ne détaillent pas ' +
-      `les frais Stripe de la même façon${NB}: le 1${NB}% de Jimmy (offres Club${NB}; 5${NB}% sur ` +
-      "l'offre Free) s'ajoute aux frais de traitement de Stripe, tandis que les tarifs publiés par " +
-      `Skool et TrueCoach semblent tout inclure. Les 2,9${NB}% de Skool correspondent à l'offre ` +
-      `Pro${NB}: sur Hobby, c'est 10${NB}%. Trainerize ne publie aucun tarif propre et renvoie vers ` +
-      'Stripe. Un tiret signifie que le prestataire ne publie aucun chiffre que nous ayons pu ' +
-      'vérifier. Relevé sur les pages tarifaires publiques ou les centres d’aide de chaque ' +
-      'prestataire, août 2026.',
+      'Chaque chiffre est le tarif du prestataire lui-même, et tous ne détaillent pas les frais ' +
+      `Stripe de la même façon${NB}: le 1${NB}% de Jimmy (offres Club${NB}; 5${NB}% sur l'offre ` +
+      "Free) s'ajoute aux frais de traitement de Stripe, tandis que ceux de Skool et TrueCoach " +
+      `semblent tout inclure. Les 2,9${NB}% de Skool correspondent à l'offre Pro${NB}: sur Hobby, ` +
+      `c'est 10${NB}%. Trainerize n'indique aucun tarif sur sa page tarifaire publique. WhatsApp ` +
+      "n'a pas de paiements propres, il n'y a donc pas de commission à citer. Relevé en août 2026.",
   },
 }
 
