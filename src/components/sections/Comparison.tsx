@@ -63,6 +63,14 @@ const SCORES = ['8/8', '3/8', '6/8', '5/8', '7/8', '2/8'] as const
 /** Rendered when a provider publishes no platform fee. Never a guess. */
 const FEE_UNKNOWN = '—'
 
+/**
+ * CMS strings arrive at the DOM with a long tail of zero-width characters
+ * appended — Sanity stores them clean, so something downstream adds them.
+ * Comparing raw would make every `=== '—'` false. Same guard as Pricing.tsx.
+ */
+const INVISIBLE = /[\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\uFEFF]/g
+const visibleText = (s: string) => s.replace(INVISIBLE, '').trim()
+
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
 function MarkYes({ isJimmy }: { isJimmy: boolean }) {
@@ -362,7 +370,7 @@ export function Comparison({
                 {/* Competitor fees */}
                 {competitors.map((name, i) => {
                   const value = feeValues[i + 1] ?? FEE_UNKNOWN
-                  const unknown = value === FEE_UNKNOWN
+                  const unknown = visibleText(value) === FEE_UNKNOWN
                   return (
                     <div
                       key={name}
@@ -382,7 +390,11 @@ export function Comparison({
                         )}
                         // The dash is a statement — "we did not find one" — so
                         // it needs to say that to a screen reader too.
-                        aria-label={unknown ? (data.feeUnknownAriaLabel ?? undefined) : undefined}
+                        aria-label={
+                          unknown && data.feeUnknownAriaLabel
+                            ? visibleText(data.feeUnknownAriaLabel)
+                            : undefined
+                        }
                       >
                         {value}
                       </span>
