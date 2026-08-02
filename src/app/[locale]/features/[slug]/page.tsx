@@ -49,10 +49,11 @@ export default async function FeaturePage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const [doc, allCards, t] = await Promise.all([
+  const [doc, allCards, t, tStatus] = await Promise.all([
     getFeature(locale, slug),
     getFeatures(locale),
     getTranslations({ locale, namespace: 'features' }),
+    getTranslations({ locale, namespace: 'featureStatus' }),
   ])
 
   if (!doc) notFound()
@@ -90,6 +91,8 @@ export default async function FeaturePage({
             forCoaches: audienceLabel,
             startFree: t('startFree'),
             bookDemo: t('bookDemo'),
+            statusBeta: tStatus('beta'),
+            statusSoon: tStatus('soon'),
           }}
         />
 

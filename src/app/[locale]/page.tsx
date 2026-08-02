@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation'
 import { pageMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { organizationSchema, websiteSchema, faqSchema } from '@/lib/jsonld'
-import { getHomePage, getPricingPlans } from '../../../sanity/getHomePage'
+import { getHomePage, getPricingPlans, getFeatures } from '../../../sanity/getHomePage'
+import type { FeatureStatusValue } from '@/components/features/FeatureStatus'
 import { Hero } from '@/components/sections/Hero'
 import { Features } from '@/components/sections/Features'
 import WhyJimmy from '@/components/sections/WhyJimmy'
@@ -43,10 +44,17 @@ export default async function HomePage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [home, plans] = await Promise.all([
+  const [home, plans, featureCards, tStatus] = await Promise.all([
     getHomePage(locale),
     getPricingPlans(),
+    // Statuses live on the feature documents; the homepage reads them rather
+    // than keeping its own copy on the tabs.
+    getFeatures(locale),
+    getTranslations({ locale, namespace: 'featureStatus' }),
   ])
+  const featureStatuses = Object.fromEntries(
+    (featureCards ?? []).map((f) => [f.slug ?? '', (f.status ?? 'live') as FeatureStatusValue]),
+  )
   if (
     !plans ||
     !home?.hero ||
@@ -75,7 +83,11 @@ export default async function HomePage({
       <JsonLd data={homeSchemas} />
       <main>
         <Hero data={home.hero} />
-        <Features data={home.features} />
+        <Features
+          data={home.features}
+          statuses={featureStatuses}
+          statusLabels={{ beta: tStatus('beta'), soon: tStatus('soon') }}
+        />
         <WhyJimmy data={home.why} />
         <Steps data={home.steps} />
         <Platform data={home.platform} />

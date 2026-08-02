@@ -20,6 +20,7 @@ import { calTriggerProps } from '@/lib/cal'
 import { FeatureDemo } from './FeatureDemo'
 import { FeatureVideo } from './FeatureVideo'
 import { FEATURE_ICON_MAP } from './featureMeta'
+import { FeatureStatusBadge } from './FeatureStatus'
 import type { Feature } from '@/lib/features'
 
 // ── Entrance animation: CSS-only stagger (no JS-gate, no hydration wait) ───────
@@ -40,6 +41,8 @@ type Props = {
     forCoaches: string
     startFree: string
     bookDemo: string
+    statusBeta: string
+    statusSoon: string
   }
 }
 
@@ -104,6 +107,15 @@ export function FeatureHero({ feature, t }: Props) {
                 )}
                 {t.forCoaches}
               </span>
+              {/* Right next to the audience badge, so a coach reading the hero
+                  cannot reach the live demo below without seeing that the
+                  feature is not built yet (JIM-145). */}
+              <FeatureStatusBadge
+                status={feature.status}
+                note={feature.statusNote}
+                label={feature.status === 'beta' ? t.statusBeta : t.statusSoon}
+                className="ml-2 align-middle"
+              />
             </div>
 
             {/* H1 */}

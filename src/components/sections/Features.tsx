@@ -12,6 +12,11 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  FeatureStatusBadge,
+  statusForKey,
+  type FeatureStatusValue,
+} from '@/components/features/FeatureStatus'
 import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
 import dynamic from 'next/dynamic'
@@ -108,7 +113,16 @@ const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function Features({ data }: { data: FeaturesData }) {
+export function Features({
+  data,
+  statuses = {},
+  statusLabels,
+}: {
+  data: FeaturesData
+  /** slug -> status, from the feature documents (the single source). */
+  statuses?: Record<string, FeatureStatusValue>
+  statusLabels: { beta: string; soon: string }
+}) {
   const shouldReduceMotion = useReducedMotion()
 
   const tabs = data.tabs ?? []
@@ -158,6 +172,8 @@ export function Features({ data }: { data: FeaturesData }) {
   const activeTab = tabs[activeIdx]
   const activeTabId = (activeTab?.id ?? '') as TabId
   const activeTabAsset = TAB_ASSETS[activeTabId]
+  // The tab keys are not feature slugs, so statusForKey does the mapping.
+  const panelStatus = statusForKey(activeTab?.id, statuses)
 
   // Tags for the active tab
   const tags = activeTab?.tags ?? []
@@ -315,9 +331,18 @@ export function Features({ data }: { data: FeaturesData }) {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-display text-h3 font-bold text-text [letter-spacing:var(--tracking-tight)] [line-height:var(--leading-snug)] max-w-[360px]">
-                    {activeTab.title}
-                  </h3>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <h3 className="font-display text-h3 font-bold text-text [letter-spacing:var(--tracking-tight)] [line-height:var(--leading-snug)] max-w-[360px]">
+                      {activeTab.title}
+                    </h3>
+                    {/* Beside the claim itself, not on the tab strip — this is
+                        where the feature is described, so this is where an
+                        unbuilt one has to say so (JIM-145). */}
+                    <FeatureStatusBadge
+                      status={panelStatus}
+                      label={panelStatus === 'beta' ? statusLabels.beta : statusLabels.soon}
+                    />
+                  </div>
 
                   {/* Subtitle / desc */}
                   <p className="text-body text-text-muted [line-height:1.6] max-w-[400px]">

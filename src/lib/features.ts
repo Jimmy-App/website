@@ -1,3 +1,4 @@
+import type { FeatureStatusValue } from '@/components/features/FeatureStatus'
 /**
  * Features — types + code-side mapping layer.
  *
@@ -84,6 +85,10 @@ export type Feature = {
   tags: string[]
   capsTitle: string
   caps: FeatureCap[]
+  /** live | beta | soon — drives the badge (JIM-145). */
+  status: FeatureStatusValue
+  /** Optional qualifier, e.g. "Q4". Never a date. */
+  statusNote: string | null
 }
 
 // ── Feature card (related lists / nav) ─────────────────────────────────────────
@@ -115,6 +120,10 @@ export function toFeature(doc: NonNullable<FEATURE_QUERY_RESULT>): Feature {
     name: doc.name ?? '',
     sub: doc.sub ?? '',
     iconKey: doc.iconKey ?? '',
+    // Anything not explicitly marked is treated as live — the states that make
+    // a promise have to be set deliberately, not arrived at by default.
+    status: (doc.status ?? 'live') as FeatureStatusValue,
+    statusNote: doc.statusNote ?? null,
     demoKey: (doc.demoKey ?? null) as FeatureDemoKey,
     media: FEATURE_MEDIA[slug],
     title: {
