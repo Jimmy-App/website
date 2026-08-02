@@ -373,19 +373,15 @@ export function Pricing({
                 corner at every width. Given a flex-basis it dropped below the
                 heading on phones — flex-1 with min-w-0 lets the title wrap
                 instead, which is what should give. */}
+            {/* Only the heading shares a row with the switch. The subtitle sits
+                below on the full width — keeping it in the heading's column
+                squeezed it into 207px on a phone and wrapped it needlessly.
+                No text-wrap:balance either: it evens out line lengths, which
+                left ragged lines with empty space beside them. */}
             <div className="flex items-start justify-between gap-[14px]">
-              <div className="min-w-0 flex-1">
-                {/* No text-wrap:balance here. It evens out line lengths, which
-                    on a 207px column meant three short ragged lines with empty
-                    space to their right. Left-aligned copy in a narrow column
-                    should fill the width it has. */}
-                <h2 className="font-display text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold leading-[1.06] tracking-[-0.035em] text-text">
-                  {(data.title ?? '')}
-                </h2>
-                <p className="mt-[0.6rem] text-[clamp(0.9rem,1.35vw,1.0625rem)] leading-[1.55] text-text-muted">
-                  {(data.sliderHelp ?? data.subtitle ?? '')}
-                </p>
-              </div>
+              <h2 className="min-w-0 flex-1 font-display text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold leading-[1.06] tracking-[-0.035em] text-text">
+                {(data.title ?? '')}
+              </h2>
 
               {/* Currency switcher */}
               <div
@@ -412,6 +408,10 @@ export function Pricing({
                 ))}
               </div>
             </div>
+
+            <p className="mt-[0.6rem] text-[clamp(0.9rem,1.35vw,1.0625rem)] leading-[1.55] text-text-muted">
+              {(data.sliderHelp ?? data.subtitle ?? '')}
+            </p>
 
             {/* Billing period. Full-width segmented control, so the cheaper
                 option is not hidden behind a small toggle. */}
