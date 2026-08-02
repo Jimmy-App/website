@@ -350,6 +350,13 @@ export const homePage = defineType({
           rows: 3,
           description: 'e.g. "Payments & billing, handled for you — … Included with just a {pct}% fee on payments at this plan."',
         }),
+        defineField({
+          name: 'annualSaveBadge',
+          title: 'Annual — yearly saving badge',
+          type: 'string',
+          description:
+            'Shown next to "for up to N clients" while billing annually. Use {amount} for the figure, e.g. "Save {amount}/year".',
+        }),
         defineField({ name: 'forUpTo', type: 'string' }),
         defineField({ name: 'feesLabel', type: 'string' }),
         // Incentive strip framing (no numbers — the fee % delta is injected from

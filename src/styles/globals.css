@@ -60,6 +60,10 @@
   --color-success: #16a34a;
   --color-success-light: #e8f5e9;
 
+  /* Struck-through "was" price. Deliberately softer than an error red — it
+     marks a price the coach is no longer paying, not something gone wrong. */
+  --color-price-was: #c94f4f;
+
   /* ── Gradients (not utility-generating; available as vars) ── */
   --gradient-brand: linear-gradient(135deg, #b966fe 0%, #9537e4 100%);
   --gradient-dark-cta: linear-gradient(165deg, #221c2e 0%, #1a1620 100%);

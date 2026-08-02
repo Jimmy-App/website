@@ -52,7 +52,7 @@ function getFees(
  * one out — otherwise changing the fee in Sanity silently leaves the prose
  * quoting the old number, in three locales.
  */
-function interp(template: string, values: Record<string, number>): string {
+function interp(template: string, values: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
     key in values ? String(values[key]) : whole,
   )
@@ -251,14 +251,40 @@ export function Pricing({
   const betaWins = appliedPct === betaPct && (!isAnnual || betaPct >= annualPct)
   const discount = 1 - appliedPct / 100
   const sym = SYMBOLS[currency]
+  /** List price per month, before any discount. */
   const priceOf = (i: number) =>
     currency === 'eur' ? tiers[i]?.priceEur ?? null : tiers[i]?.priceUsd ?? null
+
+  /**
+   * Monthly-equivalent when billing yearly. Entered per tier in Sanity, because
+   * annual pricing is a commercial call — deriving it from a percentage cannot
+   * be tuned per tier and lands on figures like €39.17. Falls back to the
+   * percentage only while the fields are still empty.
+   */
+  const annualPriceOf = (i: number) => {
+    const explicit =
+      currency === 'eur' ? tiers[i]?.priceEurAnnual : tiers[i]?.priceUsdAnnual
+    if (explicit != null) return explicit
+    const list = priceOf(i)
+    return list == null ? null : Math.round(list * (1 - annualPct / 100) * 100) / 100
+  }
+
   const tier = tiers[step]
   const clientsCount = tier?.clients ?? ''
   const reg = priceOf(step)
   const isFree = reg === null
-  const nowText = isFree ? `${sym}0` : `${sym}${(reg * discount).toFixed(2)}`
+  const annualPrice = isAnnual && !isFree ? annualPriceOf(step) : null
+  const effective = annualPrice ?? (isFree ? 0 : reg * discount)
+  const nowText = isFree ? `${sym}0` : `${sym}${effective.toFixed(2)}`
   const wasText = isFree ? null : `${sym}${reg}`
+
+  /**
+   * Yearly saving against the list price — the coach's answer to "why commit
+   * for a year". Measured against the list rather than the beta rate because
+   * the list is what the annual price is set against.
+   */
+  const annualSaving =
+    annualPrice != null && reg != null ? Math.round((reg - annualPrice) * 12) : null
   // Tick axis: first marker is "0", remaining markers are the paid-tier client counts
   const tickLabels = ['0', ...tiers.slice(1).map((tr) => tr.clients ?? '')]
   const planLabel = isFree ? (data.planFree ?? '') : (data.planClub ?? '')
@@ -473,45 +499,56 @@ export function Pricing({
                   dead gap between the price and the button on phones. */}
               <div className="flex flex-col gap-[clamp(0.9rem,2vw,1.25rem)] min-[561px]:flex-row min-[561px]:items-center min-[561px]:justify-between">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-purple">
-                    {(data.forUpTo ?? '')} {clientsCount} {(data.clients ?? '')}
-                  </p>
+                  {/* min-h holds the badge's height whether or not it is there,
+                      so switching to annual does not push the price down. */}
+                  <div className="flex min-h-[24px] flex-wrap items-center gap-x-[10px] gap-y-[6px]">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-purple">
+                      {(data.forUpTo ?? '')} {clientsCount} {(data.clients ?? '')}
+                    </p>
+                    {/* What committing for a year is worth, in money rather
+                        than a percentage — "save 20%" is on the switch already. */}
+                    {annualSaving != null && annualSaving > 0 && (
+                      <span className="inline-flex items-center rounded-full bg-purple px-[10px] py-[4px] text-[11px] font-bold text-white">
+                        {interp(data.annualSaveBadge ?? 'Save {amount}/year', {
+                          amount: `${sym}${annualSaving}`,
+                        })}
+                      </span>
+                    )}
+                  </div>
 
-                  <div className="mt-[7px] flex items-baseline gap-[10px]">
+                  {/* One line, always. The annual suffix is long enough that a
+                      wrap here changed the panel's height between billing
+                      periods — the type is sized so the widest case (longest
+                      price + annual suffix + old price) still fits. */}
+                  <div className="mt-[7px] flex min-h-[46px] items-baseline gap-x-[9px]">
                     <span
                       key={bumpKey}
                       className={cn(
-                        'font-display text-[clamp(2.3rem,5.2vw,3.4rem)] font-extrabold leading-none tracking-[-0.04em] text-text tabular-nums',
+                        'font-display text-[clamp(2rem,4.4vw,2.9rem)] font-extrabold leading-none tracking-[-0.04em] text-text tabular-nums',
                         !shouldReduceMotion && 'motion-safe:animate-[pr-bump_0.34s_cubic-bezier(0.32,0.72,0,1)]',
                       )}
                     >
                       {nowText}
                     </span>
-                    <span className="text-[clamp(0.9rem,1.2vw,1.0625rem)] font-medium text-text-muted">
+                    <span className="text-[clamp(0.8rem,1.05vw,0.95rem)] font-medium leading-[1.3] text-text-muted">
                       {isAnnual && !isFree
                         ? (data.perMonthAnnual ?? '/month, billed annually')
                         : (data.perMonth ?? '')}
                     </span>
+                    {/* The price being replaced sits after the suffix, so the
+                        line reads "€23.20 per month, billed annually — was €49"
+                        rather than opening on a number that is not the offer. */}
+                    {!isFree && (
+                      <span className="whitespace-nowrap text-[clamp(0.9rem,1.15vw,1.05rem)] font-semibold text-[var(--color-price-was)] line-through tabular-nums">
+                        {wasText}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Was-price + beta badge: paid tiers only, but the row keeps
-                      its height on Free so nothing below it moves. */}
+                  {/* Beta badge: paid, monthly-winning tiers only. The row keeps
+                      its height otherwise so nothing below it moves. */}
                   <div className="mt-[7px] flex min-h-[22px] items-center gap-[9px]">
                     <AnimatePresence initial={false}>
-                      {!isFree && (
-                        <motion.span
-                          key="was"
-                          {...appear}
-                          transition={{ duration: 0.22, ease: easeOut }}
-                          className="text-[14px] font-semibold text-text-faint line-through tabular-nums"
-                        >
-                          {wasText}
-                        </motion.span>
-                      )}
-                      {/* Only when the beta rate is the offer actually applied.
-                          Paying yearly saves more, so it takes over and this
-                          badge would otherwise claim a discount that is not
-                          the one in the price. */}
                       {!isFree && betaWins && (
                         <motion.span
                           key="beta"
@@ -527,8 +564,12 @@ export function Pricing({
                   </div>
                 </div>
 
+                {/* Carries the chosen period across to signup. Nothing consumes
+                    it yet — annual prices do not exist in Stripe — but it means
+                    the intent is not silently dropped, and how many coaches
+                    pick annual becomes measurable before we build it. */}
                 <Button
-                  href={appRegisterUrl}
+                  href={isAnnual ? `${appRegisterUrl}?billing=annual` : appRegisterUrl}
                   variant="solid"
                   size="lg"
                   className="max-[560px]:w-full"
@@ -558,7 +599,9 @@ export function Pricing({
 
             {/* Fixed height: these lines only apply to paid tiers, and letting
                 them come and go would resize the card mid-drag. */}
-            <div className="mt-[7px] min-h-[34px]">
+            {/* Two lines' worth: monthly shows the beta lock plus the
+                doesn't-combine note, annual only replaces them with one. */}
+            <div className="mt-[7px] min-h-[42px]">
               {betaWins && (data.lockNote ?? '') && (
                 <p className="text-[12.5px] leading-[1.55] text-text-faint">
                   {(data.lockNote ?? '')}
