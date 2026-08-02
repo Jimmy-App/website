@@ -2552,6 +2552,27 @@
             "type": "string"
           },
           "optional": true
+        },
+        "status": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "live"
+              },
+              {
+                "type": "string",
+                "value": "beta"
+              },
+              {
+                "type": "string",
+                "value": "soon"
+              }
+            ]
+          },
+          "optional": true
         }
       }
     }

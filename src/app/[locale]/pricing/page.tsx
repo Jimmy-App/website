@@ -40,10 +40,11 @@ export default async function PricingPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [home, pricingPage, plans] = await Promise.all([
+  const [home, pricingPage, plans, tStatus] = await Promise.all([
     getHomePage(locale),
     getPricingPage(locale),
     getPricingPlans(),
+    getTranslations({ locale, namespace: 'featureStatus' }),
   ])
 
   if (
@@ -77,7 +78,9 @@ export default async function PricingPage({
       <JsonLd data={schemas} />
       <main>
         {/* Reused home Pricing section + FAQ; page-specific centered CTA */}
-        <Pricing data={home.pricing} plans={plans} page />
+        <Pricing data={home.pricing} plans={plans} page
+          statusLabels={{ beta: tStatus('beta'), soon: tStatus('soon') }}
+        />
         <Faq data={pricingPage.faq} variant="pricing" />
         <PricingCta data={pricingPage.finalCta} />
       </main>

@@ -3,6 +3,11 @@
 import Image from 'next/image'
 import { Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  FeatureStatusBadge,
+  statusForKey,
+  type FeatureStatusValue,
+} from '@/components/features/FeatureStatus'
 import type { ComparisonData } from '@/lib/content'
 
 // ── Data: feature matrix ──────────────────────────────────────────────────────
@@ -12,6 +17,24 @@ import type { ComparisonData } from '@/lib/content'
  * true  = has the feature (Check)
  * false = missing (X)
  */
+/**
+ * Which feature each row is, by index — aligned with FEATURE_MATRIX below.
+ *
+ * The row labels are translated per locale, so matching them by text would
+ * silently miss fr and es. Index is what this component already keys on.
+ * `null` means the row is not a single feature we track a status for.
+ */
+const ROW_FEATURE_SLUG: (string | null)[] = [
+  'workout-builder',
+  'community-feed',
+  'programs-courses',
+  null, // "Native iOS/Android app" — the app ships; branding is the separate claim
+  'messaging',
+  'payments',
+  'progress-tracking',
+  null, // "Workout templates" — part of the builder
+]
+
 const FEATURE_MATRIX: boolean[][] = [
   // Structured workout builder
   [true, false, true, true, false],
@@ -68,7 +91,15 @@ function MarkNo() {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function Comparison({ data }: { data: ComparisonData }) {
+export function Comparison({
+  data,
+  statuses = {},
+  statusLabels,
+}: {
+  data: ComparisonData
+  statuses?: Record<string, FeatureStatusValue>
+  statusLabels: { beta: string; soon: string }
+}) {
   const competitors = data.competitors ?? []
   const features = data.features ?? []
   const scores = SCORES
@@ -228,6 +259,16 @@ export function Comparison({ data }: { data: ComparisonData }) {
                     )}
                   >
                     {feature}
+                    {/* A row that claims parity with competitors has to say
+                        when we do not have it yet either (JIM-145). */}
+                    <FeatureStatusBadge
+                      status={statusForKey(ROW_FEATURE_SLUG[rowIdx], statuses)}
+                      label={
+                        statusForKey(ROW_FEATURE_SLUG[rowIdx], statuses) === 'beta'
+                          ? statusLabels.beta
+                          : statusLabels.soon
+                      }
+                    />
                   </div>
 
                   {/* Jimmy cell */}

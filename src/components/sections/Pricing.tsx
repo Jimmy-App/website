@@ -4,6 +4,10 @@ import { useReducedMotion, m as motion, AnimatePresence } from 'framer-motion'
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { Zap, ArrowRight, Users, Sparkles, Repeat } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  FeatureStatusBadge,
+  type FeatureStatusValue,
+} from '@/components/features/FeatureStatus'
 import { appRegisterUrl } from '@/lib/appUrl'
 import { Button } from '@/components/ui/Button'
 import type { PricingData, PricingPlansData } from '@/lib/content'
@@ -185,10 +189,13 @@ function CheckMark() {
 export function Pricing({
   data,
   plans,
+  statusLabels,
   page = false,
 }: {
   data: PricingData
   plans: PricingPlansData
+  /** Badge wording for add-ons that are not on sale yet (JIM-145). */
+  statusLabels: { beta: string; soon: string }
   /** When true, render as a standalone page hero: clear the fixed navbar and drop the top border. */
   page?: boolean
 }) {
@@ -706,16 +713,22 @@ export function Pricing({
               icon={<Users size={20} strokeWidth={1.75} />}
               name={data.addons?.[0]?.name ?? ''}
               price={data.addons?.[0]?.price ?? ''}
+              status={(data.addons?.[0]?.status ?? 'live') as FeatureStatusValue}
+              statusLabels={statusLabels}
             />
             <AddonCard
               icon={<Sparkles size={20} strokeWidth={1.75} />}
               name={data.addons?.[1]?.name ?? ''}
               price={data.addons?.[1]?.price ?? ''}
+              status={(data.addons?.[1]?.status ?? 'live') as FeatureStatusValue}
+              statusLabels={statusLabels}
             />
             <AddonCard
               icon={<Repeat size={20} strokeWidth={1.75} />}
               name={data.addons?.[2]?.name ?? ''}
               price={data.addons?.[2]?.price ?? ''}
+              status={(data.addons?.[2]?.status ?? 'live') as FeatureStatusValue}
+              statusLabels={statusLabels}
             />
           </div>
         </motion.div>
@@ -731,10 +744,14 @@ function AddonCard({
   icon,
   name,
   price,
+  status,
+  statusLabels,
 }: {
   icon: React.ReactNode
   name: string
   price: string
+  status?: FeatureStatusValue | null
+  statusLabels: { beta: string; soon: string }
 }) {
   return (
     <div className="flex items-center gap-[14px] rounded-[16px] border border-border bg-surface px-[18px] py-[16px] transition-[border-color,box-shadow,transform] duration-[180ms] hover:-translate-y-[2px] hover:border-[rgba(138,50,224,0.35)] hover:shadow-[0_8px_24px_rgba(138,50,224,0.09)]">
@@ -742,7 +759,13 @@ function AddonCard({
         {icon}
       </div>
       <div>
-        <div className="mb-[2px] text-[14px] font-bold text-text">{name}</div>
+        <div className="mb-[2px] flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] font-bold text-text">
+          {name}
+          <FeatureStatusBadge
+            status={status}
+            label={status === 'beta' ? statusLabels.beta : statusLabels.soon}
+          />
+        </div>
         <div className="text-[12.5px] font-medium text-text-muted">{price}</div>
       </div>
     </div>

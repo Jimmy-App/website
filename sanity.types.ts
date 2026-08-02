@@ -423,6 +423,7 @@ export type PricingAddon = {
   _type: "pricingAddon";
   name?: string;
   price?: string;
+  status?: "live" | "beta" | "soon";
 };
 
 export type PricingTier = {

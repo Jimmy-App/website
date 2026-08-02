@@ -92,8 +92,14 @@ export default async function HomePage({
         <Steps data={home.steps} />
         <Platform data={home.platform} />
         <Tech data={home.tech} />
-        <Comparison data={home.comparison} />
-        <Pricing data={home.pricing} plans={plans} />
+        <Comparison
+          data={home.comparison}
+          statuses={featureStatuses}
+          statusLabels={{ beta: tStatus('beta'), soon: tStatus('soon') }}
+        />
+        <Pricing data={home.pricing} plans={plans}
+          statusLabels={{ beta: tStatus('beta'), soon: tStatus('soon') }}
+        />
         <OpenBeta data={home.beta} />
         <Team data={home.team} />
         <Faq data={home.faq} />
