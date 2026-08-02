@@ -369,8 +369,12 @@ export function Pricing({
         >
           <div className="p-[clamp(1.35rem,3.6vw,2.6rem)]">
             {/* Head: the promise, and the currency it is priced in */}
-            <div className="flex flex-wrap items-start justify-between gap-[14px_18px]">
-              <div className="min-w-0 flex-[1_1_260px]">
+            {/* No wrapping: the currency switch belongs in the top-right
+                corner at every width. Given a flex-basis it dropped below the
+                heading on phones — flex-1 with min-w-0 lets the title wrap
+                instead, which is what should give. */}
+            <div className="flex items-start justify-between gap-[14px]">
+              <div className="min-w-0 flex-1">
                 <h2 className="font-display text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold leading-[1.06] tracking-[-0.035em] text-text [text-wrap:balance]">
                   {(data.title ?? '')}
                 </h2>
