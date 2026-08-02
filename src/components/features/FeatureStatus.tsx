@@ -1,3 +1,4 @@
+import { Clock3, FlaskConical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
@@ -48,10 +49,24 @@ const STYLES: Record<Exclude<FeatureStatusValue, 'live'>, string> = {
   soon: 'bg-surface-offset text-text-muted',
 }
 
+const ICONS: Record<Exclude<FeatureStatusValue, 'live'>, typeof Clock3> = {
+  beta: FlaskConical,
+  soon: Clock3,
+}
+
+/**
+ * `label` — a pill carrying the word, for surfaces with room for it.
+ * `icon`  — an 18px marker that reveals the same word on hover/focus, for
+ *           dense surfaces (the comparison table) where the pill wrapped the
+ *           row label onto a second line.
+ */
+export type FeatureStatusVariant = 'label' | 'icon'
+
 export function FeatureStatusBadge({
   status,
   note,
   label,
+  variant = 'label',
   className,
 }: {
   status: FeatureStatusValue | null | undefined
@@ -59,10 +74,58 @@ export function FeatureStatusBadge({
   note?: string | null
   /** Localised wording, from the `featureStatus` message namespace. */
   label: string
+  variant?: FeatureStatusVariant
   className?: string
 }) {
   // Shipped features get no badge — that is what "live" means.
   if (!status || status === 'live') return null
+
+  const full = note ? `${label} ${note}` : label
+
+  if (variant === 'icon') {
+    const Icon = ICONS[status]
+    return (
+      <span
+        // Focusable so the wording is reachable by keyboard and by tap — a
+        // hover-only tooltip would be unreadable on the phone, which is
+        // exactly where this table is tightest.
+        tabIndex={0}
+        role="note"
+        aria-label={full}
+        className={cn(
+          'group/status relative inline-flex flex-shrink-0 items-center justify-center',
+          'h-[18px] w-[18px] rounded-full outline-none',
+          'focus-visible:ring-2 focus-visible:ring-purple/45',
+          STYLES[status],
+          className,
+        )}
+      >
+        <Icon size={11} strokeWidth={2.75} aria-hidden="true" />
+
+        <span
+          aria-hidden="true"
+          className={cn(
+            'pointer-events-none absolute bottom-full left-1/2 z-20 mb-[7px] -translate-x-1/2',
+            'whitespace-nowrap rounded-[7px] bg-text px-[8px] py-[4px]',
+            'text-[10.5px] font-bold uppercase tracking-[0.06em] text-surface',
+            'shadow-[0_6px_18px_-6px_rgba(26,25,23,0.45)]',
+            'origin-bottom scale-[0.96] opacity-0',
+            // Tailwind v4 emits `scale-*` as the standalone `scale` property,
+            // not inside `transform` — transitioning `transform` here would
+            // fade the tooltip in while the scale snapped.
+            'transition-[opacity,scale] duration-[125ms] [transition-timing-function:cubic-bezier(0.23,1,0.32,1)]',
+            'group-hover/status:scale-100 group-hover/status:opacity-100',
+            // Plain `focus`, not `focus-visible`: a tap focuses but does not
+            // match focus-visible, and touch is where this table is tightest.
+            'group-focus/status:scale-100 group-focus/status:opacity-100',
+            'motion-reduce:transition-none',
+          )}
+        >
+          {full}
+        </span>
+      </span>
+    )
+  }
 
   return (
     <span

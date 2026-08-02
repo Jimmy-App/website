@@ -1057,6 +1057,10 @@ export type HomePage = {
     jimmyBadge?: string;
     competitors?: Array<string>;
     features?: Array<string>;
+    feeRowLabel?: string;
+    feeValues?: Array<string>;
+    feeNote?: string;
+    feeUnknownAriaLabel?: string;
     footerLabel?: string;
   };
   pricing?: {
@@ -1736,6 +1740,10 @@ export type HOME_QUERY_RESULT = {
     jimmyBadge?: string;
     competitors?: Array<string>;
     features?: Array<string>;
+    feeRowLabel?: string;
+    feeValues?: Array<string>;
+    feeNote?: string;
+    feeUnknownAriaLabel?: string;
     footerLabel?: string;
   } | null;
   pricing: {

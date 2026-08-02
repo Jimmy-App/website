@@ -13,9 +13,13 @@ import type { ComparisonData } from '@/lib/content'
 // ── Data: feature matrix ──────────────────────────────────────────────────────
 
 /**
- * Columns: [Jimmy, Skool, Trainerize, TrueCoach, WhatsApp]
+ * Columns: [Jimmy, Skool, Trainerize, TrueCoach, FITR, WhatsApp]
  * true  = has the feature (Check)
  * false = missing (X)
+ *
+ * FITR (JIM-146) was filled from their own public pages — coachwithfitr.com
+ * /features and /pricing, read 2026-08-02. Community feed and course modules
+ * appear nowhere in their feature list, which is why those two are false.
  */
 /**
  * Which feature each row is, by index — aligned with FEATURE_MATRIX below.
@@ -37,24 +41,27 @@ const ROW_FEATURE_SLUG: (string | null)[] = [
 
 const FEATURE_MATRIX: boolean[][] = [
   // Structured workout builder
-  [true, false, true, true, false],
+  [true, false, true, true, true, false],
   // Community feed
-  [true, true, false, false, false],
+  [true, true, false, false, false, false],
   // Course Builder (modules/lessons)
-  [true, true, false, false, false],
+  [true, true, false, false, false, false],
   // Native iOS/Android app
-  [true, false, true, true, true],
+  [true, false, true, true, true, true],
   // Integrated 1:1 messaging
-  [true, false, true, true, true],
+  [true, false, true, true, true, true],
   // Payments & subscriptions
-  [true, true, true, false, false],
+  [true, true, true, false, true, false],
   // Progress tracking
-  [true, false, true, true, false],
+  [true, false, true, true, true, false],
   // Workout templates
-  [true, false, true, true, false],
+  [true, false, true, true, true, false],
 ]
 
-const SCORES = ['8/8', '3/8', '6/8', '5/8', '2/8'] as const
+const SCORES = ['8/8', '3/8', '6/8', '5/8', '7/8', '2/8'] as const
+
+/** Rendered when a provider publishes no platform fee. Never a guess. */
+const FEE_UNKNOWN = '—'
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -103,6 +110,8 @@ export function Comparison({
   const competitors = data.competitors ?? []
   const features = data.features ?? []
   const scores = SCORES
+  const feeRowLabel = data.feeRowLabel
+  const feeValues = data.feeValues ?? []
 
   return (
     <section
@@ -168,8 +177,8 @@ export function Comparison({
             role="table"
             aria-label={data.tableAriaLabel ?? ''}
             className={cn(
-              'grid min-w-[760px] max-[860px]:min-w-[680px] relative',
-              '[grid-template-columns:minmax(200px,1.6fr)_repeat(5,minmax(102px,1fr))]',
+              'grid min-w-[880px] max-[860px]:min-w-[812px] relative',
+              '[grid-template-columns:minmax(200px,1.6fr)_repeat(6,minmax(96px,1fr))]',
             )}
           >
 
@@ -262,6 +271,7 @@ export function Comparison({
                     {/* A row that claims parity with competitors has to say
                         when we do not have it yet either (JIM-145). */}
                     <FeatureStatusBadge
+                      variant="icon"
                       status={statusForKey(ROW_FEATURE_SLUG[rowIdx], statuses)}
                       label={
                         statusForKey(ROW_FEATURE_SLUG[rowIdx], statuses) === 'beta'
@@ -307,6 +317,80 @@ export function Comparison({
                 </div>
               )
             })}
+
+            {/*
+              ── Platform-fee row (JIM-146) ──
+              Not a checkmark row: the cells carry published percentages. Any
+              provider that does not publish one gets an em dash — an invented
+              number here would be the one thing on this table a competitor
+              could fairly call a lie.
+            */}
+            {feeRowLabel ? (
+              <div role="row" className="group/row contents">
+                <div
+                  role="rowheader"
+                  className={cn(
+                    'relative flex items-center z-[1]',
+                    'justify-start text-left',
+                    'text-[15.5px] font-semibold text-text tracking-[-0.01em]',
+                    'px-[clamp(20px,2.4vw,32px)] py-[19px] gap-[10px]',
+                    'border-b border-[var(--color-divider)]',
+                    'max-[860px]:sticky max-[860px]:left-0 max-[860px]:z-[2] max-[860px]:bg-surface',
+                  )}
+                >
+                  {feeRowLabel}
+                </div>
+
+                {/* Jimmy fee */}
+                <div
+                  role="cell"
+                  className={cn(
+                    'relative flex items-center justify-center z-[1]',
+                    'py-[19px] px-3',
+                    'border-b border-[var(--color-divider)]',
+                    'shadow-[inset_1.5px_0_0_var(--color-purple-border),inset_-1.5px_0_0_var(--color-purple-border)]',
+                    '[background:linear-gradient(180deg,rgba(138,50,224,0.085)_0%,rgba(138,50,224,0.035)_100%)]',
+                    'transition-[background] duration-[160ms] ease-out',
+                    'group-hover/row:[background:linear-gradient(180deg,rgba(138,50,224,0.13)_0%,rgba(138,50,224,0.06)_100%)]',
+                  )}
+                >
+                  <span className="font-display text-[17px] font-extrabold text-purple tracking-[-0.01em] tabular-nums">
+                    {feeValues[0] ?? FEE_UNKNOWN}
+                  </span>
+                </div>
+
+                {/* Competitor fees */}
+                {competitors.map((name, i) => {
+                  const value = feeValues[i + 1] ?? FEE_UNKNOWN
+                  const unknown = value === FEE_UNKNOWN
+                  return (
+                    <div
+                      key={name}
+                      role="cell"
+                      className={cn(
+                        'relative flex items-center justify-center z-[1]',
+                        'py-[19px] px-3',
+                        'border-b border-[var(--color-divider)]',
+                        'transition-colors duration-[160ms] ease-out',
+                        'group-hover/row:bg-[rgba(26,25,23,0.022)]',
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'font-display text-[16px] font-bold tracking-[-0.01em] tabular-nums',
+                          unknown ? 'text-text-faint' : 'text-text-muted',
+                        )}
+                        // The dash is a statement — "we did not find one" — so
+                        // it needs to say that to a screen reader too.
+                        aria-label={unknown ? (data.feeUnknownAriaLabel ?? undefined) : undefined}
+                      >
+                        {value}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : null}
 
             {/* ── Coverage-score footer row ── */}
             <div role="row" className="contents">
@@ -362,6 +446,13 @@ export function Comparison({
 
           </div>
         </div>
+
+        {/* Footnote: what our own 1% applies to, and what the dash means. */}
+        {data.feeNote ? (
+          <p className="mt-4 max-w-[720px] text-[12.5px] leading-[1.55] text-text-faint">
+            {data.feeNote}
+          </p>
+        ) : null}
 
       </div>
     </section>

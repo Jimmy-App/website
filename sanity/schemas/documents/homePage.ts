@@ -270,6 +270,24 @@ export const homePage = defineType({
         defineField({ name: 'jimmyBadge', type: 'string' }),
         defineField({ name: 'competitors', type: 'array', of: [{ type: 'string' }] }),
         defineField({ name: 'features', type: 'array', of: [{ type: 'string' }] }),
+        // Fee row (JIM-146). Values are copy, not booleans, so they live here
+        // rather than in the code matrix — and they must stay one per column,
+        // Jimmy first. Use an em dash where the provider publishes no figure;
+        // never estimate one.
+        defineField({ name: 'feeRowLabel', type: 'string' }),
+        defineField({
+          name: 'feeValues',
+          type: 'array',
+          of: [{ type: 'string' }],
+          description:
+            'One per column, Jimmy first. Use "—" where the provider does not publish a platform fee — do not guess.',
+        }),
+        defineField({ name: 'feeNote', type: 'text', rows: 2 }),
+        defineField({
+          name: 'feeUnknownAriaLabel',
+          type: 'string',
+          description: 'Read out in place of the em dash by screen readers.',
+        }),
         defineField({ name: 'footerLabel', type: 'string' }),
       ],
     }),
