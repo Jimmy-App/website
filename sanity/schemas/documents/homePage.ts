@@ -319,19 +319,11 @@ export const homePage = defineType({
         }),
         defineField({
           name: 'annualNote',
-          title: 'Small print — annual vs beta (monthly view)',
+          title: 'Small print — annual + beta stack',
           type: 'text',
           rows: 2,
           description:
-            'Shown while billing monthly. Use {annual} and {beta} for the rates — they are filled from pricingPlans so the copy cannot drift from the price.',
-        }),
-        defineField({
-          name: 'betaMonthlyOnlyNote',
-          title: 'Small print — annual vs beta (annual view)',
-          type: 'text',
-          rows: 2,
-          description:
-            'Shown while billing annually, when the beta rate is not the one applied. Tells the coach how to get it back. Use {beta} for the rate.',
+            'Shown on the annual view only: reassures the coach that committing for a year does not cost them the beta rate — the two stack. Use {annual} and {beta} for the rates; they are filled from pricingPlans so the copy cannot drift from the price.',
         }),
         // The fee sentence differs by plan: Free is nudged ("drops as your
         // business grows"), paid tiers are reassured ("just 1% at this plan").

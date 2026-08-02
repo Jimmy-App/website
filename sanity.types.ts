@@ -1077,7 +1077,6 @@ export type HomePage = {
     billingAnnual?: string;
     perMonthAnnual?: string;
     annualNote?: string;
-    betaMonthlyOnlyNote?: string;
     feeNoteFree?: string;
     feeNoteClub?: string;
     annualSaveBadge?: string;
@@ -1757,7 +1756,6 @@ export type HOME_QUERY_RESULT = {
     billingAnnual?: string;
     perMonthAnnual?: string;
     annualNote?: string;
-    betaMonthlyOnlyNote?: string;
     feeNoteFree?: string;
     feeNoteClub?: string;
     annualSaveBadge?: string;

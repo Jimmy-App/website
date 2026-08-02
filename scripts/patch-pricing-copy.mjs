@@ -48,9 +48,7 @@ const COPY = {
     feeNoteClub:
       'Payments & billing, handled for you — Jimmy takes care of invoicing, reminders and client access automatically. Included with just a {pct}% fee on payments at this plan.',
     annualNote:
-      "Annual billing (save {annual}%) and the beta discount don't combine — the best offer applies automatically.",
-    betaMonthlyOnlyNote:
-      'The beta rate applies to monthly billing only — switch back to Monthly to keep your −{beta}% for life.',
+      'Annual saves {annual}% and your −{beta}% beta rate still applies on top — both are already in the price above.',
   },
   fr: {
     title: 'Un seul plan. Le prix suit ton roster.',
@@ -71,9 +69,7 @@ const COPY = {
     feeNoteClub:
       'Paiements et facturation, gérés pour toi — Jimmy s’occupe des factures, des relances et de l’accès de tes clients. Inclus avec seulement {pct}% de frais sur les paiements à ce plan.',
     annualNote:
-      'La facturation annuelle ({annual}% en moins) et la remise bêta ne se cumulent pas — la meilleure offre s’applique automatiquement.',
-    betaMonthlyOnlyNote:
-      'Le tarif bêta ne vaut que pour la facturation mensuelle — reviens sur Mensuel pour garder tes −{beta}% à vie.',
+      'L’annuel enlève {annual}% et ton tarif bêta de −{beta}% s’applique en plus — les deux sont déjà dans le prix ci-dessus.',
   },
   es: {
     title: 'Un solo plan. El precio sigue a tu roster.',
@@ -94,9 +90,7 @@ const COPY = {
     feeNoteClub:
       'Pagos y facturación, resueltos por ti — Jimmy se encarga de las facturas, los recordatorios y el acceso de tus clientes. Incluido con solo un {pct}% de comisión sobre los pagos en este plan.',
     annualNote:
-      'La facturación anual (ahorra {annual}%) y el descuento beta no se combinan: se aplica automáticamente la mejor oferta.',
-    betaMonthlyOnlyNote:
-      'La tarifa beta solo aplica a la facturación mensual: vuelve a Mensual para conservar tu −{beta}% de por vida.',
+      'El plan anual ahorra {annual}% y tu tarifa beta de −{beta}% se aplica además: ambos ya están en el precio de arriba.',
   },
 }
 

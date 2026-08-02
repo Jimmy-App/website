@@ -46,6 +46,21 @@ function getFees(
 }
 
 /**
+ * Zero-width and formatting characters, stripped before a string is inspected.
+ *
+ * The tier labels arrive carrying a long tail of U+200B/200C/200D/FEFF, so
+ * `/^\d+$/.test("25…")` was false for every tier and the price panel claimed
+ * "for unlimited clients" on all of them. Anything that branches on the shape
+ * of CMS text has to normalise first — the characters are invisible, so the
+ * data looks correct everywhere you would think to check it.
+ */
+const INVISIBLE = /[\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\uFEFF]/g
+const visibleText = (s: string) => s.replace(INVISIBLE, '').trim()
+
+/** True when a tier label is a plain client count rather than a word. */
+const isCountLabel = (s: string) => /^\d+$/.test(visibleText(s))
+
+/**
  * Fill {pct} / {annual} / {beta} in CMS copy from the pricing data.
  *
  * The rates live in the pricingPlans singleton, so a sentence must never spell
@@ -243,13 +258,14 @@ export function Pricing({
   const betaPct = plans.betaDiscountPct ?? 15
   const annualPct = plans.annualDiscountPct ?? 20
 
-  // The two offers do not stack — whichever saves more is the one shown, which
-  // is what the small print promises ("best offer applies automatically").
-  // Paying yearly currently wins, so the beta badge steps aside in that view.
+  /**
+   * The two offers stack. Beta is a rate the coach keeps for life, so it comes
+   * off whatever the billing period costs — annual first, then beta on the
+   * result: €49 → €39.20 → €33.32. Multiplied rather than added, so the two
+   * percentages cannot combine into more than the price.
+   */
   const isAnnual = billing === 'annual'
-  const appliedPct = isAnnual ? Math.max(annualPct, betaPct) : betaPct
-  const betaWins = appliedPct === betaPct && (!isAnnual || betaPct >= annualPct)
-  const discount = 1 - appliedPct / 100
+  const betaMultiplier = 1 - betaPct / 100
   const sym = SYMBOLS[currency]
   /** List price per month, before any discount. */
   const priceOf = (i: number) =>
@@ -275,21 +291,22 @@ export function Pricing({
    * The top stop is a word ("unlimited"), not a number, so "for up to unlimited
    * clients" would read wrong — it gets its own line of copy.
    */
-  const isCountTier = /^\d+$/.test(clientsCount.trim())
+  const isCountTier = isCountLabel(clientsCount)
   const reg = priceOf(step)
   const isFree = reg === null
   const annualPrice = isAnnual && !isFree ? annualPriceOf(step) : null
-  const effective = annualPrice ?? (isFree ? 0 : reg * discount)
+  /** Period price first, then the beta rate on top of it. */
+  const effective = isFree ? 0 : (annualPrice ?? reg) * betaMultiplier
   const nowText = isFree ? `${sym}0` : `${sym}${effective.toFixed(2)}`
   const wasText = isFree ? null : `${sym}${reg}`
 
   /**
-   * Yearly saving against the list price — the coach's answer to "why commit
-   * for a year". Measured against the list rather than the beta rate because
-   * the list is what the annual price is set against.
+   * Yearly saving against the list price, as agreed. Note this is the whole
+   * gap to the list — with the two discounts stacking it covers the beta rate
+   * as well, not only what committing for a year adds.
    */
   const annualSaving =
-    annualPrice != null && reg != null ? Math.round((reg - annualPrice) * 12) : null
+    annualPrice != null && reg != null ? Math.round((reg - effective) * 12) : null
   // Tick axis: first marker is "0", remaining markers are the paid-tier client counts
   const tickLabels = ['0', ...tiers.slice(1).map((tr) => tr.clients ?? '')]
   const planLabel = isFree ? (data.planFree ?? '') : (data.planClub ?? '')
@@ -497,7 +514,7 @@ export function Pricing({
                       )}
                       aria-label={`${label} ${(data.clients ?? '')}`}
                     >
-                      {/^\d+$/.test(label.trim()) ? (
+                      {isCountLabel(label) ? (
                         label
                       ) : (
                         <>
@@ -569,11 +586,13 @@ export function Pricing({
                     )}
                   </div>
 
-                  {/* Beta badge: paid, monthly-winning tiers only. The row keeps
-                      its height otherwise so nothing below it moves. */}
+                  {/* The beta rate is in the price under both billing periods,
+                      so the badge stays on either. It is hidden on Free, where
+                      nothing is being paid. The row keeps its height there so
+                      nothing below it moves. */}
                   <div className="mt-[7px] flex min-h-[22px] items-center gap-[9px]">
                     <AnimatePresence initial={false}>
-                      {!isFree && betaWins && (
+                      {!isFree && (
                         <motion.span
                           key="beta"
                           {...appear}
@@ -621,29 +640,25 @@ export function Pricing({
               <span className="whitespace-nowrap text-text-faint">({fees.stripe})</span>
             </p>
 
-            {/* Fixed height: these lines only apply to paid tiers, and letting
-                them come and go would resize the card mid-drag. */}
-            {/* Two lines' worth: monthly shows the beta lock plus the
-                doesn't-combine note, annual only replaces them with one. */}
+            {/* Fixed height for two lines: the beta lock note plus, on paid
+                tiers, the stacking note. Letting them come and go would resize
+                the card mid-drag. */}
             <div className="mt-[7px] min-h-[42px]">
-              {betaWins && (data.lockNote ?? '') && (
+              {(data.lockNote ?? '') && (
                 <p className="text-[12.5px] leading-[1.55] text-text-faint">
                   {(data.lockNote ?? '')}
                 </p>
               )}
-              {!isFree && (
+              {/* Shown on annual only: it is the state where a coach might
+                  wonder whether committing for a year costs them the beta
+                  rate. On monthly there is nothing to reassure them about. */}
+              {!isFree && isAnnual && (
                 <p className="text-[12.5px] leading-[1.55] text-text-faint">
-                  {betaWins
-                    ? interp(
-                        data.annualNote ??
-                          "Annual billing (save {annual}%) and the Beta Lover discount don't combine — best offer applies automatically.",
-                        { annual: annualPct, beta: betaPct },
-                      )
-                    : interp(
-                        data.betaMonthlyOnlyNote ??
-                          'Beta Lover pricing applies to monthly billing only — switch back to Monthly to keep your −{beta}% for life.',
-                        { annual: annualPct, beta: betaPct },
-                      )}
+                  {interp(
+                    data.annualNote ??
+                      'Annual saves {annual}% and your −{beta}% beta rate still applies on top — both are already in the price above.',
+                    { annual: annualPct, beta: betaPct },
+                  )}
                 </p>
               )}
             </div>
