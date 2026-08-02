@@ -7,7 +7,7 @@
  * undefined. This patches only the fields below and leaves everything else
  * untouched.
  *
- *   SANITY_WRITE_TOKEN=... node scripts/patch-pricing-copy.mjs [--dry]
+ *   node --env-file=.env.local scripts/patch-pricing-copy.mjs [--dry]
  *
  * FR uses `tu`, ES uses `tú` (neutral LatAm) per the translation guide.
  * Placeholders {pct} {annual} {beta} {amount} are filled at render from
@@ -17,11 +17,12 @@ import { createClient } from '@sanity/client'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? 'rpeljbjz'
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
-const token = process.env.SANITY_WRITE_TOKEN
+// The repo stores it as SANITY_API_TOKEN; accept either name.
+const token = process.env.SANITY_WRITE_TOKEN ?? process.env.SANITY_API_TOKEN
 const dry = process.argv.includes('--dry')
 
 if (!token && !dry) {
-  console.error('SANITY_WRITE_TOKEN is required (or pass --dry to preview).')
+  console.error('SANITY_API_TOKEN (or SANITY_WRITE_TOKEN) is required — or pass --dry to preview.')
   process.exit(1)
 }
 
