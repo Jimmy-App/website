@@ -375,10 +375,14 @@ export function Pricing({
                 instead, which is what should give. */}
             <div className="flex items-start justify-between gap-[14px]">
               <div className="min-w-0 flex-1">
-                <h2 className="font-display text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold leading-[1.06] tracking-[-0.035em] text-text [text-wrap:balance]">
+                {/* No text-wrap:balance here. It evens out line lengths, which
+                    on a 207px column meant three short ragged lines with empty
+                    space to their right. Left-aligned copy in a narrow column
+                    should fill the width it has. */}
+                <h2 className="font-display text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold leading-[1.06] tracking-[-0.035em] text-text">
                   {(data.title ?? '')}
                 </h2>
-                <p className="mt-[0.6rem] text-[clamp(0.9rem,1.35vw,1.0625rem)] leading-[1.55] text-text-muted [text-wrap:balance]">
+                <p className="mt-[0.6rem] text-[clamp(0.9rem,1.35vw,1.0625rem)] leading-[1.55] text-text-muted">
                   {(data.sliderHelp ?? data.subtitle ?? '')}
                 </p>
               </div>
