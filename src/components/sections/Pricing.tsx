@@ -271,6 +271,11 @@ export function Pricing({
 
   const tier = tiers[step]
   const clientsCount = tier?.clients ?? ''
+  /**
+   * The top stop is a word ("unlimited"), not a number, so "for up to unlimited
+   * clients" would read wrong — it gets its own line of copy.
+   */
+  const isCountTier = /^\d+$/.test(clientsCount.trim())
   const reg = priceOf(step)
   const isFree = reg === null
   const annualPrice = isAnnual && !isFree ? annualPriceOf(step) : null
@@ -492,7 +497,16 @@ export function Pricing({
                       )}
                       aria-label={`${label} ${(data.clients ?? '')}`}
                     >
-                      {label}
+                      {/^\d+$/.test(label.trim()) ? (
+                        label
+                      ) : (
+                        <>
+                          {/* "unlimited" does not fit under the last tick on a
+                              phone — the symbol carries the same meaning. */}
+                          <span className="max-[520px]:hidden">{label}</span>
+                          <span className="min-[521px]:hidden" aria-hidden>∞</span>
+                        </>
+                      )}
                     </button>
                   )
                 })}
@@ -511,7 +525,9 @@ export function Pricing({
                       so switching to annual does not push the price down. */}
                   <div className="flex min-h-[24px] flex-wrap items-center gap-x-[10px] gap-y-[6px]">
                     <p className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-purple">
-                      {(data.forUpTo ?? '')} {clientsCount} {(data.clients ?? '')}
+                      {isCountTier
+                        ? `${data.forUpTo ?? ''} ${clientsCount} ${data.clients ?? ''}`
+                        : (data.forUnlimited ?? 'for unlimited clients')}
                     </p>
                     {/* What committing for a year is worth, in money rather
                         than a percentage — "save 20%" is on the switch already. */}
@@ -582,7 +598,7 @@ export function Pricing({
                   size="lg"
                   className="max-[560px]:w-full"
                 >
-                  {isFree ? (data.ctaFree ?? '') : (data.ctaClub ?? '')}
+                  {isFree ? (data.ctaFree ?? 'Start free') : (data.ctaClub ?? 'Continue')}
                   <ArrowRight size={16} strokeWidth={2.2} />
                 </Button>
               </div>

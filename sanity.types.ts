@@ -1082,6 +1082,7 @@ export type HomePage = {
     feeNoteClub?: string;
     annualSaveBadge?: string;
     forUpTo?: string;
+    forUnlimited?: string;
     feesLabel?: string;
     feeSaveFree?: string;
     feeSaveClub?: string;
@@ -1761,6 +1762,7 @@ export type HOME_QUERY_RESULT = {
     feeNoteClub?: string;
     annualSaveBadge?: string;
     forUpTo?: string;
+    forUnlimited?: string;
     feesLabel?: string;
     feeSaveFree?: string;
     feeSaveClub?: string;

@@ -358,6 +358,13 @@ export const homePage = defineType({
             'Shown next to "for up to N clients" while billing annually. Use {amount} for the figure, e.g. "Save {amount}/year".',
         }),
         defineField({ name: 'forUpTo', type: 'string' }),
+        defineField({
+          name: 'forUnlimited',
+          title: 'Price label — unlimited tier',
+          type: 'string',
+          description:
+            'Replaces "for up to N clients" on the top stop, whose label is a word rather than a number. e.g. "for unlimited clients".',
+        }),
         defineField({ name: 'feesLabel', type: 'string' }),
         // Incentive strip framing (no numbers — the fee % delta is injected from
         // the pricingPlans data so copy and rates never drift apart).
