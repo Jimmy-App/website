@@ -374,6 +374,16 @@ function NavMegaItem({
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const dropdownPathname = usePathname()
+
+  // Close when the route changes. Clicking a menu item navigates from *inside*
+  // the dropdown, so neither the outside-click nor the Escape handler fires,
+  // and this component survives the transition — the panel stayed open on top
+  // of the page the coach had just opened.
+  useEffect(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setOpen(false)
+  }, [dropdownPathname])
   // Detect hover capability after mount to avoid SSR mismatch
   const [hoverCapable, setHoverCapable] = useState(true)
   useEffect(() => {
@@ -775,6 +785,13 @@ function MobileMenu({
 export function Navbar({ data }: { data: NavigationData }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const navPathname = usePathname()
+
+  // Same reason as the desktop dropdown: tapping a link navigates but never
+  // closes the drawer, so it covered the destination page.
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [navPathname])
 
   useEffect(() => {
     function handleScroll() {
