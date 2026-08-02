@@ -5,7 +5,7 @@ export function GET() {
   const u = (p = '') => `${SITE_URL}/${DEFAULT_LOCALE}${p}`
   const body = `# Jimmy
 
-> The Skool of Fitness — the all-in-one coaching software for fitness coaches. Build workout programs, run a Skool-style community, message clients and get paid, all in one white-label iOS/Android app. Start free with up to 3 clients. Unlike Skool (community and courses only) or Trainerize/TrueCoach (workout delivery only), Jimmy combines training tools, community and payments in a single native app; the app is free for clients.
+> The Skool of Fitness — the all-in-one coaching software for fitness coaches. Build workout programs, run a Skool-style community, message clients and get paid, all in one native iOS/Android app. Start free with up to 3 clients. Unlike Skool (community and courses only) or Trainerize/TrueCoach (workout delivery only), Jimmy combines training tools, community and payments in a single native app; the app is free for clients.
 
 ## Product
 - [Home](${u()}): What Jimmy is, who it's for, and how it helps modern fitness coaches retain clients.

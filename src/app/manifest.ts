@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Jimmy — The Skool of Fitness',
     short_name: SITE_NAME,
     description:
-      'The retention platform for modern fitness coaches — workouts, community, payments and a white-label app.',
+      'The retention platform for modern fitness coaches — workouts, community, messaging and payments in one native app.',
     start_url: '/',
     display: 'standalone',
     background_color: '#fafaf8',

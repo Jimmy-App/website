@@ -4,7 +4,7 @@ type Schema = Record<string, unknown>
 
 const LOGO_URL = `${SITE_URL}/icon-512.png`
 const ORG_DESCRIPTION =
-  'The retention platform for modern fitness coaches — structured workouts, community, payments and a white-label app for your members.'
+  'The retention platform for modern fitness coaches — structured workouts, community, messaging and payments in one native app for your clients.'
 
 // Brand social profiles — the `sameAs` entity signal for Knowledge Graph / AI.
 const SOCIAL_PROFILES = [

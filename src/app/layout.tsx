@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     default: 'Jimmy — The Skool of Fitness',
   },
   description:
-    'Jimmy is the retention platform for modern fitness coaches — structured workouts, community, payments, and a white-label app for your members.',
+    'Jimmy is the retention platform for modern fitness coaches — structured workouts, community, messaging and payments in one native app for your clients.',
   applicationName: SITE_NAME,
   openGraph: {
     type: 'website',

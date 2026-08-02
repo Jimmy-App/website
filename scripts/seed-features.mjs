@@ -142,7 +142,7 @@ const FEATURES = [
     title: { prefix: 'Your brand. ', accent: 'Their pocket.', suffix: '' },
     highlight: { prefix: 'Your logo. ', accent: 'Your colors.' },
     highlightSub: "Members open an app with your name on it every day. That's a brand you can't buy with ads.",
-    lead: "A white-label iOS and Android app — your logo, your colors, your name on the home screen. Members train inside your world, not someone else's.",
+    lead: "An iOS and Android app your members open every day. Your logo, your colors, your name on the home screen — coming soon.",
     tags: ['iOS & Android', 'Your Logo', 'Your Colors', 'Push'],
     capsTitle: "An app that's unmistakably yours.",
     caps: [
