@@ -92,9 +92,10 @@ export function WaitlistForm({
           className={cn(
             'group/cta inline-flex h-[52px] items-center justify-center gap-[8px] rounded-[14px] px-[22px]',
             'whitespace-nowrap text-[15px] font-semibold text-white',
-            '[background:linear-gradient(140deg,#9D4BEA_0%,#7A24CC_100%)]',
-            'shadow-[0_10px_24px_-10px_rgba(138,50,224,0.55)]',
-            'transition-transform duration-150 [transition-timing-function:var(--ease-out)]',
+            // Flat purple with the shared tokens — the design system has no
+            // gradients. Hover/active states come from Button.tsx, not invented.
+            'bg-purple hover:bg-purple-hover hover:shadow-[var(--glow-purple)] active:bg-purple-active',
+            'transition-[background,box-shadow,transform] duration-150 [transition-timing-function:var(--ease-out)]',
             'active:scale-[0.97] disabled:opacity-70 disabled:active:scale-100',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple/50 focus-visible:ring-offset-2',
           )}
