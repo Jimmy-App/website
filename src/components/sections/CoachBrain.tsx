@@ -104,8 +104,17 @@ export function CoachBrain({ data }: { data: CoachBrainData | null }) {
           })}
         </div>
 
-        <div className="mt-[clamp(2.25rem,4vw,3rem)] flex flex-col items-center">
-          <p className="mb-[14px] text-center text-[15px] font-semibold text-text">
+        {/* The form was floating in whitespace after three strong cards and
+            read as an afterthought. A quiet panel anchors it as the section's
+            conclusion without competing with the cards above. */}
+        <div
+          className={cn(
+            'mx-auto mt-[clamp(2.25rem,4vw,3rem)] flex max-w-[560px] flex-col items-center',
+            'rounded-[24px] border border-purple-border bg-purple-light/40',
+            'px-[clamp(20px,3vw,32px)] py-[clamp(24px,3vw,32px)]',
+          )}
+        >
+          <p className="mb-[14px] text-center font-display text-[19px] font-extrabold tracking-[-0.02em] text-text">
             {data.waitlistTitle}
           </p>
           <WaitlistForm

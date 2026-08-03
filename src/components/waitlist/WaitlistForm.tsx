@@ -37,7 +37,7 @@ export function WaitlistForm({
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (status === 'loading' || status === 'done') return
+    if (status === 'loading') return
     setStatus('loading')
     try {
       const res = await fetch('/api/waitlist', {
@@ -49,6 +49,30 @@ export function WaitlistForm({
     } catch {
       setStatus('error')
     }
+  }
+
+  // Success replaces the form instead of relabelling the button. The visitor
+  // did the one thing we asked; leaving a dead input and a changed label makes
+  // it ambiguous whether it worked.
+  if (status === 'done') {
+    return (
+      <div
+        role="status"
+        className={cn(
+          'flex w-full max-w-[440px] items-center gap-[12px] rounded-[16px]',
+          'border border-purple-border bg-purple-light px-[18px] py-[16px]',
+          className,
+        )}
+      >
+        <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-purple text-white">
+          <Check size={16} strokeWidth={2.8} aria-hidden="true" />
+        </span>
+        <span className="min-w-0">
+          <span className="block text-[14.5px] font-semibold text-text">{labels.ctaDone}</span>
+          <span className="block text-[13px] leading-[1.45] text-text-muted">{labels.hintDone}</span>
+        </span>
+      </div>
+    )
   }
 
   return (
@@ -70,7 +94,6 @@ export function WaitlistForm({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          disabled={status === 'done'}
           placeholder={labels.placeholder}
           aria-label={labels.placeholder}
           className={cn(
@@ -88,7 +111,7 @@ export function WaitlistForm({
         />
         <button
           type="submit"
-          disabled={status === 'loading' || status === 'done'}
+          disabled={status === 'loading'}
           className={cn(
             'group/cta inline-flex h-[52px] items-center justify-center gap-[8px] rounded-[14px] px-[22px]',
             'whitespace-nowrap text-[15px] font-semibold text-white',
@@ -100,22 +123,13 @@ export function WaitlistForm({
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple/50 focus-visible:ring-offset-2',
           )}
         >
-          {status === 'done' ? (
-            <>
-              <Check size={16} strokeWidth={2.6} />
-              {labels.ctaDone}
-            </>
-          ) : (
-            <>
-              {status === 'loading' ? labels.ctaLoading : labels.cta}
-              {status !== 'loading' && (
-                <ArrowRight
-                  size={15}
-                  strokeWidth={2.4}
-                  className="transition-transform duration-150 [transition-timing-function:var(--ease-out)] group-hover/cta:translate-x-[2px]"
-                />
-              )}
-            </>
+          {status === 'loading' ? labels.ctaLoading : labels.cta}
+          {status !== 'loading' && (
+            <ArrowRight
+              size={15}
+              strokeWidth={2.4}
+              className="transition-transform duration-150 [transition-timing-function:var(--ease-out)] group-hover/cta:translate-x-[2px]"
+            />
           )}
         </button>
       </div>
@@ -128,11 +142,7 @@ export function WaitlistForm({
           status === 'error' ? 'text-[var(--color-price-was)]' : 'text-text-faint',
         )}
       >
-        {status === 'done'
-          ? labels.hintDone
-          : status === 'error'
-            ? labels.hintError
-            : labels.hintIdle}
+        {status === 'error' ? labels.hintError : labels.hintIdle}
       </p>
     </form>
   )
