@@ -197,5 +197,14 @@
   "featureStatus": {
     "beta": "En bêta",
     "soon": "Bientôt"
+  },
+  "waitlist": {
+    "placeholder": "toi@tasalle.com",
+    "cta": "Rejoindre la liste",
+    "ctaLoading": "Inscription…",
+    "ctaDone": "Tu es sur la liste",
+    "hintIdle": "Un seul e-mail au lancement. Désabonne-toi quand tu veux.",
+    "hintDone": "On t’écrit dès l’ouverture. Rien d’autre.",
+    "hintError": "Ça n’est pas passé. Réessaie dans un instant."
   }
 }

@@ -17,6 +17,7 @@ import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { appRegisterUrl } from '@/lib/appUrl'
 import { calTriggerProps } from '@/lib/cal'
+import { WaitlistForm } from '@/components/waitlist/WaitlistForm'
 import { FeatureDemo } from './FeatureDemo'
 import { FeatureVideo } from './FeatureVideo'
 import { FEATURE_ICON_MAP } from './featureMeta'
@@ -43,6 +44,15 @@ type Props = {
     bookDemo: string
     statusBeta: string
     statusSoon: string
+    waitlist: {
+      placeholder: string
+      cta: string
+      ctaLoading: string
+      ctaDone: string
+      hintIdle: string
+      hintDone: string
+      hintError: string
+    }
   }
 }
 
@@ -150,6 +160,12 @@ export function FeatureHero({ feature, t }: Props) {
               className="feature-hero-reveal mb-[clamp(1.25rem,2.5vw,1.75rem)] flex flex-wrap gap-3"
               style={STAGGER_STYLE(5)}
             >
+              {/* A feature nobody can use yet has nothing to "start for free".
+                  Where a waitlist exists, that IS the call to action. */}
+              {feature.waitlistSource ? (
+                <WaitlistForm source={feature.waitlistSource} labels={t.waitlist} />
+              ) : (
+              <>
               <a
                 href={appRegisterUrl}
                 className="inline-flex items-center gap-2 rounded-full bg-purple px-5 py-[11px] text-[14px] font-semibold text-white shadow-[0_2px_12px_rgba(138,50,224,0.28)] transition-[background,box-shadow,transform] duration-[var(--dur-fast)] hover:bg-purple-hover hover:shadow-[0_4px_20px_rgba(138,50,224,0.4)] hover:-translate-y-px active:translate-y-0 active:bg-purple-active"
@@ -164,6 +180,8 @@ export function FeatureHero({ feature, t }: Props) {
               >
                 {t.bookDemo}
               </button>
+              </>
+              )}
             </div>
 
             {/* Tag chips */}

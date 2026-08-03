@@ -197,5 +197,14 @@
   "featureStatus": {
     "beta": "En beta",
     "soon": "Muy pronto"
+  },
+  "waitlist": {
+    "placeholder": "tu@tugimnasio.com",
+    "cta": "Unirme a la lista",
+    "ctaLoading": "Enviando…",
+    "ctaDone": "Ya estás en la lista",
+    "hintIdle": "Un solo correo cuando se lance. Puedes darte de baja cuando quieras.",
+    "hintDone": "Te escribimos en cuanto se abra. Nada más.",
+    "hintError": "No se pudo enviar. Inténtalo de nuevo en un momento."
   }
 }

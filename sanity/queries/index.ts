@@ -62,6 +62,7 @@ export const HOME_QUERY = groq`
     platform,
     tech,
     comparison,
+    coachBrain,
     pricing,
     beta,
     team,
@@ -217,6 +218,7 @@ export const FEATURE_QUERY = groq`
   *[_type == "feature" && slug.current == $slug && language == $locale][0]{
     ${FEATURE_CARD},
     demoKey,
+    waitlistSource,
     title{ prefix, accent, suffix },
     highlight{ prefix, accent },
     highlightSub,

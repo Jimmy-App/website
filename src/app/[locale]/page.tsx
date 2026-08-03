@@ -12,6 +12,7 @@ import WhyJimmy from '@/components/sections/WhyJimmy'
 import { Steps } from '@/components/sections/Steps'
 import { Platform } from '@/components/sections/Platform'
 import { Tech } from '@/components/sections/Tech'
+import { CoachBrain } from '@/components/sections/CoachBrain'
 import { Comparison } from '@/components/sections/Comparison'
 import { Pricing } from '@/components/sections/Pricing'
 import { OpenBeta } from '@/components/sections/OpenBeta'
@@ -88,6 +89,9 @@ export default async function HomePage({
           statuses={featureStatuses}
           statusLabels={{ beta: tStatus('beta'), soon: tStatus('soon') }}
         />
+        {/* Straight after the five shipped features, per JIM-143 — the promise
+            lands hardest right where the reader has just seen what exists. */}
+        <CoachBrain data={home.coachBrain} />
         <WhyJimmy data={home.why} />
         <Steps data={home.steps} />
         <Platform data={home.platform} />

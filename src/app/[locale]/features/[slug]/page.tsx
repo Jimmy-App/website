@@ -49,11 +49,12 @@ export default async function FeaturePage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  const [doc, allCards, t, tStatus] = await Promise.all([
+  const [doc, allCards, t, tStatus, tWaitlist] = await Promise.all([
     getFeature(locale, slug),
     getFeatures(locale),
     getTranslations({ locale, namespace: 'features' }),
     getTranslations({ locale, namespace: 'featureStatus' }),
+    getTranslations({ locale, namespace: 'waitlist' }),
   ])
 
   if (!doc) notFound()
@@ -93,6 +94,17 @@ export default async function FeaturePage({
             bookDemo: t('bookDemo'),
             statusBeta: tStatus('beta'),
             statusSoon: tStatus('soon'),
+            // Waitlist chrome is UI copy, so it lives in next-intl rather than
+            // in the feature document — every waitlist reuses the same strings.
+            waitlist: {
+              placeholder: tWaitlist('placeholder'),
+              cta: tWaitlist('cta'),
+              ctaLoading: tWaitlist('ctaLoading'),
+              ctaDone: tWaitlist('ctaDone'),
+              hintIdle: tWaitlist('hintIdle'),
+              hintDone: tWaitlist('hintDone'),
+              hintError: tWaitlist('hintError'),
+            },
           }}
         />
 

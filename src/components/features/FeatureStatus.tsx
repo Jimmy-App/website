@@ -27,7 +27,8 @@ const SLUG_BY_KEY: Record<string, string> = {
   workoutBuilder: 'workout-builder',
   communityFeed: 'community-feed',
   programs: 'programs-courses',
-  brandedApp: 'branded-mobile-app',
+  nativeApp: 'native-mobile-app',
+  coachBrain: 'coach-brain',
 }
 
 export function featureSlugForKey(key: string | null | undefined): string | null {

@@ -256,6 +256,55 @@ export const homePage = defineType({
       ],
     }),
 
+    // ── Coach Brain (JIM-143) ─────────────────────────────────────────────────
+    defineField({
+      name: 'coachBrain',
+      type: 'object',
+      fields: [
+        defineField({ name: 'eyebrow', type: 'string' }),
+        defineField({ name: 'badge', type: 'string', description: 'e.g. "Coming soon"' }),
+        defineField({
+          name: 'title',
+          type: 'object',
+          options: { columns: 3 },
+          fields: [
+            defineField({ name: 'prefix', type: 'string' }),
+            defineField({ name: 'accent', title: 'Accent (purple)', type: 'string' }),
+            defineField({ name: 'suffix', type: 'string' }),
+          ],
+        }),
+        defineField({ name: 'subtitle', type: 'text', rows: 2 }),
+        defineField({ name: 'demoCaption', type: 'string' }),
+        defineField({
+          name: 'blocks',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              name: 'coachBrainBlock',
+              fields: [
+                { name: 'iconKey', type: 'string', description: 'brain | sparkles | refresh' },
+                { name: 'label', type: 'string' },
+                { name: 'lead', type: 'string' },
+                { name: 'body', type: 'text', rows: 3 },
+                { name: 'pull', type: 'string', description: 'Accent line under the divider' },
+              ],
+              preview: { select: { title: 'label', subtitle: 'lead' } },
+            },
+          ],
+        }),
+        // Waitlist form copy — shared shape with the JIM-144 form.
+        defineField({ name: 'waitlistTitle', type: 'string' }),
+        defineField({ name: 'formPlaceholder', type: 'string' }),
+        defineField({ name: 'formCta', type: 'string' }),
+        defineField({ name: 'formCtaLoading', type: 'string' }),
+        defineField({ name: 'formCtaDone', type: 'string' }),
+        defineField({ name: 'formHintIdle', type: 'string' }),
+        defineField({ name: 'formHintDone', type: 'string' }),
+        defineField({ name: 'formHintError', type: 'string' }),
+      ],
+    }),
+
     // ── Comparison ────────────────────────────────────────────────────────────
     defineField({
       name: 'comparison',

@@ -46,7 +46,8 @@ export function FeatureCapabilities({ feature, whatsInside }: Props) {
           )}
         >
           {feature.caps.map((cap) => {
-            const Icon = CAPS_ICON_MAP[cap.iconKey]
+            // Fall back rather than render an empty tile if a key is unknown.
+            const Icon = CAPS_ICON_MAP[cap.iconKey] ?? CAPS_ICON_MAP.blocks
             return (
               <div
                 key={cap.title}

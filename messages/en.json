@@ -197,5 +197,14 @@
   "featureStatus": {
     "beta": "In beta",
     "soon": "Coming soon"
+  },
+  "waitlist": {
+    "placeholder": "you@yourgym.com",
+    "cta": "Join the waitlist",
+    "ctaLoading": "Joining…",
+    "ctaDone": "You’re on the list",
+    "hintIdle": "One email when it launches. Unsubscribe any time.",
+    "hintDone": "We’ll email you when it opens. No other mail.",
+    "hintError": "That didn’t go through. Try again in a moment."
   }
 }

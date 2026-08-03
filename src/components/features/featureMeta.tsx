@@ -7,6 +7,7 @@
  */
 
 import {
+  Brain,
   Dumbbell,
   GraduationCap,
   Users,
@@ -66,6 +67,7 @@ export const FEATURE_ICON_MAP: Record<string, IconComponent> = {
   'messages-square': (p) => <MessagesSquare {...p} />,
   'line-chart':      (p) => <LineChart {...p} />,
   wallet:            (p) => <Wallet {...p} />,
+  brain:             (p) => <Brain {...p} />,
 }
 
 // ── Caps (capabilities grid) icon map ─────────────────────────────────────────

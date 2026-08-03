@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import type { NavigationData } from '@/lib/content'
 import {
+  Brain,
   ChevronDown,
   Dumbbell,
   GraduationCap,
@@ -54,7 +55,8 @@ const FEATURE_ICONS: Record<string, React.ReactNode> = {
   messaging:        <MessageCircle size={16} strokeWidth={1.75} />,
   payments:         <CreditCard size={16} strokeWidth={1.75} />,
   progressTracking: <TrendingUp size={16} strokeWidth={1.75} />,
-  brandedApp:       <Smartphone size={16} strokeWidth={1.75} />,
+  coachBrain:       <Brain size={16} strokeWidth={1.75} />,
+  nativeApp:        <Smartphone size={16} strokeWidth={1.75} />,
   dailyWorkouts:    <CalendarCheck size={16} strokeWidth={1.75} />,
   community:        <HeartHandshake size={16} strokeWidth={1.75} />,
   directAccess:     <MessagesSquare size={16} strokeWidth={1.75} />,
@@ -69,7 +71,8 @@ const FEATURE_ICONS_SM: Record<string, React.ReactNode> = {
   messaging:        <MessageCircle size={15} strokeWidth={1.75} />,
   payments:         <CreditCard size={15} strokeWidth={1.75} />,
   progressTracking: <TrendingUp size={15} strokeWidth={1.75} />,
-  brandedApp:       <Smartphone size={15} strokeWidth={1.75} />,
+  coachBrain:       <Brain size={15} strokeWidth={1.75} />,
+  nativeApp:        <Smartphone size={15} strokeWidth={1.75} />,
   dailyWorkouts:    <CalendarCheck size={15} strokeWidth={1.75} />,
   community:        <HeartHandshake size={15} strokeWidth={1.75} />,
   directAccess:     <MessagesSquare size={15} strokeWidth={1.75} />,
@@ -95,8 +98,8 @@ const RESOURCE_ICONS_SM: Record<string, React.ReactNode> = {
   discord:        <MessageSquare size={15} strokeWidth={1.75} />,
 }
 
-const COACH_KEYS = ['workoutBuilder', 'programs', 'communityFeed', 'messaging', 'payments', 'progressTracking']
-const MEMBER_KEYS = ['brandedApp', 'dailyWorkouts', 'community', 'directAccess', 'progressView', 'easyPayments']
+const COACH_KEYS = ['workoutBuilder', 'programs', 'communityFeed', 'messaging', 'payments', 'progressTracking', 'coachBrain']
+const MEMBER_KEYS = ['nativeApp', 'dailyWorkouts', 'community', 'directAccess', 'progressView', 'easyPayments']
 const RESOURCE_CONTENT_KEYS = ['blog', 'guides', 'changelog']
 const RESOURCE_COMMUNITY_KEYS = ['productUpdates', 'roadmap', 'discord']
 
@@ -116,7 +119,8 @@ const FEATURE_ROUTES: Record<string, string> = {
   messaging:        '/features/messaging',
   payments:         '/features/payments',
   progressTracking: '/features/progress-tracking',
-  brandedApp:       '/features/branded-mobile-app',
+  coachBrain:       '/features/coach-brain',
+  nativeApp:        '/features/native-mobile-app',
   dailyWorkouts:    '/features/daily-workouts',
   community:        '/features/community-member',
   directAccess:     '/features/direct-access',

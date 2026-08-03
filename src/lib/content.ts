@@ -22,6 +22,7 @@ export type StepsData = NonNullable<HomeData['steps']>
 export type PlatformData = NonNullable<HomeData['platform']>
 export type TechData = NonNullable<HomeData['tech']>
 export type ComparisonData = NonNullable<HomeData['comparison']>
+export type CoachBrainData = NonNullable<HomeData['coachBrain']>
 export type PricingData = NonNullable<HomeData['pricing']>
 export type BetaData = NonNullable<HomeData['beta']>
 export type TeamData = NonNullable<HomeData['team']>

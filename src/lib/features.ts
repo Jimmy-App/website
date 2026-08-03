@@ -25,9 +25,10 @@ export type FeatureDemoKey =
   | 'payments'
   | 'courses'
   | 'dailyWorkout'
-  | 'brandedApp'
+  | 'nativeApp'
   | 'progressView'
   | 'easyPayment'
+  | 'coachBrain'
   | null
 
 // ── Capability (what's inside grid item) ──────────────────────────────────────
@@ -53,7 +54,7 @@ export type HighlightParts = {
 
 // ── Hero media ────────────────────────────────────────────────────────────────
 // When present, this real screen-recording replaces the animated `demoKey` demo
-// in the hero panel (e.g. branded-mobile-app uses an actual app capture).
+// in the hero panel (e.g. native-mobile-app uses an actual app capture).
 export type FeatureMedia = {
   kind: 'video'
   /** H.264 mp4 source under /public (universally supported) */
@@ -76,6 +77,8 @@ export type Feature = {
   /** lucide icon key into FEATURE_ICON_MAP in featureMeta.tsx */
   iconKey: string
   demoKey: FeatureDemoKey
+  /** When set, the hero CTA becomes the waitlist form. */
+  waitlistSource: string | null
   /** Optional real media that replaces the animated demo in the hero panel */
   media?: FeatureMedia
   title: TitleParts
@@ -100,7 +103,7 @@ export type FeatureCard = Pick<
 // ── Code-side hero media, keyed by slug ────────────────────────────────────────
 // Media is a real asset in /public, so it stays in code rather than Sanity.
 export const FEATURE_MEDIA: Record<string, FeatureMedia> = {
-  'branded-mobile-app': {
+  'native-mobile-app': {
     kind: 'video',
     mp4: '/assets/screens/mobileapp-screen.mp4',
     poster: '/assets/screens/mobileapp-screen.jpg',
@@ -112,19 +115,31 @@ export const FEATURE_MEDIA: Record<string, FeatureMedia> = {
 // ── Sanity → render mappers ─────────────────────────────────────────────────────
 
 /** Maps a full FEATURE_QUERY document into the render `Feature` shape. */
+/**
+ * Strings arrive from the CMS layer with a tail of zero-width characters in
+ * some environments (prod HTML is clean; dev is not). Harmless for copy, fatal
+ * for the fields used as lookup keys: `demoKey` never matched its `switch`
+ * case, so every feature page silently fell through to the placeholder demo.
+ * Normalise the keys, leave the copy alone.
+ */
+const INVISIBLE = /[\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\uFEFF]/g
+const key = (v: unknown): string =>
+  typeof v === 'string' ? v.replace(INVISIBLE, '').trim() : ''
+
 export function toFeature(doc: NonNullable<FEATURE_QUERY_RESULT>): Feature {
   const slug = doc.slug ?? ''
   return {
     slug,
-    audience: (doc.audience ?? 'For Coaches') as FeatureAudience,
+    audience: (key(doc.audience) || 'For Coaches') as FeatureAudience,
     name: doc.name ?? '',
     sub: doc.sub ?? '',
-    iconKey: doc.iconKey ?? '',
+    iconKey: key(doc.iconKey),
     // Anything not explicitly marked is treated as live — the states that make
     // a promise have to be set deliberately, not arrived at by default.
-    status: (doc.status ?? 'live') as FeatureStatusValue,
+    status: (key(doc.status) || 'live') as FeatureStatusValue,
     statusNote: doc.statusNote ?? null,
-    demoKey: (doc.demoKey ?? null) as FeatureDemoKey,
+    demoKey: (key(doc.demoKey) || null) as FeatureDemoKey,
+    waitlistSource: key(doc.waitlistSource) || null,
     media: FEATURE_MEDIA[slug],
     title: {
       prefix: doc.title?.prefix ?? '',
@@ -140,7 +155,10 @@ export function toFeature(doc: NonNullable<FEATURE_QUERY_RESULT>): Feature {
     tags: doc.tags ?? [],
     capsTitle: doc.capsTitle ?? '',
     caps: (doc.caps ?? []).map((c) => ({
-      iconKey: c.iconKey ?? '',
+      // key(), not `?? ''` — cap icons are looked up by this string too, and
+      // the un-normalised version silently rendered an empty tile on every
+      // feature page.
+      iconKey: key(c.iconKey),
       title: c.title ?? '',
       desc: c.desc ?? '',
     })),

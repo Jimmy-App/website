@@ -625,6 +625,7 @@ export type Feature = {
   statusNote?: string;
   sub?: string;
   iconKey?: string;
+  waitlistSource?: string;
   demoKey?: string;
   title?: {
     prefix?: string;
@@ -1046,6 +1047,34 @@ export type HomePage = {
     playStoreSub?: string;
     playStoreMain?: string;
     visualAlt?: string;
+  };
+  coachBrain?: {
+    eyebrow?: string;
+    badge?: string;
+    title?: {
+      prefix?: string;
+      accent?: string;
+      suffix?: string;
+    };
+    subtitle?: string;
+    demoCaption?: string;
+    blocks?: Array<{
+      iconKey?: string;
+      label?: string;
+      lead?: string;
+      body?: string;
+      pull?: string;
+      _type: "coachBrainBlock";
+      _key: string;
+    }>;
+    waitlistTitle?: string;
+    formPlaceholder?: string;
+    formCta?: string;
+    formCtaLoading?: string;
+    formCtaDone?: string;
+    formHintIdle?: string;
+    formHintDone?: string;
+    formHintError?: string;
   };
   comparison?: {
     ariaLabel?: string;
@@ -1588,7 +1617,7 @@ export type AFFILIATE_SETTINGS_QUERY_RESULT = {
 
 // Source: sanity/queries/index.ts
 // Variable: HOME_QUERY
-// Query: *[_type == "homePage" && language == $locale][0]{    title,    hero,    features,    why,    steps,    platform,    tech,    comparison,    pricing,    beta,    team,    faq,    manifesto,    finalCta,    seo  }
+// Query: *[_type == "homePage" && language == $locale][0]{    title,    hero,    features,    why,    steps,    platform,    tech,    comparison,    coachBrain,    pricing,    beta,    team,    faq,    manifesto,    finalCta,    seo  }
 export type HOME_QUERY_RESULT = {
   title: string | null;
   hero: {
@@ -1745,6 +1774,34 @@ export type HOME_QUERY_RESULT = {
     feeNote?: string;
     feeUnknownAriaLabel?: string;
     footerLabel?: string;
+  } | null;
+  coachBrain: {
+    eyebrow?: string;
+    badge?: string;
+    title?: {
+      prefix?: string;
+      accent?: string;
+      suffix?: string;
+    };
+    subtitle?: string;
+    demoCaption?: string;
+    blocks?: Array<{
+      iconKey?: string;
+      label?: string;
+      lead?: string;
+      body?: string;
+      pull?: string;
+      _type: "coachBrainBlock";
+      _key: string;
+    }>;
+    waitlistTitle?: string;
+    formPlaceholder?: string;
+    formCta?: string;
+    formCtaLoading?: string;
+    formCtaDone?: string;
+    formHintIdle?: string;
+    formHintDone?: string;
+    formHintError?: string;
   } | null;
   pricing: {
     sectionLabel?: string;
@@ -2228,7 +2285,7 @@ export type FEATURES_QUERY_RESULT = Array<{
 
 // Source: sanity/queries/index.ts
 // Variable: FEATURE_QUERY
-// Query: *[_type == "feature" && slug.current == $slug && language == $locale][0]{      "slug": slug.current,  audience,  name,  sub,  iconKey,  order,  status,  statusNote,    demoKey,    title{ prefix, accent, suffix },    highlight{ prefix, accent },    highlightSub,    lead,    tags,    capsTitle,    caps[]{ iconKey, title, desc },    seo  }
+// Query: *[_type == "feature" && slug.current == $slug && language == $locale][0]{      "slug": slug.current,  audience,  name,  sub,  iconKey,  order,  status,  statusNote,    demoKey,    waitlistSource,    title{ prefix, accent, suffix },    highlight{ prefix, accent },    highlightSub,    lead,    tags,    capsTitle,    caps[]{ iconKey, title, desc },    seo  }
 export type FEATURE_QUERY_RESULT = {
   slug: string | null;
   audience: "For Coaches" | "For Members" | null;
@@ -2239,6 +2296,7 @@ export type FEATURE_QUERY_RESULT = {
   status: "beta" | "live" | "soon" | null;
   statusNote: string | null;
   demoKey: string | null;
+  waitlistSource: string | null;
   title: {
     prefix: string | null;
     accent: string | null;
@@ -2311,7 +2369,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "pricingPlans"][0]{\n    tiers[]{ clients, priceEur, priceUsd, priceEurAnnual, priceUsdAnnual },\n    betaDiscountPct,\n    annualDiscountPct,\n    feesFree{ stripePctEur, stripePctUsd, stripeFixedEur, stripeFixedUsd, jimmyPct },\n    feesClub{ stripePctEur, stripePctUsd, stripeFixedEur, stripeFixedUsd, jimmyPct }\n  }\n': PRICING_PLANS_QUERY_RESULT;
     '\n  *[_type == "affiliatePage" && language == $locale][0]{\n    title,\n    hero,\n    calc,\n    how,\n    why,\n    who,\n    faq,\n    finalCta,\n    seo\n  }\n': AFFILIATE_PAGE_QUERY_RESULT;
     '\n  *[_type == "affiliateSettings"][0]{\n    rate, sliderMin, sliderMax, sliderDefault, ticks,\n    eur{ avg, lo, hi },\n    usd{ avg, lo, hi }\n  }\n': AFFILIATE_SETTINGS_QUERY_RESULT;
-    '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
+    '\n  *[_type == "homePage" && language == $locale][0]{\n    title,\n    hero,\n    features,\n    why,\n    steps,\n    platform,\n    tech,\n    comparison,\n    coachBrain,\n    pricing,\n    beta,\n    team,\n    faq,\n    manifesto,\n    finalCta,\n    seo\n  }\n': HOME_QUERY_RESULT;
     '\n  *[_type == "navigation" && language == $locale][0]{\n    featuresLabel,\n    featuresForCoaches,\n    featuresForMembers,\n    featuresItems[]{ key, title, subtitle, href },\n    featuresCta,\n    resourcesLabel,\n    resourcesContent,\n    resourcesCommunity,\n    resourcesItems[]{ key, title, subtitle, href },\n    pricing,\n    affiliate,\n    newBadge,\n    login,\n    getStarted,\n    getStartedShort,\n    openMenu,\n    close,\n    menu\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "footer" && language == $locale][0]{\n    taglinePrefix,\n    taglineEmphasis,\n    productHeading,\n    productLinks[]{ label, href, external },\n    companyHeading,\n    companyLinks[]{ label, href, external },\n    legalHeading,\n    legalLinks[]{ label, href, external },\n    copy\n  }\n': FOOTER_QUERY_RESULT;
     '\n  *[_type == "post" && defined(slug.current)]|order(publishedAt desc){\n    \n  "slug": slug.current,\n  category,\n  title,\n  excerpt,\n  publishedAt,\n  readMin,\n  featured,\n  pick,\n  coverImage\n\n  }\n': POSTS_QUERY_RESULT;
@@ -2321,7 +2379,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "guide" && slug.current == $slug][0]{\n    \n  "slug": slug.current,\n  category,\n  title,\n  lead,\n  level,\n  readMin,\n  updatedAt,\n  popular,\n  order\n,\n    seo,\n    body[]{\n      ...,\n      _type == "image" => { ..., asset, alt, caption },\n      _type == "guideSteps" => {\n        ...,\n        items[]{\n          title,\n          body[]{\n            ...,\n            _type == "image" => { ..., asset, alt, caption }\n          }\n        }\n      }\n    }\n  }\n': GUIDE_QUERY_RESULT;
     '\n  *[_type == "guide" && defined(slug.current)]{ "slug": slug.current }\n': GUIDE_SLUGS_QUERY_RESULT;
     '\n  *[_type == "feature" && defined(slug.current) && language == $locale] | order(order asc){\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order,\n  status,\n  statusNote\n\n  }\n': FEATURES_QUERY_RESULT;
-    '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order,\n  status,\n  statusNote\n,\n    demoKey,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
+    '\n  *[_type == "feature" && slug.current == $slug && language == $locale][0]{\n    \n  "slug": slug.current,\n  audience,\n  name,\n  sub,\n  iconKey,\n  order,\n  status,\n  statusNote\n,\n    demoKey,\n    waitlistSource,\n    title{ prefix, accent, suffix },\n    highlight{ prefix, accent },\n    highlightSub,\n    lead,\n    tags,\n    capsTitle,\n    caps[]{ iconKey, title, desc },\n    seo\n  }\n': FEATURE_QUERY_RESULT;
     '\n  *[_type == "feature" && defined(slug.current) && language == "en"]{ "slug": slug.current }\n': FEATURE_SLUGS_QUERY_RESULT;
     '\n  *[_type == "changelogRelease" && defined(date) && language == $locale] | order(date desc){\n    version,\n    date,\n    title,\n    lead,\n    image{ ..., alt },\n    changes[]{ type, text }\n  }\n': CHANGELOG_QUERY_RESULT;
     '\n  *[_type == "roadmapItem"] | order(order asc){\n    "id": _id,\n    column,\n    category,\n    title,\n    desc,\n    eta,\n    votes\n  }\n': ROADMAP_QUERY_RESULT;

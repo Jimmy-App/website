@@ -74,6 +74,13 @@ export const feature = defineType({
       validation: (R) => R.required(),
     }),
     defineField({
+      name: 'waitlistSource',
+      title: 'Waitlist source',
+      type: 'string',
+      description:
+        'When set, the hero CTA becomes the waitlist form instead of Start free / Book a demo. Must match an allowed source in /api/waitlist (e.g. coach-brain-waitlist).',
+    }),
+    defineField({
       name: 'demoKey',
       title: 'Demo key',
       type: 'string',

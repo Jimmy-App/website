@@ -19,6 +19,7 @@ import { CourseBuilderDemo } from '@/components/sections/CourseBuilderDemo'
 import { DailyWorkoutDemo } from '@/components/features/DailyWorkoutDemo'
 import { BrandedAppDemo } from '@/components/features/BrandedAppDemo'
 import { EasyPaymentDemo } from '@/components/features/EasyPaymentDemo'
+import { CoachBrainDemo } from '@/components/sections/CoachBrainDemo'
 import type { FeatureDemoKey } from '@/lib/features'
 
 // ── Progress Tracking Placeholder ─────────────────────────────────────────────
@@ -227,10 +228,12 @@ export function FeatureDemo({
       return <CourseBuilderDemo embedded active={active} />
     case 'dailyWorkout':
       return <DailyWorkoutDemo active={active} />
-    case 'brandedApp':
+    case 'nativeApp':
       return <BrandedAppDemo active={active} />
     case 'easyPayment':
       return <EasyPaymentDemo active={active} />
+    case 'coachBrain':
+      return <CoachBrainDemo embedded />
     case 'progressView':
       return <ProgressTrackingPlaceholder active={active} />
     default:
