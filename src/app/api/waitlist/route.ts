@@ -23,9 +23,12 @@ const LOOPS_ENDPOINT = 'https://app.loops.so/api/v1/contacts/update'
  * its own list so "who asked for Coach Brain" stays answerable — that list is
  * the Phase A beta cohort, not a general newsletter.
  */
-const SOURCE_LISTS: Record<string, string> = {
-  'coach-brain-waitlist': 'LOOPS_LIST_COACH_BRAIN',
-  'white-glove': 'LOOPS_LIST_WHITE_GLOVE',
+const SOURCE_LISTS: Record<string, () => string | undefined> = {
+  // Read as literal `process.env.X`, not `process.env[name]`. Next inlines the
+  // literal form at build time; the computed form is left to a runtime object
+  // that does not exist in every build target.
+  'coach-brain-waitlist': () => process.env.LOOPS_LIST_COACH_BRAIN,
+  'white-glove': () => process.env.LOOPS_LIST_WHITE_GLOVE,
 }
 
 // Deliberately loose: the real check is Loops accepting it, and a regex that
@@ -59,8 +62,8 @@ export async function POST(request: NextRequest) {
   }
 
   const source = typeof body.source === 'string' ? body.source : ''
-  const listEnv = SOURCE_LISTS[source]
-  if (!listEnv) {
+  const readListId = SOURCE_LISTS[source]
+  if (!readListId) {
     return NextResponse.json({ error: 'invalid_source' }, { status: 400 })
   }
 
@@ -68,8 +71,8 @@ export async function POST(request: NextRequest) {
   // Missing list id is not fatal: the contact still lands in Loops with its
   // `source`, so a sign-up is never lost to a config gap. It just is not on
   // the list yet, which is recoverable; a dropped email is not.
-  const listId = process.env[listEnv]
-  if (!listId) console.warn(`[waitlist] ${listEnv} is not set — contact saved without a list`)
+  const listId = readListId()
+  if (!listId) console.warn(`[waitlist] list id for "${source}" is not set — contact saved without a list`)
   if (!apiKey) {
     console.error('[waitlist] LOOPS_API_KEY is not set')
     return NextResponse.json({ error: 'not_configured' }, { status: 503 })
