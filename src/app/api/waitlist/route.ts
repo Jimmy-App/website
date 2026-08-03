@@ -15,8 +15,18 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 const LOOPS_ENDPOINT = 'https://app.loops.so/api/v1/contacts/update'
 
-/** Only sources we actually ship. An open field would let anyone write junk. */
-const ALLOWED_SOURCES = new Set(['coach-brain-waitlist', 'white-glove'])
+/**
+ * Source -> the env var holding its Loops mailing-list id.
+ *
+ * This doubles as the allow-list: an unknown source is rejected, because an
+ * open field would let anyone write junk into our audience. Each waitlist gets
+ * its own list so "who asked for Coach Brain" stays answerable — that list is
+ * the Phase A beta cohort, not a general newsletter.
+ */
+const SOURCE_LISTS: Record<string, string> = {
+  'coach-brain-waitlist': 'LOOPS_LIST_COACH_BRAIN',
+  'white-glove': 'LOOPS_LIST_WHITE_GLOVE',
+}
 
 // Deliberately loose: the real check is Loops accepting it, and a regex that
 // rejects a valid address is worse than one that lets a typo through.
@@ -49,12 +59,17 @@ export async function POST(request: NextRequest) {
   }
 
   const source = typeof body.source === 'string' ? body.source : ''
-  if (!ALLOWED_SOURCES.has(source)) {
+  const listEnv = SOURCE_LISTS[source]
+  if (!listEnv) {
     return NextResponse.json({ error: 'invalid_source' }, { status: 400 })
   }
 
   const apiKey = process.env.LOOPS_API_KEY
-  const listId = process.env.LOOPS_LIST_PRODUCT_UPDATES
+  // Missing list id is not fatal: the contact still lands in Loops with its
+  // `source`, so a sign-up is never lost to a config gap. It just is not on
+  // the list yet, which is recoverable; a dropped email is not.
+  const listId = process.env[listEnv]
+  if (!listId) console.warn(`[waitlist] ${listEnv} is not set — contact saved without a list`)
   if (!apiKey) {
     console.error('[waitlist] LOOPS_API_KEY is not set')
     return NextResponse.json({ error: 'not_configured' }, { status: 503 })
