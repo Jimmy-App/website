@@ -19,7 +19,11 @@ export interface LegalSection {
   blocks: LegalBlock[]
 }
 
-export type LegalSlug = 'privacy' | 'terms' | 'cookie-policy'
+export type LegalSlug =
+  | 'privacy'
+  | 'terms'
+  | 'cookie-policy'
+  | 'account-deletion'
 
 export interface LegalDoc {
   slug: LegalSlug
@@ -35,6 +39,7 @@ export const LEGAL_SLUGS: readonly LegalSlug[] = [
   'privacy',
   'terms',
   'cookie-policy',
+  'account-deletion',
 ] as const
 
 export interface TocEntry {

@@ -13,6 +13,7 @@ const STATIC_PATHS = [
   '/privacy',
   '/terms',
   '/cookie-policy',
+  '/account-deletion',
 ] as const
 
 function priorityFor(path: string): number {

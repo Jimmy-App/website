@@ -133,7 +133,8 @@
     "termsTitle": "Conditions d'utilisation",
     "cookieTitle": "Politique des cookies",
     "questions": "Des questions sur cette politique ?",
-    "contactCta": "Écris à notre équipe"
+    "contactCta": "Écris à notre équipe",
+    "deletionTitle": "Suppression de compte"
   },
   "cookies": {
     "bannerHeading": "Un mot sur les cookies",
@@ -192,7 +193,11 @@
       "title": "Politique des cookies",
       "description": "Comment Jimmy utilise les cookies et technologies de suivi similaires."
     },
-    "featureSuffix": "pour coachs fitness"
+    "featureSuffix": "pour coachs fitness",
+    "accountDeletion": {
+      "title": "Suppression de compte",
+      "description": "Comment supprimer ton compte Jimmy et ce qui arrive à tes données."
+    }
   },
   "featureStatus": {
     "beta": "En bêta",

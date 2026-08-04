@@ -11,12 +11,15 @@ import {
   type LegalSlug,
 } from '@/lib/legal'
 
-const TITLE_KEY: Record<LegalSlug, 'privacyTitle' | 'termsTitle' | 'cookieTitle'> =
-  {
-    privacy: 'privacyTitle',
-    terms: 'termsTitle',
-    'cookie-policy': 'cookieTitle',
-  }
+const TITLE_KEY: Record<
+  LegalSlug,
+  'privacyTitle' | 'termsTitle' | 'cookieTitle' | 'deletionTitle'
+> = {
+  privacy: 'privacyTitle',
+  terms: 'termsTitle',
+  'cookie-policy': 'cookieTitle',
+  'account-deletion': 'deletionTitle',
+}
 
 const LEGAL_CONTACT = 'mailto:legal@jimmycoach.com'
 
